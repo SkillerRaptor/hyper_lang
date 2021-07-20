@@ -1,0 +1,38 @@
+import sys.core;
+import sys.string;
+import sys.vector;
+
+export struct player
+{
+    export sys.string name;
+    float health;
+}
+
+export function player.print() -> void
+{
+    sys.print(name);
+    sys.print(health);   
+}
+
+export function add(x: int32, y: int32) -> int32
+{
+    ret x + y;
+}
+
+function main() -> int32
+{
+    x: const int32 = 10;
+    y: const int32 = 12;
+
+    if (x < y)
+    {
+        sys.print(add(x, y));
+    }
+
+    vec: const sys.vector[int32] = sys.vector[int32](); 
+    vec.push(5);
+
+    sys.print(vec);
+
+    ret 0;
+}
