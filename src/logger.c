@@ -17,18 +17,13 @@
 #define COLOR_AQUA "\033[36m"
 #define COLOR_LIGHT_RED "\033[91m"
 
-static void log(const char* format, va_list args)
-{
-	vprintf(format, args);
-}
-
 void info(const char* format, ...)
 {
 	printf(FORMAT_BOLD "hypercc: " COLOR_GREEN "info: " FORMAT_RESET);
 
 	va_list args;
 	va_start(args, format);
-	log(format, args);
+	vprintf(format, args);
 	va_end(args);
 }
 
@@ -38,7 +33,7 @@ void warning(const char* format, ...)
 
 	va_list args;
 	va_start(args, format);
-	log(format, args);
+	vprintf(format, args);
 	va_end(args);
 }
 
@@ -48,7 +43,7 @@ void error(const char* format, ...)
 
 	va_list args;
 	va_start(args, format);
-	log(format, args);
+	vprintf(format, args);
 	va_end(args);
 }
 
@@ -58,7 +53,7 @@ void fatal(const char* format, ...)
 
 	va_list args;
 	va_start(args, format);
-	log(format, args);
+	vprintf(format, args);
 	va_end(args);
 }
 
@@ -68,6 +63,6 @@ void debug(const char* format, ...)
 
 	va_list args;
 	va_start(args, format);
-	log(format, args);
+	vprintf(format, args);
 	va_end(args);
 }
