@@ -41,7 +41,7 @@ enum
 	TOKEN_TYPE_SEMICOLON,
 	TOKEN_TYPE_ASSIGN,
 	TOKEN_TYPE_IDENTIFIER,
-	
+
 	TOKEN_TYPE_COLON,
 	TOKEN_TYPE_COMMA,
 	TOKEN_TYPE_DOT,
@@ -126,4 +126,6 @@ struct token
 	} value;
 };
 
-#endif HYPERLANG_TOKEN_H_
+const char* token_type_to_string(int type);
+
+#endif // HYPERLANG_TOKEN_H_

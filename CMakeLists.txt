@@ -77,7 +77,8 @@ endif ()
 set(SOURCES
 		src/lexer.c
 		src/logger.c
-		src/main.c)
+		src/main.c
+		src/token.c)
 
 set(HEADERS
 		include/lexer.h
