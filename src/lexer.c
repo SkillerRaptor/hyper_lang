@@ -530,6 +530,15 @@ int lexer_next_token(struct token* token)
 		putback = character;
 		token->type = TOKEN_TYPE_GREATER_THAN;
 		break;
+	case ',':
+		token->type = TOKEN_TYPE_COMMA;
+		break;
+	case '.':
+		token->type = TOKEN_TYPE_DOT;
+		break;
+	case ':':
+		token->type = TOKEN_TYPE_COLON;
+		break;
 	case ';':
 		token->type = TOKEN_TYPE_SEMICOLON;
 		break;
