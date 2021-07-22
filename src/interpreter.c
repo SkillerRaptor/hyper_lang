@@ -38,5 +38,5 @@ int interpreter_interpret_ast(struct ast* ast)
 	}
 
 	fatal("interpreter.c: unknown ast operation %u\n", ast->type);
-	return __INT32_MAX__;
+	return -1;
 }
