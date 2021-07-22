@@ -75,13 +75,11 @@ endif ()
 # HyperLang
 #-------------------------------------------------------------------------------------------
 set(SOURCES
-		src/lexer.c
 		src/logger.c
 		src/main.c
 		src/utils.c)
 
 set(HEADERS
-		include/lexer.h
 		include/logger.h
 		include/utils.h)
 
