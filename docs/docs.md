@@ -1,9 +1,9 @@
 # Documentation
 
-1. Hyper Types (#hyper-types)
-2. Hyper Keywords (#hyper-keywords)
-3. Hyper Storage (#hyper-storage)
-4. Hyper Standard Packages (#hyper-standard-packages)
+1. [Hyper Types](#hyper-types)
+2. [Hyper Keywords](#hyper-keywords)
+3. [Hyper Storage](#hyper-storage)
+4. [Hyper Standard Packages](#hyper-standard-packages)
 
 ## Hyper Types
 
