@@ -7,7 +7,7 @@
 import sys.io;
 import sys.memory;
 
-function print_pointer<T: type>(T* pointer) -> void
+function print_pointer<T: type>(pointer: T*) -> void
 {
     sys.println(pointer->to_string());
 }
