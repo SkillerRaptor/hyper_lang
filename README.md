@@ -1,4 +1,6 @@
 # HyperLang
+[![Build Windows](https://github.com/SkillerRaptor/HyperLang/workflows/build-windows/badge.svg)](https://github.com/SkillerRaptor/HyperLang/blob/master/.github/workflows/build-windows.yml)
+[![Build Linux](https://github.com/SkillerRaptor/HyperLang/workflows/build-linux/badge.svg)](https://github.com/SkillerRaptor/HyperLang/blob/master/.github/workflows/build-linux.yml)
 [![License](https://img.shields.io/badge/license-MIT-yellow)](https://github.com/SkillerRaptor/HyperLang/blob/master/LICENSE)
 
 ## Contributing
