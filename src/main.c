@@ -20,14 +20,14 @@ int main(int argc, char** argv)
 	}
 
 	const char* file_name = argv[1];
-	if (lexer_init(file_name))
+	if (!lexer_init(file_name))
 	{
 		lexer_free();
 		return 1;
 	}
 
 	struct token token;
-	while (!lexer_next_token(&token))
+	while (lexer_next_token(&token))
 	{
 		info("Token %u\n", token.type);
 	}
