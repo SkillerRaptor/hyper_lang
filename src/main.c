@@ -4,12 +4,15 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <lexer.h>
 #include <logger.h>
-#include <utils.h>
+#include <token.h>
 #include <stdio.h>
 
 int main(int argc, char** argv)
 {
+	setbuf(stdout, NULL);
+
 	if (argc < 2)
 	{
 		fatal("no input files specified\n");
@@ -17,7 +20,17 @@ int main(int argc, char** argv)
 	}
 
 	const char* file_name = argv[1];
-	char* file_source = read_file_source(file_name);
+	if (lexer_init(file_name))
+	{
+		lexer_free();
+		return 1;
+	}
 
-	free_file_source(file_source);
+	struct token token;
+	while (!lexer_next_token(&token))
+	{
+		info("Token %u\n", token.type);
+	}
+
+	lexer_free();
 }

@@ -75,14 +75,20 @@ endif ()
 # HyperLang
 #-------------------------------------------------------------------------------------------
 set(SOURCES
+		src/lexer.c
 		src/logger.c
-		src/main.c
-		src/utils.c)
+		src/main.c)
 
 set(HEADERS
+		include/lexer.h
 		include/logger.h
-		include/utils.h)
+		include/token.h)
 
 add_executable(HyperLang ${SOURCES} ${HEADERS})
 target_compile_options(HyperLang PRIVATE ${WARNING_FLAGS})
 target_include_directories(HyperLang PRIVATE ./include)
+
+add_custom_command(
+        TARGET HyperLang
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/test ${CMAKE_CURRENT_BINARY_DIR}/test)
