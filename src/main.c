@@ -5,6 +5,8 @@
  */
 
 #include <logger.h>
+#include <utils.h>
+#include <stdio.h>
 
 int main(int argc, char** argv)
 {
@@ -13,4 +15,9 @@ int main(int argc, char** argv)
 		fatal("no input files specified\n");
 		return 1;
 	}
+
+	const char* file_name = argv[1];
+	char* file_source = read_file_source(file_name);
+
+	free_file_source(file_source);
 }

@@ -22,6 +22,8 @@ void
 ```hyper
  int8  int16  int32  int64  int128
 uint8 uint16 uint32 uint64 uint128
+
+string
 ```
 
 ## Hyper Keywords
@@ -76,6 +78,7 @@ union my_union
 | Packages |     Description     |
 |:--------:|:-------------------:|
 |    io    |     Input/Output    |
+|   math   |     Math related    |
 |  memory  | Memory manipulation |
 |    net   |      Networking     |
 |    os    |  Platform Specific  |

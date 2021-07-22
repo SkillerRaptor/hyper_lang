@@ -7,6 +7,8 @@
 #ifndef HYPERLANG_LOGGER_H_
 #define HYPERLANG_LOGGER_H_
 
+#include <utils.h>
+
 void info(const char* format, ...);
 void warning(const char* format, ...);
 void error(const char* format, ...);
