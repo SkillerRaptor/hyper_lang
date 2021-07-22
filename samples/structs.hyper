@@ -6,8 +6,8 @@
 
 struct data_object
 {
-    string name;
-    float level;
+    name: string;
+    level: float;
 }
 
 function data_object.to_string() -> string
