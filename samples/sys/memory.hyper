@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package sys
+{
+    export function allocate<T: type>(uint size) -> mutable T*
+    {
+        // Implemenation defined
+        return ...;
+    }
+
+    export function deallocate<T: type>(mutable T* pointer) -> void
+    {
+        // Implemenation defined
+    }
+}

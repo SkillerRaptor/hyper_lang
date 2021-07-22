@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+import sys.io;
+import sys.memory;
+
+function print_pointer<T: type>(T* pointer) -> void
+{
+    sys.println(pointer->to_string());
+}
+
+function main() -> int32
+{
+    ptr: mutable uint64* = sys.allocate<uint64*>(1);
+    *ptr = 5;
+    sys.deallocate(ptr);
+
+    return 0;
+}

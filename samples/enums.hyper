@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+enum program_state
+{
+    idling,
+    running
+}
+
+function main() -> int32
+{
+    first_state: program_state = (idling);
+
+    second_state: mutable program_state;
+    second_state = idling;
+    second_state = running;
+}

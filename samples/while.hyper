@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+import sys.io;
+
+function main() -> int32
+{
+    while (true)
+    {
+        break;
+    }
+
+    i: mutable uint = 0;
+    do
+    {
+        sys.println(i.to_string());
+    } while (i < 5);
+}

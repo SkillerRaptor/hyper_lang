@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package sys
+{
+	export struct array<T: type, N: uint>
+	{
+		T data[N];
+	}
+
+	export function array.empty() -> bool
+	{
+		return size() == 0;
+	}
+
+	export function array.size() -> uint
+	{
+		return N;
+	}
+
+	export function array.max_size() -> uint
+	{
+		return N;
+	}
+
+	export function arrray.data() -> T*
+	{
+		return data;
+	}
+
+	export function arrray.data() -> mutable T*
+	{
+		return data;
+	}
+}

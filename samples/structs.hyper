@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+struct data_object
+{
+    string name;
+    float level;
+}
+
+function data_object.to_string() -> string
+{
+    return "[name: " + name + ", level: " + level.to_string() + "]";
+}
+
+function main() -> int32
+{
+    first_object: data_object = ("First Object", 1.0f);
+    first_object.to_string();
+
+    second_object: mutable data_object;
+    second_object.level = 2.0f;
+    second_object.to_string();
+}

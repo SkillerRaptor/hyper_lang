@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+union big_integer
+{
+    first: uint128,
+    second: uint128,
+}
+
+function main() -> int32
+{
+    first_integer: big_integer = (1, 2);
+
+    second_integer: mutable big_integer;
+    second_integer.first = 2;
+    second_integer.second = 3;
+}
