@@ -9,6 +9,8 @@
 
 #include <token.h>
 
+extern struct token token;
+
 int lexer_init(const char* source);
 void lexer_free(void);
 

@@ -14,6 +14,8 @@ static int line;
 static char putback;
 static FILE* file;
 
+struct token token;
+
 int lexer_init(const char* file_name)
 {
 	line = 0;
@@ -332,6 +334,8 @@ static int lexer_pick_keyword(const char* keyword)
 int lexer_next_token(struct token* token)
 {
 	lexer_skip_whitespace();
+
+	memset(&token->value, 0, sizeof(token->value));
 
 	char character = lexer_next_character();
 	switch (character)

@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <ast.h>
+#include <expressions.h>
+#include <interpreter.h>
 #include <lexer.h>
 #include <logger.h>
 #include <token.h>
@@ -26,11 +29,9 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	struct token token;
-	while (lexer_next_token(&token))
-	{
-		info("Token %u\n", token.type);
-	}
+	lexer_next_token(&token);
+	struct ast* ast = ast_binary_expression();
+	info("%u\n", interpreter_interpret_ast(ast));
 
 	lexer_free();
 }
