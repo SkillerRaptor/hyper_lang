@@ -76,22 +76,28 @@ endif ()
 #-------------------------------------------------------------------------------------------
 set(SOURCES
         src/ast.c
+        src/declarations.c
         src/expressions.c
         src/generator.c
 		src/lexer.c
 		src/logger.c
 		src/main.c
         src/statements.c
-		src/token.c)
+        src/symbol_table.c
+		src/token.c
+        src/utils.c)
 
 set(HEADERS
         include/ast.h
+        include/declarations.h
         include/expressions.h
         include/generator.h
 		include/lexer.h
 		include/logger.h
         include/statements.h
-		include/token.h)
+        include/symbol_table.h
+		include/token.h
+        include/utils.h)
 
 add_executable(HyperLang ${SOURCES} ${HEADERS})
 target_compile_options(HyperLang PRIVATE ${WARNING_FLAGS})

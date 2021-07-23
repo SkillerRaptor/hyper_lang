@@ -16,7 +16,8 @@ void lexer_free(void);
 
 int lexer_next_token(struct token* token);
 
-void lexer_match(int token_type, const char* what);
+void lexer_match(int token_type);
+void lexer_match_identifier(void);
 void lexer_match_semicolon(void);
 
 #endif // HYPERLANG_LEXER_H_

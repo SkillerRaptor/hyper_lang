@@ -12,7 +12,7 @@
 void generator_init(const char* file_name);
 void generator_free(void);
 
-int generator_generate_ast(struct ast* ast);
+int generator_generate_ast(struct ast* ast, int reg);
 void generator_generate_pre_code(void);
 void generator_generate_post_code(void);
 

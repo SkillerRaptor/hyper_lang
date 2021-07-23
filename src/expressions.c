@@ -8,6 +8,7 @@
 #include <lexer.h>
 #include <logger.h>
 #include <token.h>
+#include <symbol_table.h>
 #include <stdlib.h>
 
 static int expressions_arithmetic_operation(int token_type)
@@ -67,6 +68,19 @@ struct ast* ast_primary(void)
 	case TOKEN_TYPE_INT_LITERAL:
 	{
 		struct ast* ast = ast_make_leaf(AST_TYPE_INT_LITERAL, token.value.int_value);
+		lexer_next_token(&token);
+		return ast;
+	}
+	case TOKEN_TYPE_IDENTIFIER:
+	{
+		int identifier = symbol_table_find_global(token.value.identifier);
+		if (identifier == -1)
+		{
+			fatal("expressions.c: unknown variable %s", token.value.identifier);
+			return NULL;
+		}
+
+		struct ast* ast = ast_make_leaf(AST_TYPE_IDENTIFIER, identifier);
 		lexer_next_token(&token);
 		return ast;
 	}

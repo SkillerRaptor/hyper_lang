@@ -15,6 +15,9 @@ enum
 	AST_TYPE_DIVIDE,
 
 	AST_TYPE_INT_LITERAL,
+	AST_TYPE_IDENTIFIER,
+	AST_TYPE_L_VALUE,
+	AST_TYPE_ASSIGN,
 };
 
 struct ast
@@ -24,7 +27,11 @@ struct ast
 	struct ast* left;
 	struct ast* right;
 
-	int int_value;
+	union
+	{
+		int int_value;
+		int identifier;
+	} value;
 };
 
 struct ast* ast_make_node(int type, struct ast* left, struct ast* right, int int_value);

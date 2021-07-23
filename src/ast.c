@@ -20,7 +20,7 @@ struct ast* ast_make_node(int type, struct ast* left, struct ast* right, int int
 	ast->type = type;
 	ast->left = left;
 	ast->right = right;
-	ast->int_value = int_value;
+	ast->value.int_value = int_value;
 
 	return ast;
 }

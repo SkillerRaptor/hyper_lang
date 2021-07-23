@@ -11,6 +11,7 @@
 #include <logger.h>
 #include <statements.h>
 #include <token.h>
+#include <symbol_table.h>
 #include <stdio.h>
 
 int main(int argc, char** argv)
@@ -31,6 +32,11 @@ int main(int argc, char** argv)
 	}
 
 	lexer_next_token(&token);
+
+	for (int i = 0; i < 1024; ++i)
+	{
+		symbol_table[i].name = "\0";
+	}
 
 	generator_init("out.ll");
 	generator_generate_pre_code();

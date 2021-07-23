@@ -611,7 +611,7 @@ int lexer_next_token(struct token* token)
 	return 1;
 }
 
-void lexer_match(int token_type, const char* what)
+void lexer_match(int token_type)
 {
 	if (token.type != token_type)
 	{
@@ -622,7 +622,12 @@ void lexer_match(int token_type, const char* what)
 	lexer_next_token(&token);
 }
 
+void lexer_match_identifier(void)
+{
+	lexer_match(TOKEN_TYPE_IDENTIFIER);
+}
+
 void lexer_match_semicolon(void)
 {
-	lexer_match(TOKEN_TYPE_SEMICOLON, ";");
+	lexer_match(TOKEN_TYPE_SEMICOLON);
 }
