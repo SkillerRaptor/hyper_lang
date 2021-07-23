@@ -7,14 +7,18 @@
 #ifndef HYPERLANG_SYMBOL_TABLE_H_
 #define HYPERLANG_SYMBOL_TABLE_H_
 
+#define SYMBOL_TABLE_LIMIT 1024
+
 struct symbol
 {
 	char* name;
 };
 
-extern struct symbol symbol_table[1024];
+void init_symbols(void);
 
-int symbol_table_add_global(const char* name);
-int symbol_table_find_global(const char* name);
+int add_symbol(const char* name);
+int find_symbol(const char* name);
+
+struct symbol* get_symbol(int position);
 
 #endif // HYPERLANG_SYMBOL_TABLE_H_

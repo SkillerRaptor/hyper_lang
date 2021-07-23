@@ -7,6 +7,9 @@
 #ifndef HYPERLANG_UTILS_H_
 #define HYPERLANG_UTILS_H_
 
-char* strdup(const char* source);
+char* duplicate_string(const char* source);
+int character_position(const char* string, char character);
+
+void exit_program(void);
 
 #endif // HYPERLANG_UTILS_H_

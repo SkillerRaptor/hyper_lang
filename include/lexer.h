@@ -7,17 +7,17 @@
 #ifndef HYPERLANG_LEXER_H_
 #define HYPERLANG_LEXER_H_
 
-#include <token.h>
+#include "token.h"
 
 extern struct token token;
 
-int lexer_init(const char* source);
-void lexer_free(void);
+void init_lexer(const char* source);
+void free_lexer(void);
 
-int lexer_next_token(struct token* token);
+void next_token(void);
 
-void lexer_match(int token_type);
-void lexer_match_identifier(void);
-void lexer_match_semicolon(void);
+void match_token(int token_type);
+char* match_identifier(void);
+void match_semicolon(void);
 
 #endif // HYPERLANG_LEXER_H_

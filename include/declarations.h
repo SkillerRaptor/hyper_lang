@@ -7,6 +7,6 @@
 #ifndef HYPERLANG_DECLARATIONS_H_
 #define HYPERLANG_DECLARATIONS_H_
 
-void declarations_generate_variable_declaration(void);
+void generate_variable_declaration(void);
 
 #endif // HYPERLANG_DECLARATIONS_H_

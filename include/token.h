@@ -7,6 +7,8 @@
 #ifndef HYPERLANG_TOKEN_H_
 #define HYPERLANG_TOKEN_H_
 
+#define BUFFER_SIZE_LIMIT 512
+
 enum
 {
 	TOKEN_TYPE_EOF,
@@ -113,9 +115,7 @@ enum
 	TOKEN_TYPE_INT_LITERAL,
 	TOKEN_TYPE_STRING_LITERAL,
 
-	/* Testing */
-	TOKEN_TYPE_PRINT,
-	/* Testing End */
+	TOKEN_TYPE_PRINT
 };
 
 struct token
@@ -125,8 +125,8 @@ struct token
 	union
 	{
 		int int_value;
-		char string_value[128];
-		char identifier[128];
+		char string_value[BUFFER_SIZE_LIMIT];
+		char identifier[BUFFER_SIZE_LIMIT];
 	} value;
 };
 

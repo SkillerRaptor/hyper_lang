@@ -17,7 +17,7 @@ enum
 	AST_TYPE_INT_LITERAL,
 	AST_TYPE_IDENTIFIER,
 	AST_TYPE_L_VALUE,
-	AST_TYPE_ASSIGN,
+	AST_TYPE_ASSIGN
 };
 
 struct ast
@@ -37,5 +37,7 @@ struct ast
 struct ast* ast_make_node(int type, struct ast* left, struct ast* right, int int_value);
 struct ast* ast_make_leaf(int type, int int_value);
 struct ast* ast_make_unary(int type, struct ast* left, int int_value);
+
+const char* ast_type_to_string(int type);
 
 #endif // HYPERLANG_AST_H_

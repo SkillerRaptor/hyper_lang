@@ -4,75 +4,80 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <ast.h>
-#include <declarations.h>
-#include <expressions.h>
-#include <generator.h>
-#include <lexer.h>
-#include <logger.h>
-#include <statements.h>
-#include <symbol_table.h>
-#include <utils.h>
+#include "statements.h"
+
+#include "ast.h"
+#include "declarations.h"
+#include "expressions.h"
+#include "generator.h"
+#include "lexer.h"
+#include "logger.h"
+#include "symbol_table.h"
+#include "utils.h"
+
 #include <stdlib.h>
 
-void statements_generate_print_statement(void)
+void generate_assignment_statement(void)
 {
-	lexer_match(TOKEN_TYPE_PRINT);
+	char* identifier_name = match_identifier();
 
-	struct ast* ast = ast_binary_expression(0);
-	int reg = generator_generate_ast(ast, -1);
-	generator_generate_print_int(reg);
-
-	lexer_match_semicolon();
-}
-
-void statements_generate_assignment_statement(void)
-{
-	char* identifier_name = strdup(token.value.identifier);
-	lexer_match_identifier();
-
-	int identifier = symbol_table_find_global(identifier_name);
+	int identifier = find_symbol(identifier_name);
+	free(identifier_name);
+	
 	if (identifier == -1)
 	{
-		fatal("statements.c: undeclared variable %s", identifier_name);
-		free(identifier_name);
+		fatal("undeclared variable\n");
+		exit_program();
+		
 		return;
 	}
 	
-	free(identifier_name);
-	
 	struct ast* right = ast_make_leaf(AST_TYPE_L_VALUE, identifier);
 
-	lexer_match(TOKEN_TYPE_ASSIGN);
+	match_token(TOKEN_TYPE_ASSIGN);
 
-	struct ast* left = ast_binary_expression(0);
-
+	struct ast* left = generate_binary_expression(0);
 	struct ast* ast = ast_make_node(AST_TYPE_ASSIGN, left, right, 0);
-	generator_generate_ast(ast, -1);
+	generate_ast(ast, -1);
 
-	lexer_match_semicolon();
+	match_semicolon();
 }
 
-void statements_generate(void)
+void generate_print_statement(void)
 {
-	while (1)
+	match_token(TOKEN_TYPE_PRINT);
+	
+	struct ast* ast = generate_binary_expression(0);
+	int reg = generate_ast(ast, -1);
+	generate_print_register(reg);
+	
+	match_semicolon();
+}
+
+void generate_statements(void)
+{
+	int running = 1;
+	while (running)
 	{
 		switch (token.type)
 		{
-		case TOKEN_TYPE_PRINT:
-			statements_generate_print_statement();
+		case TOKEN_TYPE_IDENTIFIER:
+			generate_assignment_statement();
 			break;
 		case TOKEN_TYPE_INT:
-			declarations_generate_variable_declaration();
+			generate_variable_declaration();
 			break;
-		case TOKEN_TYPE_IDENTIFIER:
-			statements_generate_assignment_statement();
+		case TOKEN_TYPE_PRINT:
+			generate_print_statement();
 			break;
 		case TOKEN_TYPE_EOF:
 			return;
 		default:
-			fatal("statements.c: syntax error with token %s\n", token_type_to_string(token.type));
-			return;
+			running = 0;
+			break;
 		}
 	}
+	
+	fatal("syntax error\n");
+	exit_program();
 }

@@ -4,14 +4,17 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <expressions.h>
-#include <lexer.h>
-#include <logger.h>
-#include <token.h>
-#include <symbol_table.h>
+#include "expressions.h"
+
+#include "lexer.h"
+#include "logger.h"
+#include "token.h"
+#include "symbol_table.h"
+#include "utils.h"
+
 #include <stdlib.h>
 
-static int expressions_arithmetic_operation(int token_type)
+static int get_arithmetic_operation(int token_type)
 {
 	switch (token_type)
 	{
@@ -27,32 +30,24 @@ static int expressions_arithmetic_operation(int token_type)
 		break;
 	}
 
-	fatal("expressions.c: unexpected token type: %u\n", token_type);
+	fatal("unexpected token type\n");
+	exit_program();
+	
 	return -1;
 }
 
-static int expressions_operator_precedence(int token_type)
+static int get_token_precedence(int token_type)
 {
 	int precedence = 0;
 	switch (token_type)
 	{
-	case TOKEN_TYPE_EOF:
-		precedence = 0;
-		break;
 	case TOKEN_TYPE_PLUS:
-		precedence = 10;
-		break;
 	case TOKEN_TYPE_MINUS:
 		precedence = 10;
 		break;
 	case TOKEN_TYPE_STAR:
-		precedence = 20;
-		break;
 	case TOKEN_TYPE_SLASH:
 		precedence = 20;
-		break;
-	case TOKEN_TYPE_INT_LITERAL:
-		precedence = 0;
 		break;
 	default:
 		break;
@@ -61,38 +56,42 @@ static int expressions_operator_precedence(int token_type)
 	return precedence;
 }
 
-struct ast* ast_primary(void)
+static struct ast* ast_primary(void)
 {
 	switch (token.type)
 	{
 	case TOKEN_TYPE_INT_LITERAL:
 	{
 		struct ast* ast = ast_make_leaf(AST_TYPE_INT_LITERAL, token.value.int_value);
-		lexer_next_token(&token);
+		next_token();
 		return ast;
 	}
 	case TOKEN_TYPE_IDENTIFIER:
 	{
-		int identifier = symbol_table_find_global(token.value.identifier);
+		int identifier = find_symbol(token.value.identifier);
 		if (identifier == -1)
 		{
-			fatal("expressions.c: unknown variable %s", token.value.identifier);
+			fatal("unknown variable\n");
+			exit_program();
+			
 			return NULL;
 		}
 
 		struct ast* ast = ast_make_leaf(AST_TYPE_IDENTIFIER, identifier);
-		lexer_next_token(&token);
+		next_token();
 		return ast;
 	}
 	default:
 		break;
 	}
 
-	fatal("expressions.c: syntax error\n");
+	fatal("syntax error\n");
+	exit_program();
+	
 	return NULL;
 }
 
-struct ast* ast_binary_expression(int precedence)
+struct ast* generate_binary_expression(int precedence)
 {
 	struct ast* left = ast_primary();
 
@@ -102,13 +101,12 @@ struct ast* ast_binary_expression(int precedence)
 		return left;
 	}
 
-	while (expressions_operator_precedence(token_type) > precedence)
+	while (get_token_precedence(token_type) > precedence)
 	{
-		lexer_next_token(&token);
+		next_token();
 
-		struct ast* right = ast_binary_expression(expressions_operator_precedence(token_type));
-
-		left = ast_make_node(expressions_arithmetic_operation(token_type), left, right, 0);
+		struct ast* right = generate_binary_expression(get_token_precedence(token_type));
+		left = ast_make_node(get_arithmetic_operation(token_type), left, right, 0);
 
 		token_type = token.type;
 		if (token_type == TOKEN_TYPE_SEMICOLON)

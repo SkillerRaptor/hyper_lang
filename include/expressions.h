@@ -7,9 +7,8 @@
 #ifndef HYPERLANG_EXPRESSIONS_H_
 #define HYPERLANG_EXPRESSIONS_H_
 
-#include <ast.h>
+#include "ast.h"
 
-struct ast* ast_primary(void);
-struct ast* ast_binary_expression(int precedence);
+struct ast* generate_binary_expression(int precedence);
 
 #endif // HYPERLANG_EXPRESSIONS_H_

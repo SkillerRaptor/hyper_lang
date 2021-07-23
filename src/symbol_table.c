@@ -4,49 +4,80 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <logger.h>
-#include <symbol_table.h>
-#include <utils.h>
+#include "logger.h"
+#include "symbol_table.h"
+#include "utils.h"
+
 #include <string.h>
 
-static int globals = 0;
-
-struct symbol symbol_table[1024] = { 0 };
-
-static int symbol_table_new_global(void)
+struct symbol_table
 {
-	int i = globals++;
+	struct symbol symbols[SYMBOL_TABLE_LIMIT];
+};
 
-	if (i >= 1024)
+static int symbol_count = 0;
+static struct symbol_table symbol_table;
+
+void init_symbols(void)
+{
+	for (int position = 0; position < SYMBOL_TABLE_LIMIT; ++position)
+	{
+		symbol_table.symbols[position].name = "\0";
+	}
+}
+
+static int new_symbol(void)
+{
+	int position = symbol_count++;
+	if (position >= 1024)
 	{
 		fatal("symbol_table.c: too many global symbols\n");
+		exit_program();
+		
+		return -1;
 	}
 
-	return i;
+	return position;
 }
 
-int symbol_table_add_global(const char *name)
+int add_symbol(const char* name)
 {
-	int i = symbol_table_find_global(name);
-	if (i != -1)
+	int position = find_symbol(name);
+	if (position != -1)
 	{
-		return i;
+		return position;
 	}
+	
+	position = new_symbol();
+	symbol_table.symbols[position].name = duplicate_string(name);
 
-	i = symbol_table_new_global();
-	symbol_table[i].name = strdup(name);
-
-	return i;
+	return position;
 }
 
-int symbol_table_find_global(const char *name)
+int find_symbol(const char* name)
 {
-	for (int i = 0; i < 1024; ++i)
+	for (int position = 0; position < SYMBOL_TABLE_LIMIT; ++position)
 	{
-		if (*name == *symbol_table[i].name && !strcmp(symbol_table[i].name, name))
+		if (strcmp(symbol_table.symbols[position].name, name) != 0)
 		{
-			return i;
+			continue;
 		}
+		
+		return position;
 	}
+
 	return -1;
+}
+
+struct symbol* get_symbol(int position)
+{
+	if (position >= SYMBOL_TABLE_LIMIT || position < 0)
+	{
+		fatal("symbol position is out of range: %i\n", position);
+		exit_program();
+		
+		return NULL;
+	}
+	
+	return &symbol_table.symbols[position];
 }

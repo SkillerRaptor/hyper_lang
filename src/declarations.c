@@ -4,19 +4,20 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <declarations.h>
-#include <lexer.h>
-#include <logger.h>
-#include <symbol_table.h>
-#include <utils.h>
+#include "declarations.h"
+
+#include "lexer.h"
+#include "symbol_table.h"
+
 #include <stdlib.h>
 
-void declarations_generate_variable_declaration(void)
+void generate_variable_declaration(void)
 {
-	lexer_match(TOKEN_TYPE_INT);
-	char* identifier = strdup(token.value.identifier);
-	lexer_match_identifier();
-	symbol_table_add_global(identifier);
-	free(identifier);
-	lexer_match_semicolon();
+	match_token(TOKEN_TYPE_INT);
+	
+	char* identifier_name = match_identifier();
+	add_symbol(identifier_name);
+	free(identifier_name);
+	
+	match_semicolon();
 }

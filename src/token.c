@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <token.h>
+#include "token.h"
 
 const char* token_type_to_string(int type)
 {
@@ -181,5 +181,6 @@ const char* token_type_to_string(int type)
 	default:
 		break;
 	}
-	return "undefined";
+	
+	return "undefined token type";
 }
