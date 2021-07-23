@@ -1,0 +1,79 @@
+/*
+ * Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package sys
+{
+	export struct vector2<T: type>
+	{
+		union
+		{
+			(
+				x: T,
+				y: T
+			);
+            (
+                s: T,
+                t: T
+            );
+			(
+				u: T,
+				v: T
+			);
+		}
+	}
+
+	export struct vector3<T: type>
+	{
+		union
+		{
+			(
+				x: T,
+				y: T,
+                z: T
+			);
+            (
+                r: T,
+                g: T,
+                b: T
+            );
+            (
+                s: T,
+                t: T,
+                p: T
+            );
+			(
+				u: T,
+				v: T,
+                w: T
+			);
+		};
+	}
+
+	export struct vector4<T: type>
+	{
+		union
+		{
+			(
+				x: T,
+				y: T,
+                z: T,
+                w: T
+			);
+            (
+                r: T,
+                g: T,
+                a: T,
+                a: T
+            );
+			(
+				s: T,
+				t: T,
+                p: T,
+                q: T
+			);
+		};
+	}
+}

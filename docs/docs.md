@@ -70,7 +70,7 @@ enum my_enum
 ```hyper
 struct my_struct
 {
-	some_data: uint64
+	some_data: uint64;
 }
 ```
 
@@ -78,11 +78,11 @@ struct my_struct
 ```hyper
 union my_union
 {
-	big: uint64,
+	big: uint64;
 	(
 		small_a: uint32,
 		small_b: uint32
-	)
+	);
 }
 ```
 

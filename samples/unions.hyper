@@ -1,7 +1,7 @@
 union big_integer
 {
-	first: uint128,
-	second: uint128,
+	first: uint128;
+	second: uint128;
 }
 
 function main() -> int32
