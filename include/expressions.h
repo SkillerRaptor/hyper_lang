@@ -9,9 +9,7 @@
 
 #include <ast.h>
 
-int expressions_arithmetic_operation(int token_type);
-
 struct ast* ast_primary(void);
-struct ast* ast_binary_expression(void);
+struct ast* ast_binary_expression(int precedence);
 
 #endif // HYPERLANG_EXPRESSIONS_H_

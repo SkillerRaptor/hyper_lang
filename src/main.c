@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	}
 
 	lexer_next_token(&token);
-	struct ast* ast = ast_binary_expression();
+	struct ast* ast = ast_binary_expression(0);
 	info("%u\n", interpreter_interpret_ast(ast));
 
 	lexer_free();

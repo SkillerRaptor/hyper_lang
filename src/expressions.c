@@ -10,7 +10,7 @@
 #include <token.h>
 #include <stdlib.h>
 
-int expressions_arithmetic_operation(int token_type)
+static int expressions_arithmetic_operation(int token_type)
 {
 	switch (token_type)
 	{
@@ -28,6 +28,36 @@ int expressions_arithmetic_operation(int token_type)
 
 	fatal("expressions.c: unexpected token type: %u\n", token_type);
 	return -1;
+}
+
+static int expressions_operator_precedence(int token_type)
+{
+	int precedence = 0;
+	switch (token_type)
+	{
+	case TOKEN_TYPE_EOF:
+		precedence = 0;
+		break;
+	case TOKEN_TYPE_PLUS:
+		precedence = 10;
+		break;
+	case TOKEN_TYPE_MINUS:
+		precedence = 10;
+		break;
+	case TOKEN_TYPE_STAR:
+		precedence = 20;
+		break;
+	case TOKEN_TYPE_SLASH:
+		precedence = 20;
+		break;
+	case TOKEN_TYPE_INT_LITERAL:
+		precedence = 0;
+		break;
+	default:
+		break;
+	}
+
+	return precedence;
 }
 
 struct ast* ast_primary(void)
@@ -48,19 +78,30 @@ struct ast* ast_primary(void)
 	return NULL;
 }
 
-struct ast* ast_binary_expression(void)
+struct ast* ast_binary_expression(int precedence)
 {
 	struct ast* left = ast_primary();
-	if (token.type == TOKEN_TYPE_EOF)
+
+	int token_type = token.type;
+	if (token_type == TOKEN_TYPE_EOF)
 	{
 		return left;
 	}
 
-	int node_type = expressions_arithmetic_operation(token.type);
-	lexer_next_token(&token);
+	while (expressions_operator_precedence(token_type) > precedence)
+	{
+		lexer_next_token(&token);
 
-	struct ast* right = ast_binary_expression();
+		struct ast* right = ast_binary_expression(expressions_operator_precedence(token_type));
 
-	struct ast* ast = ast_make_node(node_type, left, right, 0);
-	return ast;
+		left = ast_make_node(expressions_arithmetic_operation(token_type), left, right, 0);
+		
+		token_type = token.type;
+		if (token_type == TOKEN_TYPE_EOF)
+		{
+			return left;
+		}
+	}
+
+	return left;
 }
