@@ -81,6 +81,7 @@ set(SOURCES
 		src/lexer.c
 		src/logger.c
 		src/main.c
+        src/statements.c
 		src/token.c)
 
 set(HEADERS
@@ -89,6 +90,7 @@ set(HEADERS
         include/generator.h
 		include/lexer.h
 		include/logger.h
+        include/statements.h
 		include/token.h)
 
 add_executable(HyperLang ${SOURCES} ${HEADERS})

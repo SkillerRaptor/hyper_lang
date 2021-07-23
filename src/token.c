@@ -176,5 +176,10 @@ const char* token_type_to_string(int type)
 		return "TOKEN_TYPE_INT_LITERAL";
 	case TOKEN_TYPE_STRING_LITERAL:
 		return "TOKEN_TYPE_STRING_LITERAL";
+	case TOKEN_TYPE_PRINT:
+		return "TOKEN_TYPE_PRINT";
+	default:
+		break;
 	}
+	return "undefined";
 }

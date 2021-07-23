@@ -258,6 +258,11 @@ static int lexer_pick_keyword(const char* keyword)
 		{
 			return TOKEN_TYPE_PACKAGE;
 		}
+
+		if (!strcmp(keyword, "print"))
+		{
+			return TOKEN_TYPE_PRINT;
+		}
 		break;
 	case 'r':
 		if (!strcmp(keyword, "return"))
@@ -604,4 +609,20 @@ int lexer_next_token(struct token* token)
 	}
 
 	return 1;
+}
+
+void lexer_match(int token_type, const char* what)
+{
+	if (token.type != token_type)
+	{
+		fatal("lexer.c: %s unexpected - %s expected\n", token_type_to_string(token.type), token_type_to_string(token_type));
+		return;
+	}
+
+	lexer_next_token(&token);
+}
+
+void lexer_match_semicolon(void)
+{
+	lexer_match(TOKEN_TYPE_SEMICOLON, ";");
 }

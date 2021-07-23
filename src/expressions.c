@@ -83,7 +83,7 @@ struct ast* ast_binary_expression(int precedence)
 	struct ast* left = ast_primary();
 
 	int token_type = token.type;
-	if (token_type == TOKEN_TYPE_EOF)
+	if (token_type == TOKEN_TYPE_SEMICOLON)
 	{
 		return left;
 	}
@@ -95,9 +95,9 @@ struct ast* ast_binary_expression(int precedence)
 		struct ast* right = ast_binary_expression(expressions_operator_precedence(token_type));
 
 		left = ast_make_node(expressions_arithmetic_operation(token_type), left, right, 0);
-		
+
 		token_type = token.type;
-		if (token_type == TOKEN_TYPE_EOF)
+		if (token_type == TOKEN_TYPE_SEMICOLON)
 		{
 			return left;
 		}

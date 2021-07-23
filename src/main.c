@@ -9,6 +9,7 @@
 #include <generator.h>
 #include <lexer.h>
 #include <logger.h>
+#include <statements.h>
 #include <token.h>
 #include <stdio.h>
 
@@ -30,10 +31,11 @@ int main(int argc, char** argv)
 	}
 
 	lexer_next_token(&token);
-	struct ast* ast = ast_binary_expression(0);
-	
+
 	generator_init("out.ll");
-	generator_generate_code(ast);
+	generator_generate_pre_code();
+	statements_generate();
+	generator_generate_post_code();
 	generator_free();
 
 	lexer_free();

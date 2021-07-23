@@ -111,7 +111,11 @@ enum
 	TOKEN_TYPE_STRING,
 
 	TOKEN_TYPE_INT_LITERAL,
-	TOKEN_TYPE_STRING_LITERAL
+	TOKEN_TYPE_STRING_LITERAL,
+
+	/* Testing */
+	TOKEN_TYPE_PRINT,
+	/* Testing End */
 };
 
 struct token
