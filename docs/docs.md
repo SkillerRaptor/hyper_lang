@@ -2,7 +2,7 @@
 
 1. [Hyper Types](#hyper-types)
 2. [Hyper Keywords](#hyper-keywords)
-3. [Hyper Storage](#hyper-storage)
+3. [Hyper Storage Types](#hyper-storage-types)
 4. [Hyper Standard Packages](#hyper-standard-packages)
 
 ## Hyper Types
@@ -26,28 +26,38 @@ uint8 uint16 uint32 uint64
 string
 ```
 
+
 ## Hyper Keywords
+
+### Control
 ```hyper
 break breakall continue
 
-for do while
+for do while of
 
 if else
-
-import export
-
-of
-
-mutable
-
-virtual override
 
 return
 ```
 
-## Hyper Storages
+### Modules
+```hyper
+package
 
-### Enum
+import export
+```
+
+### Storage Modifiers
+```hyper
+mutable static
+
+virtual override
+```
+
+
+## Hyper Storage Types
+
+### Enums
 ```hyper
 enum my_enum
 {
@@ -56,7 +66,7 @@ enum my_enum
 }
 ```
 
-### Struct
+### Structs
 ```hyper
 struct my_struct
 {
@@ -64,7 +74,7 @@ struct my_struct
 }
 ```
 
-### Union
+### Unions
 ```hyper
 union my_union
 {
@@ -76,13 +86,14 @@ union my_union
 }
 ```
 
+
 ## Hyper Standard Packages
 | Packages |     Description     |
 |:--------:|:-------------------:|
-|    io    |     Input/Output    |
-|   math   |     Math related    |
-|  memory  | Memory manipulation |
-|    net   |      Networking     |
-|    os    |  Platform Specific  |
-|  string  |        String       |
-|  vector  |        Vector       |
+| io       | Input & Output      |
+| math     | Math related        |
+| memory   | Memory manipulation |
+| net      | Networking          |
+| os       | Platform Specific   |
+| string   | String              |
+| vector   | Vector              |
