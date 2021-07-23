@@ -16,6 +16,8 @@ float double
 int uint
 
 void
+
+nullptr
 ```
 
 ### Builtin Types
