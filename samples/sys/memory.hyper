@@ -1,13 +1,13 @@
 package sys
 {
-    export function allocate<T: type>(size: uint) -> mutable T*
-    {
-        // Implemenation defined
-        return ...;
-    }
+	export function allocate<T: type>(size: uint) -> mutable T*
+	{
+		// Implementation defined
+		return ...;
+	}
 
-    export function deallocate<T: type>(pointer: mutable T*) -> void
-    {
-        // Implemenation defined
-    }
+	export function deallocate<T: type>(pointer: mutable T*) -> void
+	{
+		// Implementation defined
+	}
 }

@@ -1,14 +1,14 @@
 enum program_state
 {
-    idling,
-    running
+	idling,
+	running
 }
 
 function main() -> int32
 {
-    first_state: program_state = (idling);
+	first_state: program_state = (idling);
 
-    second_state: mutable program_state;
-    second_state = idling;
-    second_state = running;
+	second_state: mutable program_state;
+	second_state = idling;
+	second_state = running;
 }

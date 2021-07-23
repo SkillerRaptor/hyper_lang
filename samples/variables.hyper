@@ -1,16 +1,16 @@
 function main() -> int32
 {
-    x: int32 = 10;
-    y: int32 = 11;
+	x: int32 = 10;
+	y: int32 = 11;
 
-    if (x < y)
-    {
-        z: int32 = x + y;
-        println(z); // >>> 21
-    }
+	if (x < y)
+	{
+		z: int32 = x + y;
+		println(z); // >>> 21
+	}
 
-    a: mutable uint64 = 5;
-    a++;
+	a: mutable uint64 = 5;
+	a++;
 
-    return 0;
+	return 0;
 }

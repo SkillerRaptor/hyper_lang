@@ -2,14 +2,14 @@ import sys.io;
 
 function main() -> int32
 {
-    while (true)
-    {
-        break;
-    }
+	while (true)
+	{
+		break;
+	}
 
-    i: mutable uint = 0;
-    do
-    {
-        sys.println(i.to_string());
-    } while (i < 5);
+	i: mutable uint = 0;
+	do
+	{
+		sys.println(i.to_string());
+	} while (i < 5);
 }

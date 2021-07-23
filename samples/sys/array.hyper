@@ -2,7 +2,7 @@ package sys
 {
 	export struct array<T: type, N: uint>
 	{
-		T data[N];
+		data: mutable T[N];
 	}
 
 	export function array.empty() -> bool
@@ -15,17 +15,12 @@ package sys
 		return N;
 	}
 
-	export function array.max_size() -> uint
-	{
-		return N;
-	}
-
-	export function arrray.data() -> T*
+	export function array.data() -> T*
 	{
 		return data;
 	}
 
-	export function arrray.data() -> mutable T*
+	export function array.data() -> mutable T*
 	{
 		return data;
 	}

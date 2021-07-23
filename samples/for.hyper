@@ -3,30 +3,30 @@ import sys.vector;
 
 function main() -> int32
 {
-    vector: sys.vector<sys.string>;
-    vector.push("First");
-    vector.push("Second");
+	vector: sys.vector<sys.string>;
+	vector.push("First");
+	vector.push("Second");
 
-    for (string: sys.string of vector)
-    {
-        println(string);
-    }
+	for (string: sys.string of vector)
+	{
+		println(string);
+	}
 
-    for (i: int32 = 0; i < 10; ++i)
-    {
-        println(i);
-    }
-    
-    for (i: int32 = 0; i < 10; ++i)
-    {
-        for (j: int32 = 0; j < 10; ++j)
-        {
-            if (j == 0)
-            {
-                continue;
-            }
+	for (i: int32 = 0; i < 10; ++i)
+	{
+		println(i);
+	}
 
-            breakall;
-        }
-    }
+	for (i: int32 = 0; i < 10; ++i)
+	{
+		for (j: int32 = 0; j < 10; ++j)
+		{
+			if (j == 0)
+			{
+				continue;
+			}
+
+			breakall;
+		}
+	}
 }

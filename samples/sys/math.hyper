@@ -1,17 +1,3 @@
 package sys
 {
-    struct vector2<T: type>
-    {
-        union
-        {
-            (
-                x: T,
-                y: T
-            ),
-            (
-                u: T,
-                v: T
-            )
-        }
-    }
 }
