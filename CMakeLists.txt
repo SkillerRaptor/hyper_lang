@@ -77,7 +77,7 @@ endif ()
 set(SOURCES
         src/ast.c
         src/expressions.c
-        src/interpreter.c
+        src/generator.c
 		src/lexer.c
 		src/logger.c
 		src/main.c
@@ -86,7 +86,7 @@ set(SOURCES
 set(HEADERS
         include/ast.h
         include/expressions.h
-        include/interpreter.h
+        include/generator.h
 		include/lexer.h
 		include/logger.h
 		include/token.h)
