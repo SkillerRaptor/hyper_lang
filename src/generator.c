@@ -72,7 +72,7 @@ static int load_global_register(const char* identifier)
 {
 	int reg = allocate_register();
 	fprintf(file, "  %%%u = load i32, i32* @%s, align 4\n", reg, identifier);
-	
+
 	int value_register = store_register(reg);
 	return value_register;
 }
@@ -123,6 +123,51 @@ static int generate_division(int first_register, int second_register)
 
 	int value_register = store_register(value);
 	return value_register;
+}
+
+static int generate_compare(int first_register, int second_register, const char* operation)
+{
+	int first_value = load_register(first_register);
+	int second_value = load_register(second_register);
+	
+	int value_register = allocate_register();
+	fprintf(file, "  %%%u = icmp %s i32 %%%u, %%%u\n", value_register, operation, first_value, second_value);
+
+	int second_value_register = allocate_register();
+	fprintf(file, "  %%%u = zext i1 %%%u to i32\n", second_value_register, value_register);
+
+	int compare_register = store_register(second_value_register);
+	return compare_register;
+}
+
+static int generate_equal(int first_register, int second_register)
+{
+	return generate_compare(first_register, second_register, "eq");
+}
+
+static int generate_not_equal(int first_register, int second_register)
+{
+	return generate_compare(first_register, second_register, "ne");
+}
+
+static int generate_less_than(int first_register, int second_register)
+{
+	return generate_compare(first_register, second_register, "slt");
+}
+
+static int generate_greater_than(int first_register, int second_register)
+{
+	return generate_compare(first_register, second_register, "sgt");
+}
+
+static int generate_less_equal(int first_register, int second_register)
+{
+	return generate_compare(first_register, second_register, "sle");
+}
+
+static int generate_greater_equal(int first_register, int second_register)
+{
+	return generate_compare(first_register, second_register, "sge");
 }
 
 int generate_print_register(int value_register)
@@ -191,12 +236,24 @@ int generate_ast(struct ast* ast, int reg)
 		return load_global_register(get_symbol(ast->value.identifier)->name);
 	case AST_TYPE_ASSIGN:
 		return right_register;
+	case AST_TYPE_EQUAL:
+		return generate_equal(left_register, right_register);
+	case AST_TYPE_NOT_EQUAL:
+		return generate_not_equal(left_register, right_register);
+	case AST_TYPE_LESS_THAN:
+		return generate_less_than(left_register, right_register);
+	case AST_TYPE_GREATER_THAN:
+		return generate_greater_than(left_register, right_register);
+	case AST_TYPE_LESS_EQUAL:
+		return generate_less_equal(left_register, right_register);
+	case AST_TYPE_GREATER_EQUAL:
+		return generate_greater_equal(left_register, right_register);
 	default:
 		break;
 	}
 
 	fatal("unknown ast operation\n");
 	exit_program();
-	
+
 	return -1;
 }

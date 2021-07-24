@@ -26,13 +26,25 @@ static int get_arithmetic_operation(int token_type)
 		return AST_TYPE_MULTIPLY;
 	case TOKEN_TYPE_SLASH:
 		return AST_TYPE_DIVIDE;
+	case TOKEN_TYPE_EQUAL:
+		return AST_TYPE_EQUAL;
+	case TOKEN_TYPE_NOT_EQUAL:
+		return AST_TYPE_NOT_EQUAL;
+	case TOKEN_TYPE_LESS_THAN:
+		return AST_TYPE_LESS_THAN;
+	case TOKEN_TYPE_GREATER_THAN:
+		return AST_TYPE_GREATER_THAN;
+	case TOKEN_TYPE_LESS_EQUAL:
+		return AST_TYPE_LESS_EQUAL;
+	case TOKEN_TYPE_GREATER_EQUAL:
+		return AST_TYPE_GREATER_EQUAL;
 	default:
 		break;
 	}
 
 	fatal("unexpected token type\n");
 	exit_program();
-	
+
 	return -1;
 }
 
@@ -48,6 +60,16 @@ static int get_token_precedence(int token_type)
 	case TOKEN_TYPE_STAR:
 	case TOKEN_TYPE_SLASH:
 		precedence = 20;
+		break;
+	case TOKEN_TYPE_EQUAL:
+	case TOKEN_TYPE_NOT_EQUAL:
+		precedence = 30;
+		break;
+	case TOKEN_TYPE_LESS_THAN:
+	case TOKEN_TYPE_GREATER_THAN:
+	case TOKEN_TYPE_LESS_EQUAL:
+	case TOKEN_TYPE_GREATER_EQUAL:
+		precedence = 40;
 		break;
 	default:
 		break;
@@ -73,7 +95,7 @@ static struct ast* ast_primary(void)
 		{
 			fatal("unknown variable\n");
 			exit_program();
-			
+
 			return NULL;
 		}
 
@@ -87,7 +109,7 @@ static struct ast* ast_primary(void)
 
 	fatal("syntax error\n");
 	exit_program();
-	
+
 	return NULL;
 }
 
