@@ -5,15 +5,15 @@
 - [ ] Enums
 - [ ] For
 - [ ] Functions
-- [ ] If
+- [x] If
 - [ ] Import / Export
 - [ ] Inheritance
 - [ ] Macros
 - [ ] Pointers
 - [ ] References
 - [ ] Structs
-- [ ] Sys package
+- [ ] System library
 - [ ] Templates
 - [ ] Unions
-- [ ] Variables
+- [x] Variables
 - [ ] While

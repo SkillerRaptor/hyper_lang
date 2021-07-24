@@ -72,6 +72,11 @@ elseif ("${COMPILER}" STREQUAL "MSVC")
 endif ()
 
 #-------------------------------------------------------------------------------------------
+# LLVM
+#-------------------------------------------------------------------------------------------
+add_subdirectory(thirdparty/llvm)
+
+#-------------------------------------------------------------------------------------------
 # HyperLang
 #-------------------------------------------------------------------------------------------
 set(SOURCES
@@ -101,7 +106,8 @@ set(HEADERS
 
 add_executable(HyperLang ${SOURCES} ${HEADERS})
 target_compile_options(HyperLang PRIVATE ${WARNING_FLAGS})
-target_include_directories(HyperLang PRIVATE ./include)
+target_include_directories(HyperLang PRIVATE ./thirdparty/llvm/include ./include)
+target_link_libraries(HyperLang PRIVATE LLVM)
 
 add_custom_command(
 		TARGET HyperLang

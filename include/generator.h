@@ -9,14 +9,22 @@
 
 #include "ast.h"
 
+#include <llvm-c/Types.h>
+
 void init_generator(const char* file_name);
 void free_generator(void);
 
-int generate_print_register(int value_register);
+void add_global_variable(const char* identifier);
 
 void generate_pre_code(void);
 void generate_post_code(void);
 
-int generate_ast(struct ast* ast, int reg);
+LLVMValueRef generate_ast(
+	struct ast* ast,
+	LLVMValueRef reg,
+	LLVMBasicBlockRef* labels,
+	int parent_type);
+
+void generate_code(void);
 
 #endif // HYPERLANG_GENERATOR_H_

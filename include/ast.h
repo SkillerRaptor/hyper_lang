@@ -13,7 +13,7 @@ enum
 	AST_TYPE_SUBTRACT,
 	AST_TYPE_MULTIPLY,
 	AST_TYPE_DIVIDE,
-	
+
 	AST_TYPE_EQUAL,
 	AST_TYPE_NOT_EQUAL,
 	AST_TYPE_LESS_THAN,
@@ -24,7 +24,11 @@ enum
 	AST_TYPE_INT_LITERAL,
 	AST_TYPE_IDENTIFIER,
 	AST_TYPE_L_VALUE,
-	AST_TYPE_ASSIGN
+	AST_TYPE_ASSIGN,
+
+	AST_TYPE_PRINT,
+	AST_TYPE_IF,
+	AST_TYPE_GLUE
 };
 
 struct ast
@@ -32,6 +36,7 @@ struct ast
 	int type;
 
 	struct ast* left;
+	struct ast* middle;
 	struct ast* right;
 
 	union
@@ -41,7 +46,7 @@ struct ast
 	} value;
 };
 
-struct ast* ast_make_node(int type, struct ast* left, struct ast* right, int int_value);
+struct ast* ast_make_node(int type, struct ast* left, struct ast* middle, struct ast* right, int int_value);
 struct ast* ast_make_leaf(int type, int int_value);
 struct ast* ast_make_unary(int type, struct ast* left, int int_value);
 

@@ -11,7 +11,7 @@
 
 #include <stdlib.h>
 
-struct ast* ast_make_node(int type, struct ast* left, struct ast* right, int int_value)
+struct ast* ast_make_node(int type, struct ast* left, struct ast* middle, struct ast* right, int int_value)
 {
 	struct ast* ast = malloc(sizeof(struct ast));
 	if (ast == NULL)
@@ -24,6 +24,7 @@ struct ast* ast_make_node(int type, struct ast* left, struct ast* right, int int
 
 	ast->type = type;
 	ast->left = left;
+	ast->middle = middle;
 	ast->right = right;
 	ast->value.int_value = int_value;
 
@@ -32,12 +33,12 @@ struct ast* ast_make_node(int type, struct ast* left, struct ast* right, int int
 
 struct ast* ast_make_leaf(int type, int int_value)
 {
-	return ast_make_node(type, NULL, NULL, int_value);
+	return ast_make_node(type, NULL, NULL, NULL, int_value);
 }
 
 struct ast* ast_make_unary(int type, struct ast* left, int int_value)
 {
-	return ast_make_node(type, left, NULL, int_value);
+	return ast_make_node(type, left, NULL, NULL, int_value);
 }
 
 const char* ast_type_to_string(int type)

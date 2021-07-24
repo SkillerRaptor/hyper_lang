@@ -128,7 +128,7 @@ struct ast* generate_binary_expression(int precedence)
 		next_token();
 
 		struct ast* right = generate_binary_expression(get_token_precedence(token_type));
-		left = ast_make_node(get_arithmetic_operation(token_type), left, right, 0);
+		left = ast_make_node(get_arithmetic_operation(token_type), left, NULL, right, 0);
 
 		token_type = token.type;
 		if (token_type == TOKEN_TYPE_SEMICOLON)

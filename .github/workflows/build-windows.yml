@@ -45,7 +45,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake --build build ${{ matrix.config.cmake_build_options }}
+          cmake --build build --target HyperLang ${{ matrix.config.cmake_build_options }}
 
       - name: Prepare upload
         run: |

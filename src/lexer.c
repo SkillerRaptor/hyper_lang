@@ -270,7 +270,7 @@ void next_token()
 
 		DEFINE_MULTIPLE_TOKENS('|');
 		DEFINE_MULTIPLE_TOKEN_CASE('=', TOKEN_TYPE_BITWISE_OR_EQUAL)
-		DEFINE_MULTIPLE_TOKEN_CASE('|', TOKEN_TYPE_LOGICAL_OR);
+		DEFINE_MULTIPLE_TOKEN_CASE('|', TOKEN_TYPE_LOGICAL_OR)
 		DEFINE_MULTIPLE_TOKENS_END(TOKEN_TYPE_BITWISE_OR);
 
 		DEFINE_MULTIPLE_TOKENS('^');
@@ -339,6 +339,7 @@ void match_token(int token_type)
 	{
 		fatal("unexpected token\n");
 		exit_program();
+		
 		return;
 	}
 
@@ -350,6 +351,25 @@ char* match_identifier(void)
 	char* identifier = duplicate_string(token.value.identifier);
 	match_token(TOKEN_TYPE_IDENTIFIER);
 	return identifier;
+}
+
+void match_left_brace(void)
+{
+	match_token(TOKEN_TYPE_LEFT_BRACE);
+}
+
+void match_right_brace(void)
+{
+	match_token(TOKEN_TYPE_RIGHT_BRACE);
+}
+void match_left_parenthesis(void)
+{
+	match_token(TOKEN_TYPE_LEFT_PARENTHESIS);
+}
+
+void match_right_parenthesis(void)
+{
+	match_token(TOKEN_TYPE_RIGHT_PARENTHESIS);
 }
 
 void match_semicolon(void)

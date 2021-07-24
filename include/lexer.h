@@ -17,7 +17,14 @@ void free_lexer(void);
 void next_token(void);
 
 void match_token(int token_type);
+
 char* match_identifier(void);
+
+void match_left_brace(void);
+void match_right_brace(void);
+void match_left_parenthesis(void);
+void match_right_parenthesis(void);
+
 void match_semicolon(void);
 
 #endif // HYPERLANG_LEXER_H_

@@ -31,8 +31,11 @@ int main(int argc, char** argv)
 	init_generator("out.ll");
 	
 	generate_pre_code();
-	generate_statements();
+	struct ast* tree = generate_compound_statement();
+	generate_ast(tree, NULL, NULL, 0);
 	generate_post_code();
+	
+	generate_code();
 	
 	free_generator();
 	free_lexer();
