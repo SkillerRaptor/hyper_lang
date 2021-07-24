@@ -107,7 +107,7 @@ set(HEADERS
 add_executable(HyperLang ${SOURCES} ${HEADERS})
 target_compile_options(HyperLang PRIVATE ${WARNING_FLAGS})
 target_include_directories(HyperLang PRIVATE ./thirdparty/llvm/include ./include)
-target_link_libraries(HyperLang PRIVATE LLVM)
+target_link_libraries(HyperLang PRIVATE LLVMCore)
 
 add_custom_command(
 		TARGET HyperLang
