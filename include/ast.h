@@ -9,32 +9,34 @@
 
 enum
 {
-	AST_TYPE_ADD,
-	AST_TYPE_SUBTRACT,
-	AST_TYPE_MULTIPLY,
-	AST_TYPE_DIVIDE,
+	AST_OPERATION_ADD,
+	AST_OPERATION_SUBTRACT,
+	AST_OPERATION_MULTIPLY,
+	AST_OPERATION_DIVIDE,
 
-	AST_TYPE_EQUAL,
-	AST_TYPE_NOT_EQUAL,
-	AST_TYPE_LESS_THAN,
-	AST_TYPE_GREATER_THAN,
-	AST_TYPE_LESS_EQUAL,
-	AST_TYPE_GREATER_EQUAL,
+	AST_OPERATION_EQUAL,
+	AST_OPERATION_NOT_EQUAL,
+	AST_OPERATION_LESS_THAN,
+	AST_OPERATION_GREATER_THAN,
+	AST_OPERATION_LESS_EQUAL,
+	AST_OPERATION_GREATER_EQUAL,
 
-	AST_TYPE_INT_LITERAL,
-	AST_TYPE_IDENTIFIER,
-	AST_TYPE_L_VALUE,
-	AST_TYPE_ASSIGN,
+	AST_OPERATION_INT_LITERAL,
+	AST_OPERATION_IDENTIFIER,
+	AST_OPERATION_L_VALUE,
+	AST_OPERATION_ASSIGN,
 
-	AST_TYPE_PRINT,
-	AST_TYPE_IF,
-	AST_TYPE_WHILE,
-	AST_TYPE_GLUE,
-	AST_TYPE_FUNCTION
+	AST_OPERATION_PRINT,
+	AST_OPERATION_IF,
+	AST_OPERATION_WHILE,
+	AST_OPERATION_GLUE,
+	AST_OPERATION_FUNCTION,
+	AST_OPERATION_WIDEN
 };
 
 struct ast
 {
+	int operation;
 	int type;
 
 	struct ast* left;
@@ -48,10 +50,10 @@ struct ast
 	} value;
 };
 
-struct ast* ast_make_node(int type, struct ast* left, struct ast* middle, struct ast* right, int int_value);
-struct ast* ast_make_leaf(int type, int int_value);
-struct ast* ast_make_unary(int type, struct ast* left, int int_value);
+struct ast* ast_make_node(int operation, int type, struct ast* left, struct ast* middle, struct ast* right, int int_value);
+struct ast* ast_make_leaf(int operation, int type, int int_value);
+struct ast* ast_make_unary(int operation, int type, struct ast* left, int int_value);
 
-const char* ast_type_to_string(int type);
+const char* ast_type_to_string(int operation);
 
 #endif // HYPERLANG_AST_H_

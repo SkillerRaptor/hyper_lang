@@ -133,6 +133,7 @@ static int get_keyword(const char* keyword)
 		DEFINE_KEYWORD("breakall", TOKEN_TYPE_BREAKALL);
 		break;
 	case 'c':
+		DEFINE_KEYWORD("char", TOKEN_TYPE_CHAR);
 		DEFINE_KEYWORD("continue", TOKEN_TYPE_CONTINUE);
 		break;
 	case 'd':

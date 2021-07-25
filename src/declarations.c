@@ -10,16 +10,18 @@
 #include "generator.h"
 #include "statements.h"
 #include "symbol_table.h"
+#include "types.h"
 
 #include <stdlib.h>
 
 void generate_variable_declaration(void)
 {
-	match_token(TOKEN_TYPE_INT);
+	int token_type = token.type;
+	next_token();
 
 	char* identifier_name = match_identifier();
-	add_global_variable(identifier_name);
-	add_symbol(identifier_name);
+	int identifier = add_symbol(identifier_name, token_to_primitive_type(token_type), STRUCTURAL_TYPE_VARIABLE);
+	add_global_variable(identifier);
 	free(identifier_name);
 
 	match_semicolon();
@@ -28,17 +30,17 @@ void generate_variable_declaration(void)
 struct ast* generate_function_declaration(void)
 {
 	match_token(TOKEN_TYPE_FUNCTION);
-	
+
 	char* identifier_name = match_identifier();
-	int name_identifier = add_symbol(identifier_name);
+	int name_identifier = add_symbol(identifier_name, PRIMITIVE_TYPE_VOID, STRUCTURAL_TYPE_FUNCTION);
 	free(identifier_name);
-	
+
 	match_left_parenthesis();
 	match_right_parenthesis();
-	
+
 	match_token(TOKEN_TYPE_RIGHT_ARROW);
 	match_token(TOKEN_TYPE_VOID);
-	
-	struct ast* tree =generate_compound_statement();
-	return ast_make_unary(AST_TYPE_FUNCTION, tree, name_identifier);
+
+	struct ast* tree = generate_compound_statement();
+	return ast_make_unary(AST_OPERATION_FUNCTION, PRIMITIVE_TYPE_VOID, tree, name_identifier);
 }

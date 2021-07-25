@@ -14,7 +14,7 @@
 void init_generator(const char* file_name);
 void free_generator(void);
 
-void add_global_variable(const char* identifier);
+void add_global_variable(int identifier);
 
 void generate_pre_code(void);
 

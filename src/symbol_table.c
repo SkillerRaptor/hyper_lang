@@ -40,7 +40,7 @@ static int new_symbol(void)
 	return position;
 }
 
-int add_symbol(const char* name)
+int add_symbol(const char* name, int primitive_type, int structural_type)
 {
 	int position = find_symbol(name);
 	if (position != -1)
@@ -50,7 +50,9 @@ int add_symbol(const char* name)
 	
 	position = new_symbol();
 	symbol_table.symbols[position].name = duplicate_string(name);
-
+	symbol_table.symbols[position].primitive_type = primitive_type;
+	symbol_table.symbols[position].structural_type = structural_type;
+	
 	return position;
 }
 

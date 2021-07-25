@@ -146,6 +146,8 @@ const char* token_type_to_string(int type)
 		return "TOKEN_TYPE_VOID";
 	case TOKEN_TYPE_BOOL:
 		return "TOKEN_TYPE_BOOL";
+	case TOKEN_TYPE_CHAR:
+		return "TOKEN_TYPE_CHAR";
 	case TOKEN_TYPE_FLOAT:
 		return "TOKEN_TYPE_FLOAT";
 	case TOKEN_TYPE_DOUBLE:

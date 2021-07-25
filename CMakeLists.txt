@@ -90,6 +90,7 @@ set(SOURCES
 		src/statements.c
 		src/symbol_table.c
 		src/token.c
+		src/types.c
 		src/utils.c)
 
 set(HEADERS
@@ -102,6 +103,7 @@ set(HEADERS
 		include/statements.h
 		include/symbol_table.h
 		include/token.h
+		include/types.h
 		include/utils.h)
 
 add_executable(HyperLang ${SOURCES} ${HEADERS})

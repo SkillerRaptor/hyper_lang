@@ -12,6 +12,8 @@
 ```hyper
 bool
 
+char
+
 float double
 
 int uint
