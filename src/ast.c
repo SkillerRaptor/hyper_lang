@@ -18,7 +18,7 @@ struct ast* ast_make_node(int type, struct ast* left, struct ast* middle, struct
 	{
 		fatal("out of memory\n");
 		exit_program();
-		
+
 		return NULL;
 	}
 
@@ -53,6 +53,18 @@ const char* ast_type_to_string(int type)
 		return "AST_TYPE_MULTIPLY";
 	case AST_TYPE_DIVIDE:
 		return "AST_TYPE_DIVIDE";
+	case AST_TYPE_EQUAL:
+		return "AST_TYPE_EQUAL";
+	case AST_TYPE_NOT_EQUAL:
+		return "AST_TYPE_NOT_EQUAL";
+	case AST_TYPE_LESS_THAN:
+		return "AST_TYPE_LESS_THAN";
+	case AST_TYPE_GREATER_THAN:
+		return "AST_TYPE_GREATER_THAN";
+	case AST_TYPE_LESS_EQUAL:
+		return "AST_TYPE_LESS_EQUAL";
+	case AST_TYPE_GREATER_EQUAL:
+		return "AST_TYPE_GREATER_EQUAL";
 	case AST_TYPE_INT_LITERAL:
 		return "AST_TYPE_INT_LITERAL";
 	case AST_TYPE_IDENTIFIER:
@@ -61,9 +73,17 @@ const char* ast_type_to_string(int type)
 		return "AST_TYPE_L_VALUE";
 	case AST_TYPE_ASSIGN:
 		return "AST_TYPE_ASSIGN";
+	case AST_TYPE_PRINT:
+		return "AST_TYPE_PRINT";
+	case AST_TYPE_IF:
+		return "AST_TYPE_IF";
+	case AST_TYPE_WHILE:
+		return "AST_TYPE_WHILE";
+	case AST_TYPE_GLUE:
+		return "AST_TYPE_GLUE";
 	default:
 		break;
 	}
-	
+
 	return "undefined ast type";
 }

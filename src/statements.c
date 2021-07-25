@@ -16,7 +16,7 @@
 
 #include <stdlib.h>
 
-struct ast* generate_assignment_statement(void)
+static struct ast* generate_assignment_statement(void)
 {
 	char* identifier_name = match_identifier();
 
@@ -43,13 +43,13 @@ struct ast* generate_assignment_statement(void)
 	return ast;
 }
 
-struct ast* generate_if_statement(void)
+static struct ast* generate_if_statement(void)
 {
 	match_token(TOKEN_TYPE_IF);
 	match_left_parenthesis();
 
-	struct ast* conditional_ast = generate_binary_expression(0);
-	if (conditional_ast->type < AST_TYPE_EQUAL || conditional_ast->type > AST_TYPE_GREATER_EQUAL)
+	struct ast* conditional_tree = generate_binary_expression(0);
+	if (conditional_tree->type < AST_TYPE_EQUAL || conditional_tree->type > AST_TYPE_GREATER_EQUAL)
 	{
 		fatal("bad comparison operator\n");
 		exit_program();
@@ -69,10 +69,10 @@ struct ast* generate_if_statement(void)
 		false_tree = generate_compound_statement();
 	}
 
-	return ast_make_node(AST_TYPE_IF, conditional_ast, true_tree, false_tree, 0);
+	return ast_make_node(AST_TYPE_IF, conditional_tree, true_tree, false_tree, 0);
 }
 
-struct ast* generate_print_statement(void)
+static struct ast* generate_print_statement(void)
 {
 	match_token(TOKEN_TYPE_PRINT);
 
@@ -82,6 +82,26 @@ struct ast* generate_print_statement(void)
 	match_semicolon();
 
 	return ast;
+}
+
+static struct ast* generate_while_statement(void)
+{
+	match_token(TOKEN_TYPE_WHILE);
+	match_left_parenthesis();
+	
+	struct ast* conditional_tree = generate_binary_expression(0);
+	if (conditional_tree->type < AST_TYPE_EQUAL || conditional_tree->type > AST_TYPE_GREATER_EQUAL)
+	{
+		fatal("bad comparison operator\n");
+		exit_program();
+		
+		return NULL;
+	}
+	
+	match_right_parenthesis();
+	
+	struct ast* body_tree = generate_compound_statement();
+	return ast_make_node(AST_TYPE_WHILE, conditional_tree, NULL, body_tree, 0);
 }
 
 struct ast* generate_compound_statement(void)
@@ -107,6 +127,9 @@ struct ast* generate_compound_statement(void)
 			break;
 		case TOKEN_TYPE_IF:
 			tree = generate_if_statement();
+			break;
+		case TOKEN_TYPE_WHILE:
+			tree = generate_while_statement();
 			break;
 		case TOKEN_TYPE_RIGHT_BRACE:
 			match_right_brace();

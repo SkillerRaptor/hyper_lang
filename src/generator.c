@@ -150,7 +150,7 @@ static void generate_jump(LLVMBasicBlockRef label)
 	LLVMBuildBr(builder, label);
 }
 
-static LLVMValueRef generate_if(struct ast* ast)
+static void generate_if(struct ast* ast)
 {
 	LLVMBasicBlockRef true_label = create_label();
 	LLVMBasicBlockRef false_label = ast->right ? create_label() : NULL;
@@ -175,8 +175,28 @@ static LLVMValueRef generate_if(struct ast* ast)
 	}
 
 	generate_label(end_label);
+}
 
-	return NULL;
+static void generate_while(struct ast* ast)
+{
+	LLVMBasicBlockRef start_label = create_label();
+	LLVMBasicBlockRef body_label = create_label();
+	LLVMBasicBlockRef end_label = create_label();
+	LLVMBasicBlockRef labels[] = {
+		body_label,
+		end_label
+	};
+
+	generate_jump(start_label);
+	
+	generate_label(start_label);
+	generate_ast(ast->left, NULL, labels, ast->type);
+	
+	generate_label(body_label);
+	generate_ast(ast->right, NULL, NULL, ast->type);
+	generate_jump(start_label);
+	
+	generate_label(end_label);
 }
 
 static LLVMValueRef generate_compare_and_set(int type, LLVMValueRef first_register, LLVMValueRef second_register)
@@ -319,7 +339,11 @@ LLVMValueRef generate_ast(
 	switch (ast->type)
 	{
 	case AST_TYPE_IF:
-		return generate_if(ast);
+		generate_if(ast);
+		return NULL;
+	case AST_TYPE_WHILE:
+		generate_while(ast);
+		return NULL;
 	case AST_TYPE_GLUE:
 		generate_ast(ast->left, NULL, NULL, ast->type);
 		generate_ast(ast->right, NULL, NULL, ast->type);
@@ -356,7 +380,7 @@ LLVMValueRef generate_ast(
 	case AST_TYPE_GREATER_THAN:
 	case AST_TYPE_LESS_EQUAL:
 	case AST_TYPE_GREATER_EQUAL:
-		if (parent_type == AST_TYPE_IF)
+		if (parent_type == AST_TYPE_IF || parent_type == AST_TYPE_WHILE)
 		{
 			generate_compare_and_jump(ast->type, left_register, right_register, labels[0], labels[1]);
 			return NULL;
