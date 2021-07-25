@@ -8,6 +8,7 @@
 ## Hyper Types
 
 ### Primitive Types
+
 ```hyper
 bool
 
@@ -21,6 +22,7 @@ nullptr
 ```
 
 ### Builtin Types
+
 ```hyper
  int8  int16  int32  int64
 uint8 uint16 uint32 uint64
@@ -28,10 +30,10 @@ uint8 uint16 uint32 uint64
 string
 ```
 
-
 ## Hyper Keywords
 
 ### Control
+
 ```hyper
 break breakall continue
 
@@ -43,6 +45,7 @@ return
 ```
 
 ### Modules
+
 ```hyper
 package
 
@@ -50,16 +53,17 @@ import export
 ```
 
 ### Storage Modifiers
+
 ```hyper
 mutable static
 
 virtual override
 ```
 
-
 ## Hyper Storage Types
 
 ### Enums
+
 ```hyper
 enum my_enum
 {
@@ -69,6 +73,7 @@ enum my_enum
 ```
 
 ### Structs
+
 ```hyper
 struct my_struct
 {
@@ -77,6 +82,7 @@ struct my_struct
 ```
 
 ### Unions
+
 ```hyper
 union my_union
 {
@@ -88,15 +94,15 @@ union my_union
 }
 ```
 
-
 ## Hyper Standard Packages
-| Packages |	 Description	 |
+
+| Packages |     Description     |
 |:--------:|:-------------------:|
-| array	| Array			   |
-| io	   | Input & Output	  |
-| math	 | Math related		|
+| array    | Array               |
+| io       | Input & Output      |
+| math     | Math related        |
 | memory   | Memory manipulation |
-| net	  | Networking		  |
-| os	   | Platform Specific   |
-| string   | String			  |
-| vector   | Vector			  |
+| net      | Networking          |
+| os       | Platform Specific   |
+| string   | String              |
+| vector   | Vector              |
