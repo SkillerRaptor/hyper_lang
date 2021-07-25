@@ -81,6 +81,8 @@ const char* ast_type_to_string(int type)
 		return "AST_TYPE_WHILE";
 	case AST_TYPE_GLUE:
 		return "AST_TYPE_GLUE";
+	case AST_TYPE_FUNCTION:
+		return "AST_TYPE_FUNCTION";
 	default:
 		break;
 	}

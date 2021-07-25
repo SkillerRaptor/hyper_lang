@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "declarations.h"
 #include "generator.h"
 #include "lexer.h"
 #include "logger.h"
@@ -31,9 +32,15 @@ int main(int argc, char** argv)
 	init_generator("out.ll");
 	
 	generate_pre_code();
-	struct ast* tree = generate_compound_statement();
-	generate_ast(tree, NULL, NULL, 0);
-	generate_post_code();
+	while (1)
+	{
+		struct ast* tree = generate_function_declaration();
+		generate_ast(tree, NULL, NULL, 0);
+		if (token.type == TOKEN_TYPE_EOF)
+		{
+			break;
+		}
+	}
 	
 	generate_code();
 	

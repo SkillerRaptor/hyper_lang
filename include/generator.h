@@ -17,7 +17,6 @@ void free_generator(void);
 void add_global_variable(const char* identifier);
 
 void generate_pre_code(void);
-void generate_post_code(void);
 
 LLVMValueRef generate_ast(
 	struct ast* ast,

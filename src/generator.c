@@ -29,7 +29,7 @@ static LLVMTypeRef int_32_type_pointer;
 static LLVMValueRef printf_function;
 static LLVMValueRef printf_format;
 
-static LLVMValueRef main_function;
+static LLVMValueRef current_function;
 
 void init_generator(const char* file_name)
 {
@@ -136,7 +136,7 @@ static LLVMValueRef generate_division(LLVMValueRef first_register, LLVMValueRef 
 
 static LLVMBasicBlockRef create_label()
 {
-	LLVMBasicBlockRef label = LLVMAppendBasicBlockInContext(context, main_function, "");
+	LLVMBasicBlockRef label = LLVMAppendBasicBlockInContext(context, current_function, "");
 	return label;
 }
 
@@ -299,6 +299,25 @@ static LLVMValueRef generate_print_register(LLVMValueRef value_register)
 	return reg;
 }
 
+static void generate_pre_function(const char* name)
+{
+	LLVMTypeRef function_type = LLVMFunctionType(int_32_type, NULL, 0, 0);
+	current_function = LLVMAddFunction(module, name, function_type);
+	
+	LLVMBasicBlockRef entry = LLVMAppendBasicBlockInContext(context, current_function, "entry");
+	LLVMPositionBuilderAtEnd(builder, entry);
+	
+	if (!strcmp(name, "main"))
+	{
+		printf_format = LLVMBuildGlobalString(builder, "%i\n", ".str");
+	}
+}
+
+static void generate_post_function()
+{
+	LLVMBuildRet(builder, LLVMConstInt(int_32_type, 0, 0));
+}
+
 void add_global_variable(const char* identifier)
 {
 	LLVMValueRef global = LLVMAddGlobal(module, int_32_type, identifier);
@@ -310,19 +329,6 @@ void generate_pre_code(void)
 	LLVMTypeRef printf_function_args_type[] = { int_8_type_pointer };
 	LLVMTypeRef printf_function_type = LLVMFunctionType(int_32_type, printf_function_args_type, 0, 1);
 	printf_function = LLVMAddFunction(module, "printf", printf_function_type);
-
-	LLVMTypeRef main_function_type = LLVMFunctionType(int_32_type, NULL, 0, 0);
-	main_function = LLVMAddFunction(module, "main", main_function_type);
-
-	LLVMBasicBlockRef entry = LLVMAppendBasicBlockInContext(context, main_function, "entry");
-	LLVMPositionBuilderAtEnd(builder, entry);
-
-	printf_format = LLVMBuildGlobalString(builder, "%i\n", ".str");
-}
-
-void generate_post_code(void)
-{
-	LLVMBuildRet(builder, LLVMConstInt(int_32_type, 0, 0));
 }
 
 void generate_code(void)
@@ -347,6 +353,11 @@ LLVMValueRef generate_ast(
 	case AST_TYPE_GLUE:
 		generate_ast(ast->left, NULL, NULL, ast->type);
 		generate_ast(ast->right, NULL, NULL, ast->type);
+		return NULL;
+	case AST_TYPE_FUNCTION:
+		generate_pre_function(get_symbol(ast->value.identifier)->name);
+		generate_ast(ast->left, NULL, NULL, ast->type);
+		generate_post_function();
 		return NULL;
 	default:
 		break;
