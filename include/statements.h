@@ -7,6 +7,7 @@
 #ifndef HYPERLANG_STATEMENTS_H_
 #define HYPERLANG_STATEMENTS_H_
 
+struct ast* generate_single_statement(void);
 struct ast* generate_compound_statement(void);
 
 #endif // HYPERLANG_STATEMENTS_H_
