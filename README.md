@@ -4,6 +4,7 @@
 
 ## Prerequisites for Linux
 - build-essential
+- ccache
 - cmake
 - llvm-10-dev
 - lld-10-dev
@@ -13,12 +14,12 @@ Across the different distros of Linux, there are different packages you'll need 
  
 - Debian-based distributions:
 ```shell
-$ sudo apt install build-essential cmake llvm-10-dev lld-10-dev
+$ sudo apt install build-essential ccache cmake llvm-10-dev lld-10-dev
 ```
 
 - Arch distributions:
 ```shell
-$ sudo pacman -Sy base-devel cmake llvm lld
+$ sudo pacman -Sy base-devel ccache cmake llvm lld
 ```
 
 ## Contributing

@@ -62,7 +62,10 @@ namespace HyperCompiler
 		template <typename... Args>
 		static void debug(std::string_view format, Args&&... args) noexcept
 		{
-#ifndef NDEBUG
+#ifdef NDEBUG
+			UNUSED_VARIABLE(format);
+			UNUSED_VARIADIC_VARIABLE(args);
+#else
 			Logger::log(Level::Debug, format, std::forward<Args>(args)...);
 #endif
 		}

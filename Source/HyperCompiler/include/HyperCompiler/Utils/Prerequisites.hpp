@@ -16,3 +16,6 @@
 
 #define STRINGIFY_HELPER(x) #x
 #define STRINGIFY(x) STRINGIFY_HELPER(x)
+
+#define UNUSED_VARIABLE(x) ((void) x)
+#define UNUSED_VARIADIC_VARIABLE(x) ((void) x, ...)
