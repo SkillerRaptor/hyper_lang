@@ -65,7 +65,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake --build build --target HyperLang --parallel $(nproc)
+          cmake --build build --target all --parallel $(nproc)
 
       - name: Prepare upload
         run: |
