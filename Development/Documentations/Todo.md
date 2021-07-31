@@ -1,0 +1,19 @@
+# Todo-List
+- [ ] Alias
+- [ ] Casting
+- [ ] Control Words (break, breakall, continue)
+- [ ] Enums
+- [x] For
+- [x] Functions
+- [x] If
+- [ ] Import / Export
+- [ ] Inheritance
+- [ ] Macros
+- [ ] Pointers
+- [ ] References
+- [ ] Structs
+- [ ] System library
+- [ ] Templates
+- [ ] Unions
+- [x] Variables
+- [x] While
