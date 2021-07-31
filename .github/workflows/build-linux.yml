@@ -54,7 +54,7 @@ jobs:
             ccache \
             clang-10 \
             cmake \
-            llvm-10-dev \
+            llvm-10 \
             lld-10 \
             gcc-10 \
             g++-10
