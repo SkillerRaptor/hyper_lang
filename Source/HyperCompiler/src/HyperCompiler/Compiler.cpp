@@ -30,7 +30,7 @@ namespace HyperCompiler
 
 		if (s_build_options.source_files.size() < s_build_options.jobs)
 		{
-			s_build_options.jobs -= s_build_options.jobs - s_build_options.source_files.size();
+			s_build_options.jobs -= s_build_options.jobs - static_cast<unsigned int>(s_build_options.source_files.size());
 		}
 
 		std::vector<std::thread> job_pool;
@@ -60,6 +60,7 @@ namespace HyperCompiler
 		}
 
 		// TODO: Implementing linker
+		Logger::info("Linking executable ./a.out\n");
 
 		std::chrono::time_point<std::chrono::system_clock> end_compiling = std::chrono::system_clock::now();
 		std::chrono::duration<float> seconds = end_compiling - start_compiling;
@@ -110,8 +111,9 @@ namespace HyperCompiler
 		// TODO: Implementing AST & parsing
 	}
 	
-	void Compiler::compile_file(const std::string&)
+	void Compiler::compile_file(const std::string& file)
 	{
 		// TODO: Implementing generation of object file
+		Logger::info("Building object {}.o\n", file);
 	}
 } // namespace HyperCompiler
