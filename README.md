@@ -6,15 +6,15 @@
 - build-essential
 - ccache
 - cmake
-- llvm-10-dev
-- lld-10-dev
+- llvm-10
+- lld-10
 
 ### Installing Linux Developer Tools
 Across the different distros of Linux, there are different packages you'll need to install:
  
 - Debian-based distributions:
 ```shell
-$ sudo apt install build-essential ccache cmake llvm-10-dev lld-10-dev
+$ sudo apt install build-essential ccache cmake llvm-10 lld-10
 ```
 
 - Arch distributions:

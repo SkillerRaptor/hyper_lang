@@ -49,7 +49,6 @@ jobs:
       - name: Update environment
         run: |
           sudo apt update -qq
-          sudo apt upgrade -qq
           sudo apt install -y \
             ccache \
             clang-10 \
