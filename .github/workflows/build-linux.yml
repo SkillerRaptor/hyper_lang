@@ -48,8 +48,8 @@ jobs:
 
       - name: Update environment
         run: |
-          sudo apt update -qq
-          sudo apt install -y \
+          sudo apt-get update -qq
+          sudo apt-get install -y \
             ccache \
             clang-10 \
             cmake \

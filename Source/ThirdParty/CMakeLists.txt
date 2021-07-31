@@ -23,10 +23,6 @@ add_subdirectory(fmt)
 #-------------------------------------------------------------------------------------------
 find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-message(STATUS "Found LLVM library directories ${LLVM_LIBRARY_DIRS}")
-
-file(GLOB LLVM_LIBS_FROM_DIR "${LLVM_LIBRARY_DIRS}/**.a")
-message(STATUS "Found LLVM libraries ${LLVM_LIBS_FROM_DIR}")
 
 find_library(LLD_ELF NAMES lldELF.a liblldELF.a PATHS ${LLVM_LIBRARY_DIRS})
 llvm_map_components_to_libnames(LLVM_LIBS Core Linker Target)
