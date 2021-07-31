@@ -48,8 +48,8 @@ jobs:
 
       - name: Update environment
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y \
+          sudo apt update -qq
+          sudo apt install -y \
             ccache \
             clang-10 \
             cmake \
@@ -57,6 +57,8 @@ jobs:
             lld-10 \
             gcc-10 \
             g++-10
+          which llvm-10
+          which lld-10
 
       - name: Configure CMake
         run: |
