@@ -10,7 +10,6 @@
 #include "HyperCompiler/Utils/Utilities.hpp"
 
 #include <cctype>
-#include <cstring>
 #include <filesystem>
 
 namespace HyperCompiler
@@ -24,17 +23,13 @@ namespace HyperCompiler
 		m_current_position = 0;
 	}
 
-	Token Lexer::next_token()
+	void Lexer::next_token()
 	{
 		skip_whitespace();
 
 		char character = next_character();
 		switch (character)
 		{
-		case '\0':
-			m_current_token.value = "";
-			m_current_token.type = Token::Type::Eof;
-			break;
 		case ',':
 			m_current_token.value = ",";
 			m_current_token.type = Token::Type::Comma;
@@ -323,6 +318,13 @@ namespace HyperCompiler
 			break;
 
 		default:
+			if (m_current_position >= m_source.size())
+			{
+				m_current_token.value = "";
+				m_current_token.type = Token::Type::Eof;
+				break;
+			}
+
 			if (std::isdigit(character))
 			{
 				m_current_token.value = std::to_string(scan_int(character));
@@ -346,10 +348,8 @@ namespace HyperCompiler
 
 			Utils::fatal_exit("unexpected character '{}' in {} at {}:{}\n", character, m_file_name, m_line, m_line_position);
 		}
-
-		return m_current_token;
 	}
-	
+
 	Token Lexer::current_token() const
 	{
 		return m_current_token;
@@ -357,9 +357,13 @@ namespace HyperCompiler
 
 	char Lexer::next_character()
 	{
-		char character = m_source[m_current_position];
+		if (m_current_position >= m_source.size())
+		{
+			return '\0';
+		}
+		
+		char character = m_source[m_current_position++];
 
-		++m_current_position;
 		++m_line_position;
 
 		if (character == '\n')
@@ -376,7 +380,7 @@ namespace HyperCompiler
 		char character;
 		do
 		{
-			character = Lexer::next_character();
+			character = next_character();
 		} while (character == ' ' || character == '\t' || character == '\n' || character == '\r' || character == '\f');
 
 		--m_current_position;
@@ -444,12 +448,12 @@ namespace HyperCompiler
 			{
 				return Token::Type::Bool;
 			}
-			
+
 			if (keyword == "break")
 			{
 				return Token::Type::Break;
 			}
-			
+
 			if (keyword == "breakall")
 			{
 				return Token::Type::Breakall;
@@ -460,7 +464,7 @@ namespace HyperCompiler
 			{
 				return Token::Type::Char;
 			}
-			
+
 			if (keyword == "continue")
 			{
 				return Token::Type::Continue;
@@ -471,7 +475,7 @@ namespace HyperCompiler
 			{
 				return Token::Type::Do;
 			}
-			
+
 			if (keyword == "double")
 			{
 				return Token::Type::Double;
@@ -482,12 +486,12 @@ namespace HyperCompiler
 			{
 				return Token::Type::Else;
 			}
-			
+
 			if (keyword == "enum")
 			{
 				return Token::Type::Enum;
 			}
-			
+
 			if (keyword == "export")
 			{
 				return Token::Type::Export;
@@ -498,12 +502,12 @@ namespace HyperCompiler
 			{
 				return Token::Type::Float;
 			}
-			
+
 			if (keyword == "for")
 			{
 				return Token::Type::For;
 			}
-			
+
 			if (keyword == "function")
 			{
 				return Token::Type::Function;
@@ -514,32 +518,32 @@ namespace HyperCompiler
 			{
 				return Token::Type::If;
 			}
-			
+
 			if (keyword == "import")
 			{
 				return Token::Type::Import;
 			}
-			
+
 			if (keyword == "int")
 			{
 				return Token::Type::Int;
 			}
-			
+
 			if (keyword == "int8")
 			{
 				return Token::Type::Int8;
 			}
-			
+
 			if (keyword == "int16")
 			{
 				return Token::Type::Int16;
 			}
-			
+
 			if (keyword == "int32")
 			{
 				return Token::Type::Int32;
 			}
-			
+
 			if (keyword == "int64")
 			{
 				return Token::Type::Int64;
@@ -556,7 +560,7 @@ namespace HyperCompiler
 			{
 				return Token::Type::Of;
 			}
-			
+
 			if (keyword == "override")
 			{
 				return Token::Type::Override;
@@ -567,7 +571,7 @@ namespace HyperCompiler
 			{
 				return Token::Type::Package;
 			}
-			
+
 			if (keyword == "print")
 			{
 				return Token::Type::Print;
@@ -584,7 +588,7 @@ namespace HyperCompiler
 			{
 				return Token::Type::String;
 			}
-			
+
 			if (keyword == "struct")
 			{
 				return Token::Type::Struct;
@@ -595,27 +599,27 @@ namespace HyperCompiler
 			{
 				return Token::Type::Uint;
 			}
-			
+
 			if (keyword == "uint8")
 			{
 				return Token::Type::Uint8;
 			}
-			
+
 			if (keyword == "uint16")
 			{
 				return Token::Type::Uint16;
 			}
-			
+
 			if (keyword == "uint32")
 			{
 				return Token::Type::Uint32;
 			}
-			
+
 			if (keyword == "uint64")
 			{
 				return Token::Type::Uint64;
 			}
-			
+
 			if (keyword == "union")
 			{
 				return Token::Type::Union;
@@ -626,7 +630,7 @@ namespace HyperCompiler
 			{
 				return Token::Type::Virtual;
 			}
-			
+
 			if (keyword == "void")
 			{
 				return Token::Type::Void;

@@ -18,7 +18,7 @@ namespace HyperCompiler
 	public:
 		void initialize(const std::string& file_name, const std::string& source);
 
-		Token next_token();
+		void next_token();
 		Token current_token() const;
 
 	private:

@@ -97,6 +97,7 @@ namespace HyperCompiler
 		file_stream.close();
 
 		lexer.initialize(file, source);
+		lexer.next_token();
 	}
 
 	void Compiler::parse_file(Parser& parser, Lexer& lexer, const std::string&)

@@ -15,6 +15,8 @@ using namespace HyperCompiler;
 
 int main(int, char**)
 {
+	setbuf(stdout, nullptr);
+	
 	unsigned int jobs = 1;
 
 	ArchTarget arch_target;

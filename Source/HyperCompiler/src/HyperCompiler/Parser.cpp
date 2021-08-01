@@ -19,44 +19,56 @@ namespace HyperCompiler
 		return ast_node;
 	}
 
-	Expression* Parser::parse_binary_expression()
+	Expression* Parser::parse_binary_expression(unsigned int precedence)
 	{
 		Expression* left = parse_primary_expression();
 
-		const Token token = m_lexer->next_token();
-		if (token.type == Token::Type::Eof)
+		Token::Type token_type = m_lexer->current_token().type;
+		if (token_type == Token::Type::Eof)
 		{
 			return left;
 		}
 
-		const BinaryExpression::Operation operation = [&token]()
+		while (get_operator_precedence(token_type) > precedence)
 		{
-			switch (token.type)
-			{
-			case Token::Type::Plus:
-				return BinaryExpression::Operation::Addition;
-			case Token::Type::Minus:
-				return BinaryExpression::Operation::Subtraction;
-			case Token::Type::Star:
-				return BinaryExpression::Operation::Multiplication;
-			case Token::Type::Slash:
-				return BinaryExpression::Operation::Division;
-			default:
-				return BinaryExpression::Operation::Addition;
-			}
-		}();
+			m_lexer->next_token();
+			
+			Expression* right = parse_binary_expression(get_operator_precedence(token_type));
 
-		Expression* right = parse_binary_expression();
-		
-		BinaryExpression* binary_expression = new BinaryExpression(operation, left, right);
-		return reinterpret_cast<Expression*>(binary_expression);
+			const BinaryExpression::Operation operation = [&token_type]()
+			{
+				switch (token_type)
+				{
+				case Token::Type::Plus:
+					return BinaryExpression::Operation::Addition;
+				case Token::Type::Minus:
+					return BinaryExpression::Operation::Subtraction;
+				case Token::Type::Star:
+					return BinaryExpression::Operation::Multiplication;
+				case Token::Type::Slash:
+					return BinaryExpression::Operation::Division;
+				default:
+					return BinaryExpression::Operation::Addition;
+				}
+			}();
+
+			left = new BinaryExpression(operation, left, right);
+			
+			token_type = m_lexer->current_token().type;
+			if (token_type == Token::Type::Eof)
+			{
+				return left;
+			}
+		}
+
+		return left;
 	}
 
 	Expression* Parser::parse_primary_expression()
 	{
 		Expression* expression = nullptr;
 
-		const Token token = m_lexer->next_token();
+		const Token token = m_lexer->current_token();
 		switch (token.type)
 		{
 		case Token::Type::IntLiteral:
@@ -65,7 +77,7 @@ namespace HyperCompiler
 		default:
 			break;
 		}
-
+		
 		return expression;
 	}
 
@@ -76,8 +88,41 @@ namespace HyperCompiler
 		{
 			return nullptr;
 		}
+
+		m_lexer->next_token();
 		
 		NumericLiteral* numeric_literal = new NumericLiteral(static_cast<int64_t>(std::stoll(current_token.value)));
 		return reinterpret_cast<Expression*>(numeric_literal);
+	}
+
+	unsigned int Parser::get_operator_precedence(Token::Type token_type)
+	{
+		unsigned int precedence = 0;
+		
+		switch (token_type)
+		{
+		case Token::Type::Plus:
+		case Token::Type::Minus:
+			precedence = 10;
+			break;
+		case Token::Type::Star:
+		case Token::Type::Slash:
+			precedence = 20;
+			break;
+		case Token::Type::Equal:
+		case Token::Type::NotEqual:
+			precedence = 30;
+			break;
+		case Token::Type::LessThan:
+		case Token::Type::GreaterThan:
+		case Token::Type::LessEqual:
+		case Token::Type::GreaterEqual:
+			precedence = 40;
+			break;
+		default:
+			break;
+		}
+		
+		return precedence;
 	}
 } // namespace HyperCompiler

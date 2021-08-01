@@ -23,10 +23,12 @@ namespace HyperCompiler
 		AstNode* parse();
 		
 	private:
-		Expression* parse_binary_expression();
+		Expression* parse_binary_expression(unsigned int precedence = 0);
 		Expression* parse_primary_expression();
 		
 		Expression* parse_numeric_literal();
+		
+		static unsigned int get_operator_precedence(Token::Type token_type);
 
 	private:
 		Lexer* m_lexer{};
