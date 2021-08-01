@@ -17,7 +17,14 @@ set(SOURCES
         src/HyperCompiler/Compiler.cpp
         src/HyperCompiler/Lexer.cpp
         src/HyperCompiler/Logger.cpp
+        src/HyperCompiler/Parser.cpp
         src/HyperCompiler/Token.cpp
+        src/HyperCompiler/Ast/AstNode.cpp
+        src/HyperCompiler/Ast/Declarations.cpp
+        src/HyperCompiler/Ast/Expressions.cpp
+        src/HyperCompiler/Ast/Literals.cpp
+        src/HyperCompiler/Ast/Statements.cpp
+        src/HyperCompiler/Ast/Value.cpp
         src/HyperCompiler/Utils/Utilities.cpp)
 
 set(HEADERS
@@ -25,7 +32,14 @@ set(HEADERS
         include/HyperCompiler/Compiler.hpp
         include/HyperCompiler/Lexer.hpp
         include/HyperCompiler/Logger.hpp
+        include/HyperCompiler/Parser.hpp
         include/HyperCompiler/Token.hpp
+        include/HyperCompiler/Ast/AstNode.hpp
+        include/HyperCompiler/Ast/Declarations.hpp
+        include/HyperCompiler/Ast/Expressions.hpp
+        include/HyperCompiler/Ast/Statements.hpp
+        include/HyperCompiler/Ast/Literals.hpp
+        include/HyperCompiler/Ast/Value.hpp
         include/HyperCompiler/Utils/Assertion.hpp
         include/HyperCompiler/Utils/PlatformDetection.hpp
         include/HyperCompiler/Utils/Prerequisites.hpp

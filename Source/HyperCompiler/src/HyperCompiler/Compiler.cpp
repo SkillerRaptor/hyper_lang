@@ -6,7 +6,6 @@
 
 #include "HyperCompiler/Compiler.hpp"
 
-#include "HyperCompiler/Lexer.hpp"
 #include "HyperCompiler/Utils/Utilities.hpp"
 
 #include <chrono>
@@ -65,21 +64,22 @@ namespace HyperCompiler
 		std::chrono::time_point<std::chrono::system_clock> end_compiling = std::chrono::system_clock::now();
 		std::chrono::duration<float> seconds = end_compiling - start_compiling;
 
-		Logger::info("Compiled successfully in {}s", seconds.count());
+		Logger::info("Compiled successfully in {}s\n", seconds.count());
 	}
 
 	void Compiler::compiler_job(const std::vector<std::string>& files)
 	{
 		Lexer lexer{};
-		
+		Parser parser{};
+
 		for (const std::string& file : files)
 		{
 			Compiler::lex_file(lexer, file);
-			Compiler::parse_file(lexer, file);
+			Compiler::parse_file(parser, lexer, file);
 			Compiler::compile_file(file);
 		}
 	}
-	
+
 	void Compiler::lex_file(Lexer& lexer, const std::string& file)
 	{
 		std::ifstream file_stream(file);
@@ -93,24 +93,24 @@ namespace HyperCompiler
 		source.assign(
 			std::istreambuf_iterator<char>(file_stream),
 			std::istreambuf_iterator<char>());
-		
+
 		file_stream.close();
 
 		lexer.initialize(file, source);
+	}
 
-		Token token{};
-		do
-		{
-			token = lexer.next_token();
-			Logger::debug("Token: {}\n", token);
-		} while (token.type != Token::Type::Eof);
-	}
-	
-	void Compiler::parse_file(Lexer&, const std::string&)
+	void Compiler::parse_file(Parser& parser, Lexer& lexer, const std::string&)
 	{
-		// TODO: Implementing AST & parsing
+		parser.initialize(&lexer);
+
+		AstNode* ast_node = parser.parse();
+		ast_node->dump(0);
+		
+		Value value = ast_node->execute();
+		Logger::info("Value: {}\n", value);
+		delete ast_node;
 	}
-	
+
 	void Compiler::compile_file(const std::string& file)
 	{
 		// TODO: Implementing generation of object file

@@ -6,6 +6,8 @@
 
 #include "HyperCompiler/Utils/Utilities.hpp"
 
+#include "HyperCompiler/Logger.hpp"
+
 #include <cstdlib>
 
 namespace HyperCompiler::Utils

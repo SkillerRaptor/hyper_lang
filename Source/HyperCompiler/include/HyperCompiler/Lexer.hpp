@@ -19,6 +19,7 @@ namespace HyperCompiler
 		void initialize(const std::string& file_name, const std::string& source);
 
 		Token next_token();
+		Token current_token() const;
 
 	private:
 		char next_character();
@@ -31,10 +32,11 @@ namespace HyperCompiler
 		static Token::Type get_keyword(const std::string& keyword);
 
 	private:
-		std::string s_file_name;
-		std::string s_source;
-		size_t s_line{ 1 };
-		size_t s_line_position{ 0 };
-		size_t s_current_position{ 0 };
+		std::string m_file_name;
+		std::string m_source;
+		size_t m_line{ 1 };
+		size_t m_line_position{ 0 };
+		size_t m_current_position{ 0 };
+		Token m_current_token{};
 	};
 } // namespace HyperCompiler

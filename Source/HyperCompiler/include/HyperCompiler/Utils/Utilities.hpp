@@ -13,7 +13,7 @@
 namespace HyperCompiler::Utils
 {
 	int64_t get_character_position(const std::string& source, char character);
-
+	
 	template <typename... Args>
 	void fatal_exit(const std::string& format, Args&&... args)
 	{

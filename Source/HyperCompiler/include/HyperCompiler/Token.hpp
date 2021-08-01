@@ -126,5 +126,4 @@ namespace HyperCompiler
 	};
 	
 	std::ostream& operator<<(std::ostream& ostream, const Token::Type& token_type);
-	std::ostream& operator<<(std::ostream& ostream, const Token& token);
 } // namespace HyperCompiler

@@ -270,14 +270,4 @@ namespace HyperCompiler
 
 		return ostream;
 	}
-	
-	std::ostream& operator<<(std::ostream& ostream, const Token& token)
-	{
-		ostream << "[type: ";
-		ostream << token.type;
-		ostream << ", value: \"";
-		ostream << token.value;
-		ostream << "\"]";
-		return ostream;
-	}
 } // namespace HyperCompiler

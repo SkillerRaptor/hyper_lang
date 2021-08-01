@@ -10,7 +10,7 @@
 
 namespace HyperCompiler
 {
-	void Logger::internal_log(Logger::Level level, std::string_view string) noexcept
+	void Logger::internal_log(Logger::Level level, unsigned int indent, std::string_view string) noexcept
 	{
 		const fmt::color level_color = [&level]()
 		{
@@ -27,7 +27,7 @@ namespace HyperCompiler
 			case Logger::Level::Debug:
 				return fmt::color::aqua;
 			default:
-				return fmt::color::light_green;
+				return fmt::color::white;
 			}
 		}();
 
@@ -49,11 +49,13 @@ namespace HyperCompiler
 				return "undefined";
 			}
 		}();
-
+		
 		fmt::print(
-			"{}: {}: {}",
+			"{}: {}: {:{}}{}",
 			fmt::format(fmt::emphasis::bold, "hyper-compiler"),
 			fmt::format(fmt::fg(level_color), level_name),
+			"",
+			indent * 2,
 			string.data());
 	}
 } // namespace HyperCompiler
