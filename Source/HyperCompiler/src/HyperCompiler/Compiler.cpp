@@ -7,6 +7,7 @@
 #include "HyperCompiler/Compiler.hpp"
 
 #include "HyperCompiler/Lexer.hpp"
+#include "HyperCompiler/Linker.hpp"
 #include "HyperCompiler/LLVMGenerator.hpp"
 #include "HyperCompiler/Parser.hpp"
 #include "HyperCompiler/Utils/Utilities.hpp"
@@ -61,7 +62,13 @@ namespace HyperCompiler
 			job.join();
 		}
 
-		// TODO: Implementing linker
+		std::vector<std::string> object_files;
+		for (const std::string& source_file : s_build_options.source_files)
+		{
+			object_files.push_back(source_file + ".o");
+		}
+		
+		Linker::link(s_build_options.output_file, object_files);
 		Logger::info("Linking executable {}\n", s_build_options.output_file);
 
 		std::chrono::time_point<std::chrono::system_clock> end_compiling = std::chrono::system_clock::now();

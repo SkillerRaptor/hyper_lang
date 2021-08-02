@@ -16,6 +16,7 @@ set(SOURCES
         src/main.cpp
         src/HyperCompiler/Compiler.cpp
         src/HyperCompiler/Lexer.cpp
+        src/HyperCompiler/Linker.cpp
         src/HyperCompiler/LLVMGenerator.cpp
         src/HyperCompiler/Logger.cpp
         src/HyperCompiler/Parser.cpp
@@ -32,6 +33,7 @@ set(HEADERS
         include/HyperCompiler/BuildOptions.hpp
         include/HyperCompiler/Compiler.hpp
         include/HyperCompiler/Lexer.hpp
+        include/HyperCompiler/Linker.hpp
         include/HyperCompiler/LLVMGenerator.hpp
         include/HyperCompiler/Logger.hpp
         include/HyperCompiler/Parser.hpp
@@ -49,6 +51,7 @@ set(HEADERS
 
 if ($ENV{CLION_IDE})
     # TODO: FIX ME
+    include_directories("/usr/include/llvm-10/")
     include_directories("/usr/include/llvm-c-10/")
 endif ()
 
