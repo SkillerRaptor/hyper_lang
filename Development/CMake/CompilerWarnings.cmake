@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.10)
 # Compiler Warnings
 #-------------------------------------------------------------------------------------------
 function(enable_warnings project_name)
-    option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+    option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
     set(MSVC_WARNINGS
             /W4
