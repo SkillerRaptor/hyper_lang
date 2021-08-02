@@ -12,6 +12,20 @@
 
 namespace HyperCompiler::Utils
 {
+	char* duplicate_string(const char* source)
+	{
+		char* string = new char[strlen(source) + 1];
+		char* ptr = string;
+		while (*source)
+		{
+			*ptr++ = *source++;
+		}
+
+		*ptr = '\0';
+
+		return string;
+	}
+
 	int64_t get_character_position(const std::string& source, char character)
 	{
 		for (size_t position = 0; source[position] != '\0'; ++position)

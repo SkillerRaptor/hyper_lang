@@ -34,12 +34,9 @@ int main(int, char**)
 #endif
 
 	OptimizationLevel optimization_level = OptimizationLevel::None;
-	SizeOptimization size_optimization = SizeOptimization::None;
-	PicGeneration pic_generation = PicGeneration::None;
-	PieGeneration pie_generation = PieGeneration::None;
-	DebugInfo debug_info = DebugInfo::None;
 	std::vector<std::string> source_files;
 	std::vector<std::string> include_directories;
+	std::string output_file = "./a.out";
 
 	// TODO: Implement argument parser
 	source_files.emplace_back("./tests/00.hyper");
@@ -49,12 +46,9 @@ int main(int, char**)
 	build_options.arch_target = arch_target;
 	build_options.os_target = os_target;
 	build_options.optimization_level = optimization_level;
-	build_options.size_optimization = size_optimization;
-	build_options.pic_generation = pic_generation;
-	build_options.pie_generation = pie_generation;
-	build_options.debug_info = debug_info;
 	build_options.source_files = source_files;
 	build_options.include_directories = include_directories;
+	build_options.output_file = output_file;
 
 	Compiler::compile(build_options);
 

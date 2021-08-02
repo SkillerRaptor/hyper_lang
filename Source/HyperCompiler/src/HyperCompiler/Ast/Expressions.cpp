@@ -28,54 +28,21 @@ namespace HyperCompiler
 		delete m_left;
 		delete m_right;
 	}
-
-	Value BinaryExpression::execute() const
-	{
-		const Value left_result = m_left->execute();
-		if (left_result.is_undefined())
-		{
-			return {};
-		}
-
-		const Value right_result = m_right->execute();
-		if (right_result.is_undefined())
-		{
-			return {};
-		}
-
-		switch (m_operation)
-		{
-		case Operation::Addition:
-			return Value::add(left_result, right_result);
-		case Operation::Subtraction:
-			return Value::subtract(left_result, right_result);
-		case Operation::Multiplication:
-			return Value::multiply(left_result, right_result);
-		case Operation::Division:
-			return Value::divide(left_result, right_result);
-		case Operation::Modulo:
-		case Operation::LessThan:
-		case Operation::GreaterThan:
-		case Operation::BitwiseAnd:
-		case Operation::BitwiseOr:
-		case Operation::BitwiseXor:
-			return {};
-		default:
-			break;
-		}
-
-		ASSERT_NOT_REACHED();
-	}
-
+	
 	std::string BinaryExpression::class_name() const
 	{
 		return "BinaryExpression";
+	}
+
+	void BinaryExpression::generate(LLVMGenerator& llvm_generator) const
+	{
+		(void) llvm_generator;
 	}
 	
 	void BinaryExpression::dump(unsigned int indent) const
 	{
 		AstNode::dump(indent++);
-		Logger::info_indent(indent, "Operation: {}\n", m_operation);
+		Logger::debug_indent(indent, "Operation: {}\n", m_operation);
 		
 		m_left->dump(indent);
 		m_right->dump(indent);

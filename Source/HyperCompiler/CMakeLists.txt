@@ -16,6 +16,7 @@ set(SOURCES
         src/main.cpp
         src/HyperCompiler/Compiler.cpp
         src/HyperCompiler/Lexer.cpp
+        src/HyperCompiler/LLVMGenerator.cpp
         src/HyperCompiler/Logger.cpp
         src/HyperCompiler/Parser.cpp
         src/HyperCompiler/Token.cpp
@@ -31,6 +32,7 @@ set(HEADERS
         include/HyperCompiler/BuildOptions.hpp
         include/HyperCompiler/Compiler.hpp
         include/HyperCompiler/Lexer.hpp
+        include/HyperCompiler/LLVMGenerator.hpp
         include/HyperCompiler/Logger.hpp
         include/HyperCompiler/Parser.hpp
         include/HyperCompiler/Token.hpp
@@ -44,6 +46,11 @@ set(HEADERS
         include/HyperCompiler/Utils/PlatformDetection.hpp
         include/HyperCompiler/Utils/Prerequisites.hpp
         include/HyperCompiler/Utils/Utilities.hpp)
+
+if ($ENV{CLION_IDE} AND UNIX)
+    # TODO: FIX ME
+    include_directories("/usr/include/llvm-c-10/")
+endif ()
 
 add_executable(HyperCompiler ${SOURCES} ${HEADERS})
 target_include_directories(HyperCompiler PRIVATE include)

@@ -23,7 +23,7 @@ namespace HyperCompiler
 	public:
 		explicit BoolLiteral(bool value);
 		
-		virtual Value execute() const override;
+		virtual void generate(LLVMGenerator& llvm_generator) const override;
 		virtual void dump(unsigned int indent) const override;
 
 		virtual std::string class_name() const override;
@@ -44,7 +44,7 @@ namespace HyperCompiler
 		explicit NumericLiteral(uint32_t value);
 		explicit NumericLiteral(uint64_t value);
 
-		virtual Value execute() const override;
+		virtual void generate(LLVMGenerator& llvm_generator) const override;
 		virtual void dump(unsigned int indent) const override;
 
 		virtual std::string class_name() const override;

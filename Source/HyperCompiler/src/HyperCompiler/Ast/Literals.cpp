@@ -20,20 +20,20 @@ namespace HyperCompiler
 	{
 	}
 	
-	Value BoolLiteral::execute() const
-	{
-		return Value(m_value);
-	}
-	
 	std::string BoolLiteral::class_name() const
 	{
 		return "BoolLiteral";
+	}
+
+	void BoolLiteral::generate(LLVMGenerator& llvm_generator) const
+	{
+		(void) llvm_generator;
 	}
 	
 	void BoolLiteral::dump(unsigned int indent) const
 	{
 		AstNode::dump(indent++);
-		Logger::info_indent(indent, "Value: {}\n", m_value);
+		Logger::debug_indent(indent, "Value: {}\n", m_value);
 	}
 
 	NumericLiteral::NumericLiteral(int8_t value)
@@ -76,15 +76,15 @@ namespace HyperCompiler
 	{
 	}
 
-	Value NumericLiteral::execute() const
+	void NumericLiteral::generate(LLVMGenerator& llvm_generator) const
 	{
-		return m_value;
+		(void) llvm_generator;
 	}
 	
 	void NumericLiteral::dump(unsigned int indent) const
 	{
 		AstNode::dump(indent++);
-		Logger::info_indent(indent, "Value: {}\n", m_value);
+		Logger::debug_indent(indent, "Value: {}\n", m_value);
 	}
 
 	std::string NumericLiteral::class_name() const

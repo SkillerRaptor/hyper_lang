@@ -39,7 +39,7 @@ namespace HyperCompiler
 		BinaryExpression(Operation operation, Expression* left, Expression* right);
 		virtual ~BinaryExpression() override;
 
-		virtual Value execute() const override;
+		virtual void generate(LLVMGenerator& llvm_generator) const override;
 		virtual void dump(unsigned int indent) const override;
 
 		virtual std::string class_name() const override;

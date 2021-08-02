@@ -14,9 +14,14 @@ namespace HyperCompiler
 	{
 		return "AstNode";
 	}
-	
+
+	void AstNode::generate(LLVMGenerator&) const
+	{
+		Logger::warning("generate() not implemented for {}!\n", class_name());
+	}
+
 	void AstNode::dump(unsigned int indent) const
 	{
-		Logger::info_indent(indent, "{}:\n", class_name());
+		Logger::debug_indent(indent, "{}:\n", class_name());
 	}
 }

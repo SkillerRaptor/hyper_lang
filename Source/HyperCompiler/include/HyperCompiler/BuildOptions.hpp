@@ -31,45 +31,14 @@ namespace HyperCompiler
 		Aggressive
 	};
 
-	enum class SizeOptimization : uint8_t
-	{
-		None = 0,
-		Small,
-		Tiny
-	};
-
-	enum class PicGeneration : uint8_t
-	{
-		None = 0,
-		Small,
-		Big,
-	};
-
-	enum class PieGeneration : uint8_t
-	{
-		None = 0,
-		Small,
-		Big,
-	};
-
-	enum class DebugInfo : uint8_t
-	{
-		None = 0,
-		LineTables,
-		Full
-	};
-
 	struct BuildOptions
 	{
 		unsigned int jobs{ 1 };
 		ArchTarget arch_target{ ArchTarget::x86_64 };
 		OsTarget os_target{ OsTarget::Linux };
 		OptimizationLevel optimization_level{ OptimizationLevel::None };
-		SizeOptimization size_optimization{ SizeOptimization::None };
-		PicGeneration pic_generation{ PicGeneration::None };
-		PieGeneration pie_generation{ PieGeneration::None };
-		DebugInfo debug_info{ DebugInfo::None };
 		std::vector<std::string> source_files;
 		std::vector<std::string> include_directories;
+		std::string output_file;
 	};
 } // namespace HyperCompiler

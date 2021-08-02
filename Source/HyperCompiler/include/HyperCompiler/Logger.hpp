@@ -71,9 +71,9 @@ namespace HyperCompiler
 		}
 		
 		template <typename... Args>
-		static void info_indent(unsigned int indent, std::string_view format, Args&&... args) noexcept
+		static void debug_indent(unsigned int indent, std::string_view format, Args&&... args) noexcept
 		{
-			Logger::log(Level::Info, indent, format, std::forward<Args>(args)...);
+			Logger::log(Level::Debug, indent, format, std::forward<Args>(args)...);
 		}
 
 	private:

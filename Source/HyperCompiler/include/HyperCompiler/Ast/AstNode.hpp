@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "HyperCompiler/LLVMGenerator.hpp"
 #include "HyperCompiler/Ast/Value.hpp"
 
 #include <string>
@@ -17,7 +18,7 @@ namespace HyperCompiler
 	public:
 		virtual ~AstNode() = default;
 	
-		virtual Value execute() const = 0;
+		virtual void generate(LLVMGenerator& llvm_generator) const;
 		virtual void dump(unsigned int indent) const;
 		
 		virtual std::string class_name() const;

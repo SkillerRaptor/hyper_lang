@@ -12,6 +12,8 @@
 
 namespace HyperCompiler::Utils
 {
+	char* duplicate_string(const char* source);
+
 	int64_t get_character_position(const std::string& source, char character);
 	
 	template <typename... Args>
