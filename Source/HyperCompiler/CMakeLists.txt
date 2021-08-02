@@ -47,7 +47,7 @@ set(HEADERS
         include/HyperCompiler/Utils/Prerequisites.hpp
         include/HyperCompiler/Utils/Utilities.hpp)
 
-if ($ENV{CLION_IDE} AND UNIX)
+if ($ENV{CLION_IDE})
     # TODO: FIX ME
     include_directories("/usr/include/llvm-c-10/")
 endif ()
