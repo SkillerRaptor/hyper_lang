@@ -84,7 +84,7 @@ set(lld_libs
 
 message(STATUS "Found LLD ${lld_libs}")
 
-add_library(llvm INTERFACE)
-target_compile_definitions(llvm INTERFACE ${LLVM_DEFINITIONS})
-target_include_directories(llvm INTERFACE ${LLVM_INCLUDE_DIRS})
-target_link_libraries(llvm INTERFACE ${llvm_libs} ${lld_libs})
+set(LLVM_LIBS "${llvm_libs}" PARENT_SCOPE)
+set(LLVM_DEFS "${LLVM_DEFINITIONS}" PARENT_SCOPE)
+set(LLVM_INCLUDE "${LLVM_INCLUDE_DIRS}" PARENT_SCOPE)
+set(LLD_LIBS "${lld_libs}" PARENT_SCOPE)

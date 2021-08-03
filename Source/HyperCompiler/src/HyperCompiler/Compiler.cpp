@@ -67,7 +67,7 @@ namespace HyperCompiler
 		{
 			object_files.push_back(source_file + ".o");
 		}
-		
+
 		Linker::link(s_build_options.output_file, object_files);
 		Logger::info("Linking executable {}\n", s_build_options.output_file);
 

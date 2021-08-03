@@ -16,7 +16,6 @@ set(SOURCES
         src/main.cpp
         src/HyperCompiler/Compiler.cpp
         src/HyperCompiler/Lexer.cpp
-        src/HyperCompiler/Linker.cpp
         src/HyperCompiler/LLVMGenerator.cpp
         src/HyperCompiler/Logger.cpp
         src/HyperCompiler/Parser.cpp
@@ -33,7 +32,6 @@ set(HEADERS
         include/HyperCompiler/BuildOptions.hpp
         include/HyperCompiler/Compiler.hpp
         include/HyperCompiler/Lexer.hpp
-        include/HyperCompiler/Linker.hpp
         include/HyperCompiler/LLVMGenerator.hpp
         include/HyperCompiler/Logger.hpp
         include/HyperCompiler/Parser.hpp
@@ -55,9 +53,17 @@ if ($ENV{CLION_IDE})
     include_directories("/usr/include/llvm-c-10/")
 endif ()
 
+find_package(LLVM REQUIRED CONFIG)
+
+add_library(HyperLinker STATIC src/HyperCompiler/Linker.cpp include/HyperCompiler/Linker.hpp)
+target_compile_definitions(HyperLinker PRIVATE ${LLVM_DEFS})
+target_include_directories(HyperLinker PRIVATE ${LLVM_INCLUDE} include)
+target_link_libraries(HyperLinker PRIVATE ProjectOptions ProjectWarnings fmt ${LLVM_LIBS} ${LLD_LIBS})
+
 add_executable(HyperCompiler ${SOURCES} ${HEADERS})
-target_include_directories(HyperCompiler PRIVATE include)
-target_link_libraries(HyperCompiler PRIVATE ProjectOptions ProjectWarnings fmt llvm)
+target_compile_definitions(HyperCompiler PRIVATE ${LLVM_DEFS})
+target_include_directories(HyperCompiler PRIVATE ${LLVM_INCLUDE} include)
+target_link_libraries(HyperCompiler PRIVATE ProjectOptions ProjectWarnings fmt ${LLVM_LIBS} HyperLinker ${LLD_LIBS})
 
 add_custom_command(
         TARGET HyperCompiler
