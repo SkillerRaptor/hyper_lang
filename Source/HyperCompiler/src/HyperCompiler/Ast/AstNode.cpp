@@ -17,7 +17,7 @@ namespace HyperCompiler
 
 	void AstNode::generate(LLVMGenerator&) const
 	{
-		Logger::warning("generate() not implemented for {}!\n", class_name());
+		Logger::warning("TODO: Implement generate(LLVMGenerator&) for {}!\n", class_name());
 	}
 
 	void AstNode::dump(unsigned int indent) const

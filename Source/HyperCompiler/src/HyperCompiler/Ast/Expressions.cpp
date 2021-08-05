@@ -37,6 +37,7 @@ namespace HyperCompiler
 	void BinaryExpression::generate(LLVMGenerator& llvm_generator) const
 	{
 		(void) llvm_generator;
+		Logger::warning("TODO: Implement generate(LLVMGenerator&) for BinaryExpression!\n");
 	}
 	
 	void BinaryExpression::dump(unsigned int indent) const

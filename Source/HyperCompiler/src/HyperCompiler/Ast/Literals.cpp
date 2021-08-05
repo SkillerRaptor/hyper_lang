@@ -28,6 +28,7 @@ namespace HyperCompiler
 	void BoolLiteral::generate(LLVMGenerator& llvm_generator) const
 	{
 		(void) llvm_generator;
+		Logger::warning("TODO: Implement generate(LLVMGenerator&) for BoolLiteral!\n");
 	}
 	
 	void BoolLiteral::dump(unsigned int indent) const
@@ -79,6 +80,7 @@ namespace HyperCompiler
 	void NumericLiteral::generate(LLVMGenerator& llvm_generator) const
 	{
 		(void) llvm_generator;
+		Logger::warning("TODO: Implement generate(LLVMGenerator&) for NumericLiteral!\n");
 	}
 	
 	void NumericLiteral::dump(unsigned int indent) const
