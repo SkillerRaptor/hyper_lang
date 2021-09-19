@@ -5,15 +5,10 @@
 #-------------------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------------------
-# CMake Info
-#-------------------------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.10)
-
-#-------------------------------------------------------------------------------------------
 # Compiler Warnings
 #-------------------------------------------------------------------------------------------
 function(enable_warnings project_name)
-    option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+    option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
     set(MSVC_WARNINGS
             /W4
@@ -78,5 +73,8 @@ function(enable_warnings project_name)
         message(AUTHOR_WARNING "No compiler warnings set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
     endif ()
 
-    target_compile_options(${project_name} INTERFACE ${PROJECT_WARNINGS})
+    target_compile_options(
+            ${project_name}
+            INTERFACE
+            ${PROJECT_WARNINGS})
 endfunction()

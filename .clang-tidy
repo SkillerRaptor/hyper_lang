@@ -1,0 +1,63 @@
+#-------------------------------------------------------------------------------------------
+# Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+#
+# SPDX-License-Identifier: MIT
+#-------------------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------------------
+# Clang Tidy
+#-------------------------------------------------------------------------------------------
+Checks: '
+  -*,
+  bugprone-*,
+  cert-*,
+  clang-analyzer-*,
+  concurrency-*,
+  google-*,
+  hicpp-*,
+  misc-*,
+  modernize-*,
+  mpi-*,
+  performance-*,
+  portability-*,
+  readability-identifier-naming,
+  -cppcoreguidelines-special-member-functions,
+  -google-explicit-constructor,
+  -hicpp-avoid-c-arrays,
+  -hicpp-explicit-conversions,
+  -hicpp-no-array-decay,
+  -hicpp-use-auto,
+  -hicpp-signed-bitwise,
+  -hicpp-special-member-functions,
+  -modernize-avoid-c-arrays,
+  -modernize-use-auto,
+  -modernize-use-nodiscard,
+  -misc-non-private-member-variables-in-classes'
+
+CheckOptions:
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: snake_case
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: aNy_CasE
+  - key: readability-identifier-naming.MemberCase
+    value: snake_case
+  - key: readability-identifier-naming.NamespaceCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypeAliasCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypedefCase
+    value: CamelCase
+  - key: readability-identifier-naming.ParameterCase
+    value: snake_case
+  - key: readability-identifier-naming.UnionCase
+    value: CamelCase
+  - key: readability-identifier-naming.VariableCase
+    value: snake_case

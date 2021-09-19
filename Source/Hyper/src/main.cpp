@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package sys
+auto main() -> int
 {
-
+	return 0;
 }

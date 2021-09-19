@@ -7,20 +7,13 @@
 #-------------------------------------------------------------------------------------------
 # CMake Info
 #-------------------------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 project(HyperLang LANGUAGES C CXX)
-
-set(CMAKE_FIND_PACKAGE_SORT_ORDER NATURAL)
-set(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
-
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
 
 #-------------------------------------------------------------------------------------------
 # Modules
 #-------------------------------------------------------------------------------------------
 include(Development/CMake/StandardProjectSettings.cmake)
-include(Development/CMake/PreventInSourceBuilds.cmake)
 
 #-------------------------------------------------------------------------------------------
 # Project Libraries
@@ -33,12 +26,10 @@ add_library(ProjectWarnings INTERFACE)
 #-------------------------------------------------------------------------------------------
 # Standard Settings
 #-------------------------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 include(Development/CMake/Cache.cmake)
+
+include(Development/CMake/CompilerSettings.cmake)
+enable_settings(ProjectOptions)
 
 include(Development/CMake/CompilerWarnings.cmake)
 enable_warnings(ProjectWarnings)
@@ -50,6 +41,20 @@ include(Development/CMake/Doxygen.cmake)
 enable_doxygen()
 
 include(Development/CMake/StaticAnalyzers.cmake)
+
+include(Development/CMake/Utils.cmake)
+
+#-------------------------------------------------------------------------------------------
+# Conan
+#-------------------------------------------------------------------------------------------
+set(CONAN_LIBRARIES
+        llvm-core/12.0.0)
+
+set(CONAN_OPTIONS
+        )
+
+include(Development/CMake/Conan.cmake)
+run_conan()
 
 #-------------------------------------------------------------------------------------------
 # Source

@@ -5,14 +5,9 @@
 #-------------------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------------------
-# CMake Info
-#-------------------------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.10)
-
-#-------------------------------------------------------------------------------------------
 # Cache
 #-------------------------------------------------------------------------------------------
-option(ENABLE_CACHE "Enable cache if available" ON)
+option(ENABLE_CACHE "Enable cache if available" OFF)
 if (NOT ENABLE_CACHE)
     return()
 endif ()
@@ -20,7 +15,7 @@ endif ()
 set(CACHE_OPTION "ccache" CACHE STRING "Compiler cache to be used")
 set(CACHE_OPTION_VALUES "ccache" "sccache")
 
-set_property(CACHE CACHE_OPTION PROPERTY STRINGS ${CACHE_OPTION_VALUES})
+set_property(CACHE CACHE_OPTION PROPERTY STRINGS ${CACHE_OPTIONS_VALUES})
 list(FIND CACHE_OPTION_VALUES ${CACHE_OPTION} CACHE_OPTION_INDEX)
 
 if (${CACHE_OPTION_INDEX} EQUAL -1)
