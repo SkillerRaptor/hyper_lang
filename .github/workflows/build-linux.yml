@@ -4,10 +4,13 @@ on: [ push, pull_request ]
 
 jobs:
   build-linux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
+    env:
+      conan_path: "$HOME/.local/bin"
+      conan_user_home: "${{ github.workspace }}/conan-cache"
     strategy:
       fail-fast: false
       matrix:
@@ -46,6 +49,15 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-conan-modules
+        with:
+          path: |
+            ${{ env.conan_user_home }}
+          key: ${{ runner.os }}-${{ matrix.config.build_type }}-${{ hashFiles('CMakeLists.txt') }}-${{ hashFiles('Development/CMake/Conan.cmake') }}
+
       - name: Update environment
         run: |
           sudo apt update -qq
@@ -54,7 +66,15 @@ jobs:
             clang-10 \
             cmake \
             gcc-10 \
-            g++-10
+            g++-10 \
+            llvm-10 \
+            xorg-dev
+
+      - name: Install Conan
+        shell: bash
+        run: |
+          python3 -m pip install --upgrade pip setuptools
+          python3 -m pip install conan
 
       - name: Configure CMake
         run: |
@@ -65,7 +85,12 @@ jobs:
 
       - name: Build
         run: |
-          cmake --build build --target all --parallel $(nproc)
+          cmake --build build --parallel $(nproc)
+
+      - name: Test
+        run: |
+          cd build
+          ctest -C ${{ matrix.config.build_type }}
 
       - name: Prepare upload
         run: |

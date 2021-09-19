@@ -8,6 +8,8 @@ jobs:
     defaults:
       run:
         shell: cmd
+    env:
+      conan_user_home: "${{ github.workspace }}/conan-cache"
     strategy:
       fail-fast: false
       matrix:
