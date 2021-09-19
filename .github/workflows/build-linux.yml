@@ -16,25 +16,11 @@ jobs:
       matrix:
         config:
           - {
-            name: "Ubuntu Clang Debug",
-            artifact: "linux-clang-debug.tar.xz",
-            cc: "clang-10",
-            cxx: "clang++-10",
-            build_type: "Debug"
-          }
-          - {
             name: "Ubuntu GCC Debug",
             artifact: "linux-gcc-debug.tar.xz",
             cc: "gcc-10",
             cxx: "g++-10",
             build_type: "Debug"
-          }
-          - {
-            name: "Ubuntu Clang Release",
-            artifact: "linux-clang-release.tar.xz",
-            cc: "clang-10",
-            cxx: "clang++-10",
-            build_type: "Release"
           }
           - {
             name: "Ubuntu GCC Release",

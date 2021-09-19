@@ -1,7 +1,6 @@
 <img src="./Development/Images/Branding.png" align="left" width="128px"/>
 
 # HyperLang
-[![Build Windows](https://img.shields.io/github/workflow/status/SkillerRaptor/HyperLang/build-windows?style=flat&label=Build%20Windows&logo=github)](https://github.com/SkillerRaptor/HyperLang/blob/master/.github/workflows/build-windows.yml)
 [![Build Linux](https://img.shields.io/github/workflow/status/SkillerRaptor/HyperLang/build-linux?style=flat&label=Build%20Linux&logo=github)](https://github.com/SkillerRaptor/HyperLang/blob/master/.github/workflows/build-linux.yml)
 [![Support Server](https://img.shields.io/discord/674880770137128970.svg?&style=flat&label=Discord&logo=discord)](https://discord.gg/tYu9yYY)
 [![License](https://img.shields.io/badge/license-MIT-yellow?style=flat)](https://github.com/SkillerRaptor/HyperLang/blob/master/LICENSE)
