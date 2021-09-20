@@ -18,7 +18,7 @@
 
 void print(const char* str, ...)
 {
-	printf(FORMAT_RESET);
+	printf("%s", FORMAT_RESET);
 	
 	va_list args;
 	va_start(args, str);
@@ -28,7 +28,7 @@ void print(const char* str, ...)
 
 void hyper_fatal_error(const char* str, ...)
 {
-	printf(FORMAT_BOLD COLOR_WHITE "hyper: " COLOR_RED "fatal error: " FORMAT_RESET);
+	printf("%s%shyper: %sfatal error: %s", FORMAT_BOLD, COLOR_WHITE, COLOR_RED, FORMAT_RESET);
 	
 	va_list args;
 	va_start(args, str);

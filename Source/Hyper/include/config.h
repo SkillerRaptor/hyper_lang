@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-#ifndef HYPER_UTILS_H_
-#define HYPER_UTILS_H_
+#ifndef HYPER_CONFIG_H_
+#define HYPER_CONFIG_H_
 
-void terminate_compilation();
+#define HYPER_VERSION "1.0.0"
 
-#endif //HYPER_UTILS_H_
+#endif //HYPER_CONFIG_H_

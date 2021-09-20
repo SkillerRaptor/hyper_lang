@@ -14,6 +14,7 @@ set(SOURCES
 
 set(HEADERS
         include/colors.h
+        include/config.h
         include/logger.h
         include/utils.h)
 
