@@ -8,7 +8,7 @@
 # CMake Info
 #-------------------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.15)
-project(HyperLang LANGUAGES C CXX)
+project(HyperLang LANGUAGES C)
 
 #-------------------------------------------------------------------------------------------
 # Modules
@@ -19,7 +19,7 @@ include(Development/CMake/StandardProjectSettings.cmake)
 # Project Libraries
 #-------------------------------------------------------------------------------------------
 add_library(ProjectOptions INTERFACE)
-target_compile_features(ProjectOptions INTERFACE cxx_std_17)
+target_compile_features(ProjectOptions INTERFACE c_std_99)
 
 add_library(ProjectWarnings INTERFACE)
 
@@ -27,9 +27,6 @@ add_library(ProjectWarnings INTERFACE)
 # Standard Settings
 #-------------------------------------------------------------------------------------------
 include(Development/CMake/Cache.cmake)
-
-include(Development/CMake/CompilerSettings.cmake)
-enable_settings(ProjectOptions)
 
 include(Development/CMake/CompilerWarnings.cmake)
 enable_warnings(ProjectWarnings)
@@ -43,18 +40,6 @@ enable_doxygen()
 include(Development/CMake/StaticAnalyzers.cmake)
 
 include(Development/CMake/Utils.cmake)
-
-#-------------------------------------------------------------------------------------------
-# Conan
-#-------------------------------------------------------------------------------------------
-set(CONAN_LIBRARIES
-        llvm-core/12.0.0)
-
-set(CONAN_OPTIONS
-        )
-
-include(Development/CMake/Conan.cmake)
-run_conan()
 
 #-------------------------------------------------------------------------------------------
 # Source

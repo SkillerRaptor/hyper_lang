@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-auto main() -> int
+int main()
 {
-	return 0;
 }

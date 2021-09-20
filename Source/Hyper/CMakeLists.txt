@@ -8,14 +8,9 @@
 # Hyper
 #-------------------------------------------------------------------------------------------
 set(SOURCES
-        src/main.cpp
-        )
+        src/main.c)
 
 set(HEADERS
         )
 
 hyperlang_define_executable(Hyper)
-target_link_libraries(
-        Hyper
-        PRIVATE
-        CONAN_PKG::llvm-core)
