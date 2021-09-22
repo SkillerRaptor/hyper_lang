@@ -42,7 +42,13 @@ int hyper_read_file(const char* file_name, char** buffer)
 		return HYPER_OUT_OF_MEMORY;
 	}
 	
-	fread(*buffer, 1, (unsigned long) length, file);
+	size_t read_length = fread(*buffer, 1, (unsigned long) length, file);
+	if (read_length != (unsigned long) length)
+	{
+		free(*buffer);
+		fclose(file);
+		return HYPER_IO_ERROR;
+	}
 	
 	(*buffer)[length] = '\0';
 	fclose(file);
