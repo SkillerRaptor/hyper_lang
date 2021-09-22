@@ -7,6 +7,10 @@
 #ifndef HYPER_UTILS_H_
 #define HYPER_UTILS_H_
 
-void terminate_compilation();
+int hyper_read_file(const char* file_name, char** buffer);
+
+int hyper_duplicate_string(const char* source, char** destination);
+
+void hyper_terminate_compilation(void);
 
 #endif //HYPER_UTILS_H_

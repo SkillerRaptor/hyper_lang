@@ -8,14 +8,19 @@
 # Hyper
 #-------------------------------------------------------------------------------------------
 set(SOURCES
+        src/lexer.c
         src/logger.c
         src/main.c
+        src/token.c
         src/utils.c)
 
 set(HEADERS
         include/colors.h
         include/config.h
+        include/errors.h
+        include/lexer.h
         include/logger.h
+        include/token.h
         include/utils.h)
 
 hyperlang_define_executable(hyper)

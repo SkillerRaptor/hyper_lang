@@ -12,6 +12,7 @@ function(enable_warnings project_name)
 
     set(MSVC_WARNINGS
             /W4
+            /wd4996
             /w14242
             /w14254
             /w14263
