@@ -19,11 +19,64 @@ namespace Hyper
 		{
 			Eof = 0,
 
+			Assign,
+			Identifier,
+			Colon,
+			Comma,
+			Dot,
+			Semicolon,
+			
+			Equal,
+			NotEqual,
+			LessThan,
+			GreaterThan,
+			LessEqual,
+			GreaterEqual,
+			
 			Plus,
+			PlusEqual,
 			Minus,
+			MinusEqual,
 			Star,
+			StarEqual,
 			Slash,
+			SlashEqual,
+			Modular,
+			ModularEqual,
 
+			LeftArrow,
+			RightArrow,
+			LeftBrace,
+			RightBrace,
+			LeftParenthesis,
+			RightParenthesis,
+			LeftBracket,
+			RightBracket,
+
+			Increment,
+			Decrement,
+
+			BitwiseAnd,
+			BitwiseOr,
+			BitwiseXor,
+			BitwiseNot,
+			BitwiseAndEqual,
+			BitwiseOrEqual,
+			BitwiseXorEqual,
+			
+			LeftShift,
+			RightShift,
+
+			LogicalAnd,
+			LogicalOr,
+			LogicalNot,
+
+			Function,
+			
+			Return,
+			
+			Void,
+			
 			NumericLiteral
 		};
 

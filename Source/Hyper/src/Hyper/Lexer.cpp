@@ -46,21 +46,273 @@ namespace Hyper
 		char character = next_character();
 		switch (character)
 		{
+		case ':':
+			token.value = ":";
+			token.type = Token::Type::Colon;
+			break;
+		case ',':
+			token.value = ",";
+			token.type = Token::Type::Comma;
+			break;
+		case '.':
+			token.value = ".";
+			token.type = Token::Type::Dot;
+			break;
+		case ';':
+			token.value = ";";
+			token.type = Token::Type::Semicolon;
+			break;
+		case '{':
+			token.value = "{";
+			token.type = Token::Type::LeftBrace;
+			break;
+		case '}':
+			token.value = "}";
+			token.type = Token::Type::RightBrace;
+			break;
+		case '(':
+			token.value = "(";
+			token.type = Token::Type::LeftParenthesis;
+			break;
+		case ')':
+			token.value = ")";
+			token.type = Token::Type::RightParenthesis;
+			break;
+		case '[':
+			token.value = "[";
+			token.type = Token::Type::Semicolon;
+			break;
+		case ']':
+			token.value = "]";
+			token.type = Token::Type::RightBrace;
+			break;
+		case '=':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = "==";
+				token.type = Token::Type::Equal;
+				break;
+			}
+			
+			--m_position;
+
+			token.value = "=";
+			token.type = Token::Type::Assign;
+			break;
+		case '!':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = "!=";
+				token.type = Token::Type::NotEqual;
+				break;
+			}
+
+			--m_position;
+
+			token.value = "!";
+			token.type = Token::Type::LogicalNot;
+			break;
+		case '<':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = "<=";
+				token.type = Token::Type::LessEqual;
+				break;
+			}
+			
+			if (character == '-')
+			{
+				token.value = "<-";
+				token.type = Token::Type::LeftArrow;
+				break;
+			}
+
+			if (character == '<')
+			{
+				token.value = "<<";
+				token.type = Token::Type::LeftShift;
+				break;
+			}
+
+			--m_position;
+
+			token.value = "<";
+			token.type = Token::Type::LessThan;
+			break;
+		case '>':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = ">=";
+				token.type = Token::Type::GreaterEqual;
+				break;
+			}
+
+			if (character == '>')
+			{
+				token.value = ">>";
+				token.type = Token::Type::RightShift;
+				break;
+			}
+
+			--m_position;
+
+			token.value = ">";
+			token.type = Token::Type::GreaterThan;
+			break;
 		case '+':
+			character = next_character();
+			if (character == '+')
+			{
+				token.value = "+";
+				token.type = Token::Type::Increment;
+				break;
+			}
+			
+			if (character == '=')
+			{
+				token.value = "+=";
+				token.type = Token::Type::PlusEqual;
+				break;
+			}
+
+			--m_position;
+
 			token.value = "+";
 			token.type = Token::Type::Plus;
 			break;
 		case '-':
+			character = next_character();
+			if (character == '-')
+			{
+				token.value = "--";
+				token.type = Token::Type::Decrement;
+				break;
+			}
+
+			if (character == '=')
+			{
+				token.value = "-=";
+				token.type = Token::Type::MinusEqual;
+				break;
+			}
+
+			if (character == '>')
+			{
+				token.value = "->";
+				token.type = Token::Type::RightArrow;
+				break;
+			}
+
+			--m_position;
+
 			token.value = "-";
 			token.type = Token::Type::Minus;
 			break;
 		case '*':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = "*=";
+				token.type = Token::Type::StarEqual;
+				break;
+			}
+
+			--m_position;
+
 			token.value = "*";
 			token.type = Token::Type::Star;
 			break;
 		case '/':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = "/=";
+				token.type = Token::Type::SlashEqual;
+				break;
+			}
+
+			--m_position;
+
 			token.value = "/";
 			token.type = Token::Type::Slash;
+			break;
+		case '%':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = "%=";
+				token.type = Token::Type::ModularEqual;
+				break;
+			}
+
+			--m_position;
+
+			token.value = "%";
+			token.type = Token::Type::Modular;
+			break;
+		case '&':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = "&=";
+				token.type = Token::Type::BitwiseAndEqual;
+				break;
+			}
+			
+			if (character == '&')
+			{
+				token.value = "&";
+				token.type = Token::Type::LogicalAnd;
+				break;
+			}
+
+			--m_position;
+
+			token.value = "&";
+			token.type = Token::Type::BitwiseAnd;
+			break;
+		case '|':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = "|=";
+				token.type = Token::Type::BitwiseOrEqual;
+				break;
+			}
+
+			if (character == '|')
+			{
+				token.value = "|";
+				token.type = Token::Type::LogicalOr;
+				break;
+			}
+
+			--m_position;
+
+			token.value = "|";
+			token.type = Token::Type::BitwiseOr;
+			break;
+		case '^':
+			character = next_character();
+			if (character == '=')
+			{
+				token.value = "^=";
+				token.type = Token::Type::BitwiseXorEqual;
+				break;
+			}
+
+			--m_position;
+
+			token.value = "^";
+			token.type = Token::Type::BitwiseXor;
+			break;
+		case '~':
+			token.value = "~";
+			token.type = Token::Type::BitwiseNot;
 			break;
 		default:
 			if (m_position >= m_text.size())
@@ -74,6 +326,20 @@ namespace Hyper
 			{
 				token.value = std::to_string(scan_numeric_literal(character));
 				token.type = Token::Type::NumericLiteral;
+				break;
+			}
+			
+			if (std::isalpha(character) || character == '_')
+			{
+				token.value = scan_identifier(character);
+				token.type = Token::Type::Identifier;
+
+				Token::Type token_type = to_keyword(token.value);
+				if (token_type != Token::Type::Eof)
+				{
+					token.type = token_type;
+				}
+
 				break;
 			}
 
@@ -146,5 +412,49 @@ namespace Hyper
 		}
 
 		return -1;
+	}
+	
+	auto Lexer::scan_identifier(char character) -> std::string
+	{
+		std::string string;
+
+		while (isalpha(character) || isdigit(character) || character == '_')
+		{
+			string += character;
+			character = next_character();
+		}
+
+		--m_position;
+
+		return string;
+	}
+
+	auto Lexer::to_keyword(const std::string& keyword) -> Token::Type
+	{
+		switch (keyword[0])
+		{
+		case 'f':
+			if (keyword == "fn")
+			{
+				return Token::Type::Function;
+			}
+			break;
+		case 'r':
+			if (keyword == "return")
+			{
+				return Token::Type::Return;
+			}
+			break;
+		case 'v':
+			if (keyword == "void")
+			{
+				return Token::Type::Void;
+			}
+			break;
+		default:
+			break;
+		}
+
+		return Token::Type::Eof;
 	}
 } // namespace Hyper

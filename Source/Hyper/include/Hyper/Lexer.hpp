@@ -30,6 +30,9 @@ namespace Hyper
 		auto scan_numeric_literal(char character) -> int64_t;
 		auto character_to_number(const std::string& source, char character) -> int64_t;
 
+		auto scan_identifier(char character) -> std::string;
+		auto to_keyword(const std::string& keyword) -> Token::Type;
+
 	private:
 		std::string m_file;
 		std::string m_text;
