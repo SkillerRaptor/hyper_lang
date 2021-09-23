@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-#ifndef HYPER_CONFIG_H_
-#define HYPER_CONFIG_H_
+#pragma once
 
-#define HYPER_VERSION "1.0.0"
-
-#endif //HYPER_CONFIG_H_
+namespace Hyper::Utils
+{
+	auto terminate_compilation() -> void;
+} // namespace Hyper::Utils

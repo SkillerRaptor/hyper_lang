@@ -8,7 +8,7 @@
 # Sanitizers
 #-------------------------------------------------------------------------------------------
 function(enable_sanitizers project_name)
-    if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID MATCHES ".*Clang")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
         option(ENABLE_COVERAGE "Enable coverage reporting for gcc/clang" OFF)
         if (ENABLE_COVERAGE)
             target_compile_options(
@@ -50,7 +50,7 @@ function(enable_sanitizers project_name)
         endif ()
 
         option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
-        if (ENABLE_SANITIZER_MEMORY AND CMAKE_C_COMPILER_ID MATCHES ".*Clang")
+        if (ENABLE_SANITIZER_MEMORY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
             if ("address" IN_LIST SANITIZERS OR "thread" IN_LIST SANITIZERS OR "leak" IN_LIST SANITIZERS)
                 message(WARNING "Memory sanitizer does not work with Address, Thread and Leak sanitizer enabled")
             else ()

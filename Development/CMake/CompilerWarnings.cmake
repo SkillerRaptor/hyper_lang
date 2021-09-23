@@ -12,7 +12,6 @@ function(enable_warnings project_name)
 
     set(MSVC_WARNINGS
             /W4
-            /wd4996
             /w14242
             /w14254
             /w14263
@@ -38,8 +37,11 @@ function(enable_warnings project_name)
             -Wall
             -Wextra
             -Wshadow
+            -Wnon-virtual-dtor
+            -Wold-style-cast
             -Wcast-align
             -Wunused
+            -Woverloaded-virtual
             -Wpedantic
             -Wconversion
             -Wsign-conversion
@@ -52,7 +54,8 @@ function(enable_warnings project_name)
             -Wmisleading-indentation
             -Wduplicated-cond
             -Wduplicated-branches
-            -Wlogical-op)
+            -Wlogical-op
+            -Wuseless-cast)
 
     if (WARNINGS_AS_ERRORS)
         set(CLANG_WARNINGS ${CLANG_WARNINGS} -Werror)
@@ -62,12 +65,12 @@ function(enable_warnings project_name)
 
     if (MSVC)
         set(PROJECT_WARNINGS ${MSVC_WARNINGS})
-    elseif (CMAKE_C_COMPILER_ID MATCHES ".*Clang")
+    elseif (CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
         set(PROJECT_WARNINGS ${CLANG_WARNINGS})
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(PROJECT_WARNINGS ${GCC_WARNINGS})
     else ()
-        message(AUTHOR_WARNING "No compiler warnings set for '${CMAKE_C_COMPILER_ID}' compiler.")
+        message(AUTHOR_WARNING "No compiler warnings set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
     endif ()
 
     target_compile_options(

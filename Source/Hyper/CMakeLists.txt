@@ -8,22 +8,23 @@
 # Hyper
 #-------------------------------------------------------------------------------------------
 set(SOURCES
-        src/lexer.c
-        src/logger.c
-        src/main.c
-        src/token.c
-        src/utils.c)
+        src/main.cpp
+        src/Hyper/Lexer.cpp
+        src/Hyper/Logger.cpp
+        src/Hyper/Token.cpp
+        src/Hyper/Utils.cpp)
 
 set(HEADERS
-        include/colors.h
-        include/config.h
-        include/errors.h
-        include/lexer.h
-        include/logger.h
-        include/token.h
-        include/utils.h)
+        include/Hyper/Lexer.hpp
+        include/Hyper/Logger.hpp
+        include/Hyper/Token.hpp
+        include/Hyper/Utils.hpp)
 
 hyperlang_define_executable(hyper)
+target_link_libraries(
+        hyper
+        PRIVATE
+        CONAN_PKG::fmt)
 add_custom_command(
         TARGET hyper
         POST_BUILD
