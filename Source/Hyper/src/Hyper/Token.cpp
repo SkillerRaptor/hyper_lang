@@ -157,6 +157,7 @@ namespace Hyper
 			ostream << "Numeric Literal";
 			break;
 		default:
+			ostream << "Undefined";
 			break;
 		}
 

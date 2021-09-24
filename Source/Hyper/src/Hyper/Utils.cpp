@@ -8,13 +8,11 @@
 
 #include "Hyper/Logger.hpp"
 
-#include <cstdlib>
-
 namespace Hyper::Utils
 {
 	auto terminate_compilation() -> void
 	{
 		Logger::log("compilation terminated.");
-		std::exit(EXIT_FAILURE);
+		std::terminate();
 	}
 } // namespace Hyper::Utils

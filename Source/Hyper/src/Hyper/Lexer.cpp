@@ -21,7 +21,7 @@ namespace Hyper
 
 	auto Lexer::initialize() -> bool
 	{
-		std::ifstream file_stream(m_file);
+		const std::ifstream file_stream(m_file);
 		if (!file_stream.is_open())
 		{
 			Logger::fatal(m_file, "No such file or directory");
@@ -30,7 +30,6 @@ namespace Hyper
 
 		std::stringstream string_stream;
 		string_stream << file_stream.rdbuf();
-		file_stream.close();
 
 		m_text = string_stream.str();
 
@@ -324,6 +323,7 @@ namespace Hyper
 
 			if (std::isdigit(character))
 			{
+				// TODO(SkillerRaptor): Binary, Hexadecimal, Octadecimal, Floating Point
 				token.value = std::to_string(scan_numeric_literal(character));
 				token.type = Token::Type::NumericLiteral;
 				break;
@@ -399,7 +399,7 @@ namespace Hyper
 		return number;
 	}
 
-	auto Lexer::character_to_number(const std::string& source, char character) -> int64_t
+	auto Lexer::character_to_number(std::string_view source, char character) -> int64_t
 	{
 		for (size_t position = 0; source[position] != '\0'; ++position)
 		{
@@ -429,7 +429,7 @@ namespace Hyper
 		return string;
 	}
 
-	auto Lexer::to_keyword(const std::string& keyword) -> Token::Type
+	auto Lexer::to_keyword(std::string_view keyword) -> Token::Type
 	{
 		switch (keyword[0])
 		{

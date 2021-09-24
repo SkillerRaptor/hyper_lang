@@ -16,19 +16,16 @@ auto main(int argc, char** argv) -> int
 		Hyper::Utils::terminate_compilation();
 	}
 
-	bool file_found = false;
 	for (size_t i = 1; i < static_cast<size_t>(argc); ++i)
 	{
-		Hyper::Lexer lexer{ argv[1] };
+		Hyper::Lexer lexer(argv[i]);
 		if (!lexer.initialize())
 		{
 			continue;
 		}
 
-		file_found = true;
-
 		// TODO(SkillerRaptor): Parsing
-		
+
 		Hyper::Token token = lexer.next_token();
 		while (token.type != Hyper::Token::Type::Eof)
 		{
@@ -37,11 +34,5 @@ auto main(int argc, char** argv) -> int
 		}
 	}
 
-	if (!file_found)
-	{
-		Hyper::Logger::hyper_fatal("no input files");
-		Hyper::Utils::terminate_compilation();
-	}
-	
 	return EXIT_SUCCESS;
 }

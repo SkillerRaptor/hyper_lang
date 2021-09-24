@@ -28,10 +28,10 @@ namespace Hyper
 		auto skip_next_whitespace() -> void;
 
 		auto scan_numeric_literal(char character) -> int64_t;
-		auto character_to_number(const std::string& source, char character) -> int64_t;
+		auto character_to_number(std::string_view source, char character) -> int64_t;
 
 		auto scan_identifier(char character) -> std::string;
-		auto to_keyword(const std::string& keyword) -> Token::Type;
+		auto to_keyword(std::string_view keyword) -> Token::Type;
 
 	private:
 		std::string m_file;
