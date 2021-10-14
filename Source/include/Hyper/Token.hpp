@@ -25,14 +25,14 @@ namespace Hyper
 			Comma,
 			Dot,
 			Semicolon,
-			
+
 			Equal,
 			NotEqual,
 			LessThan,
 			GreaterThan,
 			LessEqual,
 			GreaterEqual,
-			
+
 			Plus,
 			PlusEqual,
 			Minus,
@@ -63,7 +63,7 @@ namespace Hyper
 			BitwiseAndEqual,
 			BitwiseOrEqual,
 			BitwiseXorEqual,
-			
+
 			LeftShift,
 			RightShift,
 
@@ -72,11 +72,11 @@ namespace Hyper
 			LogicalNot,
 
 			Function,
-			
+
 			Return,
-			
+
 			Void,
-			
+
 			NumericLiteral
 		};
 

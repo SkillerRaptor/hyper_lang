@@ -39,7 +39,7 @@ namespace Hyper
 	auto Lexer::next_token() -> Token
 	{
 		skip_next_whitespace();
-		
+
 		Token token{};
 
 		char character = next_character();
@@ -93,7 +93,7 @@ namespace Hyper
 				token.type = Token::Type::Equal;
 				break;
 			}
-			
+
 			--m_position;
 
 			token.value = "=";
@@ -121,7 +121,7 @@ namespace Hyper
 				token.type = Token::Type::LessEqual;
 				break;
 			}
-			
+
 			if (character == '-')
 			{
 				token.value = "<-";
@@ -170,7 +170,7 @@ namespace Hyper
 				token.type = Token::Type::Increment;
 				break;
 			}
-			
+
 			if (character == '=')
 			{
 				token.value = "+=";
@@ -261,7 +261,7 @@ namespace Hyper
 				token.type = Token::Type::BitwiseAndEqual;
 				break;
 			}
-			
+
 			if (character == '&')
 			{
 				token.value = "&";
@@ -328,7 +328,7 @@ namespace Hyper
 				token.type = Token::Type::NumericLiteral;
 				break;
 			}
-			
+
 			if (std::isalpha(character) || character == '_')
 			{
 				token.value = scan_identifier(character);
@@ -413,7 +413,7 @@ namespace Hyper
 
 		return -1;
 	}
-	
+
 	auto Lexer::scan_identifier(char character) -> std::string
 	{
 		std::string string;
