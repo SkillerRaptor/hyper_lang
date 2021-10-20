@@ -4,35 +4,20 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "Hyper/Lexer.hpp"
+#include "Hyper/Compiler.hpp"
 #include "Hyper/Logger.hpp"
-#include "Hyper/Utils.hpp"
 
-auto main(int argc, char** argv) -> int
+int main(const int argc, const char **argv)
 {
 	if (argc < 2)
 	{
-		Hyper::Logger::hyper_fatal("no input files");
-		Hyper::Utils::terminate_compilation();
+		Hyper::Logger::log(
+			"hyper", Hyper::Logger::Level::Error, "no input files\n");
+		return 1;
 	}
 
-	for (size_t i = 1; i < static_cast<size_t>(argc); ++i)
-	{
-		Hyper::Lexer lexer(argv[i]);
-		if (!lexer.initialize())
-		{
-			continue;
-		}
+	Hyper::Compiler compiler(static_cast<size_t>(argc), argv);
+	compiler.compile();
 
-		// TODO(SkillerRaptor): Parsing
-
-		Hyper::Token token = lexer.next_token();
-		while (token.type != Hyper::Token::Type::Eof)
-		{
-			Hyper::Logger::info("Token", "{} - {}", token.value, token.type);
-			token = lexer.next_token();
-		}
-	}
-
-	return EXIT_SUCCESS;
+	return 0;
 }

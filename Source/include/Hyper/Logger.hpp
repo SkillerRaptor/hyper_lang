@@ -6,101 +6,105 @@
 
 #pragma once
 
+#include <fmt/color.h>
 #include <fmt/format.h>
 
+#include <string>
 #include <string_view>
-#include <utility>
 
 namespace Hyper
 {
 	class Logger
 	{
-	private:
-		enum class Level
+	public:
+		enum class Level : unsigned char
 		{
-			None = 0,
-			Info,
+			Info = 0,
 			Warning,
-			Error,
-			Fatal
+			Error
 		};
 
 	public:
-		template <class... Args>
-		static auto log(std::string_view format, Args&&... args) -> void
+		Logger() = delete;
+		~Logger() = delete;
+
+		Logger(const Logger &other) = delete;
+		Logger(Logger &&other) = delete;
+
+		Logger &operator=(const Logger &other) = delete;
+		Logger &operator=(Logger &&other) = delete;
+
+		template <typename... Args>
+		static void log(const std::string_view string, Args &&...args)
 		{
-			log(Level::None, "", format, std::forward<Args>(args)...);
+			const std::string formatted_string =
+				format(string, std::forward<Args>(args)...);
+			fmt::print("{}", formatted_string);
 		}
 
-		template <class... Args>
-		static auto info(std::string_view prefix, std::string_view format, Args&&... args) -> void
+		template <typename... Args>
+		static void log(
+			const std::string_view prefix,
+			const Level level,
+			const std::string_view string,
+			Args &&...args)
 		{
-			log(Level::Info, prefix, format, std::forward<Args>(args)...);
-		}
-
-		template <class... Args>
-		static auto warning(std::string_view prefix, std::string_view format, Args&&... args) -> void
-		{
-			log(Level::Warning, prefix, format, std::forward<Args>(args)...);
-		}
-
-		template <class... Args>
-		static auto error(std::string_view prefix, std::string_view format, Args&&... args) -> void
-		{
-			log(Level::Error, prefix, format, std::forward<Args>(args)...);
-		}
-
-		template <class... Args>
-		static auto fatal(std::string_view prefix, std::string_view format, Args&&... args) -> void
-		{
-			log(Level::Fatal, prefix, format, std::forward<Args>(args)...);
-		}
-
-		template <class... Args>
-		static auto hyper_info(std::string_view format, Args&&... args) -> void
-		{
-			info("hyper", format, std::forward<Args>(args)...);
-		}
-
-		template <class... Args>
-		static auto hyper_warning(std::string_view format, Args&&... args) -> void
-		{
-			warning("hyper", format, std::forward<Args>(args)...);
-		}
-
-		template <class... Args>
-		static auto hyper_error(std::string_view format, Args&&... args) -> void
-		{
-			error("hyper", format, std::forward<Args>(args)...);
-		}
-
-		template <class... Args>
-		static auto hyper_fatal(std::string_view format, Args&&... args) -> void
-		{
-			fatal("hyper", format, std::forward<Args>(args)...);
-		}
-
-	private:
-		static auto internal_log(const Level level, std::string_view prefix, std::string_view string) -> void;
-
-		template <class... Args>
-		static auto log(const Level log_level, std::string_view prefix, std::string_view format, Args&&... args) -> void
-		{
-			if (format.empty())
+			const fmt::color level_color = [level]()
 			{
-				internal_log(log_level, prefix, format);
-				return;
-			}
+				switch (level)
+				{
+				case Level::Info:
+					return fmt::color::white;
+				case Level::Warning:
+					return fmt::color::gold;
+				case Level::Error:
+					return fmt::color::crimson;
+				default:
+					return fmt::color::white;
+				}
+			}();
 
-			constexpr size_t args_count = sizeof...(Args);
-			if constexpr (args_count == 0)
+			const std::string_view level_name = [level]()
 			{
-				internal_log(log_level, prefix, format);
-			}
-			else
-			{
-				internal_log(log_level, prefix, fmt::format(format, std::forward<Args>(args)...));
-			}
+				switch (level)
+				{
+				case Level::Info:
+					return "info";
+				case Level::Warning:
+					return "warning";
+				case Level::Error:
+					return "error";
+				default:
+					return "";
+				}
+			}();
+
+			const std::string formatted_prefix = format(
+				fmt::fg(fmt::color::white) | fmt::emphasis::bold, "{}", prefix);
+			const std::string formatted_level =
+				format(fmt::fg(level_color), "{}", level_name);
+			const std::string formatted_string =
+				format(string, std::forward<Args>(args)...);
+			fmt::print(
+				"{}: {}: {}",
+				formatted_prefix,
+				formatted_level,
+				formatted_string);
+		}
+
+		template <typename... Args>
+		static std::string format(const std::string_view string, Args &&...args)
+		{
+			return fmt::format(string, std::forward<Args>(args)...);
+		}
+
+		template <typename... Args>
+		static std::string format(
+			const fmt::text_style text_style,
+			const std::string_view string,
+			Args &&...args)
+		{
+			return fmt::format(text_style, string, std::forward<Args>(args)...);
 		}
 	};
 } // namespace Hyper

@@ -9,18 +9,11 @@
 #-------------------------------------------------------------------------------------------
 set(SOURCES
         src/main.cpp
-        src/Hyper/Lexer.cpp
-        src/Hyper/Logger.cpp
-        src/Hyper/Parser.cpp
-        src/Hyper/Token.cpp
-        src/Hyper/Utils.cpp)
+        src/Hyper/Compiler.cpp)
 
 set(HEADERS
-        include/Hyper/Lexer.hpp
-        include/Hyper/Logger.hpp
-        include/Hyper/Parser.hpp
-        include/Hyper/Token.hpp
-        include/Hyper/Utils.hpp)
+        include/Hyper/Compiler.hpp
+        include/Hyper/Logger.hpp)
 
 foreach (item IN ITEMS ${SOURCES} ${HEADERS})
     get_filename_component(src_path "${item}" PATH)
@@ -29,20 +22,17 @@ foreach (item IN ITEMS ${SOURCES} ${HEADERS})
     source_group("${group_path}" FILES "${item}")
 endforeach ()
 
-add_executable(Hyper ${SOURCES} ${HEADERS})
-target_link_libraries(Hyper
+add_executable(hyper ${SOURCES} ${HEADERS})
+target_link_libraries(hyper
         PRIVATE
         ProjectOptions
-        ProjectWarnings)
+        ProjectWarnings
+        CONAN_PKG::fmt)
 target_include_directories(
-        Hyper
+        hyper
         PRIVATE
         include)
-target_link_libraries(
-        Hyper
-        PRIVATE
-        CONAN_PKG::fmt)
-# add_custom_command(
-#        TARGET hyper
-#        POST_BUILD
-#        COMMAND ${CMAKE_COMMAND} -E copy_directory tests $<TARGET_FILE_DIR:hyper>/tests)
+add_custom_command(
+        TARGET hyper
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tests $<TARGET_FILE_DIR:hyper>/tests)
