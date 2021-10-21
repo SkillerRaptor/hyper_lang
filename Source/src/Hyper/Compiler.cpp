@@ -6,6 +6,7 @@
 
 #include "Hyper/Compiler.hpp"
 
+#include "Hyper/Lexer.hpp"
 #include "Hyper/Logger.hpp"
 
 #include <filesystem>
@@ -51,6 +52,22 @@ namespace Hyper
 
 			std::stringstream file_text_stream;
 			file_text_stream << file_stream.rdbuf();
+
+			Lexer lexer(file, file_text_stream.str());
+
+			Token token = lexer.scan_next_token();
+			while (token.type != Token::Type::Eof)
+			{
+				Logger::log(
+					"hyper",
+					Logger::Level::Info,
+					"{}: value - {}, type - {}\n",
+					file,
+					token.value,
+					static_cast<uint8_t>(token.type));
+
+				token = lexer.scan_next_token();
+			}
 		}
 	}
 } // namespace Hyper

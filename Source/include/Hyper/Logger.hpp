@@ -35,7 +35,7 @@ namespace Hyper
 		Logger &operator=(Logger &&other) = delete;
 
 		template <typename... Args>
-		static void log(const std::string_view string, Args &&...args)
+		static void log_raw(const std::string_view string, Args &&...args)
 		{
 			const std::string formatted_string =
 				format(string, std::forward<Args>(args)...);

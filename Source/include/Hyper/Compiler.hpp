@@ -16,9 +16,9 @@ namespace Hyper
 		Compiler(size_t file_count, const char **files);
 
 		Compiler(const Compiler &other) = delete;
-		
+
 		void compile();
-	
+
 	private:
 		size_t m_file_count = { 0 };
 		const char **m_files = { nullptr };

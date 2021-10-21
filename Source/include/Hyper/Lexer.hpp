@@ -8,8 +8,6 @@
 
 #include "Hyper/Token.hpp"
 
-#include <cstddef>
-#include <cstdint>
 #include <string>
 
 namespace Hyper
@@ -17,29 +15,26 @@ namespace Hyper
 	class Lexer
 	{
 	public:
-		explicit Lexer(std::string t_file);
+		Lexer(std::string file_name, std::string file_text);
 
-		auto initialize() -> bool;
-
-		auto next_token() -> Token;
+		[[nodiscard]] Token scan_next_token();
 
 	private:
-		auto next_character() -> char;
-		auto skip_next_whitespace() -> void;
+		void skip_whitespace() noexcept;
 
-		auto scan_numeric_literal(char character) -> int64_t;
-		auto character_to_number(std::string_view source, char character) -> int64_t;
+		void revert() noexcept;
+		char advance() noexcept;
+		[[nodiscard]] char peek() const noexcept;
 
-		auto scan_identifier(char character) -> std::string;
-		auto to_keyword(std::string_view keyword) -> Token::Type;
+		[[nodiscard]] SourceLocation current_location(
+			size_t length) const noexcept;
 
 	private:
-		std::string m_file;
-		std::string m_text;
+		std::string m_file_name = {};
+		std::string m_file_text = {};
 
-		size_t m_position{ 0 };
-
-		size_t m_line{ 1 };
-		size_t m_column{ 1 };
+		size_t m_position = { 0 };
+		size_t m_line = { 1 };
+		size_t m_column = { 1 };
 	};
 } // namespace Hyper

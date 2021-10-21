@@ -9,11 +9,18 @@
 #-------------------------------------------------------------------------------------------
 set(SOURCES
         src/main.cpp
-        src/Hyper/Compiler.cpp)
+        src/Hyper/Compiler.cpp
+        src/Hyper/Diagnostics.cpp
+        src/Hyper/Lexer.cpp
+        )
 
 set(HEADERS
         include/Hyper/Compiler.hpp
-        include/Hyper/Logger.hpp)
+        include/Hyper/Diagnostics.hpp
+        include/Hyper/Lexer.hpp
+        include/Hyper/Logger.hpp
+        include/Hyper/SourceLocation.hpp
+        include/Hyper/Token.hpp)
 
 foreach (item IN ITEMS ${SOURCES} ${HEADERS})
     get_filename_component(src_path "${item}" PATH)

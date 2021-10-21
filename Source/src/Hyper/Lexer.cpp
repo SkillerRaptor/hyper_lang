@@ -6,455 +6,119 @@
 
 #include "Hyper/Lexer.hpp"
 
-#include "Hyper/Logger.hpp"
-
-#include <cctype>
-#include <fstream>
-#include <sstream>
+#include "Hyper/Diagnostics.hpp"
 
 namespace Hyper
 {
-	Lexer::Lexer(std::string t_file)
-		: m_file(std::move(t_file))
+	Lexer::Lexer(std::string file_name, std::string file_text)
+		: m_file_name(std::move(file_name))
+		, m_file_text(std::move(file_text))
 	{
 	}
 
-	auto Lexer::initialize() -> bool
+	Token Lexer::scan_next_token()
 	{
-		const std::ifstream file_stream(m_file);
-		if (!file_stream.is_open())
-		{
-			Logger::fatal(m_file, "No such file or directory");
-			return false;
-		}
+		skip_whitespace();
 
-		std::stringstream string_stream;
-		string_stream << file_stream.rdbuf();
+		Token token = {};
 
-		m_text = string_stream.str();
-
-		return true;
-	}
-
-	auto Lexer::next_token() -> Token
-	{
-		skip_next_whitespace();
-
-		Token token{};
-
-		char character = next_character();
+		const char character = advance();
 		switch (character)
 		{
-		case ':':
-			token.value = ":";
-			token.type = Token::Type::Colon;
-			break;
-		case ',':
-			token.value = ",";
-			token.type = Token::Type::Comma;
-			break;
-		case '.':
-			token.value = ".";
-			token.type = Token::Type::Dot;
-			break;
-		case ';':
-			token.value = ";";
-			token.type = Token::Type::Semicolon;
-			break;
-		case '{':
-			token.value = "{";
-			token.type = Token::Type::LeftBrace;
-			break;
-		case '}':
-			token.value = "}";
-			token.type = Token::Type::RightBrace;
-			break;
-		case '(':
-			token.value = "(";
-			token.type = Token::Type::LeftParenthesis;
-			break;
-		case ')':
-			token.value = ")";
-			token.type = Token::Type::RightParenthesis;
-			break;
-		case '[':
-			token.value = "[";
-			token.type = Token::Type::Semicolon;
-			break;
-		case ']':
-			token.value = "]";
-			token.type = Token::Type::RightBrace;
-			break;
-		case '=':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = "==";
-				token.type = Token::Type::Equal;
-				break;
-			}
-
-			--m_position;
-
-			token.value = "=";
-			token.type = Token::Type::Assign;
-			break;
-		case '!':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = "!=";
-				token.type = Token::Type::NotEqual;
-				break;
-			}
-
-			--m_position;
-
-			token.value = "!";
-			token.type = Token::Type::LogicalNot;
-			break;
-		case '<':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = "<=";
-				token.type = Token::Type::LessEqual;
-				break;
-			}
-
-			if (character == '-')
-			{
-				token.value = "<-";
-				token.type = Token::Type::LeftArrow;
-				break;
-			}
-
-			if (character == '<')
-			{
-				token.value = "<<";
-				token.type = Token::Type::LeftShift;
-				break;
-			}
-
-			--m_position;
-
-			token.value = "<";
-			token.type = Token::Type::LessThan;
-			break;
-		case '>':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = ">=";
-				token.type = Token::Type::GreaterEqual;
-				break;
-			}
-
-			if (character == '>')
-			{
-				token.value = ">>";
-				token.type = Token::Type::RightShift;
-				break;
-			}
-
-			--m_position;
-
-			token.value = ">";
-			token.type = Token::Type::GreaterThan;
-			break;
 		case '+':
-			character = next_character();
-			if (character == '+')
-			{
-				token.value = "+";
-				token.type = Token::Type::Increment;
-				break;
-			}
-
-			if (character == '=')
-			{
-				token.value = "+=";
-				token.type = Token::Type::PlusEqual;
-				break;
-			}
-
-			--m_position;
-
 			token.value = "+";
 			token.type = Token::Type::Plus;
+			token.source_location = current_location(1);
 			break;
 		case '-':
-			character = next_character();
-			if (character == '-')
-			{
-				token.value = "--";
-				token.type = Token::Type::Decrement;
-				break;
-			}
-
-			if (character == '=')
-			{
-				token.value = "-=";
-				token.type = Token::Type::MinusEqual;
-				break;
-			}
-
-			if (character == '>')
-			{
-				token.value = "->";
-				token.type = Token::Type::RightArrow;
-				break;
-			}
-
-			--m_position;
-
 			token.value = "-";
 			token.type = Token::Type::Minus;
+			token.source_location = current_location(1);
 			break;
 		case '*':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = "*=";
-				token.type = Token::Type::StarEqual;
-				break;
-			}
-
-			--m_position;
-
 			token.value = "*";
 			token.type = Token::Type::Star;
+			token.source_location = current_location(1);
 			break;
 		case '/':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = "/=";
-				token.type = Token::Type::SlashEqual;
-				break;
-			}
-
-			--m_position;
-
 			token.value = "/";
 			token.type = Token::Type::Slash;
-			break;
-		case '%':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = "%=";
-				token.type = Token::Type::ModularEqual;
-				break;
-			}
-
-			--m_position;
-
-			token.value = "%";
-			token.type = Token::Type::Modular;
-			break;
-		case '&':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = "&=";
-				token.type = Token::Type::BitwiseAndEqual;
-				break;
-			}
-
-			if (character == '&')
-			{
-				token.value = "&";
-				token.type = Token::Type::LogicalAnd;
-				break;
-			}
-
-			--m_position;
-
-			token.value = "&";
-			token.type = Token::Type::BitwiseAnd;
-			break;
-		case '|':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = "|=";
-				token.type = Token::Type::BitwiseOrEqual;
-				break;
-			}
-
-			if (character == '|')
-			{
-				token.value = "|";
-				token.type = Token::Type::LogicalOr;
-				break;
-			}
-
-			--m_position;
-
-			token.value = "|";
-			token.type = Token::Type::BitwiseOr;
-			break;
-		case '^':
-			character = next_character();
-			if (character == '=')
-			{
-				token.value = "^=";
-				token.type = Token::Type::BitwiseXorEqual;
-				break;
-			}
-
-			--m_position;
-
-			token.value = "^";
-			token.type = Token::Type::BitwiseXor;
-			break;
-		case '~':
-			token.value = "~";
-			token.type = Token::Type::BitwiseNot;
+			token.source_location = current_location(1);
 			break;
 		default:
-			if (m_position >= m_text.size())
+			if (m_position >= m_file_text.length())
 			{
 				token.value = "";
 				token.type = Token::Type::Eof;
+				token.source_location = current_location(0);
 				break;
 			}
 
-			if (std::isdigit(character))
-			{
-				// TODO(SkillerRaptor): Binary, Hexadecimal, Octadecimal, Floating Point
-				token.value = std::to_string(scan_numeric_literal(character));
-				token.type = Token::Type::NumericLiteral;
-				break;
-			}
-
-			if (std::isalpha(character) || character == '_')
-			{
-				token.value = scan_identifier(character);
-				token.type = Token::Type::Identifier;
-
-				Token::Type token_type = to_keyword(token.value);
-				if (token_type != Token::Type::Eof)
-				{
-					token.type = token_type;
-				}
-
-				break;
-			}
-
-			break;
+			std::abort();
 		}
 
 		return token;
 	}
 
-	auto Lexer::next_character() -> char
+	void Lexer::skip_whitespace() noexcept
 	{
-		if (m_position >= m_text.size())
+		char character = advance();
+		while (character == ' ' || character == '\t' || character == '\n' ||
+			   character == '\r' || character == '\f')
+		{
+			character = advance();
+		}
+
+		revert();
+	}
+
+	void Lexer::revert() noexcept
+	{
+		if (m_position <= 0)
+		{
+			return;
+		}
+
+		--m_position;
+	}
+
+	char Lexer::advance() noexcept
+	{
+		if (m_position >= m_file_text.length())
 		{
 			return '\0';
 		}
 
-		const char character = m_text[m_position++];
-
-		++m_column;
-
+		const char character = m_file_text[m_position++];
 		if (character == '\n')
 		{
 			++m_line;
-			m_column = 1;
+			m_column = 0;
 		}
+
+		++m_column;
 
 		return character;
 	}
 
-	auto Lexer::skip_next_whitespace() -> void
+	char Lexer::peek() const noexcept
 	{
-		char character;
-
-		do
+		if (m_position >= m_file_text.length())
 		{
-			character = next_character();
-		} while (character == ' ' || character == '\t' || character == '\n' || character == '\r' || character == '\f');
-
-		--m_position;
-	}
-
-	auto Lexer::scan_numeric_literal(char character) -> int64_t
-	{
-		int64_t number = 0;
-
-		int64_t position = character_to_number("0123456789", character);
-		while (position >= 0)
-		{
-			number = number * 10 + position;
-			character = next_character();
-
-			position = character_to_number("0123456789", character);
+			return '\0';
 		}
 
-		--m_position;
-
-		return number;
+		return m_file_text[m_position];
 	}
 
-	auto Lexer::character_to_number(std::string_view source, char character) -> int64_t
+	SourceLocation Lexer::current_location(const size_t length) const noexcept
 	{
-		for (size_t position = 0; source[position] != '\0'; ++position)
-		{
-			if (source[position] != character)
-			{
-				continue;
-			}
+		SourceLocation source_location = {};
+		source_location.line = m_line;
+		source_location.column = m_column;
+		source_location.length = length;
+		source_location.start = m_position;
 
-			return static_cast<int64_t>(position);
-		}
-
-		return -1;
-	}
-
-	auto Lexer::scan_identifier(char character) -> std::string
-	{
-		std::string string;
-
-		while (isalpha(character) || isdigit(character) || character == '_')
-		{
-			string += character;
-			character = next_character();
-		}
-
-		--m_position;
-
-		return string;
-	}
-
-	auto Lexer::to_keyword(std::string_view keyword) -> Token::Type
-	{
-		switch (keyword[0])
-		{
-		case 'f':
-			if (keyword == "fn")
-			{
-				return Token::Type::Function;
-			}
-			break;
-		case 'r':
-			if (keyword == "return")
-			{
-				return Token::Type::Return;
-			}
-			break;
-		case 'v':
-			if (keyword == "void")
-			{
-				return Token::Type::Void;
-			}
-			break;
-		default:
-			break;
-		}
-
-		return Token::Type::Eof;
+		return source_location;
 	}
 } // namespace Hyper
