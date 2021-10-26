@@ -17,7 +17,6 @@ set(SOURCES
 set(HEADERS
         include/Hyper/Compiler.hpp
         include/Hyper/Lexer.hpp
-        include/Hyper/Prerequisites.hpp
         include/Hyper/SourceLocation.hpp
         include/Hyper/Token.hpp)
 

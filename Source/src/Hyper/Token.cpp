@@ -30,6 +30,11 @@ namespace Hyper
 		case Token::Type::Slash:
 			ostream << "Slash";
 			break;
+		case Token::Type::NumericLiteral:
+			ostream << "Numeric Literal";
+			break;
+		default:
+			break;
 		}
 
 		return ostream;

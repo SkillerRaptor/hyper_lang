@@ -6,8 +6,6 @@
 
 #include "Hyper/Lexer.hpp"
 
-#include "Hyper/Prerequisites.hpp"
-
 namespace Hyper
 {
 	Lexer::Lexer(std::string file_name, std::string file_text)
@@ -37,10 +35,16 @@ namespace Hyper
 				return new_token("", Token::Type::Eof);
 			}
 
+			if (std::isdigit(character))
+			{
+				const std::string numeric_literal = scan_numeric_literal(character);
+				return new_token(numeric_literal, Token::Type::NumericLiteral);
+			}
+
 			break;
 		}
 
-		HYPER_UNREACHABLE();
+		std::abort();
 	}
 
 	Token Lexer::new_token(const std::string &value, Token::Type token_type)
@@ -59,14 +63,28 @@ namespace Hyper
 		return token;
 	}
 
+	std::string Lexer::scan_numeric_literal(char character)
+	{
+		std::string numeric_literal;
+		numeric_literal += character;
+
+		char next_character = advance();
+		while (std::isdigit(next_character))
+		{
+			numeric_literal += next_character;
+			next_character = advance();
+		}
+		
+		revert();
+
+		return numeric_literal;
+	}
+
 	void Lexer::skip_whitespace() noexcept
 	{
 		char character = advance();
-		while (character == ' ' ||
-					 character == '\t' ||
-					 character == '\n' ||
-					 character == '\r' ||
-					 character == '\f')
+		while (character == ' ' || character == '\t' || character == '\n' ||
+					 character == '\r' || character == '\f')
 		{
 			character = advance();
 		}

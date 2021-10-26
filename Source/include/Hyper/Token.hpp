@@ -24,7 +24,9 @@ namespace Hyper
 			Plus,
 			Minus,
 			Star,
-			Slash
+			Slash,
+			
+			NumericLiteral
 		};
 
 		std::string value;
