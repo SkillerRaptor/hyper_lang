@@ -18,50 +18,62 @@ namespace Hyper
 
 	std::unique_ptr<AstNode> Parser::parse()
 	{
-		return parse_binary_expression();
+		return parse_binary_expression(0);
 	}
 
-	std::unique_ptr<Expression> Parser::parse_binary_expression()
+	std::unique_ptr<Expression>
+		Parser::parse_binary_expression(uint8_t precedence)
 	{
 		std::unique_ptr<Expression> left_expression = parse_primary_expression();
 
-		const Token token = current_token();
-		if (token.type == Token::Type::Eof)
+		Token::Type token_type = current_token().type;
+		if (token_type == Token::Type::Eof)
 		{
 			return left_expression;
 		}
 
-		advance_token();
-
-		std::unique_ptr<Expression> right_expression = parse_binary_expression();
-
-		const BinaryExpression::Operation operation = [&token]()
+		while (get_operator_precedence(token_type) > precedence)
 		{
-			switch (token.type)
-			{
-			case Token::Type::Plus:
-				return BinaryExpression::Operation::Addition;
-			case Token::Type::Minus:
-				return BinaryExpression::Operation::Subtraction;
-			case Token::Type::Star:
-				return BinaryExpression::Operation::Multiplication;
-			case Token::Type::Slash:
-				return BinaryExpression::Operation::Division;
-			default:
-				std::abort();
-			}
-		}();
+			advance_token();
 
-		return std::make_unique<BinaryExpression>(
-			operation, std::move(left_expression), std::move(right_expression));
+			std::unique_ptr<Expression> right_expression =
+				parse_binary_expression(get_operator_precedence(token_type));
+
+			const BinaryExpression::Operation operation = [&token_type]()
+			{
+				switch (token_type)
+				{
+				case Token::Type::Plus:
+					return BinaryExpression::Operation::Addition;
+				case Token::Type::Minus:
+					return BinaryExpression::Operation::Subtraction;
+				case Token::Type::Star:
+					return BinaryExpression::Operation::Multiplication;
+				case Token::Type::Slash:
+					return BinaryExpression::Operation::Division;
+				default:
+					std::abort();
+				}
+			}();
+
+			left_expression = std::make_unique<BinaryExpression>(operation, std::move(left_expression), std::move(right_expression));
+			
+			token_type = current_token().type;
+			if (token_type == Token::Type::Eof)
+			{
+				return left_expression;
+			}
+		}
+
+		return left_expression;
 	}
 
 	std::unique_ptr<Expression> Parser::parse_primary_expression()
 	{
-		const Token token = current_token();
-		std::unique_ptr<Expression> expression = [&token, this]()
+		const Token::Type token_type = current_token().type;
+		std::unique_ptr<Expression> expression = [&token_type, this]()
 		{
-			switch (token.type)
+			switch (token_type)
 			{
 			case Token::Type::NumericLiteral:
 			{
@@ -99,7 +111,24 @@ namespace Hyper
 		{
 			return;
 		}
-		
+
 		++m_current_token;
+	}
+
+	uint8_t Parser::get_operator_precedence(Token::Type token_type) const noexcept
+	{
+		switch (token_type)
+		{
+		case Token::Type::Plus:
+		case Token::Type::Minus:
+			return 10;
+		case Token::Type::Star:
+		case Token::Type::Slash:
+			return 20;
+		default:
+			break;
+		}
+
+		return 0;
 	}
 } // namespace Hyper
