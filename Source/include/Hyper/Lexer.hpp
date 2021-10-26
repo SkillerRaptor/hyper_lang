@@ -17,24 +17,27 @@ namespace Hyper
 	public:
 		Lexer(std::string file_name, std::string file_text);
 
-		[[nodiscard]] Token scan_next_token();
+		[[nodiscard]] Token next_token();
 
 	private:
+		[[nodiscard]] Token new_token(
+			const std::string &value,
+			Token::Type token_type);
+		
 		void skip_whitespace() noexcept;
 
 		void revert() noexcept;
 		char advance() noexcept;
 		[[nodiscard]] char peek() const noexcept;
 
-		[[nodiscard]] SourceLocation current_location(
-			size_t length) const noexcept;
+		[[nodiscard]] SourceLocation current_location(size_t length) const noexcept;
 
 	private:
-		std::string m_file_name = {};
-		std::string m_file_text = {};
+		std::string m_file_name;
+		std::string m_file_text;
 
-		size_t m_position = { 0 };
-		size_t m_line = { 1 };
-		size_t m_column = { 1 };
+		size_t m_position = 0;
+		size_t m_line = 1;
+		size_t m_column = 1;
 	};
 } // namespace Hyper

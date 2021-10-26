@@ -5,18 +5,21 @@
  */
 
 #include "Hyper/Compiler.hpp"
-#include "Hyper/Logger.hpp"
 
-int main(const int argc, const char **argv)
+#include <iostream>
+#include <vector>
+
+int main(int argc, char **argv)
 {
 	if (argc < 2)
 	{
-		Hyper::Logger::log(
-			"hyper", Hyper::Logger::Level::Error, "no input files\n");
+		std::cerr << "hyper: no input files\n";
 		return 1;
 	}
-
-	Hyper::Compiler compiler(static_cast<size_t>(argc), argv);
+	
+	const std::vector<const char*> files(argv + 1, argv + argc);
+	
+	Hyper::Compiler compiler(files);
 	compiler.compile();
 
 	return 0;

@@ -8,6 +8,7 @@
 
 #include "Hyper/SourceLocation.hpp"
 
+#include <ostream>
 #include <string>
 
 namespace Hyper
@@ -19,15 +20,20 @@ namespace Hyper
 			None = 0,
 
 			Eof,
-			
+
 			Plus,
 			Minus,
 			Star,
 			Slash
 		};
-		
-		std::string value = {};
-		Type type = { Type::None };
-		SourceLocation source_location = { 1, 1, 1, 0 };
+
+		std::string value;
+		Type type = Type::None;
+		SourceLocation source_location = {};
 	};
+
+	std::ostream &operator<<(
+		std::ostream &ostream,
+		const Token::Type &token_type);
+	std::ostream &operator<<(std::ostream &ostream, const Token &token);
 } // namespace Hyper

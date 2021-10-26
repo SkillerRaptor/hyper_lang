@@ -6,21 +6,18 @@
 
 #pragma once
 
-#include <cstddef>
+#include <vector>
 
 namespace Hyper
 {
 	class Compiler
 	{
 	public:
-		Compiler(size_t file_count, const char **files);
-
-		Compiler(const Compiler &other) = delete;
+		explicit Compiler(std::vector<const char *> files);
 
 		void compile();
 
 	private:
-		size_t m_file_count = { 0 };
-		const char **m_files = { nullptr };
+		std::vector<const char *> m_files = {};
 	};
 } // namespace Hyper

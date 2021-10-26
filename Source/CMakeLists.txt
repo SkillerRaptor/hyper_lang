@@ -10,15 +10,14 @@
 set(SOURCES
         src/main.cpp
         src/Hyper/Compiler.cpp
-        src/Hyper/Diagnostics.cpp
         src/Hyper/Lexer.cpp
-        )
+        src/Hyper/SourceLocation.cpp
+        src/Hyper/Token.cpp)
 
 set(HEADERS
         include/Hyper/Compiler.hpp
-        include/Hyper/Diagnostics.hpp
         include/Hyper/Lexer.hpp
-        include/Hyper/Logger.hpp
+        include/Hyper/Prerequisites.hpp
         include/Hyper/SourceLocation.hpp
         include/Hyper/Token.hpp)
 
@@ -33,8 +32,7 @@ add_executable(hyper ${SOURCES} ${HEADERS})
 target_link_libraries(hyper
         PRIVATE
         ProjectOptions
-        ProjectWarnings
-        CONAN_PKG::fmt)
+        ProjectWarnings)
 target_include_directories(
         hyper
         PRIVATE
@@ -42,4 +40,4 @@ target_include_directories(
 add_custom_command(
         TARGET hyper
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tests $<TARGET_FILE_DIR:hyper>/tests)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/examples $<TARGET_FILE_DIR:hyper>/examples)

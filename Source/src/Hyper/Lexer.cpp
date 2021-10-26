@@ -6,7 +6,7 @@
 
 #include "Hyper/Lexer.hpp"
 
-#include "Hyper/Diagnostics.hpp"
+#include "Hyper/Prerequisites.hpp"
 
 namespace Hyper
 {
@@ -16,46 +16,45 @@ namespace Hyper
 	{
 	}
 
-	Token Lexer::scan_next_token()
+	Token Lexer::next_token()
 	{
 		skip_whitespace();
-
-		Token token = {};
 
 		const char character = advance();
 		switch (character)
 		{
 		case '+':
-			token.value = "+";
-			token.type = Token::Type::Plus;
-			token.source_location = current_location(1);
-			break;
+			return new_token("+", Token::Type::Plus);
 		case '-':
-			token.value = "-";
-			token.type = Token::Type::Minus;
-			token.source_location = current_location(1);
-			break;
+			return new_token("-", Token::Type::Minus);
 		case '*':
-			token.value = "*";
-			token.type = Token::Type::Star;
-			token.source_location = current_location(1);
-			break;
+			return new_token("*", Token::Type::Star);
 		case '/':
-			token.value = "/";
-			token.type = Token::Type::Slash;
-			token.source_location = current_location(1);
-			break;
+			return new_token("/", Token::Type::Slash);
 		default:
 			if (m_position >= m_file_text.length())
 			{
-				token.value = "";
-				token.type = Token::Type::Eof;
-				token.source_location = current_location(0);
-				break;
+				return new_token("", Token::Type::Eof);
 			}
 
-			std::abort();
+			break;
 		}
+
+		HYPER_UNREACHABLE();
+	}
+
+	Token Lexer::new_token(const std::string &value, Token::Type token_type)
+	{
+		SourceLocation source_location = {};
+		source_location.line = m_line;
+		source_location.column = m_column - value.length() + 1;
+		source_location.length = value.length();
+		source_location.start = m_position - value.length();
+
+		Token token = {};
+		token.value = value;
+		token.type = token_type;
+		token.source_location = source_location;
 
 		return token;
 	}
@@ -63,8 +62,11 @@ namespace Hyper
 	void Lexer::skip_whitespace() noexcept
 	{
 		char character = advance();
-		while (character == ' ' || character == '\t' || character == '\n' ||
-			   character == '\r' || character == '\f')
+		while (character == ' ' ||
+					 character == '\t' ||
+					 character == '\n' ||
+					 character == '\r' ||
+					 character == '\f')
 		{
 			character = advance();
 		}
@@ -109,16 +111,5 @@ namespace Hyper
 		}
 
 		return m_file_text[m_position];
-	}
-
-	SourceLocation Lexer::current_location(const size_t length) const noexcept
-	{
-		SourceLocation source_location = {};
-		source_location.line = m_line;
-		source_location.column = m_column;
-		source_location.length = length;
-		source_location.start = m_position;
-
-		return source_location;
 	}
 } // namespace Hyper

@@ -42,7 +42,7 @@ pip3 install conan
 ### Building
 1. Download the source code by using Git and cloning the repository, or downloading it as a zip.
 ```shell
-git clone ttps://github.com/SkillerRaptor/HyperLang
+git clone https://github.com/SkillerRaptor/HyperLang
 cd HyperLang
 ```
 

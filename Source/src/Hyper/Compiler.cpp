@@ -7,66 +7,47 @@
 #include "Hyper/Compiler.hpp"
 
 #include "Hyper/Lexer.hpp"
-#include "Hyper/Logger.hpp"
 
-#include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <sstream>
+#include <utility>
 
 namespace Hyper
 {
-	Compiler::Compiler(const size_t file_count, const char **files)
-		: m_file_count(file_count)
-		, m_files(files)
+	Compiler::Compiler(std::vector<const char *> files)
+		: m_files(std::move(files))
 	{
 	}
 
 	void Compiler::compile()
 	{
-		for (size_t i = 1; i < m_file_count; ++i)
+		for (const char *file : m_files)
 		{
-			const std::string file = m_files[i];
-
-			if (!std::filesystem::exists(file))
-			{
-				Logger::log(
-					"hyper",
-					Logger::Level::Error,
-					"{}: no such file or directory\n",
-					file);
-
-				continue;
-			}
-
-			const std::ifstream file_stream(file.c_str());
+			const std::ifstream file_stream(file);
 			if (!file_stream.is_open())
 			{
-				Logger::log(
-					"hyper",
-					Logger::Level::Error,
-					"{}: no such file or directory\n",
-					file);
-
+				std::cerr << "hyper: " << file << ": no such file or directory\n";
 				continue;
 			}
 
-			std::stringstream file_text_stream;
-			file_text_stream << file_stream.rdbuf();
+			const std::string file_text = [&file_stream]()
+			{
+				std::stringstream file_text_stream;
+				file_text_stream << file_stream.rdbuf();
+				return file_text_stream.str();
+			}();
 
-			Lexer lexer(file, file_text_stream.str());
+			Lexer lexer(file, file_text);
 
-			Token token = lexer.scan_next_token();
+			Token token = lexer.next_token();
 			while (token.type != Token::Type::Eof)
 			{
-				Logger::log(
-					"hyper",
-					Logger::Level::Info,
-					"{}: value - {}, type - {}\n",
-					file,
-					token.value,
-					static_cast<uint8_t>(token.type));
+				std::cout << "hyper: " << file
+					<< ": " << token
+					<< '\n';
 
-				token = lexer.scan_next_token();
+				token = lexer.next_token();
 			}
 		}
 	}
