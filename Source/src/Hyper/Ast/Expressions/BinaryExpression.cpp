@@ -24,14 +24,11 @@ namespace Hyper
 	{
 		AstNode::dump(indent);
 		
-		std::cout << "operation = " << m_operation;
+		std::cout << "operation = " << m_operation
+							<< '\n';
 		
-		std::cout << '\n';
-		
-		++indent;
-		
-		m_left->dump(indent);
-		m_right->dump(indent);
+		m_left->dump(indent + 1);
+		m_right->dump(indent + 1);
 	}
 
 	const char *BinaryExpression::name() const noexcept

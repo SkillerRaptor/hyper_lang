@@ -9,7 +9,6 @@
 #include "Hyper/Ast/Expressions/Expression.hpp"
 
 #include <memory>
-#include <ostream>
 
 namespace Hyper
 {
@@ -41,7 +40,7 @@ namespace Hyper
 		std::unique_ptr<Expression> m_left = nullptr;
 		std::unique_ptr<Expression> m_right = nullptr;
 	};
-
+	
 	std::ostream &operator<<(
 		std::ostream &ostream,
 		const BinaryExpression::Operation &operation);

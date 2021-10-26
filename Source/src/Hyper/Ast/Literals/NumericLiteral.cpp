@@ -19,9 +19,8 @@ namespace Hyper
 	{
 		AstNode::dump(indent);
 		
-		std::cout << "value = " << m_value;
-		
-		std::cout << '\n';
+		std::cout << "value = " << m_value
+							<< '\n';
 	}
 	
 	const char *NumericLiteral::name() const noexcept
