@@ -9,16 +9,26 @@
 #-------------------------------------------------------------------------------------------
 set(SOURCES
         src/main.cpp
-        src/Hyper/Compiler.cpp
-        src/Hyper/Lexer.cpp
+        src/Hyper/Parser.cpp
+        src/Hyper/Scanner.cpp
         src/Hyper/SourceLocation.cpp
-        src/Hyper/Token.cpp)
+        src/Hyper/Token.cpp
+        src/Hyper/Ast/AstNode.cpp
+        src/Hyper/Ast/Expressions/BinaryExpression.cpp
+        src/Hyper/Ast/Expressions/Expression.cpp
+        src/Hyper/Ast/Literals/Literal.cpp
+        src/Hyper/Ast/Literals/NumericLiteral.cpp)
 
 set(HEADERS
-        include/Hyper/Compiler.hpp
-        include/Hyper/Lexer.hpp
+        include/Hyper/Parser.hpp
+        include/Hyper/Scanner.hpp
         include/Hyper/SourceLocation.hpp
-        include/Hyper/Token.hpp)
+        include/Hyper/Token.hpp
+        include/Hyper/Ast/AstNode.hpp
+        include/Hyper/Ast/Expressions/BinaryExpression.hpp
+        include/Hyper/Ast/Expressions/Expression.hpp
+        include/Hyper/Ast/Literals/NumericLiteral.hpp
+        include/Hyper/Ast/Literals/Literal.hpp)
 
 foreach (item IN ITEMS ${SOURCES} ${HEADERS})
     get_filename_component(src_path "${item}" PATH)

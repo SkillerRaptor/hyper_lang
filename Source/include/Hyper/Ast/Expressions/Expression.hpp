@@ -6,18 +6,13 @@
 
 #pragma once
 
-#include <vector>
+#include "Hyper/Ast/AstNode.hpp"
 
 namespace Hyper
 {
-	class Compiler
+	class Expression : public AstNode
 	{
 	public:
-		explicit Compiler(std::vector<const char *> files);
-
-		void compile();
-
-	private:
-		std::vector<const char *> m_files = {};
+		const char *name() const noexcept override;
 	};
 } // namespace Hyper
