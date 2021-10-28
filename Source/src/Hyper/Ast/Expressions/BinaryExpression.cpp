@@ -12,30 +12,44 @@ namespace Hyper
 {
 	BinaryExpression::BinaryExpression(
 		BinaryExpression::Operation operation,
-		std::unique_ptr<Expression> left,
-		std::unique_ptr<Expression> right)
+		Expression *left,
+		Expression *right)
 		: m_operation(operation)
-		, m_left(std::move(left))
-		, m_right(std::move(right))
+		, m_left(left)
+		, m_right(right)
 	{
+	}
+
+	BinaryExpression::~BinaryExpression()
+	{
+		delete m_left;
+		delete m_right;
+	}
+
+	void BinaryExpression::generate() const
+	{
+		std::cout << "Generating " << class_name() << "\n";
+
+		m_left->generate();
+		m_right->generate();
 	}
 
 	void BinaryExpression::dump(size_t indent) const
 	{
 		AstNode::dump(indent);
-		
-		std::cout << "operation = " << m_operation
-							<< '\n';
-		
+
+		std::cout << "operation = " << m_operation;
+		std::cout << '\n';
+
 		m_left->dump(indent + 1);
 		m_right->dump(indent + 1);
 	}
 
-	const char *BinaryExpression::name() const noexcept
+	const char *BinaryExpression::class_name() const noexcept
 	{
 		return "BinaryExpression";
 	}
-	
+
 	std::ostream &operator<<(
 		std::ostream &ostream,
 		const BinaryExpression::Operation &operation)
@@ -45,18 +59,19 @@ namespace Hyper
 		case BinaryExpression::Operation::None:
 			break;
 		case BinaryExpression::Operation::Addition:
-			std::cout << "Addition";
+			ostream << "Addition";
 			break;
 		case BinaryExpression::Operation::Subtraction:
-			std::cout << "Subtraction";
+			ostream << "Subtraction";
 			break;
 		case BinaryExpression::Operation::Multiplication:
-			std::cout << "Multiplication";
+			ostream << "Multiplication";
 			break;
 		case BinaryExpression::Operation::Division:
-			std::cout << "Division";
+			ostream << "Division";
 			break;
 		}
+
 		return ostream;
 	}
 } // namespace Hyper

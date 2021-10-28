@@ -13,6 +13,5 @@ namespace Hyper
 	class Expression : public AstNode
 	{
 	public:
-		const char *name() const noexcept override;
 	};
 } // namespace Hyper

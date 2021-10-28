@@ -13,6 +13,5 @@ namespace Hyper
 	class Literal : public Expression
 	{
 	public:
-		const char *name() const noexcept override;
 	};
 } // namespace Hyper

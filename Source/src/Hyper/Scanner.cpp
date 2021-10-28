@@ -13,7 +13,7 @@ namespace Hyper
 	{
 	}
 
-	void Scanner::scan_tokens() noexcept
+	void Scanner::scan_tokens()
 	{
 		while (!has_reached_end())
 		{
@@ -85,7 +85,7 @@ namespace Hyper
 		Token token = {};
 		token.value = value;
 		token.type = token_type;
-		token.source_location = source_location;
+		token.location = source_location;
 
 		m_tokens.push_back(token);
 	}
@@ -143,7 +143,7 @@ namespace Hyper
 	{
 		return m_position >= m_file_text.length();
 	}
-
+	
 	std::vector<Token> Scanner::tokens() const
 	{
 		return m_tokens;

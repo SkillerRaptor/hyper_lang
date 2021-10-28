@@ -8,7 +8,8 @@
 # Doxygen
 #-------------------------------------------------------------------------------------------
 function(enable_doxygen)
-    option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" OFF)
+    option(ENABLE_DOXYGEN "Enable doxygen documentation builds of source" OFF)
+
     if (ENABLE_DOXYGEN)
         set(DOXYGEN_ALPHABETICAL_INDEX NO)
         set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
@@ -31,6 +32,6 @@ function(enable_doxygen)
         set(DOXYGEN_TEMPLATE_RELATIONS YES)
 
         find_package(Doxygen REQUIRED dot)
-        doxygen_add_docs(HyperDocs ${PROJECT_SOURCE_DIR})
+        doxygen_add_docs(Doxygen ${PROJECT_SOURCE_DIR})
     endif ()
 endfunction()

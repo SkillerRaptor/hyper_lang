@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 
 namespace Hyper
 {
@@ -15,8 +16,9 @@ namespace Hyper
 	public:
 		virtual ~AstNode() = default;
 
+		virtual void generate() const = 0;
 		virtual void dump(size_t indent) const;
 
-		virtual const char *name() const noexcept;
+		virtual const char *class_name() const noexcept = 0;
 	};
 } // namespace Hyper

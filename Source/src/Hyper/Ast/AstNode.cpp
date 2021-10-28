@@ -16,12 +16,7 @@ namespace Hyper
 		{
 			std::cout << ' ';
 		}
-		
-		std::cout << name() << ": ";
-	}
 
-	const char *AstNode::name() const noexcept
-	{
-		return "AstNode";
+		std::cout << class_name() << ": ";
 	}
 } // namespace Hyper

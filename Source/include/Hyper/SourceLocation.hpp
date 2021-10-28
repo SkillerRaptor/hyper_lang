@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstddef>
-#include <ostream>
 
 namespace Hyper
 {
@@ -18,8 +17,4 @@ namespace Hyper
 		size_t length = 1;
 		size_t start = 0;
 	};
-
-	std::ostream &operator<<(
-		std::ostream &ostream,
-		const SourceLocation &source_location);
 } // namespace Hyper

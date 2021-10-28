@@ -26,18 +26,11 @@ add_library(ProjectWarnings INTERFACE)
 #-------------------------------------------------------------------------------------------
 # Standard Settings
 #-------------------------------------------------------------------------------------------
-include(Development/CMake/Cache.cmake)
-
 include(Development/CMake/CompilerWarnings.cmake)
 enable_warnings(ProjectWarnings)
 
-include(Development/CMake/Sanitizers.cmake)
-enable_sanitizers(ProjectOptions)
-
 include(Development/CMake/Doxygen.cmake)
 enable_doxygen()
-
-include(Development/CMake/StaticAnalyzers.cmake)
 
 #-------------------------------------------------------------------------------------------
 # Source

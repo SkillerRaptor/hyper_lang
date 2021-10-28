@@ -1,11 +1,7 @@
-<img src="./Development/Images/Branding.png" align="left" width="128px"/>
-
 # HyperLang
 [![Build Windows](https://img.shields.io/github/workflow/status/SkillerRaptor/HyperLang/build-windows?style=flat&label=Build%20Windows&logo=github)](https://github.com/SkillerRaptor/HyperLang/blob/master/.github/workflows/build-windows.yml)
 [![Build Linux](https://img.shields.io/github/workflow/status/SkillerRaptor/HyperLang/build-linux?style=flat&label=Build%20Linux&logo=github)](https://github.com/SkillerRaptor/HyperLang/blob/master/.github/workflows/build-linux.yml)
 [![License](https://img.shields.io/badge/license-MIT-yellow?style=flat)](https://github.com/SkillerRaptor/HyperLang/blob/master/LICENSE)
-
-<br />
 
 This repository contains the source code of HyperLang.
 Anyone is welcome to contribute or use the source of HyperLang.
@@ -16,28 +12,6 @@ Anyone is welcome to contribute or use the source of HyperLang.
 - [License](#license)
 
 ## Getting Started
-
-### Prerequisites
-In order to build the engine, you will need the following things installed:
-- CMake
-- Conan
-- Python
-
-### Installation
-1. Download CMake
-```shell
-sudo apt install cmake
-```
-
-2. Download Python3
-```shell
-sudo apt install python3
-```
-
-3. Install Conan
-```shell
-pip3 install conan
-```
 
 ### Building
 1. Download the source code by using Git and cloning the repository, or downloading it as a zip.

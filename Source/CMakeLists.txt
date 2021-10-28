@@ -11,12 +11,8 @@ set(SOURCES
         src/main.cpp
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
-        src/Hyper/SourceLocation.cpp
-        src/Hyper/Token.cpp
         src/Hyper/Ast/AstNode.cpp
         src/Hyper/Ast/Expressions/BinaryExpression.cpp
-        src/Hyper/Ast/Expressions/Expression.cpp
-        src/Hyper/Ast/Literals/Literal.cpp
         src/Hyper/Ast/Literals/NumericLiteral.cpp)
 
 set(HEADERS
@@ -38,7 +34,11 @@ foreach (item IN ITEMS ${SOURCES} ${HEADERS})
 endforeach ()
 
 add_executable(hyper ${SOURCES} ${HEADERS})
-target_link_libraries(hyper
+target_compile_definitions(
+        hyper
+        PRIVATE)
+target_link_libraries(
+        hyper
         PRIVATE
         ProjectOptions
         ProjectWarnings)

@@ -8,8 +8,6 @@ jobs:
     defaults:
       run:
         shell: cmd
-    env:
-      conan_user_home: "${{ github.workspace }}/conan-cache"
     strategy:
       fail-fast: false
       matrix:
@@ -38,21 +36,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Cache
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-conan-modules
-        with:
-          path: |
-            ${{ env.conan_user_home }}
-          key: ${{ runner.os }}-${{ matrix.config.build_type }}-${{ hashFiles('CMakeLists.txt') }}-${{ hashFiles('Development/CMake/Conan.cmake') }}
-
-      - name: Install Conan
-        shell: bash
-        run: |
-          python3 -m pip install --upgrade pip setuptools
-          python3 -m pip install conan
-
       - name: Configure CMake
         run: |
           set CC=${{ matrix.config.cc }}
@@ -67,7 +50,6 @@ jobs:
       - name: Test
         run: |
           cd build
-          ctest -C ${{ matrix.config.build_type }}
 
       - name: Prepare upload
         run: |
