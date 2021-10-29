@@ -28,9 +28,10 @@ namespace Hyper
 		Expression *parse_primary_expression();
 
 		Literal *parse_numeric_literal();
-
+		
 		Token current_token() const noexcept;
 		void advance_token() noexcept;
+		void match_token(Token::Type token_type) noexcept;
 
 		uint8_t get_operator_precedence(Token::Type token_type) const noexcept;
 

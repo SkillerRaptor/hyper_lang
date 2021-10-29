@@ -18,6 +18,7 @@ namespace Hyper
 
 	AstNode *Parser::parse_tree()
 	{
+		match_token(Token::Type::Print);
 		return parse_binary_expression(0);
 	}
 
@@ -26,7 +27,7 @@ namespace Hyper
 		Expression *left_expression = parse_primary_expression();
 
 		Token::Type token_type = current_token().type;
-		if (token_type == Token::Type::Eof)
+		if (token_type == Token::Type::Semicolon)
 		{
 			return left_expression;
 		}
@@ -60,7 +61,7 @@ namespace Hyper
 				new BinaryExpression(operation, left_expression, right_expression);
 
 			token_type = current_token().type;
-			if (token_type == Token::Type::Eof)
+			if (token_type == Token::Type::Semicolon)
 			{
 				return left_expression;
 			}
@@ -117,6 +118,17 @@ namespace Hyper
 		}
 
 		++m_current_token;
+	}
+
+	void Parser::match_token(Token::Type token_type) noexcept
+	{
+		if (current_token().type != token_type)
+		{
+			// TODO(SkillerRaptor): Error handling
+			std::abort();
+		}
+
+		advance_token();
 	}
 
 	uint8_t Parser::get_operator_precedence(Token::Type token_type) const noexcept

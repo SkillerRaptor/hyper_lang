@@ -19,12 +19,21 @@ namespace Hyper
 			None = 0,
 
 			Eof,
+			
+			// Special
+			Identifier,
+			Semicolon,
 
+			// Operators
 			Plus,
 			Minus,
 			Star,
 			Slash,
+			
+			// Keywords
+			Print,
 
+			// Literals
 			NumericLiteral
 		};
 

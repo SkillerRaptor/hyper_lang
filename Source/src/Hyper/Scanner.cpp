@@ -27,6 +27,9 @@ namespace Hyper
 
 			switch (character.value())
 			{
+			case ';':
+				add_token(";", Token::Type::Semicolon);
+				break;
 			case '+':
 				add_token("+", Token::Type::Plus);
 				break;
@@ -45,6 +48,22 @@ namespace Hyper
 					const std::string numeric_literal =
 						scan_numeric_literal(character.value());
 					add_token(numeric_literal, Token::Type::NumericLiteral);
+					break;
+				}
+
+				if (std::isalpha(character.value()))
+				{
+					const std::string identifier = scan_identifier(character.value());
+					const std::optional<Token::Type> keyword_type =
+						scan_keyword(identifier);
+
+					if (keyword_type.has_value())
+					{
+						add_token(identifier, keyword_type.value());
+						break;
+					}
+
+					add_token(identifier, Token::Type::Identifier);
 					break;
 				}
 
@@ -93,14 +112,8 @@ namespace Hyper
 	std::string Scanner::scan_numeric_literal(char character)
 	{
 		std::string numeric_literal;
-		numeric_literal += character;
 
-		std::optional<char> next_character = advance();
-		if (!next_character.has_value())
-		{
-			return numeric_literal;
-		}
-
+		std::optional<char> next_character = character;
 		while (std::isdigit(next_character.value()))
 		{
 			numeric_literal += next_character.value();
@@ -115,6 +128,40 @@ namespace Hyper
 		--m_position;
 
 		return numeric_literal;
+	}
+
+	std::string Scanner::scan_identifier(char character)
+	{
+		std::string identifier;
+
+		std::optional<char> next_character = character;
+		while (std::isalpha(next_character.value()) ||
+					 std::isdigit(next_character.value()) ||
+					 next_character.value() == '_')
+		{
+			identifier += next_character.value();
+
+			next_character = advance();
+			if (!next_character.has_value())
+			{
+				break;
+			}
+		}
+
+		--m_position;
+
+		return identifier;
+	}
+
+	std::optional<Token::Type> Scanner::scan_keyword(
+		const std::string &identifier)
+	{
+		if (identifier == "print")
+		{
+			return Token::Type::Print;
+		}
+
+		return std::nullopt;
 	}
 
 	void Scanner::skip_whitespace() noexcept

@@ -73,7 +73,7 @@ namespace Hyper
 		m_file << "int main()\n";
 		generate_open();
 		
-		m_file << m_indent << "println(\"%d\\n\", "; // NOTE(SkillerRaptor): Temporary
+		m_file << m_indent << R"(println("%d\n", )"; // NOTE(SkillerRaptor): Temporary
 	}
 
 	void Generator::generate_footer()
