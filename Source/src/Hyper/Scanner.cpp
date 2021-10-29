@@ -143,7 +143,7 @@ namespace Hyper
 	{
 		return m_position >= m_file_text.length();
 	}
-	
+
 	std::vector<Token> Scanner::tokens() const
 	{
 		return m_tokens;

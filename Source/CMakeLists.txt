@@ -9,6 +9,7 @@
 #-------------------------------------------------------------------------------------------
 set(SOURCES
         src/main.cpp
+        src/Hyper/Generator.cpp
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
         src/Hyper/Ast/AstNode.cpp
@@ -16,6 +17,8 @@ set(SOURCES
         src/Hyper/Ast/Literals/NumericLiteral.cpp)
 
 set(HEADERS
+        include/Hyper/Generator.hpp
+        include/Hyper/Operators.hpp
         include/Hyper/Parser.hpp
         include/Hyper/Scanner.hpp
         include/Hyper/SourceLocation.hpp

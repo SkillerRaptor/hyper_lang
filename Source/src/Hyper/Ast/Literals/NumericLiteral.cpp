@@ -6,6 +6,8 @@
 
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
 
+#include "Hyper/Generator.hpp"
+
 #include <iostream>
 
 namespace Hyper
@@ -14,10 +16,10 @@ namespace Hyper
 		: m_value(value)
 	{
 	}
-	
-	void NumericLiteral::generate() const
+
+	void NumericLiteral::generate(Generator &generator) const
 	{
-		std::cout << "Generating " << class_name() << "\n";
+		generator.generate_number(m_value);
 	}
 
 	void NumericLiteral::dump(size_t indent) const

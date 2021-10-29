@@ -6,6 +6,9 @@
 
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 
+#include "Hyper/Generator.hpp"
+#include "Hyper/Operators.hpp"
+
 #include <iostream>
 
 namespace Hyper
@@ -26,12 +29,30 @@ namespace Hyper
 		delete m_right;
 	}
 
-	void BinaryExpression::generate() const
+	void BinaryExpression::generate(Generator &generator) const
 	{
-		std::cout << "Generating " << class_name() << "\n";
+		m_left->generate(generator);
 
-		m_left->generate();
-		m_right->generate();
+		switch (m_operation)
+		{
+		case Operation::Addition:
+			generator.generate_operator(Operator::Plus);
+			break;
+		case Operation::Subtraction:
+			generator.generate_operator(Operator::Minus);
+			break;
+		case Operation::Multiplication:
+			generator.generate_operator(Operator::Star);
+			break;
+		case Operation::Division:
+			generator.generate_operator(Operator::Slash);
+			break;
+		default:
+			// TODO(SkillerRaptor): Error handling
+			std::abort();
+		}
+
+		m_right->generate(generator);
 	}
 
 	void BinaryExpression::dump(size_t indent) const
@@ -56,8 +77,6 @@ namespace Hyper
 	{
 		switch (operation)
 		{
-		case BinaryExpression::Operation::None:
-			break;
 		case BinaryExpression::Operation::Addition:
 			ostream << "Addition";
 			break;
@@ -69,6 +88,8 @@ namespace Hyper
 			break;
 		case BinaryExpression::Operation::Division:
 			ostream << "Division";
+			break;
+		default:
 			break;
 		}
 

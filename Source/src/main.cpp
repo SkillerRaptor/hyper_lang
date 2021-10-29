@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "Hyper/Generator.hpp"
 #include "Hyper/Scanner.hpp"
 #include "Hyper/Parser.hpp"
 #include "Hyper/Ast/AstNode.hpp"
@@ -56,10 +57,12 @@ int main(int argc, char **argv)
 		scanner.scan_tokens();
 
 		Hyper::Parser parser(scanner.tokens());
+		Hyper::AstNode *ast = parser.parse_tree();
 
-		const Hyper::AstNode *ast = parser.parse_tree();
-		ast->dump(0);
-		// TODO(SkillerRaptor): Using ast to generate code
+		Hyper::Generator generator(path, ast);
+		generator.generate();
+
+		delete ast;
 	}
 
 	return 0;

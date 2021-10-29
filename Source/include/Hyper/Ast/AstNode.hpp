@@ -7,16 +7,17 @@
 #pragma once
 
 #include <cstddef>
-#include <cstdint>
 
 namespace Hyper
 {
+	class Generator;
+
 	class AstNode
 	{
 	public:
 		virtual ~AstNode() = default;
 
-		virtual void generate() const = 0;
+		virtual void generate(Generator &generator) const = 0;
 		virtual void dump(size_t indent) const;
 
 		virtual const char *class_name() const noexcept = 0;

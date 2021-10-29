@@ -17,7 +17,7 @@ namespace Hyper
 	public:
 		NumericLiteral(int64_t value);
 
-		void generate() const override;
+		void generate(Generator &generator) const override;
 		void dump(size_t indent) const override;
 
 		const char *class_name() const noexcept override;

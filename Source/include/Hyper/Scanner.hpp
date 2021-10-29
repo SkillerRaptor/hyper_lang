@@ -22,7 +22,7 @@ namespace Hyper
 		void scan_tokens();
 
 		std::vector<Token> tokens() const;
-		
+
 	private:
 		std::optional<char> advance() noexcept;
 

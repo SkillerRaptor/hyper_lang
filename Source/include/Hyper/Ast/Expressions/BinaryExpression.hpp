@@ -26,21 +26,18 @@ namespace Hyper
 		};
 
 	public:
-		BinaryExpression(
-			Operation operation,
-			Expression* left,
-			Expression* right);
+		BinaryExpression(Operation operation, Expression *left, Expression *right);
 		~BinaryExpression() override;
 
-		void generate() const override;
+		void generate(Generator &generator) const override;
 		void dump(size_t indent) const override;
 
 		const char *class_name() const noexcept override;
 
 	private:
 		Operation m_operation = Operation::None;
-		Expression* m_left = nullptr;
-		Expression* m_right = nullptr;
+		Expression *m_left = nullptr;
+		Expression *m_right = nullptr;
 	};
 
 	std::ostream &operator<<(
