@@ -22,30 +22,12 @@ jobs:
             build_type: "Debug"
           }
           - {
-            name: "Windows Clang Debug",
-            artifact: "windows-msvc-debug.zip",
-            cc: "cl",
-            cxx: "cl",
-            cmake_build_options: "--config Debug",
-            cmake_configure_options: '-G "Visual Studio 16 2019" -A x64 -T ClangCL',
-            build_type: "Debug"
-          }
-          - {
             name: "Windows MSVC Release",
             artifact: "windows-msvc-release.zip",
             cc: "cl",
             cxx: "cl",
             cmake_build_options: "--config Release",
             cmake_configure_options: '-G "Visual Studio 16 2019" -A x64',
-            build_type: "Release"
-          }
-          - {
-            name: "Windows Clang Release",
-            artifact: "windows-msvc-release.zip",
-            cc: "cl",
-            cxx: "cl",
-            cmake_build_options: "--config Release",
-            cmake_configure_options: '-G "Visual Studio 16 2019" -A x64 -T ClangCL',
             build_type: "Release"
           }
     steps:

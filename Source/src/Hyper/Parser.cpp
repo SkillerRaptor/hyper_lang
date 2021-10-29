@@ -16,27 +16,28 @@ namespace Hyper
 	{
 	}
 
-	AstNode *Parser::parse_tree()
+	std::unique_ptr<AstNode> Parser::parse_tree()
 	{
 		match_token(Token::Type::Print);
 		return parse_binary_expression(0);
 	}
 
-	Expression *Parser::parse_binary_expression(uint8_t precedence)
+	std::unique_ptr<Expression> Parser::parse_binary_expression(
+		uint8_t precedence)
 	{
-		Expression *left_expression = parse_primary_expression();
+		std::unique_ptr<Expression> left_expression = parse_primary_expression();
 
 		Token::Type token_type = current_token().type;
 		if (token_type == Token::Type::Semicolon)
 		{
-			return left_expression;
+			return std::move(left_expression);
 		}
 
 		while (get_operator_precedence(token_type) > precedence)
 		{
 			advance_token();
 
-			Expression *right_expression =
+			std::unique_ptr<Expression> right_expression =
 				parse_binary_expression(get_operator_precedence(token_type));
 
 			const BinaryExpression::Operation operation = [&token_type]()
@@ -57,23 +58,23 @@ namespace Hyper
 				}
 			}();
 
-			left_expression =
-				new BinaryExpression(operation, left_expression, right_expression);
+			left_expression = std::make_unique<BinaryExpression>(
+				operation, std::move(left_expression), std::move(right_expression));
 
 			token_type = current_token().type;
 			if (token_type == Token::Type::Semicolon)
 			{
-				return left_expression;
+				return std::move(left_expression);
 			}
 		}
 
-		return left_expression;
+		return std::move(left_expression);
 	}
 
-	Expression *Parser::parse_primary_expression()
+	std::unique_ptr<Expression> Parser::parse_primary_expression()
 	{
 		const Token::Type token_type = current_token().type;
-		Expression *expression = [&token_type, this]()
+		std::unique_ptr<Expression> expression = [&token_type, this]()
 		{
 			switch (token_type)
 			{
@@ -87,10 +88,10 @@ namespace Hyper
 			}
 		}();
 
-		return expression;
+		return std::move(expression);
 	}
 
-	Literal *Parser::parse_numeric_literal()
+	std::unique_ptr<Literal> Parser::parse_numeric_literal()
 	{
 		const Token token = current_token();
 		if (token.type != Token::Type::NumericLiteral)
@@ -101,7 +102,7 @@ namespace Hyper
 
 		advance_token();
 
-		return new NumericLiteral(std::stoll(token.value));
+		return std::make_unique<NumericLiteral>(std::stoll(token.value));
 	}
 
 	Token Parser::current_token() const noexcept

@@ -8,6 +8,7 @@
 
 #include "Hyper/Token.hpp"
 
+#include <memory>
 #include <vector>
 
 namespace Hyper
@@ -21,14 +22,14 @@ namespace Hyper
 	public:
 		explicit Parser(std::vector<Token> tokens);
 
-		AstNode *parse_tree();
+		std::unique_ptr<AstNode> parse_tree();
 
 	private:
-		Expression *parse_binary_expression(uint8_t precedence);
-		Expression *parse_primary_expression();
+		std::unique_ptr<Expression> parse_binary_expression(uint8_t precedence);
+		std::unique_ptr<Expression> parse_primary_expression();
 
-		Literal *parse_numeric_literal();
-		
+		std::unique_ptr<Literal> parse_numeric_literal();
+
 		Token current_token() const noexcept;
 		void advance_token() noexcept;
 		void match_token(Token::Type token_type) noexcept;

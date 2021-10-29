@@ -17,7 +17,7 @@ namespace Hyper
 	public:
 		virtual ~AstNode() = default;
 
-		virtual void generate(Generator &generator) const = 0;
+		virtual void accept(Generator &generator) const = 0;
 		virtual void dump(size_t indent) const;
 
 		virtual const char *class_name() const noexcept = 0;

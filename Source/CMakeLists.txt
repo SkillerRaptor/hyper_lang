@@ -9,15 +9,15 @@
 #-------------------------------------------------------------------------------------------
 set(SOURCES
         src/main.cpp
-        src/Hyper/Generator.cpp
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
         src/Hyper/Ast/AstNode.cpp
         src/Hyper/Ast/Expressions/BinaryExpression.cpp
-        src/Hyper/Ast/Literals/NumericLiteral.cpp)
+        src/Hyper/Ast/Literals/NumericLiteral.cpp
+        src/Hyper/Generators/CGenerator.cpp
+        src/Hyper/Generators/Generator.cpp)
 
 set(HEADERS
-        include/Hyper/Generator.hpp
         include/Hyper/Operators.hpp
         include/Hyper/Parser.hpp
         include/Hyper/Scanner.hpp
@@ -27,7 +27,9 @@ set(HEADERS
         include/Hyper/Ast/Expressions/BinaryExpression.hpp
         include/Hyper/Ast/Expressions/Expression.hpp
         include/Hyper/Ast/Literals/NumericLiteral.hpp
-        include/Hyper/Ast/Literals/Literal.hpp)
+        include/Hyper/Ast/Literals/Literal.hpp
+        include/Hyper/Generators/CGenerator.hpp
+        include/Hyper/Generators/Generator.hpp)
 
 foreach (item IN ITEMS ${SOURCES} ${HEADERS})
     get_filename_component(src_path "${item}" PATH)

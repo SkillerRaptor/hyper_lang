@@ -6,8 +6,7 @@
 
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 
-#include "Hyper/Generator.hpp"
-#include "Hyper/Operators.hpp"
+#include "Hyper/Generators/Generator.hpp"
 
 #include <iostream>
 
@@ -15,44 +14,19 @@ namespace Hyper
 {
 	BinaryExpression::BinaryExpression(
 		BinaryExpression::Operation operation,
-		Expression *left,
-		Expression *right)
+		std::unique_ptr<Expression> left,
+		std::unique_ptr<Expression> right)
 		: m_operation(operation)
-		, m_left(left)
-		, m_right(right)
+		, m_left(std::move(left))
+		, m_right(std::move(right))
 	{
 	}
 
-	BinaryExpression::~BinaryExpression()
+	void BinaryExpression::accept(Generator &generator) const
 	{
-		delete m_left;
-		delete m_right;
-	}
-
-	void BinaryExpression::generate(Generator &generator) const
-	{
-		m_left->generate(generator);
-
-		switch (m_operation)
-		{
-		case Operation::Addition:
-			generator.generate_operator(Operator::Plus);
-			break;
-		case Operation::Subtraction:
-			generator.generate_operator(Operator::Minus);
-			break;
-		case Operation::Multiplication:
-			generator.generate_operator(Operator::Star);
-			break;
-		case Operation::Division:
-			generator.generate_operator(Operator::Slash);
-			break;
-		default:
-			// TODO(SkillerRaptor): Error handling
-			std::abort();
-		}
-
-		m_right->generate(generator);
+		m_left->accept(generator);
+		generator.visit(*this);
+		m_right->accept(generator);
 	}
 
 	void BinaryExpression::dump(size_t indent) const
@@ -69,6 +43,11 @@ namespace Hyper
 	const char *BinaryExpression::class_name() const noexcept
 	{
 		return "BinaryExpression";
+	}
+	
+	BinaryExpression::Operation BinaryExpression::operation() const noexcept
+	{
+		return m_operation;
 	}
 
 	std::ostream &operator<<(

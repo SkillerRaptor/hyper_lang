@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "Hyper/Generator.hpp"
 #include "Hyper/Scanner.hpp"
 #include "Hyper/Parser.hpp"
 #include "Hyper/Ast/AstNode.hpp"
+#include "Hyper/Generators/CGenerator.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -57,12 +57,16 @@ int main(int argc, char **argv)
 		scanner.scan_tokens();
 
 		Hyper::Parser parser(scanner.tokens());
-		Hyper::AstNode *ast = parser.parse_tree();
 
-		Hyper::Generator generator(path, ast);
-		generator.generate();
+		std::unique_ptr<Hyper::Generator> generator =
+			std::make_unique<Hyper::CGenerator>(path);
+		generator->generate_pre();
 
-		delete ast;
+		std::unique_ptr<Hyper::AstNode> ast = parser.parse_tree();
+		ast->dump(0);
+		ast->accept(*generator);
+		
+		generator->generate_post();
 	}
 
 	return 0;

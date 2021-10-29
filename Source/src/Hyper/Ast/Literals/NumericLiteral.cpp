@@ -6,7 +6,7 @@
 
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
 
-#include "Hyper/Generator.hpp"
+#include "Hyper/Generators/Generator.hpp"
 
 #include <iostream>
 
@@ -17,9 +17,9 @@ namespace Hyper
 	{
 	}
 
-	void NumericLiteral::generate(Generator &generator) const
+	void NumericLiteral::accept(Generator &generator) const
 	{
-		generator.generate_number(m_value);
+		generator.visit(*this);
 	}
 
 	void NumericLiteral::dump(size_t indent) const
@@ -33,5 +33,10 @@ namespace Hyper
 	const char *NumericLiteral::class_name() const noexcept
 	{
 		return "NumericLiteral";
+	}
+	
+	int64_t NumericLiteral::value() const noexcept
+	{
+		return m_value;
 	}
 } // namespace Hyper

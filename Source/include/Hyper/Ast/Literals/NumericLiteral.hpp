@@ -12,15 +12,17 @@
 
 namespace Hyper
 {
-	class NumericLiteral : public Literal
+	class NumericLiteral final : public Literal
 	{
 	public:
 		NumericLiteral(int64_t value);
 
-		void generate(Generator &generator) const override;
+		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
 
 		const char *class_name() const noexcept override;
+		
+		int64_t value() const noexcept;
 
 	private:
 		int64_t m_value = 0;
