@@ -36,7 +36,7 @@ namespace Hyper
 		void dump(size_t indent) const override;
 
 		const char *class_name() const noexcept override;
-		
+
 		Operation operation() const noexcept;
 
 	private:

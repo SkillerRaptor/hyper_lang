@@ -4,16 +4,15 @@
  * SPDX-License-Identifier: MIT
  */
 
-#pragma once
-
-#include "Hyper/Ast/AstNode.hpp"
+#include "Hyper/Ast/Statements/Statement.hpp"
 
 namespace Hyper
 {
-	class Expression : public AstNode
+	class AssignStatement final : public Statement
 	{
 	public:
-		~Expression() override = default;
+		void accept(Generator &generator) const override;
+		void dump(size_t indent) const override;
 
 		const char *class_name() const noexcept override;
 	};

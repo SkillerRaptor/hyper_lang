@@ -10,10 +10,10 @@
 
 namespace Hyper
 {
-	class Expression : public AstNode
+	class Statement : public AstNode
 	{
 	public:
-		~Expression() override = default;
+		~Statement() override = default;
 
 		const char *class_name() const noexcept override;
 	};

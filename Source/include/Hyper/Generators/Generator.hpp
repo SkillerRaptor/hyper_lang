@@ -12,6 +12,7 @@ namespace Hyper
 {
 	class AstNode;
 
+	class VariableDeclaration;
 	class BinaryExpression;
 	class NumericLiteral;
 
@@ -26,6 +27,7 @@ namespace Hyper
 
 		virtual void visit(const AstNode &ast_node) = 0;
 
+		virtual void visit(const VariableDeclaration &variable_declaration) = 0;
 		virtual void visit(const BinaryExpression &binary_expression) = 0;
 		virtual void visit(const NumericLiteral &numeric_literal) = 0;
 

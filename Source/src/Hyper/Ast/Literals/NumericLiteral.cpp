@@ -34,7 +34,7 @@ namespace Hyper
 	{
 		return "NumericLiteral";
 	}
-	
+
 	int64_t NumericLiteral::value() const noexcept
 	{
 		return m_value;

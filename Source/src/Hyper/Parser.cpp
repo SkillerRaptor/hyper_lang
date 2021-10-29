@@ -6,8 +6,10 @@
 
 #include "Hyper/Parser.hpp"
 
+#include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
+#include "Hyper/Ast/Statements/AssignStatement.hpp"
 
 namespace Hyper
 {
@@ -18,8 +20,67 @@ namespace Hyper
 
 	std::unique_ptr<AstNode> Parser::parse_tree()
 	{
-		match_token(Token::Type::Print);
-		return parse_binary_expression(0);
+		return parse_statements();
+	}
+
+	std::unique_ptr<Declaration> Parser::parse_variable_declaration()
+	{
+		const Token::Type let_token_type = current_token().type;
+		if (let_token_type != Token::Type::Let)
+		{
+			// TODO(SkillerRaptor): Error handling
+			return nullptr;
+		}
+
+		advance_token();
+
+		const Token identifier_token = current_token();
+		if (identifier_token.type != Token::Type::Identifier)
+		{
+			// TODO(SkillerRaptor): Error handling
+			return nullptr;
+		}
+
+		advance_token();
+		
+		const Token::Type colon_token_type = current_token().type;
+		if (colon_token_type != Token::Type::Colon)
+		{
+			// TODO(SkillerRaptor): Error handling
+			return nullptr;
+		}
+
+		advance_token();
+		
+		const Token::Type mutable_token_type = current_token().type;
+		if (mutable_token_type != Token::Type::Mutable)
+		{
+			// TODO(SkillerRaptor): Error handling
+			return nullptr;
+		}
+
+		advance_token();
+		
+		const Token::Type type_token_type = current_token().type;
+		if (type_token_type != Token::Type::Int64)
+		{
+			// TODO(SkillerRaptor): Error handling
+			return nullptr;
+		}
+
+		advance_token();
+
+		const Token::Type semicolon_token_type = current_token().type;
+		if (semicolon_token_type != Token::Type::Semicolon)
+		{
+			// TODO(SkillerRaptor): Error handling
+			return nullptr;
+		}
+
+		advance_token();
+
+		return std::make_unique<VariableDeclaration>(
+			identifier_token.value, VariableDeclaration::Type::Int64);
 	}
 
 	std::unique_ptr<Expression> Parser::parse_binary_expression(
@@ -30,7 +91,7 @@ namespace Hyper
 		Token::Type token_type = current_token().type;
 		if (token_type == Token::Type::Semicolon)
 		{
-			return std::move(left_expression);
+			return left_expression;
 		}
 
 		while (get_operator_precedence(token_type) > precedence)
@@ -64,11 +125,11 @@ namespace Hyper
 			token_type = current_token().type;
 			if (token_type == Token::Type::Semicolon)
 			{
-				return std::move(left_expression);
+				return left_expression;
 			}
 		}
 
-		return std::move(left_expression);
+		return left_expression;
 	}
 
 	std::unique_ptr<Expression> Parser::parse_primary_expression()
@@ -88,13 +149,13 @@ namespace Hyper
 			}
 		}();
 
-		return std::move(expression);
+		return expression;
 	}
 
 	std::unique_ptr<Literal> Parser::parse_numeric_literal()
 	{
-		const Token token = current_token();
-		if (token.type != Token::Type::NumericLiteral)
+		const Token numeric_literal_token = current_token();
+		if (numeric_literal_token.type != Token::Type::NumericLiteral)
 		{
 			// TODO(SkillerRaptor): Error handling
 			return nullptr;
@@ -102,7 +163,27 @@ namespace Hyper
 
 		advance_token();
 
-		return std::make_unique<NumericLiteral>(std::stoll(token.value));
+		return std::make_unique<NumericLiteral>(
+			std::stoll(numeric_literal_token.value));
+	}
+
+	std::unique_ptr<Statement> Parser::parse_statements()
+	{
+		// FIXME(SkillerRaptor): Only the first statement will be parsed
+
+		const Token::Type token_type = current_token().type;
+		switch (token_type)
+		{
+		case Token::Type::Identifier:
+			//return parse_assign_statement();
+		case Token::Type::Print:
+			//return parse_print_statement();
+		case Token::Type::Let:
+			return parse_variable_declaration();
+		default:
+			// TODO(SkillerRaptor): Error handling
+			std::abort();
+		}
 	}
 
 	Token Parser::current_token() const noexcept
@@ -119,17 +200,6 @@ namespace Hyper
 		}
 
 		++m_current_token;
-	}
-
-	void Parser::match_token(Token::Type token_type) noexcept
-	{
-		if (current_token().type != token_type)
-		{
-			// TODO(SkillerRaptor): Error handling
-			std::abort();
-		}
-
-		advance_token();
 	}
 
 	uint8_t Parser::get_operator_precedence(Token::Type token_type) const noexcept

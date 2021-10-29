@@ -44,7 +44,7 @@ namespace Hyper
 	{
 		return "BinaryExpression";
 	}
-	
+
 	BinaryExpression::Operation BinaryExpression::operation() const noexcept
 	{
 		return m_operation;

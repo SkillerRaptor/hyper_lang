@@ -1,1 +1,5 @@
-print 5 + 10 * 10 - 2;
+let x: mut i64;
+let y: mut i64;
+x = 1;
+y = 2;
+print x + y;

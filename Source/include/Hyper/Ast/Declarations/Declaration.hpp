@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include "Hyper/Ast/AstNode.hpp"
+#include "Hyper/Ast/Statements/Statement.hpp"
 
 namespace Hyper
 {
-	class Expression : public AstNode
+	class Declaration : public Statement
 	{
 	public:
-		~Expression() override = default;
+		~Declaration() override = default;
 
 		const char *class_name() const noexcept override;
 	};

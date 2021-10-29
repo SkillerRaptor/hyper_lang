@@ -6,6 +6,7 @@
 
 #include "Hyper/Generators/CGenerator.hpp"
 
+#include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
 
@@ -21,25 +22,40 @@ namespace Hyper
 
 	void CGenerator::generate_pre()
 	{
-		m_output_file << "#include <stdio.h>\n";
+		m_output_file << "#include <stdint.h>\n";
 		m_output_file << "\n";
 		m_output_file << "int main()\n";
 
 		enter_scope();
-		
-		m_output_file << m_indent << R"(println("%d\n", )"; // NOTE(SkillerRaptor): Temporary
 	}
 
 	void CGenerator::generate_post()
 	{
-		m_output_file << ");\n"; // NOTE(SkillerRaptor): Temporary
-		
 		leave_scope();
 	}
 
 	void CGenerator::visit(const AstNode &ast_node)
 	{
 		std::cerr << "Visit for " << ast_node.class_name() << "not implemented!";
+	}
+
+	void CGenerator::visit(const VariableDeclaration &variable_declaration)
+	{
+		const std::string type = [&variable_declaration]()
+		{
+			switch (variable_declaration.type())
+			{
+			case VariableDeclaration::Type::Int64:
+				return "int64_t";
+			default:
+				// TODO(SkillerRaptor): Error handling
+				std::abort();
+			}
+		}();
+
+		const std::string string =
+			type + " " + variable_declaration.identifier() + ";\n";
+		m_output_file << m_indent << string;
 	}
 
 	void CGenerator::visit(const BinaryExpression &binary_expression)

@@ -28,8 +28,8 @@ namespace Hyper
 
 		std::string scan_numeric_literal(char character);
 		std::string scan_identifier(char character);
-		std::optional<Token::Type> scan_keyword(const std::string& identifier);
-		
+		std::optional<Token::Type> scan_keyword(const std::string &identifier);
+
 		void add_token(const std::string &value, Token::Type token_type);
 
 		void skip_whitespace() noexcept;

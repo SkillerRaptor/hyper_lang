@@ -12,8 +12,14 @@ set(SOURCES
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
         src/Hyper/Ast/AstNode.cpp
+        src/Hyper/Ast/Declarations/Declaration.cpp
+        src/Hyper/Ast/Declarations/VariableDeclaration.cpp
         src/Hyper/Ast/Expressions/BinaryExpression.cpp
+        src/Hyper/Ast/Expressions/Expression.cpp
+        src/Hyper/Ast/Literals/Literal.cpp
         src/Hyper/Ast/Literals/NumericLiteral.cpp
+        src/Hyper/Ast/Statements/VariableDeclaration.cpp
+        src/Hyper/Ast/Statements/Declaration.cpp
         src/Hyper/Generators/CGenerator.cpp
         src/Hyper/Generators/Generator.cpp)
 
@@ -24,10 +30,14 @@ set(HEADERS
         include/Hyper/SourceLocation.hpp
         include/Hyper/Token.hpp
         include/Hyper/Ast/AstNode.hpp
+        include/Hyper/Ast/Declarations/Declaration.hpp
+        include/Hyper/Ast/Declarations/VariableDeclaration.hpp
         include/Hyper/Ast/Expressions/BinaryExpression.hpp
         include/Hyper/Ast/Expressions/Expression.hpp
         include/Hyper/Ast/Literals/NumericLiteral.hpp
         include/Hyper/Ast/Literals/Literal.hpp
+        include/Hyper/Ast/Statements/AssignStatement.hpp
+        include/Hyper/Ast/Statements/Statement.hpp
         include/Hyper/Generators/CGenerator.hpp
         include/Hyper/Generators/Generator.hpp)
 

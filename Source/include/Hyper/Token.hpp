@@ -19,9 +19,11 @@ namespace Hyper
 			None = 0,
 
 			Eof,
-			
+
 			// Special
+			Assign,
 			Identifier,
+			Colon,
 			Semicolon,
 
 			// Operators
@@ -29,9 +31,14 @@ namespace Hyper
 			Minus,
 			Star,
 			Slash,
-			
+
 			// Keywords
+			Let,
+			Mutable,
 			Print,
+
+			// Types,
+			Int64,
 
 			// Literals
 			NumericLiteral

@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 		std::unique_ptr<Hyper::AstNode> ast = parser.parse_tree();
 		ast->dump(0);
 		ast->accept(*generator);
-		
+
 		generator->generate_post();
 	}
 

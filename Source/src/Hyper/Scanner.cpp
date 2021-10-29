@@ -27,8 +27,14 @@ namespace Hyper
 
 			switch (character.value())
 			{
+			case ':':
+				add_token(":", Token::Type::Colon);
+				break;
 			case ';':
 				add_token(";", Token::Type::Semicolon);
+				break;
+			case '=':
+				add_token("=", Token::Type::Assign);
 				break;
 			case '+':
 				add_token("+", Token::Type::Plus);
@@ -156,6 +162,21 @@ namespace Hyper
 	std::optional<Token::Type> Scanner::scan_keyword(
 		const std::string &identifier)
 	{
+		if (identifier == "i64")
+		{
+			return Token::Type::Int64;
+		}
+		
+		if (identifier == "let")
+		{
+			return Token::Type::Let;
+		}
+
+		if (identifier == "mut")
+		{
+			return Token::Type::Mutable;
+		}
+
 		if (identifier == "print")
 		{
 			return Token::Type::Print;
