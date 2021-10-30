@@ -76,6 +76,24 @@ namespace Hyper
 		case BinaryExpression::Operation::Division:
 			ostream << "Division";
 			break;
+		case BinaryExpression::Operation::Equal:
+			ostream << "Equal";
+			break;
+		case BinaryExpression::Operation::NotEqual:
+			ostream << "NotEqual";
+			break;
+		case BinaryExpression::Operation::LessThan:
+			ostream << "LessThan";
+			break;
+		case BinaryExpression::Operation::GreaterThan:
+			ostream << "GreaterThan";
+			break;
+		case BinaryExpression::Operation::LessEqual:
+			ostream << "LessEqual";
+			break;
+		case BinaryExpression::Operation::GreaterEqual:
+			ostream << "GreaterEqual";
+			break;
 		default:
 			break;
 		}

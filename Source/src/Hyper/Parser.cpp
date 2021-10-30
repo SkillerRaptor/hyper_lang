@@ -85,6 +85,18 @@ namespace Hyper
 					return BinaryExpression::Operation::Multiplication;
 				case Token::Type::Slash:
 					return BinaryExpression::Operation::Division;
+				case Token::Type::Equal:
+					return BinaryExpression::Operation::Equal;
+				case Token::Type::NotEqual:
+					return BinaryExpression::Operation::NotEqual;
+				case Token::Type::LessThan:
+					return BinaryExpression::Operation::LessThan;
+				case Token::Type::GreaterThan:
+					return BinaryExpression::Operation::GreaterThan;
+				case Token::Type::LessEqual:
+					return BinaryExpression::Operation::LessEqual;
+				case Token::Type::GreaterEqual:
+					return BinaryExpression::Operation::GreaterEqual;
 				default:
 					// TODO(SkillerRaptor): Error handling
 					std::abort();
@@ -223,6 +235,14 @@ namespace Hyper
 		case Token::Type::Star:
 		case Token::Type::Slash:
 			return 20;
+		case Token::Type::Equal:
+		case Token::Type::NotEqual:
+			return 30;
+		case Token::Type::LessThan:
+		case Token::Type::GreaterThan:
+		case Token::Type::LessEqual:
+		case Token::Type::GreaterEqual:
+			return 40;
 		default:
 			break;
 		}

@@ -31,6 +31,14 @@ namespace Hyper
 			Minus,
 			Star,
 			Slash,
+			
+			// Comparisons
+			Equal,
+			NotEqual,
+			LessThan,
+			GreaterThan,
+			LessEqual,
+			GreaterEqual,
 
 			// Keywords
 			Let,

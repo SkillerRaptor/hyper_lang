@@ -74,6 +74,18 @@ namespace Hyper
 				return "*";
 			case BinaryExpression::Operation::Division:
 				return "/";
+			case BinaryExpression::Operation::Equal:
+				return "==";
+			case BinaryExpression::Operation::NotEqual:
+				return "!=";
+			case BinaryExpression::Operation::LessThan:
+				return "<";
+			case BinaryExpression::Operation::GreaterThan:
+				return ">";
+			case BinaryExpression::Operation::LessEqual:
+				return "<=";
+			case BinaryExpression::Operation::GreaterEqual:
+				return ">=";
 			default:
 				// TODO(SkillerRaptor): Error handling
 				std::abort();

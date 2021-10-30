@@ -37,9 +37,6 @@ namespace Hyper
 			case ';':
 				add_token(tokens, ";", Token::Type::Semicolon);
 				break;
-			case '=':
-				add_token(tokens, "=", Token::Type::Assign);
-				break;
 			case '+':
 				add_token(tokens, "+", Token::Type::Plus);
 				break;
@@ -51,6 +48,41 @@ namespace Hyper
 				break;
 			case '/':
 				add_token(tokens, "/", Token::Type::Slash);
+				break;
+			case '=':
+				if (peek() == '=')
+				{
+					add_token(tokens, "==", Token::Type::Equal);
+					break;
+				}
+
+				add_token(tokens, "=", Token::Type::Assign);
+				break;
+			case '!':
+				if (peek() == '=')
+				{
+					add_token(tokens, "!=", Token::Type::NotEqual);
+					break;
+				}
+
+				break;
+			case '>':
+				if (peek() == '=')
+				{
+					add_token(tokens, ">=", Token::Type::GreaterEqual);
+					break;
+				}
+
+				add_token(tokens, ">", Token::Type::GreaterThan);
+				break;
+			case '<':
+				if (peek() == '=')
+				{
+					add_token(tokens, "<=", Token::Type::LessEqual);
+					break;
+				}
+
+				add_token(tokens, "<", Token::Type::LessThan);
 				break;
 			default:
 				if (std::isdigit(character))
