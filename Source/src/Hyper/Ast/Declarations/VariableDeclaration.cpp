@@ -12,9 +12,13 @@
 
 namespace Hyper
 {
-	VariableDeclaration::VariableDeclaration(std::string identifier, Type type)
+	VariableDeclaration::VariableDeclaration(
+		std::string identifier,
+		Type type,
+		bool mut)
 		: m_identifier(std::move(identifier))
 		, m_type(type)
+		, m_mut(mut)
 	{
 	}
 
@@ -28,10 +32,11 @@ namespace Hyper
 		AstNode::dump(indent);
 
 		std::cout << "identifier = " << m_identifier << ", ";
-		std::cout << "type = " << m_type;
+		std::cout << "type = " << m_type << ", ";
+		std::cout << "mutable = " << m_mut;
 		std::cout << '\n';
 	}
-	
+
 	const char *VariableDeclaration::node_name() const noexcept
 	{
 		return "VariableDeclaration";
@@ -50,5 +55,10 @@ namespace Hyper
 	Type VariableDeclaration::type() const noexcept
 	{
 		return m_type;
+	}
+
+	bool VariableDeclaration::mut() const noexcept
+	{
+		return m_mut;
 	}
 } // namespace Hyper

@@ -49,7 +49,7 @@ namespace Hyper
 	{
 		const std::string type = match_type(function_declaration.return_type());
 		m_output_file << type << " " << function_declaration.identifier() << "()\n";
-		
+
 		enter_scope();
 		function_declaration.body()->accept(*this);
 		leave_scope();
@@ -58,8 +58,9 @@ namespace Hyper
 	void CGenerator::visit(const VariableDeclaration &variable_declaration)
 	{
 		const std::string type = match_type(variable_declaration.type());
+		const std::string mut = variable_declaration.mut() ? "" : "const ";
 		const std::string string =
-			type + " " + variable_declaration.identifier() + ";\n";
+			mut + type + " " + variable_declaration.identifier() + ";\n";
 		m_output_file << m_indent << string;
 	}
 

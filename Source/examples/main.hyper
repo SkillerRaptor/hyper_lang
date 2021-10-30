@@ -2,6 +2,7 @@ fn main() -> i32
 {
   let i: mut i8;
   let j: mut i8;
+  let k: i8;
 
 	i = 7 < 9;
   print i;

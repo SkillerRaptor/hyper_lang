@@ -39,7 +39,7 @@ namespace Hyper
 		match_token(Token::Type::LeftParenthesis);
 		match_token(Token::Type::RightParenthesis);
 		match_token(Token::Type::RightArrow);
-		
+
 		const Type variable_type = [this]()
 		{
 			const Token::Type variable_token_type = current_token().type;
@@ -60,7 +60,13 @@ namespace Hyper
 		const Token identifier = match_token(Token::Type::Identifier);
 
 		match_token(Token::Type::Colon);
-		match_token(Token::Type::Mutable); // TODO(SkillerRaptor): Optional
+
+		bool mut = false;
+		if (current_token().type == Token::Type::Mutable)
+		{
+			advance_token();
+			mut = true;
+		}
 
 		const Type variable_type = [this]()
 		{
@@ -72,7 +78,7 @@ namespace Hyper
 		match_token(Token::Type::Semicolon);
 
 		return std::make_unique<VariableDeclaration>(
-			identifier.value, variable_type);
+			identifier.value, variable_type, mut);
 	}
 
 	std::unique_ptr<Expression> Parser::parse_binary_expression(
