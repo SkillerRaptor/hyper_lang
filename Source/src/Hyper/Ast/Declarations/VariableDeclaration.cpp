@@ -31,10 +31,15 @@ namespace Hyper
 		std::cout << "type = " << m_type;
 		std::cout << '\n';
 	}
-
-	const char *VariableDeclaration::class_name() const noexcept
+	
+	const char *VariableDeclaration::node_name() const noexcept
 	{
 		return "VariableDeclaration";
+	}
+
+	AstNode::Category VariableDeclaration::node_category() const noexcept
+	{
+		return Category::VariableDeclaration;
 	}
 
 	std::string VariableDeclaration::identifier() const
@@ -42,45 +47,8 @@ namespace Hyper
 		return m_identifier;
 	}
 
-	VariableDeclaration::Type VariableDeclaration::type() const noexcept
+	Type VariableDeclaration::type() const noexcept
 	{
 		return m_type;
-	}
-
-	std::ostream &operator<<(
-		std::ostream &ostream,
-		const VariableDeclaration::Type &type)
-	{
-		switch (type)
-		{
-		case VariableDeclaration::Type::Int8:
-			ostream << "Int8";
-			break;
-		case VariableDeclaration::Type::Int16:
-			ostream << "Int16";
-			break;
-		case VariableDeclaration::Type::Int32:
-			ostream << "Int32";
-			break;
-		case VariableDeclaration::Type::Int64:
-			ostream << "Int64";
-			break;
-		case VariableDeclaration::Type::Uint8:
-			ostream << "Uint8";
-			break;
-		case VariableDeclaration::Type::Uint16:
-			ostream << "Uint16";
-			break;
-		case VariableDeclaration::Type::Uint32:
-			ostream << "Uint32";
-			break;
-		case VariableDeclaration::Type::Uint64:
-			ostream << "Uint64";
-			break;
-		default:
-			break;
-		}
-
-		return ostream;
 	}
 } // namespace Hyper

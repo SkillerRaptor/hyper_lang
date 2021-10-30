@@ -36,9 +36,14 @@ namespace Hyper
 		m_body->dump(indent + 1);
 	}
 
-	const char *WhileStatement::class_name() const noexcept
+	const char *WhileStatement::node_name() const noexcept
 	{
 		return "WhileStatement";
+	}
+
+	AstNode::Category WhileStatement::node_category() const noexcept
+	{
+		return Category::WhileStatement;
 	}
 
 	const std::unique_ptr<Expression> &WhileStatement::condition() const

@@ -34,10 +34,15 @@ namespace Hyper
 		m_left->dump(indent + 1);
 		m_right->dump(indent + 1);
 	}
-
-	const char *CompoundStatement::class_name() const noexcept
+	
+	const char *CompoundStatement::node_name() const noexcept
 	{
 		return "CompoundStatement";
+	}
+
+	AstNode::Category CompoundStatement::node_category() const noexcept
+	{
+		return Category::CompoundStatement;
 	}
 
 	const std::unique_ptr<Statement> &CompoundStatement::left() const

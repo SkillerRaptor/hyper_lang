@@ -35,10 +35,15 @@ namespace Hyper
 
 		m_expression->dump(indent + 1);
 	}
-
-	const char *AssignStatement::class_name() const noexcept
+	
+	const char *AssignStatement::node_name() const noexcept
 	{
 		return "AssignStatement";
+	}
+
+	AstNode::Category AssignStatement::node_category() const noexcept
+	{
+		return Category::AssignStatement;
 	}
 
 	std::string AssignStatement::identifier() const

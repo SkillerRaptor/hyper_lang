@@ -29,10 +29,15 @@ namespace Hyper
 		std::cout << "identifier = " << m_identifier;
 		std::cout << '\n';
 	}
-
-	const char *IdentifierExpression::class_name() const noexcept
+	
+	const char *IdentifierExpression::node_name() const noexcept
 	{
 		return "IdentifierExpression";
+	}
+
+	AstNode::Category IdentifierExpression::node_category() const noexcept
+	{
+		return Category::IdentifierExpression;
 	}
 
 	std::string IdentifierExpression::identifier() const

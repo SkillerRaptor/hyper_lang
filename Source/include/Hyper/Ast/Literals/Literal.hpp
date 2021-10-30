@@ -14,7 +14,5 @@ namespace Hyper
 	{
 	public:
 		~Literal() override = default;
-
-		const char *class_name() const noexcept override;
 	};
 } // namespace Hyper

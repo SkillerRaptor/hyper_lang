@@ -42,9 +42,14 @@ namespace Hyper
 		m_body->dump(indent + 1);
 	}
 
-	const char *ForStatement::class_name() const noexcept
+	const char *ForStatement::node_name() const noexcept
 	{
 		return "ForStatement";
+	}
+
+	AstNode::Category ForStatement::node_category() const noexcept
+	{
+		return Category::ForStatement;
 	}
 
 	const std::unique_ptr<Statement> &ForStatement::pre_operation() const

@@ -17,6 +17,6 @@ namespace Hyper
 			std::cout << ' ';
 		}
 
-		std::cout << class_name() << ": ";
+		std::cout << node_name() << ": ";
 	}
 } // namespace Hyper

@@ -29,10 +29,15 @@ namespace Hyper
 		std::cout << "value = " << m_value;
 		std::cout << '\n';
 	}
-
-	const char *NumericLiteral::class_name() const noexcept
+	
+	const char *NumericLiteral::node_name() const noexcept
 	{
 		return "NumericLiteral";
+	}
+
+	AstNode::Category NumericLiteral::node_category() const noexcept
+	{
+		return Category::NumericLiteral;
 	}
 
 	int64_t NumericLiteral::value() const noexcept

@@ -37,10 +37,15 @@ namespace Hyper
 		m_left->dump(indent + 1);
 		m_right->dump(indent + 1);
 	}
-
-	const char *BinaryExpression::class_name() const noexcept
+	
+	const char *BinaryExpression::node_name() const noexcept
 	{
 		return "BinaryExpression";
+	}
+
+	AstNode::Category BinaryExpression::node_category() const noexcept
+	{
+		return Category::BinaryExpression;
 	}
 
 	BinaryExpression::Operation BinaryExpression::operation() const noexcept

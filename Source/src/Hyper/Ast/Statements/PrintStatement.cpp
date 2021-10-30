@@ -31,10 +31,15 @@ namespace Hyper
 
 		m_expression->dump(indent + 1);
 	}
-
-	const char *PrintStatement::class_name() const noexcept
+	
+	const char *PrintStatement::node_name() const noexcept
 	{
-		return "PrintStatement";
+		return "FunctionDeclaration";
+	}
+
+	AstNode::Category PrintStatement::node_category() const noexcept
+	{
+		return Category::PrintStatement;
 	}
 
 	const std::unique_ptr<Expression> &PrintStatement::expression() const

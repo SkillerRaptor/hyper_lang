@@ -6,6 +6,7 @@
 
 #include "Hyper/Generators/CGenerator.hpp"
 
+#include "Hyper/Ast/Declarations/FunctionDeclaration.hpp"
 #include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
@@ -32,50 +33,31 @@ namespace Hyper
 		m_output_file << "#include <stdint.h>\n";
 		m_output_file << "#include <stdio.h>\n";
 		m_output_file << "\n";
-		m_output_file << "int main()\n";
-
-		enter_scope();
 	}
 
 	void CGenerator::generate_post()
 	{
-		leave_scope();
 	}
 
 	void CGenerator::visit(const AstNode &ast_node)
 	{
-		std::cerr << "Visit for " << ast_node.class_name() << " not implemented!";
+		std::cerr << "Visit for " << ast_node.node_name() << " not implemented!";
 		std::abort();
+	}
+
+	void CGenerator::visit(const FunctionDeclaration &function_declaration)
+	{
+		const std::string type = match_type(function_declaration.return_type());
+		m_output_file << type << " " << function_declaration.identifier() << "()\n";
+		
+		enter_scope();
+		function_declaration.body()->accept(*this);
+		leave_scope();
 	}
 
 	void CGenerator::visit(const VariableDeclaration &variable_declaration)
 	{
-		const std::string type = [&variable_declaration]()
-		{
-			switch (variable_declaration.type())
-			{
-			case VariableDeclaration::Type::Int8:
-				return "int8_t";
-			case VariableDeclaration::Type::Int16:
-				return "int16_t";
-			case VariableDeclaration::Type::Int32:
-				return "int32_t";
-			case VariableDeclaration::Type::Int64:
-				return "int64_t";
-			case VariableDeclaration::Type::Uint8:
-				return "uint8_t";
-			case VariableDeclaration::Type::Uint16:
-				return "uint16_t";
-			case VariableDeclaration::Type::Uint32:
-				return "uint32_t";
-			case VariableDeclaration::Type::Uint64:
-				return "uint64_t";
-			default:
-				// TODO(SkillerRaptor): Error handling
-				std::abort();
-			}
-		}();
-		
+		const std::string type = match_type(variable_declaration.type());
 		const std::string string =
 			type + " " + variable_declaration.identifier() + ";\n";
 		m_output_file << m_indent << string;
@@ -140,14 +122,14 @@ namespace Hyper
 		compound_statement.left()->accept(*this);
 		compound_statement.right()->accept(*this);
 	}
-	
+
 	void CGenerator::visit(const ForStatement &for_statement)
 	{
 		for_statement.pre_operation()->accept(*this);
 		m_output_file << m_indent << "while (";
 		for_statement.condition()->accept(*this);
 		m_output_file << ")\n";
-		
+
 		enter_scope();
 		for_statement.body()->accept(*this);
 		for_statement.post_operation()->accept(*this);
@@ -200,5 +182,33 @@ namespace Hyper
 	{
 		m_indent.pop_back();
 		m_output_file << m_indent << "}\n";
+	}
+
+	std::string CGenerator::match_type(Type type) const
+	{
+		switch (type)
+		{
+		case Type::Int8:
+			return "int8_t";
+		case Type::Int16:
+			return "int16_t";
+		case Type::Int32:
+			return "int32_t";
+		case Type::Int64:
+			return "int64_t";
+		case Type::Uint8:
+			return "uint8_t";
+		case Type::Uint16:
+			return "uint16_t";
+		case Type::Uint32:
+			return "uint32_t";
+		case Type::Uint64:
+			return "uint64_t";
+		case Type::Void:
+			return "void";
+		default:
+			// TODO(SkillerRaptor): Error handling
+			std::abort();
+		}
 	}
 } // namespace Hyper

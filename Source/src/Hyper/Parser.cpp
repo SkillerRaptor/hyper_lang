@@ -6,6 +6,7 @@
 
 #include "Hyper/Parser.hpp"
 
+#include "Hyper/Ast/Declarations/FunctionDeclaration.hpp"
 #include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
@@ -26,7 +27,30 @@ namespace Hyper
 
 	std::unique_ptr<AstNode> Parser::parse_tree()
 	{
-		return parse_compound_statement();
+		return parse_function_declaration();
+	}
+
+	std::unique_ptr<Declaration> Parser::parse_function_declaration()
+	{
+		match_token(Token::Type::Function);
+
+		const Token identifier = match_token(Token::Type::Identifier);
+
+		match_token(Token::Type::LeftParenthesis);
+		match_token(Token::Type::RightParenthesis);
+		match_token(Token::Type::RightArrow);
+		
+		const Type variable_type = [this]()
+		{
+			const Token::Type variable_token_type = current_token().type;
+			advance_token();
+			return match_type(variable_token_type);
+		}();
+
+		std::unique_ptr<Statement> body = parse_compound_statement();
+
+		return std::make_unique<FunctionDeclaration>(
+			identifier.value, variable_type, std::move(body));
 	}
 
 	std::unique_ptr<Declaration> Parser::parse_variable_declaration()
@@ -38,33 +62,11 @@ namespace Hyper
 		match_token(Token::Type::Colon);
 		match_token(Token::Type::Mutable); // TODO(SkillerRaptor): Optional
 
-		const VariableDeclaration::Type variable_type = [this]()
+		const Type variable_type = [this]()
 		{
 			const Token::Type variable_token_type = current_token().type;
 			advance_token();
-
-			switch (variable_token_type)
-			{
-			case Token::Type::Int8:
-				return VariableDeclaration::Type::Int8;
-			case Token::Type::Int16:
-				return VariableDeclaration::Type::Int16;
-			case Token::Type::Int32:
-				return VariableDeclaration::Type::Int32;
-			case Token::Type::Int64:
-				return VariableDeclaration::Type::Int64;
-			case Token::Type::Uint8:
-				return VariableDeclaration::Type::Uint8;
-			case Token::Type::Uint16:
-				return VariableDeclaration::Type::Uint16;
-			case Token::Type::Uint32:
-				return VariableDeclaration::Type::Uint32;
-			case Token::Type::Uint64:
-				return VariableDeclaration::Type::Uint64;
-			default:
-				// TODO(SkillerRaptor): Error handling
-				std::abort();
-			}
+			return match_type(variable_token_type);
 		}();
 
 		match_token(Token::Type::Semicolon);
@@ -193,8 +195,8 @@ namespace Hyper
 			if (tree != nullptr)
 			{
 				if (
-					std::strcmp(tree->class_name(), "PrintStatement") == 0 ||
-					std::strcmp(tree->class_name(), "AssignStatement") == 0)
+					tree->node_category() == AstNode::Category::PrintStatement ||
+					tree->node_category() == AstNode::Category::AssignStatement)
 				{
 					match_token(Token::Type::Semicolon);
 				}
@@ -352,5 +354,35 @@ namespace Hyper
 		}
 
 		return 0;
+	}
+
+	Type Parser::match_type(Token::Type token_type) const noexcept
+	{
+		switch (token_type)
+		{
+		case Token::Type::Int8:
+			return Type::Int8;
+		case Token::Type::Int16:
+			return Type::Int16;
+		case Token::Type::Int32:
+			return Type::Int32;
+		case Token::Type::Int64:
+			return Type::Int64;
+		case Token::Type::Uint8:
+			return Type::Uint8;
+		case Token::Type::Uint16:
+			return Type::Uint16;
+		case Token::Type::Uint32:
+			return Type::Uint32;
+		case Token::Type::Uint64:
+			return Type::Uint64;
+		case Token::Type::Void:
+			return Type::Void;
+		default:
+			break;
+		}
+
+		// TODO(SkillerRaptor): Error handling
+		std::abort();
 	}
 } // namespace Hyper

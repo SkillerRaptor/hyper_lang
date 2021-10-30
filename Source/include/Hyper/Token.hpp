@@ -32,13 +32,15 @@ namespace Hyper
 			Star,
 			Slash,
 
-			// Brackets
+			// Indicators
 			LeftBrace,
 			RightBrace,
 			LeftParenthesis,
 			RightParenthesis,
 			LeftBracket,
 			RightBracket,
+			LeftArrow,
+			RightArrow,
 
 			// Comparisons
 			Equal,
@@ -51,6 +53,7 @@ namespace Hyper
 			// Keywords
 			Else,
 			For,
+			Function,
 			If,
 			Let,
 			Mutable,
@@ -66,6 +69,7 @@ namespace Hyper
 			Uint16,
 			Uint32,
 			Uint64,
+			Void,
 
 			// Literals
 			NumericLiteral

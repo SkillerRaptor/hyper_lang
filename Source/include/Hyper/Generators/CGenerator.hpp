@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "Hyper/Types.hpp"
 #include "Hyper/Generators/Generator.hpp"
 
 #include <fstream>
@@ -23,6 +24,7 @@ namespace Hyper
 
 		void visit(const AstNode &ast_node) override;
 
+		void visit(const FunctionDeclaration &function_declaration) override;
 		void visit(const VariableDeclaration &variable_declaration) override;
 
 		void visit(const BinaryExpression &binary_expression) override;
@@ -40,6 +42,8 @@ namespace Hyper
 	private:
 		void enter_scope();
 		void leave_scope();
+		
+		std::string match_type(Type type) const;
 
 	private:
 		std::ofstream m_output_file;

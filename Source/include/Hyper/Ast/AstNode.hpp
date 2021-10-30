@@ -15,11 +15,33 @@ namespace Hyper
 	class AstNode
 	{
 	public:
+		enum class Category : unsigned char
+		{
+			None = 0,
+			
+			FunctionDeclaration,
+			VariableDeclaration,
+			
+			BinaryExpression,
+			IdentifierExpression,
+			
+			NumericLiteral,
+			
+			AssignStatement,
+			CompoundStatement,
+			ForStatement,
+			IfStatement,
+			PrintStatement,
+			WhileStatement
+		};
+		
+	public:
 		virtual ~AstNode() = default;
 
 		virtual void accept(Generator &generator) const = 0;
 		virtual void dump(size_t indent) const;
 
-		virtual const char *class_name() const noexcept = 0;
+		virtual const char *node_name() const noexcept = 0;
+		virtual Category node_category() const noexcept = 0;
 	};
 } // namespace Hyper

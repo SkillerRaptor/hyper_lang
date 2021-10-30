@@ -22,9 +22,10 @@ namespace Hyper
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
-
-		const char *class_name() const noexcept override;
-
+		
+		const char *node_name() const noexcept override;
+		Category node_category() const noexcept override;
+		
 		const std::unique_ptr<Expression> &condition() const;
 		const std::unique_ptr<Statement> &true_branch() const;
 		const std::unique_ptr<Statement> &false_branch() const;

@@ -59,6 +59,13 @@ namespace Hyper
 				add_token(tokens, "+", Token::Type::Plus);
 				break;
 			case '-':
+				if (peek() == '>')
+				{
+					advance();
+					add_token(tokens, "->", Token::Type::RightArrow);
+					break;
+				}
+
 				add_token(tokens, "-", Token::Type::Minus);
 				break;
 			case '*':
@@ -68,45 +75,48 @@ namespace Hyper
 				add_token(tokens, "/", Token::Type::Slash);
 				break;
 			case '=':
-				if (advance() == '=')
+				if (peek() == '=')
 				{
+					advance();
 					add_token(tokens, "==", Token::Type::Equal);
 					break;
 				}
 
-				revert();
-
 				add_token(tokens, "=", Token::Type::Assign);
 				break;
 			case '!':
-				if (advance() == '=')
+				if (peek() == '=')
 				{
+					advance();
 					add_token(tokens, "!=", Token::Type::NotEqual);
 					break;
 				}
 
-				revert();
-
 				break;
 			case '>':
-				if (advance() == '=')
+				if (peek() == '=')
 				{
+					advance();
 					add_token(tokens, ">=", Token::Type::GreaterEqual);
 					break;
 				}
 
-				revert();
-
 				add_token(tokens, ">", Token::Type::GreaterThan);
 				break;
 			case '<':
-				if (advance() == '=')
+				if (peek() == '=')
 				{
+					advance();
 					add_token(tokens, "<=", Token::Type::LessEqual);
 					break;
 				}
 
-				revert();
+				if (peek() == '-')
+				{
+					advance();
+					add_token(tokens, "<-", Token::Type::LeftArrow);
+					break;
+				}
 
 				add_token(tokens, "<", Token::Type::LessThan);
 				break;
@@ -226,20 +236,12 @@ namespace Hyper
 	std::string Scanner::scan_numeric_literal(char character)
 	{
 		std::string numeric_literal;
+		numeric_literal += character;
 
-		char next_character = character;
-		while (std::isdigit(next_character))
+		while (std::isdigit(peek()))
 		{
-			numeric_literal += next_character;
-
-			next_character = advance();
-			if (next_character == '\0')
-			{
-				return numeric_literal;
-			}
+			numeric_literal += advance();
 		}
-
-		revert();
 
 		return numeric_literal;
 	}
@@ -247,21 +249,12 @@ namespace Hyper
 	std::string Scanner::scan_identifier(char character)
 	{
 		std::string identifier;
+		identifier += character;
 
-		char next_character = character;
-		while (std::isalpha(next_character) || std::isdigit(next_character) ||
-					 next_character == '_')
+		while (std::isalpha(peek()) || std::isdigit(peek()) || peek() == '_')
 		{
-			identifier += next_character;
-
-			next_character = advance();
-			if (next_character == '\0')
-			{
-				return identifier;
-			}
+			identifier += advance();
 		}
-
-		revert();
 
 		return identifier;
 	}
@@ -272,10 +265,15 @@ namespace Hyper
 		{
 			return Token::Type::Else;
 		}
-		
+
 		if (identifier == "for")
 		{
 			return Token::Type::For;
+		}
+
+		if (identifier == "fn")
+		{
+			return Token::Type::Function;
 		}
 
 		if (identifier == "i8")
@@ -336,6 +334,11 @@ namespace Hyper
 		if (identifier == "u64")
 		{
 			return Token::Type::Uint64;
+		}
+
+		if (identifier == "void")
+		{
+			return Token::Type::Void;
 		}
 
 		if (identifier == "while")

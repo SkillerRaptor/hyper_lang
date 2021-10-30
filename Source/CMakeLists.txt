@@ -11,20 +11,18 @@ set(SOURCES
         src/main.cpp
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
+        src/Hyper/Types.cpp
         src/Hyper/Ast/AstNode.cpp
-        src/Hyper/Ast/Declarations/Declaration.cpp
+        src/Hyper/Ast/Declarations/FunctionDeclaration.cpp
         src/Hyper/Ast/Declarations/VariableDeclaration.cpp
         src/Hyper/Ast/Expressions/BinaryExpression.cpp
-        src/Hyper/Ast/Expressions/Expression.cpp
         src/Hyper/Ast/Expressions/IdentifierExpression.cpp
-        src/Hyper/Ast/Literals/Literal.cpp
         src/Hyper/Ast/Literals/NumericLiteral.cpp
         src/Hyper/Ast/Statements/AssignStatement.cpp
         src/Hyper/Ast/Statements/CompoundStatement.cpp
         src/Hyper/Ast/Statements/ForStatement.cpp
         src/Hyper/Ast/Statements/IfStatement.cpp
         src/Hyper/Ast/Statements/PrintStatement.cpp
-        src/Hyper/Ast/Statements/Statement.cpp
         src/Hyper/Ast/Statements/WhileStatement.cpp
         src/Hyper/Generators/CGenerator.cpp
         src/Hyper/Generators/Generator.cpp)
@@ -34,8 +32,10 @@ set(HEADERS
         include/Hyper/Scanner.hpp
         include/Hyper/SourceLocation.hpp
         include/Hyper/Token.hpp
+        include/Hyper/Types.hpp
         include/Hyper/Ast/AstNode.hpp
         include/Hyper/Ast/Declarations/Declaration.hpp
+        include/Hyper/Ast/Declarations/FunctionDeclaration.hpp
         include/Hyper/Ast/Declarations/VariableDeclaration.hpp
         include/Hyper/Ast/Expressions/BinaryExpression.hpp
         include/Hyper/Ast/Expressions/Expression.hpp

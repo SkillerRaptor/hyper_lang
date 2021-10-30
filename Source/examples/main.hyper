@@ -1,3 +1,4 @@
+fn main() -> i32
 {
   let i: mut i8;
   let j: mut i8;

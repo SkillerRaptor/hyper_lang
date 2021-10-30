@@ -42,10 +42,15 @@ namespace Hyper
 			m_false_branch->dump(indent + 1);
 		}
 	}
-
-	const char *IfStatement::class_name() const noexcept
+	
+	const char *IfStatement::node_name() const noexcept
 	{
 		return "IfStatement";
+	}
+
+	AstNode::Category IfStatement::node_category() const noexcept
+	{
+		return Category::IfStatement;
 	}
 
 	const std::unique_ptr<Expression> &IfStatement::condition() const
