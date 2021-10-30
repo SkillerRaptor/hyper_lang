@@ -73,7 +73,7 @@ namespace Hyper
 					add_token(tokens, "==", Token::Type::Equal);
 					break;
 				}
-				
+
 				revert();
 
 				add_token(tokens, "=", Token::Type::Assign);
@@ -84,7 +84,7 @@ namespace Hyper
 					add_token(tokens, "!=", Token::Type::NotEqual);
 					break;
 				}
-				
+
 				revert();
 
 				break;
@@ -94,7 +94,7 @@ namespace Hyper
 					add_token(tokens, ">=", Token::Type::GreaterEqual);
 					break;
 				}
-				
+
 				revert();
 
 				add_token(tokens, ">", Token::Type::GreaterThan);
@@ -107,7 +107,7 @@ namespace Hyper
 				}
 
 				revert();
-				
+
 				add_token(tokens, "<", Token::Type::LessThan);
 				break;
 			default:
@@ -273,26 +273,31 @@ namespace Hyper
 			return Token::Type::Else;
 		}
 		
+		if (identifier == "for")
+		{
+			return Token::Type::For;
+		}
+
 		if (identifier == "i8")
 		{
 			return Token::Type::Int8;
 		}
-		
+
 		if (identifier == "i16")
 		{
 			return Token::Type::Int16;
 		}
-		
+
 		if (identifier == "i32")
 		{
 			return Token::Type::Int32;
 		}
-		
+
 		if (identifier == "i64")
 		{
 			return Token::Type::Int64;
 		}
-		
+
 		if (identifier == "if")
 		{
 			return Token::Type::If;
@@ -312,27 +317,27 @@ namespace Hyper
 		{
 			return Token::Type::Print;
 		}
-		
+
 		if (identifier == "u8")
 		{
 			return Token::Type::Uint8;
 		}
-		
+
 		if (identifier == "u16")
 		{
 			return Token::Type::Uint16;
 		}
-		
+
 		if (identifier == "u32")
 		{
 			return Token::Type::Uint32;
 		}
-		
+
 		if (identifier == "u64")
 		{
 			return Token::Type::Uint64;
 		}
-		
+
 		if (identifier == "while")
 		{
 			return Token::Type::While;

@@ -55,6 +55,7 @@ fn subtract(x: i64, y: i64) -> i64
 ## Keywords
 ```hyper
 else
+for
 fn
 if
 let

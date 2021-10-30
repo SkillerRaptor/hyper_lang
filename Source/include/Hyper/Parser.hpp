@@ -38,8 +38,10 @@ namespace Hyper
 
 		std::unique_ptr<Statement> parse_assign_statement();
 		std::unique_ptr<Statement> parse_compound_statement();
+		std::unique_ptr<Statement> parse_for_statement();
 		std::unique_ptr<Statement> parse_if_statement();
 		std::unique_ptr<Statement> parse_print_statement();
+		std::unique_ptr<Statement> parse_single_statement();
 		std::unique_ptr<Statement> parse_while_statement();
 
 		Token current_token() const noexcept;

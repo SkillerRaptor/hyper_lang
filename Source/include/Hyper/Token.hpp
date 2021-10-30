@@ -31,7 +31,7 @@ namespace Hyper
 			Minus,
 			Star,
 			Slash,
-			
+
 			// Brackets
 			LeftBrace,
 			RightBrace,
@@ -39,7 +39,7 @@ namespace Hyper
 			RightParenthesis,
 			LeftBracket,
 			RightBracket,
-			
+
 			// Comparisons
 			Equal,
 			NotEqual,
@@ -50,6 +50,7 @@ namespace Hyper
 
 			// Keywords
 			Else,
+			For,
 			If,
 			Let,
 			Mutable,

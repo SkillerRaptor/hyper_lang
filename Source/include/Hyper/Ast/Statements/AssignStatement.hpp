@@ -26,7 +26,7 @@ namespace Hyper
 		const char *class_name() const noexcept override;
 
 		std::string identifier() const;
-		const std::unique_ptr<Expression>& expression() const;
+		const std::unique_ptr<Expression> &expression() const;
 
 	private:
 		std::string m_identifier;

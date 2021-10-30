@@ -12,6 +12,7 @@
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
 #include "Hyper/Ast/Statements/AssignStatement.hpp"
 #include "Hyper/Ast/Statements/CompoundStatement.hpp"
+#include "Hyper/Ast/Statements/ForStatement.hpp"
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
@@ -74,6 +75,7 @@ namespace Hyper
 				std::abort();
 			}
 		}();
+		
 		const std::string string =
 			type + " " + variable_declaration.identifier() + ";\n";
 		m_output_file << m_indent << string;
@@ -132,23 +134,36 @@ namespace Hyper
 		assign_statement.expression()->accept(*this);
 		m_output_file << ";\n";
 	}
-	
+
 	void CGenerator::visit(const CompoundStatement &compound_statement)
 	{
 		compound_statement.left()->accept(*this);
 		compound_statement.right()->accept(*this);
 	}
 	
+	void CGenerator::visit(const ForStatement &for_statement)
+	{
+		for_statement.pre_operation()->accept(*this);
+		m_output_file << m_indent << "while (";
+		for_statement.condition()->accept(*this);
+		m_output_file << ")\n";
+		
+		enter_scope();
+		for_statement.body()->accept(*this);
+		for_statement.post_operation()->accept(*this);
+		leave_scope();
+	}
+
 	void CGenerator::visit(const IfStatement &if_statement)
 	{
 		m_output_file << m_indent << "if (";
 		if_statement.condition()->accept(*this);
 		m_output_file << ")\n";
-		
+
 		enter_scope();
 		if_statement.true_branch()->accept(*this);
 		leave_scope();
-		
+
 		if (if_statement.false_branch() != nullptr)
 		{
 			enter_scope();
@@ -163,13 +178,13 @@ namespace Hyper
 		print_statement.expression()->accept(*this);
 		m_output_file << ");\n";
 	}
-	
+
 	void CGenerator::visit(const WhileStatement &while_statement)
 	{
 		m_output_file << m_indent << "while (";
 		while_statement.condition()->accept(*this);
 		m_output_file << ")\n";
-		
+
 		enter_scope();
 		while_statement.body()->accept(*this);
 		leave_scope();

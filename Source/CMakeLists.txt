@@ -21,6 +21,7 @@ set(SOURCES
         src/Hyper/Ast/Literals/NumericLiteral.cpp
         src/Hyper/Ast/Statements/AssignStatement.cpp
         src/Hyper/Ast/Statements/CompoundStatement.cpp
+        src/Hyper/Ast/Statements/ForStatement.cpp
         src/Hyper/Ast/Statements/IfStatement.cpp
         src/Hyper/Ast/Statements/PrintStatement.cpp
         src/Hyper/Ast/Statements/Statement.cpp
@@ -43,6 +44,7 @@ set(HEADERS
         include/Hyper/Ast/Literals/Literal.hpp
         include/Hyper/Ast/Statements/AssignStatement.hpp
         include/Hyper/Ast/Statements/CompoundStatement.hpp
+        include/Hyper/Ast/Statements/ForStatement.hpp
         include/Hyper/Ast/Statements/IfStatement.hpp
         include/Hyper/Ast/Statements/PrintStatement.hpp
         include/Hyper/Ast/Statements/Statement.hpp

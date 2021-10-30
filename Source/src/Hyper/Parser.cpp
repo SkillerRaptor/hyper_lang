@@ -12,6 +12,7 @@
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
 #include "Hyper/Ast/Statements/AssignStatement.hpp"
 #include "Hyper/Ast/Statements/CompoundStatement.hpp"
+#include "Hyper/Ast/Statements/ForStatement.hpp"
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
@@ -177,8 +178,6 @@ namespace Hyper
 
 		std::unique_ptr<Expression> expression = parse_binary_expression(0);
 
-		match_token(Token::Type::Semicolon);
-
 		return std::make_unique<AssignStatement>(
 			identifier.value, std::move(expression));
 	}
@@ -190,46 +189,53 @@ namespace Hyper
 		std::unique_ptr<Statement> left = nullptr;
 		while (true)
 		{
-			std::unique_ptr<Statement> tree = nullptr;
-			switch (current_token().type)
+			std::unique_ptr<Statement> tree = parse_single_statement();
+			if (tree != nullptr)
 			{
-			case Token::Type::Identifier:
-				tree = parse_assign_statement();
-				break;
-			case Token::Type::If:
-				tree = parse_if_statement();
-				break;
-			case Token::Type::Let:
-				tree = parse_variable_declaration();
-				break;
-			case Token::Type::Print:
-				tree = parse_print_statement();
-				break;
-			case Token::Type::RightBrace:
+				if (
+					std::strcmp(tree->class_name(), "PrintStatement") == 0 ||
+					std::strcmp(tree->class_name(), "AssignStatement") == 0)
+				{
+					match_token(Token::Type::Semicolon);
+				}
+
+				if (left == nullptr)
+				{
+					left = std::move(tree);
+				}
+				else
+				{
+					left = std::make_unique<CompoundStatement>(
+						std::move(left), std::move(tree));
+				}
+			}
+
+			if (current_token().type == Token::Type::RightBrace)
+			{
 				match_token(Token::Type::RightBrace);
 				return left;
-			case Token::Type::While:
-				tree = parse_while_statement();
-				break;
-			default:
-				// TODO(SkillerRaptor): Error handling
-				std::abort();
 			}
-
-			if (tree == nullptr)
-			{
-				continue;
-			}
-
-			if (left == nullptr)
-			{
-				left = std::move(tree);
-				continue;
-			}
-
-			left =
-				std::make_unique<CompoundStatement>(std::move(left), std::move(tree));
 		}
+	}
+
+	std::unique_ptr<Statement> Parser::parse_for_statement()
+	{
+		match_token(Token::Type::For);
+
+		std::unique_ptr<Statement> pre_operation = parse_single_statement();
+		match_token(Token::Type::Semicolon);
+
+		std::unique_ptr<Expression> condition = parse_binary_expression(0);
+		match_token(Token::Type::Semicolon);
+
+		std::unique_ptr<Statement> post_operation = parse_single_statement();
+		std::unique_ptr<Statement> body = parse_compound_statement();
+
+		return std::make_unique<ForStatement>(
+			std::move(pre_operation),
+			std::move(condition),
+			std::move(post_operation),
+			std::move(body));
 	}
 
 	std::unique_ptr<Statement> Parser::parse_if_statement()
@@ -257,9 +263,29 @@ namespace Hyper
 
 		std::unique_ptr<Expression> expression = parse_binary_expression(0);
 
-		match_token(Token::Type::Semicolon);
-
 		return std::make_unique<PrintStatement>(std::move(expression));
+	}
+
+	std::unique_ptr<Statement> Parser::parse_single_statement()
+	{
+		switch (current_token().type)
+		{
+		case Token::Type::Identifier:
+			return parse_assign_statement();
+		case Token::Type::For:
+			return parse_for_statement();
+		case Token::Type::If:
+			return parse_if_statement();
+		case Token::Type::Let:
+			return parse_variable_declaration();
+		case Token::Type::Print:
+			return parse_print_statement();
+		case Token::Type::While:
+			return parse_while_statement();
+		default:
+			// TODO(SkillerRaptor): Error handling
+			std::abort();
+		}
 	}
 
 	std::unique_ptr<Statement> Parser::parse_while_statement()

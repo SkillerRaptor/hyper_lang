@@ -21,8 +21,8 @@ namespace Hyper
 		void dump(size_t indent) const override;
 
 		const char *class_name() const noexcept override;
-		
-		const std::unique_ptr<Expression>& expression() const;
+
+		const std::unique_ptr<Expression> &expression() const;
 
 	private:
 		std::unique_ptr<Expression> m_expression = nullptr;

@@ -21,6 +21,7 @@ namespace Hyper
 
 	class AssignStatement;
 	class CompoundStatement;
+	class ForStatement;
 	class IfStatement;
 	class PrintStatement;
 	class WhileStatement;
@@ -45,6 +46,7 @@ namespace Hyper
 
 		virtual void visit(const AssignStatement &assign_statement) = 0;
 		virtual void visit(const CompoundStatement &compound_statement) = 0;
+		virtual void visit(const ForStatement &for_statement) = 0;
 		virtual void visit(const IfStatement &if_statement) = 0;
 		virtual void visit(const PrintStatement &print_statement) = 0;
 		virtual void visit(const WhileStatement &while_statement) = 0;
