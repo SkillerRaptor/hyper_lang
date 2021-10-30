@@ -38,6 +38,8 @@ namespace Hyper
 		const char *class_name() const noexcept override;
 
 		Operation operation() const noexcept;
+		const std::unique_ptr<Expression>& left() const;
+		const std::unique_ptr<Expression>& right() const;
 
 	private:
 		Operation m_operation = Operation::None;

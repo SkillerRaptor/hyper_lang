@@ -29,16 +29,20 @@ namespace Hyper
 
 	private:
 		std::unique_ptr<Declaration> parse_variable_declaration();
-		
+
 		std::unique_ptr<Expression> parse_binary_expression(uint8_t precedence);
+		std::unique_ptr<Expression> parse_identifier_expression();
 		std::unique_ptr<Expression> parse_primary_expression();
 
 		std::unique_ptr<Literal> parse_numeric_literal();
-		
+
 		std::unique_ptr<Statement> parse_statements();
+		std::unique_ptr<Statement> parse_assign_statement();
+		std::unique_ptr<Statement> parse_print_statement();
 
 		Token current_token() const noexcept;
 		void advance_token() noexcept;
+		Token match_token(Token::Type token_type) noexcept;
 
 		uint8_t get_operator_precedence(Token::Type token_type) const noexcept;
 

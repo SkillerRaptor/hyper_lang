@@ -16,15 +16,16 @@ set(SOURCES
         src/Hyper/Ast/Declarations/VariableDeclaration.cpp
         src/Hyper/Ast/Expressions/BinaryExpression.cpp
         src/Hyper/Ast/Expressions/Expression.cpp
+        src/Hyper/Ast/Expressions/IdentifierExpression.cpp
         src/Hyper/Ast/Literals/Literal.cpp
         src/Hyper/Ast/Literals/NumericLiteral.cpp
-        src/Hyper/Ast/Statements/VariableDeclaration.cpp
-        src/Hyper/Ast/Statements/Declaration.cpp
+        src/Hyper/Ast/Statements/AssignStatement.cpp
+        src/Hyper/Ast/Statements/PrintStatement.cpp
+        src/Hyper/Ast/Statements/Statement.cpp
         src/Hyper/Generators/CGenerator.cpp
         src/Hyper/Generators/Generator.cpp)
 
 set(HEADERS
-        include/Hyper/Operators.hpp
         include/Hyper/Parser.hpp
         include/Hyper/Scanner.hpp
         include/Hyper/SourceLocation.hpp
@@ -34,9 +35,11 @@ set(HEADERS
         include/Hyper/Ast/Declarations/VariableDeclaration.hpp
         include/Hyper/Ast/Expressions/BinaryExpression.hpp
         include/Hyper/Ast/Expressions/Expression.hpp
+        include/Hyper/Ast/Expressions/IdentifierExpression.hpp
         include/Hyper/Ast/Literals/NumericLiteral.hpp
         include/Hyper/Ast/Literals/Literal.hpp
         include/Hyper/Ast/Statements/AssignStatement.hpp
+        include/Hyper/Ast/Statements/PrintStatement.hpp
         include/Hyper/Ast/Statements/Statement.hpp
         include/Hyper/Generators/CGenerator.hpp
         include/Hyper/Generators/Generator.hpp)

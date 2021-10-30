@@ -8,7 +8,10 @@
 
 #include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
+#include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
+#include "Hyper/Ast/Statements/AssignStatement.hpp"
+#include "Hyper/Ast/Statements/PrintStatement.hpp"
 
 #include <iostream>
 
@@ -52,7 +55,6 @@ namespace Hyper
 				std::abort();
 			}
 		}();
-
 		const std::string string =
 			type + " " + variable_declaration.identifier() + ";\n";
 		m_output_file << m_indent << string;
@@ -78,12 +80,33 @@ namespace Hyper
 			}
 		}();
 
+		binary_expression.left()->accept(*this);
 		m_output_file << " " << operation << " ";
+		binary_expression.right()->accept(*this);
+	}
+
+	void CGenerator::visit(const IdentifierExpression &identifier_expression)
+	{
+		m_output_file << identifier_expression.identifier();
 	}
 
 	void CGenerator::visit(const NumericLiteral &numeric_literal)
 	{
 		m_output_file << numeric_literal.value();
+	}
+
+	void CGenerator::visit(const AssignStatement &assign_statement)
+	{
+		m_output_file << m_indent << assign_statement.identifier() << " = ";
+		assign_statement.expression()->accept(*this);
+		m_output_file << ";";
+	}
+
+	void CGenerator::visit(const PrintStatement &print_statement)
+	{
+		m_output_file << m_indent << R"(println("%d\n", )";
+		print_statement.expression()->accept(*this);
+		m_output_file << ");";
 	}
 
 	void CGenerator::enter_scope()

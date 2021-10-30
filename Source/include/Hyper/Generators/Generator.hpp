@@ -13,8 +13,14 @@ namespace Hyper
 	class AstNode;
 
 	class VariableDeclaration;
+	
 	class BinaryExpression;
+	class IdentifierExpression;
+	
 	class NumericLiteral;
+	
+	class AssignStatement;
+	class PrintStatement;
 
 	class Generator
 	{
@@ -28,8 +34,14 @@ namespace Hyper
 		virtual void visit(const AstNode &ast_node) = 0;
 
 		virtual void visit(const VariableDeclaration &variable_declaration) = 0;
+		
 		virtual void visit(const BinaryExpression &binary_expression) = 0;
+		virtual void visit(const IdentifierExpression &identifier_expression) = 0;
+		
 		virtual void visit(const NumericLiteral &numeric_literal) = 0;
+		
+		virtual void visit(const AssignStatement &assign_statement) = 0;
+		virtual void visit(const PrintStatement &print_statement) = 0;
 
 	protected:
 		std::string m_file;

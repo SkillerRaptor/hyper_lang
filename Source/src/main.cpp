@@ -58,9 +58,9 @@ int main(int argc, char **argv)
 
 		Hyper::Parser parser(tokens);
 		const std::unique_ptr<Hyper::AstNode> ast = parser.parse_tree();
-		
+
 		ast->dump(0);
-		
+
 		Hyper::CGenerator generator(path);
 		generator.generate_pre();
 		ast->accept(generator);

@@ -24,9 +24,7 @@ namespace Hyper
 
 	void BinaryExpression::accept(Generator &generator) const
 	{
-		m_left->accept(generator);
 		generator.visit(*this);
-		m_right->accept(generator);
 	}
 
 	void BinaryExpression::dump(size_t indent) const
@@ -48,6 +46,16 @@ namespace Hyper
 	BinaryExpression::Operation BinaryExpression::operation() const noexcept
 	{
 		return m_operation;
+	}
+
+	const std::unique_ptr<Expression> &BinaryExpression::left() const
+	{
+		return m_left;
+	}
+
+	const std::unique_ptr<Expression> &BinaryExpression::right() const
+	{
+		return m_right;
 	}
 
 	std::ostream &operator<<(
