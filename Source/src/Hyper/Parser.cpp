@@ -11,6 +11,8 @@
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
 #include "Hyper/Ast/Statements/AssignStatement.hpp"
+#include "Hyper/Ast/Statements/CompoundStatement.hpp"
+#include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
 
 namespace Hyper
@@ -22,7 +24,7 @@ namespace Hyper
 
 	std::unique_ptr<AstNode> Parser::parse_tree()
 	{
-		return parse_statements();
+		return parse_compound_statement();
 	}
 
 	std::unique_ptr<Declaration> Parser::parse_variable_declaration()
@@ -152,24 +154,6 @@ namespace Hyper
 		return std::make_unique<NumericLiteral>(std::stoll(numeric.value));
 	}
 
-	std::unique_ptr<Statement> Parser::parse_statements()
-	{
-		// FIXME(SkillerRaptor): Only the first statement will be parsed
-
-		switch (current_token().type)
-		{
-		case Token::Type::Identifier:
-			return parse_assign_statement();
-		case Token::Type::Print:
-			return parse_print_statement();
-		case Token::Type::Let:
-			return parse_variable_declaration();
-		default:
-			// TODO(SkillerRaptor): Error handling
-			std::abort();
-		}
-	}
-
 	std::unique_ptr<Statement> Parser::parse_assign_statement()
 	{
 		const Token identifier = match_token(Token::Type::Identifier);
@@ -182,6 +166,71 @@ namespace Hyper
 
 		return std::make_unique<AssignStatement>(
 			identifier.value, std::move(expression));
+	}
+
+	std::unique_ptr<Statement> Parser::parse_compound_statement()
+	{
+		match_token(Token::Type::LeftBrace);
+
+		std::unique_ptr<Statement> left = nullptr;
+		while (true)
+		{
+			std::unique_ptr<Statement> tree = nullptr;
+			switch (current_token().type)
+			{
+			case Token::Type::Identifier:
+				tree = parse_assign_statement();
+				break;
+			case Token::Type::If:
+				tree = parse_if_statement();
+				break;
+			case Token::Type::Let:
+				tree = parse_variable_declaration();
+				break;
+			case Token::Type::Print:
+				tree = parse_print_statement();
+				break;
+			case Token::Type::RightBrace:
+				match_token(Token::Type::RightBrace);
+				return left;
+			default:
+				// TODO(SkillerRaptor): Error handling
+				std::abort();
+			}
+
+			if (tree == nullptr)
+			{
+				continue;
+			}
+
+			if (left == nullptr)
+			{
+				left = std::move(tree);
+				continue;
+			}
+
+			left =
+				std::make_unique<CompoundStatement>(std::move(left), std::move(tree));
+		}
+	}
+
+	std::unique_ptr<Statement> Parser::parse_if_statement()
+	{
+		match_token(Token::Type::If);
+
+		std::unique_ptr<Expression> conditional = parse_binary_expression(0);
+		std::unique_ptr<Statement> true_branch = parse_compound_statement();
+
+		std::unique_ptr<Statement> false_branch = nullptr;
+		if (current_token().type == Token::Type::Else)
+		{
+			advance_token();
+
+			false_branch = parse_compound_statement();
+		}
+
+		return std::make_unique<IfStatement>(
+			std::move(conditional), std::move(true_branch), std::move(false_branch));
 	}
 
 	std::unique_ptr<Statement> Parser::parse_print_statement()

@@ -37,6 +37,24 @@ namespace Hyper
 			case ';':
 				add_token(tokens, ";", Token::Type::Semicolon);
 				break;
+			case '{':
+				add_token(tokens, "{", Token::Type::LeftBrace);
+				break;
+			case '}':
+				add_token(tokens, "}", Token::Type::RightBrace);
+				break;
+			case '(':
+				add_token(tokens, "(", Token::Type::LeftParenthesis);
+				break;
+			case ')':
+				add_token(tokens, ")", Token::Type::RightParenthesis);
+				break;
+			case '[':
+				add_token(tokens, "[", Token::Type::LeftBracket);
+				break;
+			case ']':
+				add_token(tokens, "]", Token::Type::RightBracket);
+				break;
 			case '+':
 				add_token(tokens, "+", Token::Type::Plus);
 				break;
@@ -242,9 +260,19 @@ namespace Hyper
 
 	Token::Type Scanner::scan_keyword(const std::string &identifier)
 	{
+		if (identifier == "else")
+		{
+			return Token::Type::Else;
+		}
+		
 		if (identifier == "i64")
 		{
 			return Token::Type::Int64;
+		}
+		
+		if (identifier == "if")
+		{
+			return Token::Type::If;
 		}
 
 		if (identifier == "let")

@@ -24,13 +24,15 @@ namespace Hyper
 		void visit(const AstNode &ast_node) override;
 
 		void visit(const VariableDeclaration &variable_declaration) override;
-		
+
 		void visit(const BinaryExpression &binary_expression) override;
 		void visit(const IdentifierExpression &identifier_expression) override;
-		
+
 		void visit(const NumericLiteral &numeric_literal) override;
-		
+
 		void visit(const AssignStatement &assign_statement) override;
+		void visit(const CompoundStatement &compound_statement) override;
+		void visit(const IfStatement &if_statement) override;
 		void visit(const PrintStatement &print_statement) override;
 
 	private:

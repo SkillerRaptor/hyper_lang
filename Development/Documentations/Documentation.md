@@ -54,7 +54,9 @@ fn subtract(x: i64, y: i64) -> i64
 
 ## Keywords
 ```hyper
+else
 fn
+if
 let
 mut
 return

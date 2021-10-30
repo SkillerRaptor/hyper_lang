@@ -32,6 +32,14 @@ namespace Hyper
 			Star,
 			Slash,
 			
+			// Brackets
+			LeftBrace,
+			RightBrace,
+			LeftParenthesis,
+			RightParenthesis,
+			LeftBracket,
+			RightBracket,
+			
 			// Comparisons
 			Equal,
 			NotEqual,
@@ -41,6 +49,8 @@ namespace Hyper
 			GreaterEqual,
 
 			// Keywords
+			Else,
+			If,
 			Let,
 			Mutable,
 			Print,

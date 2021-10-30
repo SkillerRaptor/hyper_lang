@@ -11,6 +11,8 @@
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
 #include "Hyper/Ast/Statements/AssignStatement.hpp"
+#include "Hyper/Ast/Statements/CompoundStatement.hpp"
+#include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
 
 #include <iostream>
@@ -26,6 +28,7 @@ namespace Hyper
 	void CGenerator::generate_pre()
 	{
 		m_output_file << "#include <stdint.h>\n";
+		m_output_file << "#include <stdio.h>\n";
 		m_output_file << "\n";
 		m_output_file << "int main()\n";
 
@@ -111,14 +114,38 @@ namespace Hyper
 	{
 		m_output_file << m_indent << assign_statement.identifier() << " = ";
 		assign_statement.expression()->accept(*this);
-		m_output_file << ";";
+		m_output_file << ";\n";
+	}
+	
+	void CGenerator::visit(const CompoundStatement &compound_statement)
+	{
+		compound_statement.left()->accept(*this);
+		compound_statement.right()->accept(*this);
+	}
+	
+	void CGenerator::visit(const IfStatement &if_statement)
+	{
+		m_output_file << m_indent << "if (";
+		if_statement.condition()->accept(*this);
+		m_output_file << ")\n";
+		
+		enter_scope();
+		if_statement.true_branch()->accept(*this);
+		leave_scope();
+		
+		if (if_statement.false_branch() != nullptr)
+		{
+			enter_scope();
+			if_statement.false_branch()->accept(*this);
+			leave_scope();
+		}
 	}
 
 	void CGenerator::visit(const PrintStatement &print_statement)
 	{
 		m_output_file << m_indent << R"(println("%d\n", )";
 		print_statement.expression()->accept(*this);
-		m_output_file << ");";
+		m_output_file << ");\n";
 	}
 
 	void CGenerator::enter_scope()
