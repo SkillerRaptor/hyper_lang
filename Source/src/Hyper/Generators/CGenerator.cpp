@@ -174,7 +174,7 @@ namespace Hyper
 
 	void CGenerator::visit(const PrintStatement &print_statement)
 	{
-		m_output_file << m_indent << R"(println("%d\n", )";
+		m_output_file << m_indent << R"(printf("%d\n", )";
 		print_statement.expression()->accept(*this);
 		m_output_file << ");\n";
 	}
