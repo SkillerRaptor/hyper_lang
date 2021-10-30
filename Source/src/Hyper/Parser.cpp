@@ -43,8 +43,22 @@ namespace Hyper
 
 			switch (variable_token_type)
 			{
+			case Token::Type::Int8:
+				return VariableDeclaration::Type::Int8;
+			case Token::Type::Int16:
+				return VariableDeclaration::Type::Int16;
+			case Token::Type::Int32:
+				return VariableDeclaration::Type::Int32;
 			case Token::Type::Int64:
 				return VariableDeclaration::Type::Int64;
+			case Token::Type::Uint8:
+				return VariableDeclaration::Type::Uint8;
+			case Token::Type::Uint16:
+				return VariableDeclaration::Type::Uint16;
+			case Token::Type::Uint32:
+				return VariableDeclaration::Type::Uint32;
+			case Token::Type::Uint64:
+				return VariableDeclaration::Type::Uint64;
 			default:
 				// TODO(SkillerRaptor): Error handling
 				std::abort();

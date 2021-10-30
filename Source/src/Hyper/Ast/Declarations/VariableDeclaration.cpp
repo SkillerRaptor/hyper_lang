@@ -53,8 +53,29 @@ namespace Hyper
 	{
 		switch (type)
 		{
+		case VariableDeclaration::Type::Int8:
+			ostream << "Int8";
+			break;
+		case VariableDeclaration::Type::Int16:
+			ostream << "Int16";
+			break;
+		case VariableDeclaration::Type::Int32:
+			ostream << "Int32";
+			break;
 		case VariableDeclaration::Type::Int64:
 			ostream << "Int64";
+			break;
+		case VariableDeclaration::Type::Uint8:
+			ostream << "Uint8";
+			break;
+		case VariableDeclaration::Type::Uint16:
+			ostream << "Uint16";
+			break;
+		case VariableDeclaration::Type::Uint32:
+			ostream << "Uint32";
+			break;
+		case VariableDeclaration::Type::Uint64:
+			ostream << "Uint64";
 			break;
 		default:
 			break;

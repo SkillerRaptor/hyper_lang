@@ -1,6 +1,6 @@
 {
-  let i: mut i64;
-  let j: mut i64;
+  let i: mut u8;
+  let j: mut u8;
   i = 6;
   j = 12;
   if i < j

@@ -265,6 +265,21 @@ namespace Hyper
 			return Token::Type::Else;
 		}
 		
+		if (identifier == "i8")
+		{
+			return Token::Type::Int8;
+		}
+		
+		if (identifier == "i16")
+		{
+			return Token::Type::Int16;
+		}
+		
+		if (identifier == "i32")
+		{
+			return Token::Type::Int32;
+		}
+		
 		if (identifier == "i64")
 		{
 			return Token::Type::Int64;
@@ -288,6 +303,26 @@ namespace Hyper
 		if (identifier == "print")
 		{
 			return Token::Type::Print;
+		}
+		
+		if (identifier == "u8")
+		{
+			return Token::Type::Uint8;
+		}
+		
+		if (identifier == "u16")
+		{
+			return Token::Type::Uint16;
+		}
+		
+		if (identifier == "u32")
+		{
+			return Token::Type::Uint32;
+		}
+		
+		if (identifier == "u64")
+		{
+			return Token::Type::Uint64;
 		}
 
 		return Token::Type::None;
