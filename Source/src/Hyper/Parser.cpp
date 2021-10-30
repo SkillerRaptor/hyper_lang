@@ -36,10 +36,10 @@ namespace Hyper
 
 		const VariableDeclaration::Type variable_type = [this]()
 		{
-			const Token::Type variable_type = current_token().type;
+			const Token::Type variable_token_type = current_token().type;
 			advance_token();
 
-			switch (variable_type)
+			switch (variable_token_type)
 			{
 			case Token::Type::Int64:
 				return VariableDeclaration::Type::Int64;
