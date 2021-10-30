@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
 		if (std::filesystem::is_directory(path))
 		{
-			std::cerr << "hyper: " << path << ": can not compile folder\n";
+			std::cerr << "hyper: " << path << ": unable to compile folder\n";
 			continue;
 		}
 
@@ -53,20 +53,18 @@ int main(int argc, char **argv)
 			return file_string.str();
 		}();
 
-		Hyper::Scanner scanner(text);
-		scanner.scan_tokens();
+		Hyper::Scanner scanner(path, text);
+		const std::vector<Hyper::Token> tokens = scanner.scan_tokens();
 
-		Hyper::Parser parser(scanner.tokens());
-
-		std::unique_ptr<Hyper::Generator> generator =
-			std::make_unique<Hyper::CGenerator>(path);
-		generator->generate_pre();
-
-		std::unique_ptr<Hyper::AstNode> ast = parser.parse_tree();
+		Hyper::Parser parser(tokens);
+		const std::unique_ptr<Hyper::AstNode> ast = parser.parse_tree();
+		
 		ast->dump(0);
-		ast->accept(*generator);
-
-		generator->generate_post();
+		
+		Hyper::CGenerator generator(path);
+		generator.generate_pre();
+		ast->accept(generator);
+		generator.generate_post();
 	}
 
 	return 0;

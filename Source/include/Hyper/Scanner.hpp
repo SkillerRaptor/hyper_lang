@@ -17,31 +17,33 @@ namespace Hyper
 	class Scanner
 	{
 	public:
-		explicit Scanner(std::string file_text);
+		Scanner(std::string file, std::string text);
 
-		void scan_tokens();
-
-		std::vector<Token> tokens() const;
+		std::vector<Token> scan_tokens();
 
 	private:
-		std::optional<char> advance() noexcept;
-
-		std::string scan_numeric_literal(char character);
-		std::string scan_identifier(char character);
-		std::optional<Token::Type> scan_keyword(const std::string &identifier);
-
-		void add_token(const std::string &value, Token::Type token_type);
+		char advance() noexcept;
+		char peek() const noexcept;
+		void revert() noexcept;
 
 		void skip_whitespace() noexcept;
 		bool has_reached_end() const noexcept;
 
+		void add_token(
+			std::vector<Token> &tokens,
+			const std::string &value,
+			Token::Type token_type);
+
+		std::string scan_numeric_literal(char character);
+		std::string scan_identifier(char character);
+		Token::Type scan_keyword(const std::string &identifier);
+
 	private:
-		std::string m_file_text;
+		std::string m_file;
+		std::string m_text;
 
 		size_t m_position = 0;
 		size_t m_line = 1;
-		size_t m_column = 1;
-
-		std::vector<Token> m_tokens = {};
+		size_t m_column = 0;
 	};
 } // namespace Hyper
