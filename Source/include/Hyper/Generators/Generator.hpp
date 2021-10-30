@@ -23,6 +23,7 @@ namespace Hyper
 	class CompoundStatement;
 	class IfStatement;
 	class PrintStatement;
+	class WhileStatement;
 
 	class Generator
 	{
@@ -46,6 +47,7 @@ namespace Hyper
 		virtual void visit(const CompoundStatement &compound_statement) = 0;
 		virtual void visit(const IfStatement &if_statement) = 0;
 		virtual void visit(const PrintStatement &print_statement) = 0;
+		virtual void visit(const WhileStatement &while_statement) = 0;
 
 	protected:
 		std::string m_file;

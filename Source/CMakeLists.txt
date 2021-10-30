@@ -24,6 +24,7 @@ set(SOURCES
         src/Hyper/Ast/Statements/IfStatement.cpp
         src/Hyper/Ast/Statements/PrintStatement.cpp
         src/Hyper/Ast/Statements/Statement.cpp
+        src/Hyper/Ast/Statements/WhileStatement.cpp
         src/Hyper/Generators/CGenerator.cpp
         src/Hyper/Generators/Generator.cpp)
 
@@ -45,6 +46,7 @@ set(HEADERS
         include/Hyper/Ast/Statements/IfStatement.hpp
         include/Hyper/Ast/Statements/PrintStatement.hpp
         include/Hyper/Ast/Statements/Statement.hpp
+        include/Hyper/Ast/Statements/WhileStatement.hpp
         include/Hyper/Generators/CGenerator.hpp
         include/Hyper/Generators/Generator.hpp)
 

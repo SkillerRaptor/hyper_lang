@@ -34,6 +34,7 @@ namespace Hyper
 		void visit(const CompoundStatement &compound_statement) override;
 		void visit(const IfStatement &if_statement) override;
 		void visit(const PrintStatement &print_statement) override;
+		void visit(const WhileStatement &while_statement) override;
 
 	private:
 		void enter_scope();

@@ -1,14 +1,9 @@
 {
-  let i: mut u8;
-  let j: mut u8;
-  i = 6;
-  j = 12;
-  if i < j
+  let i: mut i8;
+  i = 1;
+  while i <= 10
   {
     print i;
-  }
-  else
-  {
-    print j;
+    i = i + 1;
   }
 }

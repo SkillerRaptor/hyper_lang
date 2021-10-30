@@ -14,6 +14,7 @@
 #include "Hyper/Ast/Statements/CompoundStatement.hpp"
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
+#include "Hyper/Ast/Statements/WhileStatement.hpp"
 
 #include <iostream>
 
@@ -42,7 +43,8 @@ namespace Hyper
 
 	void CGenerator::visit(const AstNode &ast_node)
 	{
-		std::cerr << "Visit for " << ast_node.class_name() << "not implemented!";
+		std::cerr << "Visit for " << ast_node.class_name() << " not implemented!";
+		std::abort();
 	}
 
 	void CGenerator::visit(const VariableDeclaration &variable_declaration)
@@ -160,6 +162,17 @@ namespace Hyper
 		m_output_file << m_indent << R"(println("%d\n", )";
 		print_statement.expression()->accept(*this);
 		m_output_file << ");\n";
+	}
+	
+	void CGenerator::visit(const WhileStatement &while_statement)
+	{
+		m_output_file << m_indent << "while (";
+		while_statement.condition()->accept(*this);
+		m_output_file << ")\n";
+		
+		enter_scope();
+		while_statement.body()->accept(*this);
+		leave_scope();
 	}
 
 	void CGenerator::enter_scope()

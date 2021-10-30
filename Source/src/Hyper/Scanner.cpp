@@ -68,38 +68,46 @@ namespace Hyper
 				add_token(tokens, "/", Token::Type::Slash);
 				break;
 			case '=':
-				if (peek() == '=')
+				if (advance() == '=')
 				{
 					add_token(tokens, "==", Token::Type::Equal);
 					break;
 				}
+				
+				revert();
 
 				add_token(tokens, "=", Token::Type::Assign);
 				break;
 			case '!':
-				if (peek() == '=')
+				if (advance() == '=')
 				{
 					add_token(tokens, "!=", Token::Type::NotEqual);
 					break;
 				}
+				
+				revert();
 
 				break;
 			case '>':
-				if (peek() == '=')
+				if (advance() == '=')
 				{
 					add_token(tokens, ">=", Token::Type::GreaterEqual);
 					break;
 				}
+				
+				revert();
 
 				add_token(tokens, ">", Token::Type::GreaterThan);
 				break;
 			case '<':
-				if (peek() == '=')
+				if (advance() == '=')
 				{
 					add_token(tokens, "<=", Token::Type::LessEqual);
 					break;
 				}
 
+				revert();
+				
 				add_token(tokens, "<", Token::Type::LessThan);
 				break;
 			default:
@@ -323,6 +331,11 @@ namespace Hyper
 		if (identifier == "u64")
 		{
 			return Token::Type::Uint64;
+		}
+		
+		if (identifier == "while")
+		{
+			return Token::Type::While;
 		}
 
 		return Token::Type::None;

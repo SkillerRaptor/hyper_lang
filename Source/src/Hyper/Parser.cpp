@@ -14,6 +14,7 @@
 #include "Hyper/Ast/Statements/CompoundStatement.hpp"
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
+#include "Hyper/Ast/Statements/WhileStatement.hpp"
 
 namespace Hyper
 {
@@ -207,6 +208,9 @@ namespace Hyper
 			case Token::Type::RightBrace:
 				match_token(Token::Type::RightBrace);
 				return left;
+			case Token::Type::While:
+				tree = parse_while_statement();
+				break;
 			default:
 				// TODO(SkillerRaptor): Error handling
 				std::abort();
@@ -232,7 +236,7 @@ namespace Hyper
 	{
 		match_token(Token::Type::If);
 
-		std::unique_ptr<Expression> conditional = parse_binary_expression(0);
+		std::unique_ptr<Expression> condition = parse_binary_expression(0);
 		std::unique_ptr<Statement> true_branch = parse_compound_statement();
 
 		std::unique_ptr<Statement> false_branch = nullptr;
@@ -244,7 +248,7 @@ namespace Hyper
 		}
 
 		return std::make_unique<IfStatement>(
-			std::move(conditional), std::move(true_branch), std::move(false_branch));
+			std::move(condition), std::move(true_branch), std::move(false_branch));
 	}
 
 	std::unique_ptr<Statement> Parser::parse_print_statement()
@@ -256,6 +260,17 @@ namespace Hyper
 		match_token(Token::Type::Semicolon);
 
 		return std::make_unique<PrintStatement>(std::move(expression));
+	}
+
+	std::unique_ptr<Statement> Parser::parse_while_statement()
+	{
+		match_token(Token::Type::While);
+
+		std::unique_ptr<Expression> condition = parse_binary_expression(0);
+		std::unique_ptr<Statement> body = parse_compound_statement();
+
+		return std::make_unique<WhileStatement>(
+			std::move(condition), std::move(body));
 	}
 
 	Token Parser::current_token() const noexcept

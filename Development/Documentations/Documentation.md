@@ -60,4 +60,5 @@ if
 let
 mut
 return
+while
 ```
