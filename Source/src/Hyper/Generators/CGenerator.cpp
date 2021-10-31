@@ -16,6 +16,7 @@
 #include "Hyper/Ast/Statements/ForStatement.hpp"
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
+#include "Hyper/Ast/Statements/ReturnStatement.hpp"
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
 
 #include <iostream>
@@ -32,7 +33,6 @@ namespace Hyper
 	{
 		m_output_file << "#include <stdint.h>\n";
 		m_output_file << "#include <stdio.h>\n";
-		m_output_file << "\n";
 	}
 
 	void CGenerator::generate_post()
@@ -160,6 +160,13 @@ namespace Hyper
 		m_output_file << m_indent << R"(printf("%d\n", )";
 		print_statement.expression()->accept(*this);
 		m_output_file << ");\n";
+	}
+	
+	void CGenerator::visit(const ReturnStatement &return_statement)
+	{
+		m_output_file << m_indent << "return ";
+		return_statement.expression()->accept(*this);
+		m_output_file << ";\n";
 	}
 
 	void CGenerator::visit(const WhileStatement &while_statement)

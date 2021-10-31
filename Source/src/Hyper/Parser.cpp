@@ -9,6 +9,7 @@
 #include "Hyper/Ast/Declarations/FunctionDeclaration.hpp"
 #include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
+#include "Hyper/Ast/Expressions/CallExpression.hpp"
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
 #include "Hyper/Ast/Statements/AssignStatement.hpp"
@@ -16,6 +17,7 @@
 #include "Hyper/Ast/Statements/ForStatement.hpp"
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
+#include "Hyper/Ast/Statements/ReturnStatement.hpp"
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
 
 namespace Hyper
@@ -27,7 +29,7 @@ namespace Hyper
 
 	std::unique_ptr<AstNode> Parser::parse_tree()
 	{
-		return parse_function_declaration();
+		return parse_program();
 	}
 
 	std::unique_ptr<Declaration> Parser::parse_function_declaration()
@@ -87,7 +89,9 @@ namespace Hyper
 		std::unique_ptr<Expression> left_expression = parse_primary_expression();
 
 		Token::Type token_type = current_token().type;
-		if (token_type == Token::Type::Semicolon)
+		if (
+			token_type == Token::Type::Semicolon ||
+			token_type == Token::Type::RightParenthesis)
 		{
 			return left_expression;
 		}
@@ -133,13 +137,26 @@ namespace Hyper
 				operation, std::move(left_expression), std::move(right_expression));
 
 			token_type = current_token().type;
-			if (token_type == Token::Type::Semicolon)
+			if (
+				token_type == Token::Type::Semicolon ||
+				token_type == Token::Type::RightParenthesis)
 			{
 				return left_expression;
 			}
 		}
 
 		return left_expression;
+	}
+
+	std::unique_ptr<Expression> Parser::parse_call_expression()
+	{
+		const Token identifier = match_token(Token::Type::Identifier);
+		match_token(Token::Type::LeftParenthesis);
+		std::unique_ptr<Expression> expression = parse_binary_expression(0);
+		match_token(Token::Type::RightParenthesis);
+
+		return std::make_unique<CallExpression>(
+			identifier.value, std::move(expression));
 	}
 
 	std::unique_ptr<Expression> Parser::parse_identifier_expression()
@@ -157,6 +174,11 @@ namespace Hyper
 			{
 			case Token::Type::Identifier:
 			{
+				if (current_token().type == Token::Type::LeftParenthesis)
+				{
+					return parse_call_expression();
+				}
+
 				return parse_identifier_expression();
 			}
 			case Token::Type::NumericLiteral:
@@ -201,8 +223,9 @@ namespace Hyper
 			if (tree != nullptr)
 			{
 				if (
+					tree->node_category() == AstNode::Category::AssignStatement ||
 					tree->node_category() == AstNode::Category::PrintStatement ||
-					tree->node_category() == AstNode::Category::AssignStatement)
+					tree->node_category() == AstNode::Category::ReturnStatement)
 				{
 					match_token(Token::Type::Semicolon);
 				}
@@ -274,11 +297,52 @@ namespace Hyper
 		return std::make_unique<PrintStatement>(std::move(expression));
 	}
 
+	std::unique_ptr<Statement> Parser::parse_program()
+	{
+		std::unique_ptr<Statement> left = nullptr;
+		while (true)
+		{
+			std::unique_ptr<Statement> tree = parse_function_declaration();
+			if (tree != nullptr)
+			{
+				if (left == nullptr)
+				{
+					left = std::move(tree);
+				}
+				else
+				{
+					left = std::make_unique<CompoundStatement>(
+						std::move(left), std::move(tree));
+				}
+			}
+
+			if (current_token().type == Token::Type::Eof)
+			{
+				match_token(Token::Type::Eof);
+				return left;
+			}
+		}
+	}
+
+	std::unique_ptr<Statement> Parser::parse_return_statement()
+	{
+		match_token(Token::Type::Return);
+
+		std::unique_ptr<Expression> expression = parse_binary_expression(0);
+
+		return std::make_unique<ReturnStatement>(std::move(expression));
+	}
+
 	std::unique_ptr<Statement> Parser::parse_single_statement()
 	{
 		switch (current_token().type)
 		{
 		case Token::Type::Identifier:
+			if (current_token().type == Token::Type::LeftParenthesis)
+			{
+				//return parse_call_expression();
+			}
+			
 			return parse_assign_statement();
 		case Token::Type::For:
 			return parse_for_statement();
@@ -288,6 +352,8 @@ namespace Hyper
 			return parse_variable_declaration();
 		case Token::Type::Print:
 			return parse_print_statement();
+		case Token::Type::Return:
+			return parse_return_statement();
 		case Token::Type::While:
 			return parse_while_statement();
 		default:
@@ -321,6 +387,11 @@ namespace Hyper
 		}
 
 		++m_current_token;
+	}
+
+	Token Parser::peek_token() const noexcept
+	{
+		return m_tokens[m_current_token + 1];
 	}
 
 	Token Parser::match_token(Token::Type token_type) noexcept

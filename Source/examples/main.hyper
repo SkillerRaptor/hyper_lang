@@ -1,3 +1,9 @@
+fn some_function() -> u16
+{
+	print 666;
+	return 666;
+}
+
 fn main() -> i32
 {
   let i: mut i8;
@@ -45,4 +51,6 @@ fn main() -> i32
 	{
     print i;
   }
+
+  some_function();
 }

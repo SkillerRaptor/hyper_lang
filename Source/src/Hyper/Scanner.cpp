@@ -315,6 +315,11 @@ namespace Hyper
 		{
 			return Token::Type::Print;
 		}
+		
+		if (identifier == "return")
+		{
+			return Token::Type::Return;
+		}
 
 		if (identifier == "u8")
 		{

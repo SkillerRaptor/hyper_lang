@@ -23,6 +23,7 @@ namespace Hyper
 			VariableDeclaration,
 			
 			BinaryExpression,
+			CallExpression,
 			IdentifierExpression,
 			
 			NumericLiteral,
@@ -32,6 +33,7 @@ namespace Hyper
 			ForStatement,
 			IfStatement,
 			PrintStatement,
+			ReturnStatement,
 			WhileStatement
 		};
 		

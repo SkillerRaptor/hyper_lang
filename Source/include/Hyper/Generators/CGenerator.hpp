@@ -37,6 +37,7 @@ namespace Hyper
 		void visit(const ForStatement &for_statement) override;
 		void visit(const IfStatement &if_statement) override;
 		void visit(const PrintStatement &print_statement) override;
+		void visit(const ReturnStatement &return_statement) override;
 		void visit(const WhileStatement &while_statement) override;
 
 	private:

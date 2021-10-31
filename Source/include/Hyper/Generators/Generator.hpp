@@ -25,6 +25,7 @@ namespace Hyper
 	class ForStatement;
 	class IfStatement;
 	class PrintStatement;
+	class ReturnStatement;
 	class WhileStatement;
 
 	class Generator
@@ -51,6 +52,7 @@ namespace Hyper
 		virtual void visit(const ForStatement &for_statement) = 0;
 		virtual void visit(const IfStatement &if_statement) = 0;
 		virtual void visit(const PrintStatement &print_statement) = 0;
+		virtual void visit(const ReturnStatement &return_statement) = 0;
 		virtual void visit(const WhileStatement &while_statement) = 0;
 
 	protected:

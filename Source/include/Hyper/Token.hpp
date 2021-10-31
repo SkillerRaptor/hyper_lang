@@ -58,6 +58,7 @@ namespace Hyper
 			Let,
 			Mutable,
 			Print,
+			Return,
 			While,
 
 			// Types,

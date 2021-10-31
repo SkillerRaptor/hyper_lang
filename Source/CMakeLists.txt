@@ -16,6 +16,7 @@ set(SOURCES
         src/Hyper/Ast/Declarations/FunctionDeclaration.cpp
         src/Hyper/Ast/Declarations/VariableDeclaration.cpp
         src/Hyper/Ast/Expressions/BinaryExpression.cpp
+        src/Hyper/Ast/Expressions/CallExpression.cpp
         src/Hyper/Ast/Expressions/IdentifierExpression.cpp
         src/Hyper/Ast/Literals/NumericLiteral.cpp
         src/Hyper/Ast/Statements/AssignStatement.cpp
@@ -23,6 +24,7 @@ set(SOURCES
         src/Hyper/Ast/Statements/ForStatement.cpp
         src/Hyper/Ast/Statements/IfStatement.cpp
         src/Hyper/Ast/Statements/PrintStatement.cpp
+        src/Hyper/Ast/Statements/ReturnStatement.cpp
         src/Hyper/Ast/Statements/WhileStatement.cpp
         src/Hyper/Generators/CGenerator.cpp
         src/Hyper/Generators/Generator.cpp)
@@ -38,6 +40,7 @@ set(HEADERS
         include/Hyper/Ast/Declarations/FunctionDeclaration.hpp
         include/Hyper/Ast/Declarations/VariableDeclaration.hpp
         include/Hyper/Ast/Expressions/BinaryExpression.hpp
+        include/Hyper/Ast/Expressions/CallExpression.hpp
         include/Hyper/Ast/Expressions/Expression.hpp
         include/Hyper/Ast/Expressions/IdentifierExpression.hpp
         include/Hyper/Ast/Literals/NumericLiteral.hpp
@@ -47,6 +50,7 @@ set(HEADERS
         include/Hyper/Ast/Statements/ForStatement.hpp
         include/Hyper/Ast/Statements/IfStatement.hpp
         include/Hyper/Ast/Statements/PrintStatement.hpp
+        include/Hyper/Ast/Statements/ReturnStatement.hpp
         include/Hyper/Ast/Statements/Statement.hpp
         include/Hyper/Ast/Statements/WhileStatement.hpp
         include/Hyper/Generators/CGenerator.hpp
