@@ -13,7 +13,7 @@ namespace Hyper
 	enum class Type : unsigned char
 	{
 		None = 0,
-		
+
 		Bool,
 
 		Int8,

@@ -9,6 +9,8 @@
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
+#include <limits>
+
 namespace Hyper
 {
 	NumericLiteral::NumericLiteral(Type type, uint64_t value)
@@ -25,7 +27,19 @@ namespace Hyper
 	void NumericLiteral::dump(size_t indent) const
 	{
 		AstNode::indent(indent);
-		Logger::raw("{} (type={}, value={})\n", class_name(), m_type, m_value);
+
+		uint64_t value = m_value;
+		if (m_type == Type::Signed)
+		{
+			value += static_cast<uint64_t>(std::numeric_limits<int64_t>::min());
+		}
+
+		Logger::raw(
+			"{} (type={}, value={}{})\n",
+			class_name(),
+			m_type,
+			m_type == Type::Signed ? "-" : "",
+			value);
 	}
 
 	AstNode::Category NumericLiteral::class_category() const noexcept

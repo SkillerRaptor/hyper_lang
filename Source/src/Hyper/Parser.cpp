@@ -214,6 +214,7 @@ namespace Hyper
 		NumericLiteral::Type type = NumericLiteral::Type::Unsigned;
 		if (match(Token::Type::Minus))
 		{
+			consume();
 			type = NumericLiteral::Type::Signed;
 		}
 
@@ -459,7 +460,7 @@ namespace Hyper
 			expected("Type");
 			break;
 		}
-		
+
 		return Type::None;
 	}
 

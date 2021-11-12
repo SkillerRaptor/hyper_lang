@@ -30,7 +30,7 @@ namespace Hyper
 	{
 		AstNode::indent(indent);
 		Logger::raw(
-			"{} (name{}, type={}, immutable={})\n",
+			"{} (name={}, type={}, immutable={})\n",
 			class_name(),
 			m_name,
 			m_type,
