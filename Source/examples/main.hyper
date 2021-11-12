@@ -41,7 +41,7 @@ function main() -> i32
   }
 
 	i = 1;
-	while (i <= 10)
+	while (i <= 15)
 	{
 		print(i);
 	  i = i + 1;
@@ -53,4 +53,6 @@ function main() -> i32
   }
 
   print(some_function());
+
+  return 0;
 }

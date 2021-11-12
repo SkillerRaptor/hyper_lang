@@ -7,6 +7,7 @@
 #include "Hyper/Compiler.hpp"
 
 #include "Hyper/Ast/AstNode.hpp"
+#include "Hyper/Generators/CGenerator.hpp"
 #include "Hyper/Logger.hpp"
 #include "Hyper/Parser.hpp"
 #include "Hyper/Scanner.hpp"
@@ -63,6 +64,10 @@ namespace Hyper
 
 			const std::unique_ptr<AstNode> tree = parser.parse_tree();
 			tree->dump(0);
+
+			std::unique_ptr<Generator> generator = std::make_unique<CGenerator>(file);
+			tree->accept(*generator);
+			generator->generate();
 
 			Logger::file_info(file, "compiling hyper file\n");
 		}

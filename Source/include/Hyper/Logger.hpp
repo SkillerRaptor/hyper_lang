@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "Hyper/Formatter.hpp"
+
 #include <iostream>
 #include <sstream>
 #include <string_view>
@@ -148,52 +150,11 @@ namespace Hyper
 				string_stream << ": ";
 			}
 
-			size_t current_index = 0;
 			const std::string real_string = string.data();
-			for (const char *c_str = real_string.c_str(); *c_str != '\0'; ++c_str)
-			{
-				if (*c_str != '{')
-				{
-					string_stream << *c_str;
-					continue;
-				}
-
-				// TODO(SkillerRaptor): Adding formatting options
-
-				++c_str;
-
-				if (*c_str != '}')
-				{
-					// TODO(SkillerRaptor): Print error message (unclosed {)
-					std::abort();
-				}
-
-				format(string_stream, current_index++, std::forward<Args>(args)...);
-			}
+			string_stream << Formatter::format(
+				real_string, std::forward<Args>(args)...);
 
 			std::cout << string_stream.str();
-		}
-
-		static void format(std::stringstream &string_stream, size_t index)
-		{
-			(void) string_stream;
-			(void) index;
-		}
-
-		template <typename T, typename... Args>
-		static void format(
-			std::stringstream &string_stream,
-			size_t index,
-			T argument,
-			Args &&...args)
-		{
-			if (index == 0)
-			{
-				string_stream << argument;
-				return;
-			}
-
-			format(string_stream, index - 1, std::forward<Args>(args)...);
 		}
 	};
 } // namespace Hyper

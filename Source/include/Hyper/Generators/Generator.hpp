@@ -38,30 +38,30 @@ namespace Hyper
 		explicit Generator(std::string file);
 		virtual ~Generator() = default;
 
-		virtual void generate_pre() = 0;
-		virtual void generate_post() = 0;
+		virtual void generate() const = 0;
 
 		virtual void visit(const AstNode &ast) = 0;
 
-		virtual void visit(const FunctionDeclaration &declaration) = 0;
-		virtual void visit(const TranslationUnitDeclaration &declaration) = 0;
-		virtual void visit(const VariableDeclaration &declaration) = 0;
+		virtual void visit(const FunctionDeclaration &function_declaration) = 0;
+		virtual void visit(
+			const TranslationUnitDeclaration &translation_unit_declaration) = 0;
+		virtual void visit(const VariableDeclaration &variable_declaration) = 0;
 
-		virtual void visit(const BinaryExpression &expression) = 0;
-		virtual void visit(const CallExpression &expression) = 0;
-		virtual void visit(const IdentifierExpression &expression) = 0;
+		virtual void visit(const BinaryExpression &binary_expression) = 0;
+		virtual void visit(const CallExpression &call_expression) = 0;
+		virtual void visit(const IdentifierExpression &identifier_expression) = 0;
 
-		virtual void visit(const NumericLiteral &literal) = 0;
-		virtual void visit(const StringLiteral &literal) = 0;
+		virtual void visit(const NumericLiteral &numeric_literal) = 0;
+		virtual void visit(const StringLiteral &string_literal) = 0;
 
-		virtual void visit(const AssignStatement &statement) = 0;
-		virtual void visit(const CompoundStatement &statement) = 0;
-		virtual void visit(const ExpressionStatement &statement) = 0;
-		virtual void visit(const ForStatement &statement) = 0;
-		virtual void visit(const IfStatement &statement) = 0;
-		virtual void visit(const PrintStatement &statement) = 0;
-		virtual void visit(const ReturnStatement &statement) = 0;
-		virtual void visit(const WhileStatement &statement) = 0;
+		virtual void visit(const AssignStatement &assign_statement) = 0;
+		virtual void visit(const CompoundStatement &compound_statement) = 0;
+		virtual void visit(const ExpressionStatement &expression_statement) = 0;
+		virtual void visit(const ForStatement &for_statement) = 0;
+		virtual void visit(const IfStatement &if_statement) = 0;
+		virtual void visit(const PrintStatement &print_statement) = 0;
+		virtual void visit(const ReturnStatement &return_statement) = 0;
+		virtual void visit(const WhileStatement &while_statement) = 0;
 
 	protected:
 		std::string m_file;

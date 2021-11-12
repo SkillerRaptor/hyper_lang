@@ -34,10 +34,13 @@ set(SOURCES
         src/Hyper/Ast/Statements/PrintStatement.cpp
         src/Hyper/Ast/Statements/ReturnStatement.cpp
         src/Hyper/Ast/Statements/Statement.cpp
-        src/Hyper/Ast/Statements/WhileStatement.cpp)
+        src/Hyper/Ast/Statements/WhileStatement.cpp
+        src/Hyper/Generators/CGenerator.cpp
+        src/Hyper/Generators/Generator.cpp)
 
 set(HEADERS
         include/Hyper/Compiler.hpp
+        include/Hyper/Formatter.hpp
         include/Hyper/Logger.hpp
         include/Hyper/Parser.hpp
         include/Hyper/Scanner.hpp
@@ -63,7 +66,9 @@ set(HEADERS
         include/Hyper/Ast/Statements/PrintStatement.hpp
         include/Hyper/Ast/Statements/ReturnStatement.hpp
         include/Hyper/Ast/Statements/Statement.hpp
-        include/Hyper/Ast/Statements/WhileStatement.hpp)
+        include/Hyper/Ast/Statements/WhileStatement.hpp
+        include/Hyper/Generators/CGenerator.hpp
+        include/Hyper/Generators/Generator.hpp)
 
 add_executable(hyper ${SOURCES} ${HEADERS})
 target_link_libraries(
