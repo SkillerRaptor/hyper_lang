@@ -6,6 +6,8 @@
 
 #include "Hyper/Scanner.hpp"
 
+#include "Hyper/Logger.hpp"
+
 namespace Hyper
 {
 	Scanner::Scanner(std::string file, std::string text)
@@ -34,7 +36,7 @@ namespace Hyper
 		size_t value_start = m_position - 1;
 		size_t value_length = 0;
 		Token::Type type;
-		if (m_position >= m_text.length())
+		if (value_start >= m_text.length())
 		{
 			type = Token::Type::Eof;
 		}
@@ -62,6 +64,8 @@ namespace Hyper
 		m_current_token.location.column = m_line_column - value_length + 1;
 		m_current_token.location.length = value_length;
 		m_current_token.location.position = m_position - value_length;
+
+		Logger::info("{} - {}\n", m_current_token.value, m_current_token.type);
 
 		return m_current_token;
 	}
@@ -147,6 +151,7 @@ namespace Hyper
 	{
 		if (m_position >= m_text.length())
 		{
+			++m_position;
 			return;
 		}
 

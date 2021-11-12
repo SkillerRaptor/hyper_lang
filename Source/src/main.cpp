@@ -12,6 +12,8 @@
 
 int main(int argc, const char **argv)
 {
+	std::setvbuf(stdout, nullptr, _IONBF, 0);
+
 	if (argc < 2)
 	{
 		Hyper::Logger::error("no input files\n");

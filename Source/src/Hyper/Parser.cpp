@@ -118,7 +118,7 @@ namespace Hyper
 			break;
 		}
 
-		return nullptr;
+		std::abort();
 	}
 
 	ExpressionPtr Parser::parse_binary_expression(uint8_t min_precedence)
@@ -258,7 +258,7 @@ namespace Hyper
 			break;
 		}
 
-		return nullptr;
+		std::abort();
 	}
 
 	StatementPtr Parser::parse_assign_statement()
@@ -275,7 +275,8 @@ namespace Hyper
 
 		ExpressionPtr expression = parse_binary_expression(0);
 
-		return std::make_unique<AssignStatement>(identifier_token.value, std::move(expression));
+		return std::make_unique<AssignStatement>(
+			identifier_token.value, std::move(expression));
 	}
 
 	StatementPtr Parser::parse_compound_statement()
@@ -467,7 +468,7 @@ namespace Hyper
 			break;
 		}
 
-		return Type::None;
+		std::abort();
 	}
 
 	uint8_t Parser::map_precedence(Token::Type token_type) const
