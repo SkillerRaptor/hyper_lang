@@ -39,7 +39,7 @@ namespace Hyper
 		StatementPtr parse_statement();
 		StatementPtr parse_assign_statement();
 		StatementPtr parse_compound_statement();
-		StatementPtr parse_expression_statement();
+		StatementPtr parse_expression_statement(ExpressionPtr expression);
 		StatementPtr parse_for_statement();
 		StatementPtr parse_if_statement();
 		StatementPtr parse_print_statement();

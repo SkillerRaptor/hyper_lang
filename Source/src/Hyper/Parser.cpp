@@ -263,13 +263,19 @@ namespace Hyper
 
 	StatementPtr Parser::parse_assign_statement()
 	{
-		const std::string identifier = consume(Token::Type::Identifier).value;
+		const Token identifier_token = consume(Token::Type::Identifier);
+
+		if (match(Token::Type::LeftRoundBracket))
+		{
+			save_token(identifier_token);
+			return parse_expression_statement(parse_call_expression());
+		}
 
 		consume(Token::Type::Assign);
 
 		ExpressionPtr expression = parse_binary_expression(0);
 
-		return std::make_unique<AssignStatement>(identifier, std::move(expression));
+		return std::make_unique<AssignStatement>(identifier_token.value, std::move(expression));
 	}
 
 	StatementPtr Parser::parse_compound_statement()
@@ -284,6 +290,7 @@ namespace Hyper
 			{
 				if (
 					tree->class_category() == AstNode::Category::AssignStatement ||
+					tree->class_category() == AstNode::Category::ExpressionStatement ||
 					tree->class_category() == AstNode::Category::PrintStatement ||
 					tree->class_category() == AstNode::Category::ReturnStatement)
 				{
@@ -304,9 +311,8 @@ namespace Hyper
 		return std::make_unique<CompoundStatement>(std::move(statements));
 	}
 
-	StatementPtr Parser::parse_expression_statement()
+	StatementPtr Parser::parse_expression_statement(ExpressionPtr expression)
 	{
-		ExpressionPtr expression = parse_primary_expression();
 		return std::make_unique<ExpressionStatement>(std::move(expression));
 	}
 
@@ -419,7 +425,7 @@ namespace Hyper
 			const std::string file = m_file + ":" + line_string + ":" + column_string;
 			Logger::file_error(
 				file,
-				"Unexpected token '{}', expected '{}'",
+				"Unexpected token '{}', expected '{}'\n",
 				m_current_token.type,
 				token_type);
 			std::abort();
@@ -507,7 +513,7 @@ namespace Hyper
 		const std::string file = m_file + ":" + line_string + ":" + column_string;
 		Logger::file_error(
 			file,
-			"Unexpected token '{}', expected '{}'",
+			"Unexpected token '{}', expected '{}'\n",
 			m_current_token.type,
 			expected);
 	}

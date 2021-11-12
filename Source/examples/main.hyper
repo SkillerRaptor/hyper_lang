@@ -54,5 +54,7 @@ function main() -> i32
 
   print(some_function());
 
+	some_function();
+
   return 0;
 }
