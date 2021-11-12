@@ -6,17 +6,18 @@
 
 #include "Hyper/Ast/AstNode.hpp"
 
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	void AstNode::dump(size_t indent) const
+	void AstNode::indent(size_t indention)
 	{
-		for (size_t i = 0; i < indent * 2; ++i)
+		std::string indent_string;
+		for (size_t i = 0; i < indention; ++i)
 		{
-			std::cout << ' ';
+			indent_string += '\t';
 		}
 
-		std::cout << node_name() << ": ";
+		Logger::info(indent_string);
 	}
 } // namespace Hyper

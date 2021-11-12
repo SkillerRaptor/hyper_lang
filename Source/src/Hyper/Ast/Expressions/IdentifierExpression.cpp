@@ -7,8 +7,7 @@
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
 
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
@@ -24,20 +23,18 @@ namespace Hyper
 
 	void IdentifierExpression::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
-
-		std::cout << "identifier = " << m_identifier;
-		std::cout << '\n';
+		AstNode::indent(indent);
+		Logger::raw("{} (identifier={})\n", class_name(), m_identifier);
 	}
-	
-	const char *IdentifierExpression::node_name() const noexcept
+
+	AstNode::Category IdentifierExpression::class_category() const noexcept
+	{
+		return AstNode::Category::IdentifierExpression;
+	}
+
+	std::string_view IdentifierExpression::class_name() const noexcept
 	{
 		return "IdentifierExpression";
-	}
-
-	AstNode::Category IdentifierExpression::node_category() const noexcept
-	{
-		return Category::IdentifierExpression;
 	}
 
 	std::string IdentifierExpression::identifier() const

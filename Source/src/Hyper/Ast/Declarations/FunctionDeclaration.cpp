@@ -7,16 +7,17 @@
 #include "Hyper/Ast/Declarations/FunctionDeclaration.hpp"
 
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
 	FunctionDeclaration::FunctionDeclaration(
-		std::string identifier,
+		std::string name,
+		std::vector<DeclarationPtr> arguments,
 		Type return_type,
-		std::unique_ptr<Statement> body)
-		: m_identifier(std::move(identifier))
+		StatementPtr body)
+		: m_name(std::move(name))
+		, m_arguments(std::move(arguments))
 		, m_return_type(return_type)
 		, m_body(std::move(body))
 	{
@@ -29,28 +30,35 @@ namespace Hyper
 
 	void FunctionDeclaration::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
+		AstNode::indent(indent);
+		Logger::raw(
+			"{} (name={}, return_type={})\n", class_name(), m_name, m_return_type);
 
-		std::cout << "identifier = " << m_identifier << ", ";
-		std::cout << "return type = " << m_return_type;
-		std::cout << '\n';
-		
+		for (const DeclarationPtr &expression : m_arguments)
+		{
+			expression->dump(indent + 1);
+		}
 		m_body->dump(indent + 1);
 	}
 
-	const char *FunctionDeclaration::node_name() const noexcept
+	AstNode::Category FunctionDeclaration::class_category() const noexcept
+	{
+		return AstNode::Category::FunctionDeclaration;
+	}
+
+	std::string_view FunctionDeclaration::class_name() const noexcept
 	{
 		return "FunctionDeclaration";
 	}
 
-	AstNode::Category FunctionDeclaration::node_category() const noexcept
+	std::string FunctionDeclaration::name() const
 	{
-		return Category::FunctionDeclaration;
+		return m_name;
 	}
 
-	std::string FunctionDeclaration::identifier() const
+	const std::vector<DeclarationPtr> &FunctionDeclaration::arguments() const
 	{
-		return m_identifier;
+		return m_arguments;
 	}
 
 	Type FunctionDeclaration::return_type() const noexcept
@@ -58,7 +66,7 @@ namespace Hyper
 		return m_return_type;
 	}
 
-	const std::unique_ptr<Statement> &FunctionDeclaration::body() const
+	const StatementPtr &FunctionDeclaration::body() const
 	{
 		return m_body;
 	}

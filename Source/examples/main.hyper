@@ -1,56 +1,56 @@
-fn some_function() -> u16
+function some_function() -> u16
 {
-	print 666;
+	print(123);
 	return 666;
 }
 
-fn main() -> i32
+function main() -> i32
 {
-  let i: mut i8;
-  let j: mut i8;
+  let i: mutable i8;
+  let j: mutable i8;
   let k: i8;
 
 	i = 7 < 9;
-  print i;
+  print(i);
 	i = 7 <= 9;
-  print i;
+  print(i);
 	i = 7 != 9;
-  print i;
+  print(i);
 	i = 7 == 7;
-  print i;
+  print(i);
 	i = 7 >= 7;
-  print i;
+  print(i);
 	i = 7 <= 7;
-  print i;
+  print(i);
 	i = 9 > 7;
-  print i;
+  print(i);
 	i = 9 >= 7;
-  print i;
+  print(i);
 	i = 9 != 7;
-  print i;
+  print(i);
 
   i = 6;
   j = 12;
-  if i < j
+  if (i < j)
   {
-    print i;
+    print(i);
   }
   else
   {
-    print j;
+    print(j);
   }
 
 	i = 1;
-	while i <= 10
+	while (i <= 10)
 	{
-		print i;
+		print(i);
 	  i = i + 1;
 	}
 
-  for i = 1; i <= 10; i = i + 1
+  for (i = 1; i <= 10; i = i + 1)
 	{
-    print i;
+    print(i);
   }
 
-  some_function();
+  print(some_function());
 }

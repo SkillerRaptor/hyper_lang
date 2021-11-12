@@ -8,9 +8,6 @@
 
 #include "Hyper/Ast/Expressions/Expression.hpp"
 
-#include <memory>
-#include <ostream>
-
 namespace Hyper
 {
 	class BinaryExpression final : public Expression
@@ -18,9 +15,7 @@ namespace Hyper
 	public:
 		enum class Operation : unsigned char
 		{
-			None = 0,
-
-			Addition,
+			Addition = 0,
 			Subtraction,
 			Multiplication,
 			Division,
@@ -36,23 +31,23 @@ namespace Hyper
 	public:
 		BinaryExpression(
 			Operation operation,
-			std::unique_ptr<Expression> left,
-			std::unique_ptr<Expression> right);
+			ExpressionPtr left,
+			ExpressionPtr right);
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
-		
-		const char *node_name() const noexcept override;
-		Category node_category() const noexcept override;
+
+		Category class_category() const noexcept override;
+		std::string_view class_name() const noexcept override;
 
 		Operation operation() const noexcept;
-		const std::unique_ptr<Expression> &left() const;
-		const std::unique_ptr<Expression> &right() const;
+		const ExpressionPtr &left() const;
+		const ExpressionPtr &right() const;
 
 	private:
-		Operation m_operation = Operation::None;
-		std::unique_ptr<Expression> m_left = nullptr;
-		std::unique_ptr<Expression> m_right = nullptr;
+		Operation m_operation = {};
+		ExpressionPtr m_left = nullptr;
+		ExpressionPtr m_right = nullptr;
 	};
 
 	std::ostream &operator<<(

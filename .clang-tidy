@@ -10,6 +10,7 @@
 Checks: '
   -*,
   bugprone-*,
+  -bugprone-exception-escape,
   clang-analyzer-*,
   clang-diagnostic-*,
   concurrency-*,

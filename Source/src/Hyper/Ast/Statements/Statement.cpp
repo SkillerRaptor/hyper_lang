@@ -4,17 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-#pragma once
-
 #include "Hyper/Ast/Statements/Statement.hpp"
 
 namespace Hyper
 {
-	class Declaration : public Statement
+	std::string_view Statement::class_name() const noexcept
 	{
-	public:
-		~Declaration() override = default;
-
-		std::string_view class_name() const noexcept override;
-	};
+		return "Statement";
+	}
 } // namespace Hyper

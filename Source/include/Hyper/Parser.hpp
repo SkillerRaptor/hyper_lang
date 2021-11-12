@@ -6,60 +6,62 @@
 
 #pragma once
 
+#include "Hyper/Ast/AstNode.hpp"
 #include "Hyper/Token.hpp"
-#include "Hyper/Types.hpp"
+#include "Hyper/Type.hpp"
 
 #include <memory>
-#include <optional>
-#include <vector>
 
 namespace Hyper
 {
-	class AstNode;
-	class Declaration;
-	class Expression;
-	class Literal;
-	class Statement;
+	class Scanner;
 
 	class Parser
 	{
 	public:
-		explicit Parser(std::vector<Token> tokens);
+		Parser(std::string file, Scanner &scanner);
 
 		std::unique_ptr<AstNode> parse_tree();
 
 	private:
-		std::unique_ptr<Declaration> parse_function_declaration();
-		std::unique_ptr<Declaration> parse_variable_declaration();
+		DeclarationPtr parse_function_declaration();
+		DeclarationPtr parse_translation_unit_declaration();
+		DeclarationPtr parse_variable_declaration();
 
-		std::unique_ptr<Expression> parse_binary_expression(uint8_t precedence);
-		std::unique_ptr<Expression> parse_call_expression();
-		std::unique_ptr<Expression> parse_identifier_expression();
-		std::unique_ptr<Expression> parse_primary_expression();
+		ExpressionPtr parse_primary_expression();
+		ExpressionPtr parse_binary_expression(uint8_t min_precedence);
+		ExpressionPtr parse_call_expression();
+		ExpressionPtr parse_identifier_expression();
 
-		std::unique_ptr<Literal> parse_numeric_literal();
+		LiteralPtr parse_numeric_literal();
+		LiteralPtr parse_string_literal();
 
-		std::unique_ptr<Statement> parse_assign_statement();
-		std::unique_ptr<Statement> parse_compound_statement();
-		std::unique_ptr<Statement> parse_for_statement();
-		std::unique_ptr<Statement> parse_if_statement();
-		std::unique_ptr<Statement> parse_print_statement();
-		std::unique_ptr<Statement> parse_program();
-		std::unique_ptr<Statement> parse_return_statement();
-		std::unique_ptr<Statement> parse_single_statement();
-		std::unique_ptr<Statement> parse_while_statement();
+		StatementPtr parse_statement();
+		StatementPtr parse_assign_statement();
+		StatementPtr parse_compound_statement();
+		StatementPtr parse_expression_statement();
+		StatementPtr parse_for_statement();
+		StatementPtr parse_if_statement();
+		StatementPtr parse_print_statement();
+		StatementPtr parse_return_statement();
+		StatementPtr parse_while_statement();
 
-		Token current_token() const noexcept;
-		void advance_token() noexcept;
-		Token peek_token() const noexcept;
-		
-		Token match_token(Token::Type token_type) noexcept;
-		Type match_type(Token::Type token_type) const noexcept;
-		
-		uint8_t get_operator_precedence(Token::Type token_type) const noexcept;
+		bool match(Token::Type token_type) const;
+
+		Token consume();
+		Token consume(Token::Type token_type);
+
+		Type map_type(Token::Type token_type) const;
+		uint8_t map_precedence(Token::Type token_type) const;
+
+		void save_token(Token token);
+		void expected(std::string_view expected) const;
 
 	private:
-		std::vector<Token> m_tokens = {};
-		size_t m_current_token = 0;
+		std::string m_file;
+		Scanner &m_scanner;
+
+		Token m_current_token = {};
+		Token m_saved_token = {};
 	};
 } // namespace Hyper

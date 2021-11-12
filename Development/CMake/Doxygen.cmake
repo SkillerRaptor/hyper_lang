@@ -32,6 +32,6 @@ function(enable_doxygen)
         set(DOXYGEN_TEMPLATE_RELATIONS YES)
 
         find_package(Doxygen REQUIRED dot)
-        doxygen_add_docs(Doxygen ${PROJECT_SOURCE_DIR})
+        doxygen_add_docs(DoxygenDocs ${PROJECT_SOURCE_DIR})
     endif ()
 endfunction()

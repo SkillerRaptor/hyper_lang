@@ -7,101 +7,137 @@
 #include "Hyper/Parser.hpp"
 
 #include "Hyper/Ast/Declarations/FunctionDeclaration.hpp"
+#include "Hyper/Ast/Declarations/TranslationUnitDeclaration.hpp"
 #include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 #include "Hyper/Ast/Expressions/CallExpression.hpp"
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
+#include "Hyper/Ast/Literals/StringLiteral.hpp"
 #include "Hyper/Ast/Statements/AssignStatement.hpp"
 #include "Hyper/Ast/Statements/CompoundStatement.hpp"
+#include "Hyper/Ast/Statements/ExpressionStatement.hpp"
 #include "Hyper/Ast/Statements/ForStatement.hpp"
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
 #include "Hyper/Ast/Statements/ReturnStatement.hpp"
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
+#include "Hyper/Logger.hpp"
+#include "Hyper/Scanner.hpp"
+
+#include <utility>
 
 namespace Hyper
 {
-	Parser::Parser(std::vector<Token> tokens)
-		: m_tokens(std::move(tokens))
+	Parser::Parser(std::string file, Scanner &scanner)
+		: m_file(std::move(file))
+		, m_scanner(scanner)
 	{
+		consume();
 	}
 
 	std::unique_ptr<AstNode> Parser::parse_tree()
 	{
-		return parse_program();
+		return parse_translation_unit_declaration();
 	}
 
-	std::unique_ptr<Declaration> Parser::parse_function_declaration()
+	DeclarationPtr Parser::parse_function_declaration()
 	{
-		match_token(Token::Type::Function);
+		consume(Token::Type::Function);
 
-		const Token identifier = match_token(Token::Type::Identifier);
+		const std::string function_name = consume(Token::Type::Identifier).value;
 
-		match_token(Token::Type::LeftParenthesis);
-		match_token(Token::Type::RightParenthesis);
-		match_token(Token::Type::RightArrow);
+		consume(Token::Type::LeftRoundBracket);
+		// TODO(SkillerRaptor): Implement arguments
+		std::vector<DeclarationPtr> arguments = {};
+		consume(Token::Type::RightRoundBracket);
+		consume(Token::Type::RightArrow);
 
-		const Type variable_type = [this]()
-		{
-			const Token::Type variable_token_type = current_token().type;
-			advance_token();
-			return match_type(variable_token_type);
-		}();
+		const Type return_type = map_type(m_current_token.type);
+		consume();
 
-		std::unique_ptr<Statement> body = parse_compound_statement();
+		StatementPtr body = parse_compound_statement();
 
 		return std::make_unique<FunctionDeclaration>(
-			identifier.value, variable_type, std::move(body));
+			function_name, std::move(arguments), return_type, std::move(body));
 	}
 
-	std::unique_ptr<Declaration> Parser::parse_variable_declaration()
+	DeclarationPtr Parser::parse_translation_unit_declaration()
 	{
-		match_token(Token::Type::Let);
+		std::vector<StatementPtr> statements = {};
 
-		const Token identifier = match_token(Token::Type::Identifier);
-
-		match_token(Token::Type::Colon);
-
-		bool mut = false;
-		if (current_token().type == Token::Type::Mutable)
+		while (!match(Token::Type::Eof))
 		{
-			advance_token();
-			mut = true;
+			StatementPtr statement = parse_statement();
+			statements.push_back(std::move(statement));
 		}
 
-		const Type variable_type = [this]()
-		{
-			const Token::Type variable_token_type = current_token().type;
-			advance_token();
-			return match_type(variable_token_type);
-		}();
-
-		match_token(Token::Type::Semicolon);
-
-		return std::make_unique<VariableDeclaration>(
-			identifier.value, variable_type, mut);
+		return std::make_unique<TranslationUnitDeclaration>(
+			m_file, std::move(statements));
 	}
 
-	std::unique_ptr<Expression> Parser::parse_binary_expression(
-		uint8_t precedence)
+	DeclarationPtr Parser::parse_variable_declaration()
 	{
-		std::unique_ptr<Expression> left_expression = parse_primary_expression();
+		consume(Token::Type::Let);
 
-		Token::Type token_type = current_token().type;
+		const std::string name = consume(Token::Type::Identifier).value;
+
+		consume(Token::Type::Colon);
+
+		VariableDeclaration::Immutable immutable =
+			VariableDeclaration::Immutable::Yes;
+		if (match(Token::Type::Mutable))
+		{
+			consume();
+			immutable = VariableDeclaration::Immutable::No;
+		}
+
+		const Type type = map_type(m_current_token.type);
+		consume();
+
+		consume(Token::Type::Semicolon);
+
+		// TODO(SkillerRaptor): Implementing assignment
+
+		return std::make_unique<VariableDeclaration>(name, type, immutable);
+	}
+
+	ExpressionPtr Parser::parse_primary_expression()
+	{
+		switch (m_current_token.type)
+		{
+		case Token::Type::Identifier:
+			return parse_identifier_expression();
+		case Token::Type::Minus:
+		case Token::Type::NumericLiteral:
+			return parse_numeric_literal();
+		case Token::Type::StringLiteral:
+			return parse_string_literal();
+		default:
+			expected("Expression");
+			break;
+		}
+
+		return nullptr;
+	}
+
+	ExpressionPtr Parser::parse_binary_expression(uint8_t min_precedence)
+	{
+		ExpressionPtr left = parse_primary_expression();
+
+		Token::Type token_type = m_current_token.type;
 		if (
 			token_type == Token::Type::Semicolon ||
-			token_type == Token::Type::RightParenthesis)
+			token_type == Token::Type::RightRoundBracket)
 		{
-			return left_expression;
+			return left;
 		}
 
-		while (get_operator_precedence(token_type) > precedence)
+		while (map_precedence(token_type) > min_precedence)
 		{
-			advance_token();
+			consume();
 
-			std::unique_ptr<Expression> right_expression =
-				parse_binary_expression(get_operator_precedence(token_type));
+			ExpressionPtr right = parse_binary_expression(map_precedence(token_type));
 
 			const BinaryExpression::Operation operation = [&token_type]()
 			{
@@ -133,219 +169,79 @@ namespace Hyper
 				}
 			}();
 
-			left_expression = std::make_unique<BinaryExpression>(
-				operation, std::move(left_expression), std::move(right_expression));
+			left = std::make_unique<BinaryExpression>(
+				operation, std::move(left), std::move(right));
 
-			token_type = current_token().type;
+			token_type = m_current_token.type;
 			if (
 				token_type == Token::Type::Semicolon ||
-				token_type == Token::Type::RightParenthesis)
+				token_type == Token::Type::RightRoundBracket)
 			{
-				return left_expression;
-			}
-		}
-
-		return left_expression;
-	}
-
-	std::unique_ptr<Expression> Parser::parse_call_expression()
-	{
-		const Token identifier = match_token(Token::Type::Identifier);
-		match_token(Token::Type::LeftParenthesis);
-		std::unique_ptr<Expression> expression = parse_binary_expression(0);
-		match_token(Token::Type::RightParenthesis);
-
-		return std::make_unique<CallExpression>(
-			identifier.value, std::move(expression));
-	}
-
-	std::unique_ptr<Expression> Parser::parse_identifier_expression()
-	{
-		const Token identifier = match_token(Token::Type::Identifier);
-		return std::make_unique<IdentifierExpression>(identifier.value);
-	}
-
-	std::unique_ptr<Expression> Parser::parse_primary_expression()
-	{
-		std::unique_ptr<Expression> expression =
-			[this]() -> std::unique_ptr<Expression>
-		{
-			switch (current_token().type)
-			{
-			case Token::Type::Identifier:
-			{
-				if (current_token().type == Token::Type::LeftParenthesis)
-				{
-					return parse_call_expression();
-				}
-
-				return parse_identifier_expression();
-			}
-			case Token::Type::NumericLiteral:
-			{
-				return parse_numeric_literal();
-			}
-			default:
-				// TODO(SkillerRaptor): Error handling
-				std::abort();
-			}
-		}();
-
-		return expression;
-	}
-
-	std::unique_ptr<Literal> Parser::parse_numeric_literal()
-	{
-		const Token numeric = match_token(Token::Type::NumericLiteral);
-		return std::make_unique<NumericLiteral>(std::stoll(numeric.value));
-	}
-
-	std::unique_ptr<Statement> Parser::parse_assign_statement()
-	{
-		const Token identifier = match_token(Token::Type::Identifier);
-
-		match_token(Token::Type::Assign);
-
-		std::unique_ptr<Expression> expression = parse_binary_expression(0);
-
-		return std::make_unique<AssignStatement>(
-			identifier.value, std::move(expression));
-	}
-
-	std::unique_ptr<Statement> Parser::parse_compound_statement()
-	{
-		match_token(Token::Type::LeftBrace);
-
-		std::unique_ptr<Statement> left = nullptr;
-		while (true)
-		{
-			std::unique_ptr<Statement> tree = parse_single_statement();
-			if (tree != nullptr)
-			{
-				if (
-					tree->node_category() == AstNode::Category::AssignStatement ||
-					tree->node_category() == AstNode::Category::PrintStatement ||
-					tree->node_category() == AstNode::Category::ReturnStatement)
-				{
-					match_token(Token::Type::Semicolon);
-				}
-
-				if (left == nullptr)
-				{
-					left = std::move(tree);
-				}
-				else
-				{
-					left = std::make_unique<CompoundStatement>(
-						std::move(left), std::move(tree));
-				}
-			}
-
-			if (current_token().type == Token::Type::RightBrace)
-			{
-				match_token(Token::Type::RightBrace);
 				return left;
 			}
 		}
+
+		return left;
 	}
 
-	std::unique_ptr<Statement> Parser::parse_for_statement()
+	ExpressionPtr Parser::parse_call_expression()
 	{
-		match_token(Token::Type::For);
+		std::string function = consume(Token::Type::Identifier).value;
 
-		std::unique_ptr<Statement> pre_operation = parse_single_statement();
-		match_token(Token::Type::Semicolon);
+		consume(Token::Type::LeftRoundBracket);
+		std::vector<ExpressionPtr> arguments = {};
+		// TODO(SkillerRaptor): Implementing arguments
+		consume(Token::Type::RightRoundBracket);
 
-		std::unique_ptr<Expression> condition = parse_binary_expression(0);
-		match_token(Token::Type::Semicolon);
-
-		std::unique_ptr<Statement> post_operation = parse_single_statement();
-		std::unique_ptr<Statement> body = parse_compound_statement();
-
-		return std::make_unique<ForStatement>(
-			std::move(pre_operation),
-			std::move(condition),
-			std::move(post_operation),
-			std::move(body));
+		return std::make_unique<CallExpression>(function, std::move(arguments));
 	}
 
-	std::unique_ptr<Statement> Parser::parse_if_statement()
+	ExpressionPtr Parser::parse_identifier_expression()
 	{
-		match_token(Token::Type::If);
+		const Token identifier_token = consume(Token::Type::Identifier);
 
-		std::unique_ptr<Expression> condition = parse_binary_expression(0);
-		std::unique_ptr<Statement> true_branch = parse_compound_statement();
-
-		std::unique_ptr<Statement> false_branch = nullptr;
-		if (current_token().type == Token::Type::Else)
+		if (match(Token::Type::LeftRoundBracket))
 		{
-			advance_token();
-
-			false_branch = parse_compound_statement();
+			save_token(identifier_token);
+			return parse_call_expression();
 		}
 
-		return std::make_unique<IfStatement>(
-			std::move(condition), std::move(true_branch), std::move(false_branch));
+		return std::make_unique<IdentifierExpression>(identifier_token.value);
 	}
 
-	std::unique_ptr<Statement> Parser::parse_print_statement()
+	LiteralPtr Parser::parse_numeric_literal()
 	{
-		match_token(Token::Type::Print);
-
-		std::unique_ptr<Expression> expression = parse_binary_expression(0);
-
-		return std::make_unique<PrintStatement>(std::move(expression));
-	}
-
-	std::unique_ptr<Statement> Parser::parse_program()
-	{
-		std::unique_ptr<Statement> left = nullptr;
-		while (true)
+		NumericLiteral::Type type = NumericLiteral::Type::Unsigned;
+		if (match(Token::Type::Minus))
 		{
-			std::unique_ptr<Statement> tree = parse_function_declaration();
-			if (tree != nullptr)
-			{
-				if (left == nullptr)
-				{
-					left = std::move(tree);
-				}
-				else
-				{
-					left = std::make_unique<CompoundStatement>(
-						std::move(left), std::move(tree));
-				}
-			}
-
-			if (current_token().type == Token::Type::Eof)
-			{
-				match_token(Token::Type::Eof);
-				return left;
-			}
+			type = NumericLiteral::Type::Signed;
 		}
+
+		uint64_t value = std::stoull(consume(Token::Type::NumericLiteral).value);
+		if (type == NumericLiteral::Type::Signed)
+		{
+			value += static_cast<uint64_t>(std::numeric_limits<int64_t>::min());
+		}
+
+		return std::make_unique<NumericLiteral>(type, value);
 	}
 
-	std::unique_ptr<Statement> Parser::parse_return_statement()
+	LiteralPtr Parser::parse_string_literal()
 	{
-		match_token(Token::Type::Return);
-
-		std::unique_ptr<Expression> expression = parse_binary_expression(0);
-
-		return std::make_unique<ReturnStatement>(std::move(expression));
+		std::string value = consume(Token::Type::StringLiteral).value;
+		return std::make_unique<StringLiteral>(value);
 	}
 
-	std::unique_ptr<Statement> Parser::parse_single_statement()
+	StatementPtr Parser::parse_statement()
 	{
-		switch (current_token().type)
+		switch (m_current_token.type)
 		{
 		case Token::Type::Identifier:
-			if (current_token().type == Token::Type::LeftParenthesis)
-			{
-				//return parse_call_expression();
-			}
-			
 			return parse_assign_statement();
 		case Token::Type::For:
 			return parse_for_statement();
+		case Token::Type::Function:
+			return parse_function_declaration();
 		case Token::Type::If:
 			return parse_if_statement();
 		case Token::Type::Let:
@@ -357,58 +253,217 @@ namespace Hyper
 		case Token::Type::While:
 			return parse_while_statement();
 		default:
-			// TODO(SkillerRaptor): Error handling
-			std::abort();
+			expected("Statement");
+			break;
 		}
+
+		return nullptr;
 	}
 
-	std::unique_ptr<Statement> Parser::parse_while_statement()
+	StatementPtr Parser::parse_assign_statement()
 	{
-		match_token(Token::Type::While);
+		const std::string identifier = consume(Token::Type::Identifier).value;
+
+		consume(Token::Type::Assign);
+
+		ExpressionPtr expression = parse_binary_expression(0);
+
+		return std::make_unique<AssignStatement>(identifier, std::move(expression));
+	}
+
+	StatementPtr Parser::parse_compound_statement()
+	{
+		consume(Token::Type::LeftCurlyBracket);
+
+		std::vector<StatementPtr> statements = {};
+		while (true)
+		{
+			StatementPtr tree = parse_statement();
+			if (tree != nullptr)
+			{
+				if (
+					tree->class_category() == AstNode::Category::AssignStatement ||
+					tree->class_category() == AstNode::Category::PrintStatement ||
+					tree->class_category() == AstNode::Category::ReturnStatement)
+				{
+					consume(Token::Type::Semicolon);
+				}
+
+				statements.push_back(std::move(tree));
+			}
+
+			if (match(Token::Type::RightCurlyBracket))
+			{
+				break;
+			}
+		}
+
+		consume(Token::Type::RightCurlyBracket);
+
+		return std::make_unique<CompoundStatement>(std::move(statements));
+	}
+
+	StatementPtr Parser::parse_expression_statement()
+	{
+		ExpressionPtr expression = parse_primary_expression();
+		return std::make_unique<ExpressionStatement>(std::move(expression));
+	}
+
+	StatementPtr Parser::parse_for_statement()
+	{
+		consume(Token::Type::For);
+
+		consume(Token::Type::LeftRoundBracket);
+		std::unique_ptr<Statement> pre_operation = parse_statement();
+		consume(Token::Type::Semicolon);
 
 		std::unique_ptr<Expression> condition = parse_binary_expression(0);
+		consume(Token::Type::Semicolon);
+
+		std::unique_ptr<Statement> post_operation = parse_statement();
+		consume(Token::Type::RightRoundBracket);
+
 		std::unique_ptr<Statement> body = parse_compound_statement();
+
+		return std::make_unique<ForStatement>(
+			std::move(pre_operation),
+			std::move(condition),
+			std::move(post_operation),
+			std::move(body));
+	}
+
+	StatementPtr Parser::parse_if_statement()
+	{
+		consume(Token::Type::If);
+
+		consume(Token::Type::LeftRoundBracket);
+		ExpressionPtr condition = parse_binary_expression(0);
+		consume(Token::Type::RightRoundBracket);
+
+		StatementPtr true_branch = parse_compound_statement();
+		StatementPtr false_branch = nullptr;
+		if (m_current_token.type == Token::Type::Else)
+		{
+			consume(Token::Type::Else);
+			false_branch = parse_compound_statement();
+		}
+
+		return std::make_unique<IfStatement>(
+			std::move(condition), std::move(true_branch), std::move(false_branch));
+	}
+
+	StatementPtr Parser::parse_print_statement()
+	{
+		consume(Token::Type::Print);
+		consume(Token::Type::LeftRoundBracket);
+
+		ExpressionPtr argument = parse_binary_expression(0);
+
+		consume(Token::Type::RightRoundBracket);
+
+		return std::make_unique<PrintStatement>(std::move(argument));
+	}
+
+	StatementPtr Parser::parse_return_statement()
+	{
+		consume(Token::Type::Return);
+
+		ExpressionPtr expression = parse_binary_expression(0);
+
+		return std::make_unique<ReturnStatement>(std::move(expression));
+	}
+
+	StatementPtr Parser::parse_while_statement()
+	{
+		consume(Token::Type::While);
+
+		consume(Token::Type::LeftRoundBracket);
+		ExpressionPtr condition = parse_binary_expression(0);
+		consume(Token::Type::RightRoundBracket);
+
+		StatementPtr body = parse_compound_statement();
 
 		return std::make_unique<WhileStatement>(
 			std::move(condition), std::move(body));
 	}
 
-	Token Parser::current_token() const noexcept
+	bool Parser::match(Token::Type token_type) const
 	{
-		return m_tokens[m_current_token];
+		const Token::Type type = m_saved_token.type == Token::Type::None
+															 ? m_current_token.type
+															 : m_saved_token.type;
+		return type == token_type;
 	}
 
-	void Parser::advance_token() noexcept
+	Token Parser::consume()
 	{
-		if (m_current_token >= m_tokens.size())
+		if (m_saved_token.type != Token::Type::None)
 		{
-			// TODO(SkillerRaptor): Error handling
+			m_saved_token.type = Token::Type::None;
+			return m_saved_token;
+		}
+
+		Token old_token = m_current_token;
+		m_current_token = m_scanner.next_token();
+		return old_token;
+	}
+
+	Token Parser::consume(Token::Type token_type)
+	{
+		if (!match(token_type))
+		{
+			const Token::SourceLocation location = m_current_token.location;
+			const std::string line_string = std::to_string(location.line);
+			const std::string column_string = std::to_string(location.column);
+			const std::string file = m_file + ":" + line_string + ":" + column_string;
+			Logger::file_error(
+				file,
+				"Unexpected token '{}', expected '{}'",
+				m_current_token.type,
+				token_type);
 			std::abort();
 		}
 
-		++m_current_token;
+		return consume();
 	}
 
-	Token Parser::peek_token() const noexcept
+	Type Parser::map_type(Token::Type token_type) const
 	{
-		return m_tokens[m_current_token + 1];
-	}
-
-	Token Parser::match_token(Token::Type token_type) noexcept
-	{
-		Token token = current_token();
-		if (current_token().type != token_type)
+		switch (token_type)
 		{
-			// TODO(SkillerRaptor): Handling error
-			std::abort();
+		case Token::Type::Bool:
+			return Type::Bool;
+		case Token::Type::Int8:
+			return Type::Int8;
+		case Token::Type::Int16:
+			return Type::Int16;
+		case Token::Type::Int32:
+			return Type::Int32;
+		case Token::Type::Int64:
+			return Type::Int64;
+		case Token::Type::Uint8:
+			return Type::Uint8;
+		case Token::Type::Uint16:
+			return Type::Uint16;
+		case Token::Type::Uint32:
+			return Type::Uint32;
+		case Token::Type::Uint64:
+			return Type::Uint64;
+		case Token::Type::ISize:
+			return Type::ISize;
+		case Token::Type::USize:
+			return Type::USize;
+		case Token::Type::Void:
+			return Type::Void;
+		default:
+			expected("Type");
+			break;
 		}
-
-		advance_token();
-
-		return token;
+		
+		return Type::None;
 	}
 
-	uint8_t Parser::get_operator_precedence(Token::Type token_type) const noexcept
+	uint8_t Parser::map_precedence(Token::Type token_type) const
 	{
 		switch (token_type)
 		{
@@ -433,33 +488,26 @@ namespace Hyper
 		return 0;
 	}
 
-	Type Parser::match_type(Token::Type token_type) const noexcept
+	void Parser::save_token(Token token)
 	{
-		switch (token_type)
+		if (m_saved_token.type != Token::Type::None)
 		{
-		case Token::Type::Int8:
-			return Type::Int8;
-		case Token::Type::Int16:
-			return Type::Int16;
-		case Token::Type::Int32:
-			return Type::Int32;
-		case Token::Type::Int64:
-			return Type::Int64;
-		case Token::Type::Uint8:
-			return Type::Uint8;
-		case Token::Type::Uint16:
-			return Type::Uint16;
-		case Token::Type::Uint32:
-			return Type::Uint32;
-		case Token::Type::Uint64:
-			return Type::Uint64;
-		case Token::Type::Void:
-			return Type::Void;
-		default:
-			break;
+			return;
 		}
 
-		// TODO(SkillerRaptor): Error handling
-		std::abort();
+		m_saved_token = std::move(token);
+	}
+
+	void Parser::expected(std::string_view expected) const
+	{
+		const Token::SourceLocation location = m_current_token.location;
+		const std::string line_string = std::to_string(location.line);
+		const std::string column_string = std::to_string(location.column);
+		const std::string file = m_file + ":" + line_string + ":" + column_string;
+		Logger::file_error(
+			file,
+			"Unexpected token '{}', expected '{}'",
+			m_current_token.type,
+			expected);
 	}
 } // namespace Hyper

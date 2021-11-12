@@ -4,38 +4,36 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "Hyper/Ast/Statements/Statement.hpp"
+#pragma once
 
-#include <memory>
+#include "Hyper/Ast/Statements/Statement.hpp"
 
 namespace Hyper
 {
-	class Expression;
-
 	class ForStatement final : public Statement
 	{
 	public:
 		ForStatement(
-			std::unique_ptr<Statement> pre_operation,
-			std::unique_ptr<Expression> condition,
-			std::unique_ptr<Statement> post_operation,
-			std::unique_ptr<Statement> body);
+			StatementPtr pre_operation,
+			ExpressionPtr condition,
+			StatementPtr post_operation,
+			StatementPtr body);
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
-		
-		const char *node_name() const noexcept override;
-		Category node_category() const noexcept override;
 
-		const std::unique_ptr<Statement> &pre_operation() const;
-		const std::unique_ptr<Expression> &condition() const;
-		const std::unique_ptr<Statement> &post_operation() const;
-		const std::unique_ptr<Statement> &body() const;
+		Category class_category() const noexcept override;
+		std::string_view class_name() const noexcept override;
+
+		const StatementPtr &pre_operation() const;
+		const ExpressionPtr &condition() const;
+		const StatementPtr &post_operation() const;
+		const StatementPtr &body() const;
 
 	private:
-		std::unique_ptr<Statement> m_pre_operation = nullptr;
-		std::unique_ptr<Expression> m_condition = nullptr;
-		std::unique_ptr<Statement> m_post_operation = nullptr;
-		std::unique_ptr<Statement> m_body = nullptr;
+		StatementPtr m_pre_operation = nullptr;
+		ExpressionPtr m_condition = nullptr;
+		StatementPtr m_post_operation = nullptr;
+		StatementPtr m_body = nullptr;
 	};
 } // namespace Hyper

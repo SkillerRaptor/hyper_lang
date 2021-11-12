@@ -19,9 +19,9 @@ namespace Hyper
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
-		
-		const char *node_name() const noexcept override;
-		Category node_category() const noexcept override;
+
+		Category class_category() const noexcept override;
+		std::string_view class_name() const noexcept override;
 
 		std::string identifier() const;
 

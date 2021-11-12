@@ -4,30 +4,42 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "Hyper/Ast/Declarations/Declaration.hpp"
+#pragma once
 
-#include "Hyper/Types.hpp"
+#include "Hyper/Ast/Declarations/Declaration.hpp"
+#include "Hyper/Type.hpp"
 
 namespace Hyper
 {
 	class VariableDeclaration final : public Declaration
 	{
 	public:
-		VariableDeclaration(std::string identifier, Type type, bool mut);
+		enum class Immutable
+		{
+			No = 0,
+			Yes
+		};
+
+	public:
+		VariableDeclaration(std::string name, Type type, Immutable immutable);
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
 
-		const char *node_name() const noexcept override;
-		Category node_category() const noexcept override;
+		Category class_category() const noexcept override;
+		std::string_view class_name() const noexcept override;
 
-		std::string identifier() const;
+		std::string name() const;
 		Type type() const noexcept;
-		bool mut() const noexcept;
+		Immutable immutable() const noexcept;
 
 	private:
-		std::string m_identifier;
-		Type m_type = Type::None;
-		bool m_mut = false;
+		std::string m_name;
+		Type m_type = {};
+		Immutable m_immutable = Immutable::Yes;
 	};
+
+	std::ostream &operator<<(
+		std::ostream &ostream,
+		const VariableDeclaration::Immutable &immutable);
 } // namespace Hyper

@@ -13,6 +13,8 @@ namespace Hyper
 	enum class Type : unsigned char
 	{
 		None = 0,
+		
+		Bool,
 
 		Int8,
 		Int16,
@@ -22,7 +24,10 @@ namespace Hyper
 		Uint16,
 		Uint32,
 		Uint64,
-		
+
+		ISize,
+		USize,
+
 		Void
 	};
 

@@ -4,33 +4,30 @@
  * SPDX-License-Identifier: MIT
  */
 
+#pragma once
+
 #include "Hyper/Ast/Statements/Statement.hpp"
 
-#include <memory>
 #include <string>
 
 namespace Hyper
 {
-	class Expression;
-
 	class AssignStatement final : public Statement
 	{
 	public:
-		AssignStatement(
-			std::string identifier,
-			std::unique_ptr<Expression> expression);
+		AssignStatement(std::string identifier, ExpressionPtr expression);
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
-		
-		const char *node_name() const noexcept override;
-		Category node_category() const noexcept override;
+
+		Category class_category() const noexcept override;
+		std::string_view class_name() const noexcept override;
 
 		std::string identifier() const;
-		const std::unique_ptr<Expression> &expression() const;
+		const ExpressionPtr &expression() const;
 
 	private:
 		std::string m_identifier;
-		std::unique_ptr<Expression> m_expression = nullptr;
+		ExpressionPtr m_expression = nullptr;
 	};
 } // namespace Hyper

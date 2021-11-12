@@ -6,15 +6,19 @@
 
 #pragma once
 
-#include "Hyper/Ast/Expressions/Expression.hpp"
+#include <string>
+#include <vector>
 
 namespace Hyper
 {
-	class Literal : public Expression
+	class Compiler
 	{
 	public:
-		~Literal() override = default;
+		explicit Compiler(std::vector<std::string> files);
 
-		std::string_view class_name() const noexcept override;
+		bool compile() const;
+
+	private:
+		std::vector<std::string> m_files = {};
 	};
 } // namespace Hyper

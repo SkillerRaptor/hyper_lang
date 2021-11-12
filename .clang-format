@@ -58,7 +58,7 @@ NamespaceIndentation: All
 PenaltyReturnTypeOnItsOwnLine: 1000000
 PointerAlignment: Right
 ReflowComments: true
-SortIncludes: Never
+SortIncludes: CaseInsensitive
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: true
 SpaceAfterLogicalNot: false

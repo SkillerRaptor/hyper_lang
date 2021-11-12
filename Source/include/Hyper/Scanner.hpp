@@ -10,6 +10,7 @@
 
 #include <optional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace Hyper
@@ -19,31 +20,33 @@ namespace Hyper
 	public:
 		Scanner(std::string file, std::string text);
 
-		std::vector<Token> scan_tokens();
+		Token next_token();
 
 	private:
-		char advance() noexcept;
-		char peek() const noexcept;
-		void revert() noexcept;
+		void register_keywords();
+		void register_single_char_tokens();
+		void register_two_char_tokens();
 
-		void skip_whitespace() noexcept;
-		bool has_reached_end() const noexcept;
+		void consume();
 
-		void add_token(
-			std::vector<Token> &tokens,
-			const std::string &value,
-			Token::Type token_type);
-
-		std::string scan_numeric_literal(char character);
-		std::string scan_identifier(char character);
-		Token::Type scan_keyword(const std::string &identifier);
+		Token::Type scan_identifier(size_t start, size_t &length);
+		Token::Type scan_number(size_t &length);
+		Token::Type scan_string(size_t &length);
+		Token::Type scan_short_tokens(size_t start, size_t &length);
 
 	private:
 		std::string m_file;
 		std::string m_text;
 
 		size_t m_position = 0;
-		size_t m_line = 1;
-		size_t m_column = 0;
+		size_t m_line_number = 1;
+		size_t m_line_column = 0;
+
+		char m_current_character = '\0';
+		Token m_current_token = {};
+
+		std::unordered_map<std::string_view, Token::Type> m_keywords;
+		std::unordered_map<std::string_view, Token::Type> m_single_char_tokens;
+		std::unordered_map<std::string_view, Token::Type> m_two_char_tokens;
 	};
 } // namespace Hyper

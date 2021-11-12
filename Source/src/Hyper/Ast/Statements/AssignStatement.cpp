@@ -8,14 +8,13 @@
 
 #include "Hyper/Ast/Expressions/Expression.hpp"
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
 	AssignStatement::AssignStatement(
 		std::string identifier,
-		std::unique_ptr<Expression> expression)
+		ExpressionPtr expression)
 		: m_identifier(std::move(identifier))
 		, m_expression(std::move(expression))
 	{
@@ -28,22 +27,20 @@ namespace Hyper
 
 	void AssignStatement::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
-
-		std::cout << "identifier = " << m_identifier;
-		std::cout << '\n';
+		AstNode::indent(indent);
+		Logger::raw("{} (identifier={})\n", class_name(), m_identifier);
 
 		m_expression->dump(indent + 1);
 	}
-	
-	const char *AssignStatement::node_name() const noexcept
+
+	AstNode::Category AssignStatement::class_category() const noexcept
 	{
-		return "AssignStatement";
+		return AstNode::Category::AssignStatement;
 	}
 
-	AstNode::Category AssignStatement::node_category() const noexcept
+	std::string_view AssignStatement::class_name() const noexcept
 	{
-		return Category::AssignStatement;
+		return "AssignStatement";
 	}
 
 	std::string AssignStatement::identifier() const
@@ -51,7 +48,7 @@ namespace Hyper
 		return m_identifier;
 	}
 
-	const std::unique_ptr<Expression> &AssignStatement::expression() const
+	const ExpressionPtr &AssignStatement::expression() const
 	{
 		return m_expression;
 	}

@@ -6,17 +6,16 @@
 
 #pragma once
 
-#include "Hyper/Ast/Expressions/Expression.hpp"
+#include "Hyper/Ast/Literals/Literal.hpp"
 
 #include <string>
-#include <vector>
 
 namespace Hyper
 {
-	class CallExpression final : public Expression
+	class StringLiteral final : public Literal
 	{
 	public:
-		CallExpression(std::string function, std::vector<ExpressionPtr> arguments);
+		explicit StringLiteral(std::string value);
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
@@ -24,11 +23,9 @@ namespace Hyper
 		Category class_category() const noexcept override;
 		std::string_view class_name() const noexcept override;
 
-		std::string identifier() const;
-		const std::vector<ExpressionPtr> &arguments() const;
+		std::string value() const noexcept;
 
 	private:
-		std::string m_identifier;
-		std::vector<ExpressionPtr> m_arguments = {};
+		std::string m_value;
 	};
 } // namespace Hyper

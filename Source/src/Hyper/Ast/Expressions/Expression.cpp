@@ -4,17 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-#pragma once
-
 #include "Hyper/Ast/Expressions/Expression.hpp"
 
 namespace Hyper
 {
-	class Literal : public Expression
+	std::string_view Expression::class_name() const noexcept
 	{
-	public:
-		~Literal() override = default;
-
-		std::string_view class_name() const noexcept override;
-	};
+		return "Expression";
+	}
 } // namespace Hyper

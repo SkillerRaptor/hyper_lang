@@ -4,32 +4,28 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "Hyper/Ast/Statements/Statement.hpp"
+#pragma once
 
-#include <memory>
+#include "Hyper/Ast/Statements/Statement.hpp"
 
 namespace Hyper
 {
-	class Expression;
-
 	class WhileStatement final : public Statement
 	{
 	public:
-		WhileStatement(
-			std::unique_ptr<Expression> condition,
-			std::unique_ptr<Statement> body);
+		WhileStatement(ExpressionPtr condition, StatementPtr body);
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
-		
-		const char *node_name() const noexcept override;
-		Category node_category() const noexcept override;
 
-		const std::unique_ptr<Expression> &condition() const;
-		const std::unique_ptr<Statement> &body() const;
+		Category class_category() const noexcept override;
+		std::string_view class_name() const noexcept override;
+
+		const ExpressionPtr &condition() const;
+		const StatementPtr &body() const;
 
 	private:
-		std::unique_ptr<Expression> m_condition = nullptr;
-		std::unique_ptr<Statement> m_body = nullptr;
+		ExpressionPtr m_condition = nullptr;
+		StatementPtr m_body = nullptr;
 	};
 } // namespace Hyper

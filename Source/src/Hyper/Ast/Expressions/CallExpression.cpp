@@ -7,16 +7,15 @@
 #include "Hyper/Ast/Expressions/CallExpression.hpp"
 
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
 	CallExpression::CallExpression(
 		std::string identifier,
-		std::unique_ptr<Expression> expression)
+		std::vector<ExpressionPtr> arguments)
 		: m_identifier(std::move(identifier))
-		, m_expression(std::move(expression))
+		, m_arguments(std::move(arguments))
 	{
 	}
 
@@ -27,22 +26,23 @@ namespace Hyper
 
 	void CallExpression::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
+		AstNode::indent(indent);
+		Logger::raw("{} (identifier={})\n", class_name(), m_identifier);
 
-		std::cout << "identifier = " << m_identifier;
-		std::cout << '\n';
-
-		m_expression->dump(indent + 1);
+		for (const ExpressionPtr &expression : m_arguments)
+		{
+			expression->dump(indent + 1);
+		}
 	}
 
-	const char *CallExpression::node_name() const noexcept
+	AstNode::Category CallExpression::class_category() const noexcept
+	{
+		return AstNode::Category::CallExpression;
+	}
+
+	std::string_view CallExpression::class_name() const noexcept
 	{
 		return "CallExpression";
-	}
-
-	AstNode::Category CallExpression::node_category() const noexcept
-	{
-		return Category::CallExpression;
 	}
 
 	std::string CallExpression::identifier() const
@@ -50,8 +50,8 @@ namespace Hyper
 		return m_identifier;
 	}
 
-	const std::unique_ptr<Expression> &CallExpression::expression() const
+	const std::vector<ExpressionPtr> &CallExpression::arguments() const
 	{
-		return m_expression;
+		return m_arguments;
 	}
 } // namespace Hyper

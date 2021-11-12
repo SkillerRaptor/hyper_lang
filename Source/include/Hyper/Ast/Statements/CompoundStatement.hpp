@@ -4,30 +4,28 @@
  * SPDX-License-Identifier: MIT
  */
 
+#pragma once
+
 #include "Hyper/Ast/Statements/Statement.hpp"
 
-#include <memory>
+#include <vector>
 
 namespace Hyper
 {
 	class CompoundStatement final : public Statement
 	{
 	public:
-		CompoundStatement(
-			std::unique_ptr<Statement> left,
-			std::unique_ptr<Statement> right);
+		explicit CompoundStatement(std::vector<StatementPtr> statements);
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
-		
-		const char *node_name() const noexcept override;
-		Category node_category() const noexcept override;
 
-		const std::unique_ptr<Statement> &left() const;
-		const std::unique_ptr<Statement> &right() const;
+		Category class_category() const noexcept override;
+		std::string_view class_name() const noexcept override;
+
+		const std::vector<StatementPtr> &statements() const;
 
 	private:
-		std::unique_ptr<Statement> m_left = nullptr;
-		std::unique_ptr<Statement> m_right = nullptr;
+		std::vector<StatementPtr> m_statements = {};
 	};
 } // namespace Hyper

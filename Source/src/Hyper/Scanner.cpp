@@ -6,351 +6,237 @@
 
 #include "Hyper/Scanner.hpp"
 
-#include <iostream>
-
 namespace Hyper
 {
 	Scanner::Scanner(std::string file, std::string text)
 		: m_file(std::move(file))
 		, m_text(std::move(text))
 	{
+		register_keywords();
+		register_single_char_tokens();
+		register_two_char_tokens();
+
+		consume();
 	}
 
-	std::vector<Token> Scanner::scan_tokens()
+	Token Scanner::next_token()
 	{
-		std::vector<Token> tokens = {};
-		while (!has_reached_end())
+		if (m_position < m_text.length())
 		{
-			skip_whitespace();
-
-			char character = advance();
-			if (character == '\0')
+			while (m_current_character == ' ' || m_current_character == '\t' ||
+						 m_current_character == '\n' || m_current_character == '\r' ||
+						 m_current_character == '\f')
 			{
-				break;
-			}
-
-			switch (character)
-			{
-			case ':':
-				add_token(tokens, ":", Token::Type::Colon);
-				break;
-			case ';':
-				add_token(tokens, ";", Token::Type::Semicolon);
-				break;
-			case '{':
-				add_token(tokens, "{", Token::Type::LeftBrace);
-				break;
-			case '}':
-				add_token(tokens, "}", Token::Type::RightBrace);
-				break;
-			case '(':
-				add_token(tokens, "(", Token::Type::LeftParenthesis);
-				break;
-			case ')':
-				add_token(tokens, ")", Token::Type::RightParenthesis);
-				break;
-			case '[':
-				add_token(tokens, "[", Token::Type::LeftBracket);
-				break;
-			case ']':
-				add_token(tokens, "]", Token::Type::RightBracket);
-				break;
-			case '+':
-				add_token(tokens, "+", Token::Type::Plus);
-				break;
-			case '-':
-				if (peek() == '>')
-				{
-					advance();
-					add_token(tokens, "->", Token::Type::RightArrow);
-					break;
-				}
-
-				add_token(tokens, "-", Token::Type::Minus);
-				break;
-			case '*':
-				add_token(tokens, "*", Token::Type::Star);
-				break;
-			case '/':
-				add_token(tokens, "/", Token::Type::Slash);
-				break;
-			case '=':
-				if (peek() == '=')
-				{
-					advance();
-					add_token(tokens, "==", Token::Type::Equal);
-					break;
-				}
-
-				add_token(tokens, "=", Token::Type::Assign);
-				break;
-			case '!':
-				if (peek() == '=')
-				{
-					advance();
-					add_token(tokens, "!=", Token::Type::NotEqual);
-					break;
-				}
-
-				break;
-			case '>':
-				if (peek() == '=')
-				{
-					advance();
-					add_token(tokens, ">=", Token::Type::GreaterEqual);
-					break;
-				}
-
-				add_token(tokens, ">", Token::Type::GreaterThan);
-				break;
-			case '<':
-				if (peek() == '=')
-				{
-					advance();
-					add_token(tokens, "<=", Token::Type::LessEqual);
-					break;
-				}
-
-				if (peek() == '-')
-				{
-					advance();
-					add_token(tokens, "<-", Token::Type::LeftArrow);
-					break;
-				}
-
-				add_token(tokens, "<", Token::Type::LessThan);
-				break;
-			default:
-				if (std::isdigit(character))
-				{
-					const std::string numeric_literal = scan_numeric_literal(character);
-					add_token(tokens, numeric_literal, Token::Type::NumericLiteral);
-					break;
-				}
-
-				if (std::isalpha(character))
-				{
-					const std::string identifier = scan_identifier(character);
-					const Token::Type keyword_type = scan_keyword(identifier);
-					if (keyword_type == Token::Type::None)
-					{
-						add_token(tokens, identifier, Token::Type::Identifier);
-						break;
-					}
-
-					add_token(tokens, identifier, keyword_type);
-					break;
-				}
-
-				// TODO(SkillerRaptor): Improving error handling
-				std::cerr << "hyper: " << m_file << ": unexpected character\n";
-				break;
+				consume();
 			}
 		}
 
-		add_token(tokens, "", Token::Type::Eof);
-
-		return tokens;
-	}
-
-	char Scanner::advance() noexcept
-	{
-		if (has_reached_end())
+		size_t value_start = m_position - 1;
+		size_t value_length = 0;
+		Token::Type type;
+		if (m_position >= m_text.length())
 		{
-			return '\0';
+			type = Token::Type::Eof;
+		}
+		else if (isalpha(m_current_character) || m_current_character == '_')
+		{
+			type = scan_identifier(value_start, value_length);
+		}
+		else if (isdigit(m_current_character))
+		{
+			type = scan_number(value_length);
+		}
+		else if (m_current_character == '"')
+		{
+			type = scan_string(value_length);
+		}
+		else
+		{
+			type = scan_short_tokens(value_start, value_length);
 		}
 
-		const char character = m_text[m_position++];
-		if (character == '\n')
-		{
-			++m_line;
-			m_column = 0;
-			return character;
-		}
+		m_current_token = {};
+		m_current_token.value = m_text.substr(value_start, value_length);
+		m_current_token.type = type;
+		m_current_token.location.line = m_line_number;
+		m_current_token.location.column = m_line_column - value_length + 1;
+		m_current_token.location.length = value_length;
+		m_current_token.location.position = m_position - value_length;
 
-		++m_column;
-		return character;
+		return m_current_token;
 	}
 
-	char Scanner::peek() const noexcept
+	void Scanner::register_keywords()
 	{
-		if (has_reached_end())
-		{
-			return '\0';
-		}
+		// Built-in types
+		m_keywords["bool"] = Token::Type::Bool;
+		m_keywords["i8"] = Token::Type::Int8;
+		m_keywords["i16"] = Token::Type::Int16;
+		m_keywords["i32"] = Token::Type::Int32;
+		m_keywords["i64"] = Token::Type::Int64;
+		m_keywords["u8"] = Token::Type::Uint8;
+		m_keywords["u16"] = Token::Type::Uint16;
+		m_keywords["u32"] = Token::Type::Uint32;
+		m_keywords["u64"] = Token::Type::Uint64;
+		m_keywords["isize"] = Token::Type::ISize;
+		m_keywords["usize"] = Token::Type::USize;
+		m_keywords["void"] = Token::Type::Void;
 
-		return m_text[m_position];
+		// Control flow keywords
+		m_keywords["else"] = Token::Type::Else;
+		m_keywords["for"] = Token::Type::For;
+		m_keywords["if"] = Token::Type::If;
+		m_keywords["return"] = Token::Type::Return;
+		m_keywords["while"] = Token::Type::While;
+
+		// Declaration keywords
+		m_keywords["function"] = Token::Type::Function;
+		m_keywords["let"] = Token::Type::Let;
+		m_keywords["mutable"] = Token::Type::Mutable;
+
+		// Temporary built-in function
+		m_keywords["print"] = Token::Type::Print;
 	}
 
-	void Scanner::revert() noexcept
+	void Scanner::register_single_char_tokens()
 	{
-		--m_position;
-		--m_column;
+		// Special symbols
+		m_single_char_tokens["="] = Token::Type::Assign;
+		m_single_char_tokens[":"] = Token::Type::Colon;
+		m_single_char_tokens[";"] = Token::Type::Semicolon;
+
+		// Binary operations
+		m_single_char_tokens["+"] = Token::Type::Plus;
+		m_single_char_tokens["-"] = Token::Type::Minus;
+		m_single_char_tokens["*"] = Token::Type::Star;
+		m_single_char_tokens["/"] = Token::Type::Slash;
+
+		// Comparisons
+		m_single_char_tokens[">"] = Token::Type::LessThan;
+		m_single_char_tokens["<"] = Token::Type::GreaterThan;
+
+		// Brackets
+		m_single_char_tokens["{"] = Token::Type::LeftCurlyBracket;
+		m_single_char_tokens["}"] = Token::Type::RightCurlyBracket;
+		m_single_char_tokens["["] = Token::Type::LeftSquareBracket;
+		m_single_char_tokens["]"] = Token::Type::RightSquareBracket;
+		m_single_char_tokens["("] = Token::Type::LeftRoundBracket;
+		m_single_char_tokens[")"] = Token::Type::RightRoundBracket;
 	}
 
-	void Scanner::skip_whitespace() noexcept
+	void Scanner::register_two_char_tokens()
 	{
-		if (has_reached_end())
+		// Binary assignment
+		m_two_char_tokens["+="] = Token::Type::PlusEqual;
+		m_two_char_tokens["-="] = Token::Type::MinusEqual;
+		m_two_char_tokens["*="] = Token::Type::StarEqual;
+		m_two_char_tokens["/="] = Token::Type::SlashEqual;
+
+		// Comparisons
+		m_two_char_tokens["=="] = Token::Type::Equal;
+		m_two_char_tokens["!="] = Token::Type::NotEqual;
+		m_two_char_tokens[">="] = Token::Type::LessEqual;
+		m_two_char_tokens["<="] = Token::Type::GreaterEqual;
+
+		// Arrows
+		m_two_char_tokens["<-"] = Token::Type::LeftArrow;
+		m_two_char_tokens["->"] = Token::Type::RightArrow;
+	}
+
+	void Scanner::consume()
+	{
+		if (m_position >= m_text.length())
 		{
 			return;
 		}
 
-		char character = advance();
-		while (character == ' ' || character == '\t' || character == '\n' ||
-					 character == '\r' || character == '\f')
+		if (m_current_character == '\n')
 		{
-			character = advance();
-			if (character == '\0')
+			++m_line_number;
+			m_line_column = 0;
+		}
+
+		++m_line_column;
+
+		m_current_character = m_text[m_position++];
+	}
+
+	Token::Type Scanner::scan_identifier(size_t start, size_t &length)
+	{
+		do
+		{
+			++length;
+			consume();
+		} while (isalnum(m_current_character) || m_current_character == '_');
+
+		const std::string value = m_text.substr(start, length);
+		if (m_keywords.find(value) == m_keywords.end())
+		{
+			return Token::Type::Identifier;
+		}
+
+		return m_keywords[value];
+	}
+
+	Token::Type Scanner::scan_number(size_t &length)
+	{
+		// TODO(SkillerRaptor): Handle binary, octal and hexadecimal numbers
+
+		do
+		{
+			++length;
+			consume();
+		} while (isdigit(m_current_character));
+
+		return Token::Type::NumericLiteral;
+	}
+
+	Token::Type Scanner::scan_string(size_t &length)
+	{
+		consume();
+
+		do
+		{
+			++length;
+			consume();
+		} while (isalnum(m_current_character) || m_current_character == '_');
+
+		if (m_current_character != '"')
+		{
+			// TODO(SkillerRaptor): Handle unclosed string
+			std::abort();
+		}
+
+		consume();
+
+		length += 2;
+		return Token::Type::StringLiteral;
+	}
+
+	Token::Type Scanner::scan_short_tokens(size_t start, size_t &length)
+	{
+		if (m_position < m_text.length())
+		{
+			const std::string value = m_text.substr(start, 2);
+			if (m_two_char_tokens.find(value) != m_two_char_tokens.end())
 			{
-				return;
+				consume();
+				consume();
+				length = 2;
+				return m_two_char_tokens[value];
 			}
 		}
 
-		revert();
-	}
-
-	bool Scanner::has_reached_end() const noexcept
-	{
-		return m_position >= m_text.length();
-	}
-
-	void Scanner::add_token(
-		std::vector<Token> &tokens,
-		const std::string &value,
-		Token::Type token_type)
-	{
-		SourceLocation source_location = {};
-		source_location.line = m_line;
-		source_location.column = m_column - value.length() + 1;
-		source_location.length = value.length();
-		source_location.start = m_position - value.length();
-
-		Token token = {};
-		token.value = value;
-		token.type = token_type;
-		token.location = source_location;
-
-		tokens.emplace_back(token);
-	}
-
-	std::string Scanner::scan_numeric_literal(char character)
-	{
-		std::string numeric_literal;
-		numeric_literal += character;
-
-		while (std::isdigit(peek()))
+		const std::string value = m_text.substr(start, 1);
+		if (m_single_char_tokens.find(value) != m_single_char_tokens.end())
 		{
-			numeric_literal += advance();
+			consume();
+			length = 1;
+			return m_single_char_tokens[value];
 		}
 
-		return numeric_literal;
-	}
-
-	std::string Scanner::scan_identifier(char character)
-	{
-		std::string identifier;
-		identifier += character;
-
-		while (std::isalpha(peek()) || std::isdigit(peek()) || peek() == '_')
-		{
-			identifier += advance();
-		}
-
-		return identifier;
-	}
-
-	Token::Type Scanner::scan_keyword(const std::string &identifier)
-	{
-		if (identifier == "else")
-		{
-			return Token::Type::Else;
-		}
-
-		if (identifier == "for")
-		{
-			return Token::Type::For;
-		}
-
-		if (identifier == "fn")
-		{
-			return Token::Type::Function;
-		}
-
-		if (identifier == "i8")
-		{
-			return Token::Type::Int8;
-		}
-
-		if (identifier == "i16")
-		{
-			return Token::Type::Int16;
-		}
-
-		if (identifier == "i32")
-		{
-			return Token::Type::Int32;
-		}
-
-		if (identifier == "i64")
-		{
-			return Token::Type::Int64;
-		}
-
-		if (identifier == "if")
-		{
-			return Token::Type::If;
-		}
-
-		if (identifier == "let")
-		{
-			return Token::Type::Let;
-		}
-
-		if (identifier == "mut")
-		{
-			return Token::Type::Mutable;
-		}
-
-		if (identifier == "print")
-		{
-			return Token::Type::Print;
-		}
-		
-		if (identifier == "return")
-		{
-			return Token::Type::Return;
-		}
-
-		if (identifier == "u8")
-		{
-			return Token::Type::Uint8;
-		}
-
-		if (identifier == "u16")
-		{
-			return Token::Type::Uint16;
-		}
-
-		if (identifier == "u32")
-		{
-			return Token::Type::Uint32;
-		}
-
-		if (identifier == "u64")
-		{
-			return Token::Type::Uint64;
-		}
-
-		if (identifier == "void")
-		{
-			return Token::Type::Void;
-		}
-
-		if (identifier == "while")
-		{
-			return Token::Type::While;
-		}
-
+		consume();
+		length = 0;
 		return Token::Type::None;
 	}
 } // namespace Hyper

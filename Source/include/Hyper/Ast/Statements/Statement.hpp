@@ -14,5 +14,7 @@ namespace Hyper
 	{
 	public:
 		~Statement() override = default;
+
+		std::string_view class_name() const noexcept override;
 	};
 } // namespace Hyper

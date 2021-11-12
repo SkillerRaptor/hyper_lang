@@ -8,16 +8,15 @@
 
 #include "Hyper/Ast/Expressions/Expression.hpp"
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
 	ForStatement::ForStatement(
-		std::unique_ptr<Statement> pre_operation,
-		std::unique_ptr<Expression> condition,
-		std::unique_ptr<Statement> post_operation,
-		std::unique_ptr<Statement> body)
+		StatementPtr pre_operation,
+		ExpressionPtr condition,
+		StatementPtr post_operation,
+		StatementPtr body)
 		: m_pre_operation(std::move(pre_operation))
 		, m_condition(std::move(condition))
 		, m_post_operation(std::move(post_operation))
@@ -32,9 +31,8 @@ namespace Hyper
 
 	void ForStatement::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
-
-		std::cout << '\n';
+		AstNode::indent(indent);
+		Logger::raw("{}\n", class_name());
 
 		m_pre_operation->dump(indent + 1);
 		m_condition->dump(indent + 1);
@@ -42,32 +40,32 @@ namespace Hyper
 		m_body->dump(indent + 1);
 	}
 
-	const char *ForStatement::node_name() const noexcept
+	AstNode::Category ForStatement::class_category() const noexcept
+	{
+		return AstNode::Category::ForStatement;
+	}
+
+	std::string_view ForStatement::class_name() const noexcept
 	{
 		return "ForStatement";
 	}
 
-	AstNode::Category ForStatement::node_category() const noexcept
-	{
-		return Category::ForStatement;
-	}
-
-	const std::unique_ptr<Statement> &ForStatement::pre_operation() const
+	const StatementPtr &ForStatement::pre_operation() const
 	{
 		return m_pre_operation;
 	}
 
-	const std::unique_ptr<Expression> &ForStatement::condition() const
+	const ExpressionPtr &ForStatement::condition() const
 	{
 		return m_condition;
 	}
 
-	const std::unique_ptr<Statement> &ForStatement::post_operation() const
+	const StatementPtr &ForStatement::post_operation() const
 	{
 		return m_post_operation;
 	}
 
-	const std::unique_ptr<Statement> &ForStatement::body() const
+	const StatementPtr &ForStatement::body() const
 	{
 		return m_body;
 	}

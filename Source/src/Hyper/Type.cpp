@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "Hyper/Types.hpp"
+#include "Hyper/Type.hpp"
 
 namespace Hyper
 {
@@ -12,6 +12,12 @@ namespace Hyper
 	{
 		switch (type)
 		{
+		case Type::None:
+			ostream << "None";
+			break;
+		case Type::Bool:
+			ostream << "Bool";
+			break;
 		case Type::Int8:
 			ostream << "Int8";
 			break;
@@ -35,6 +41,12 @@ namespace Hyper
 			break;
 		case Type::Uint64:
 			ostream << "Uint64";
+			break;
+		case Type::ISize:
+			ostream << "ISize";
+			break;
+		case Type::USize:
+			ostream << "USize";
 			break;
 		case Type::Void:
 			ostream << "Void";

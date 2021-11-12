@@ -8,14 +8,11 @@
 
 #include "Hyper/Ast/Expressions/Expression.hpp"
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	WhileStatement::WhileStatement(
-		std::unique_ptr<Expression> condition,
-		std::unique_ptr<Statement> body)
+	WhileStatement::WhileStatement(ExpressionPtr condition, StatementPtr body)
 		: m_condition(std::move(condition))
 		, m_body(std::move(body))
 	{
@@ -28,30 +25,29 @@ namespace Hyper
 
 	void WhileStatement::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
-
-		std::cout << '\n';
+		AstNode::indent(indent);
+		Logger::raw("{}\n", class_name());
 
 		m_condition->dump(indent + 1);
 		m_body->dump(indent + 1);
 	}
 
-	const char *WhileStatement::node_name() const noexcept
+	AstNode::Category WhileStatement::class_category() const noexcept
+	{
+		return AstNode::Category::WhileStatement;
+	}
+
+	std::string_view WhileStatement::class_name() const noexcept
 	{
 		return "WhileStatement";
 	}
 
-	AstNode::Category WhileStatement::node_category() const noexcept
-	{
-		return Category::WhileStatement;
-	}
-
-	const std::unique_ptr<Expression> &WhileStatement::condition() const
+	const ExpressionPtr &WhileStatement::condition() const
 	{
 		return m_condition;
 	}
 
-	const std::unique_ptr<Statement> &WhileStatement::body() const
+	const StatementPtr &WhileStatement::body() const
 	{
 		return m_body;
 	}

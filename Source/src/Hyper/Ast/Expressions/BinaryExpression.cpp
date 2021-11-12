@@ -7,15 +7,14 @@
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
 	BinaryExpression::BinaryExpression(
 		BinaryExpression::Operation operation,
-		std::unique_ptr<Expression> left,
-		std::unique_ptr<Expression> right)
+		ExpressionPtr left,
+		ExpressionPtr right)
 		: m_operation(operation)
 		, m_left(std::move(left))
 		, m_right(std::move(right))
@@ -29,23 +28,21 @@ namespace Hyper
 
 	void BinaryExpression::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
-
-		std::cout << "operation = " << m_operation;
-		std::cout << '\n';
+		AstNode::indent(indent);
+		Logger::raw("{} (operation={})\n", class_name(), m_operation);
 
 		m_left->dump(indent + 1);
 		m_right->dump(indent + 1);
 	}
-	
-	const char *BinaryExpression::node_name() const noexcept
+
+	AstNode::Category BinaryExpression::class_category() const noexcept
 	{
-		return "BinaryExpression";
+		return AstNode::Category::BinaryExpression;
 	}
 
-	AstNode::Category BinaryExpression::node_category() const noexcept
+	std::string_view BinaryExpression::class_name() const noexcept
 	{
-		return Category::BinaryExpression;
+		return "BinaryExpression";
 	}
 
 	BinaryExpression::Operation BinaryExpression::operation() const noexcept
@@ -53,12 +50,12 @@ namespace Hyper
 		return m_operation;
 	}
 
-	const std::unique_ptr<Expression> &BinaryExpression::left() const
+	const ExpressionPtr &BinaryExpression::left() const
 	{
 		return m_left;
 	}
 
-	const std::unique_ptr<Expression> &BinaryExpression::right() const
+	const ExpressionPtr &BinaryExpression::right() const
 	{
 		return m_right;
 	}

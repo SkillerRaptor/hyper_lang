@@ -8,12 +8,11 @@
 
 #include "Hyper/Ast/Expressions/Expression.hpp"
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	ReturnStatement::ReturnStatement(std::unique_ptr<Expression> expression)
+	ReturnStatement::ReturnStatement(ExpressionPtr expression)
 		: m_expression(std::move(expression))
 	{
 	}
@@ -25,24 +24,23 @@ namespace Hyper
 
 	void ReturnStatement::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
-
-		std::cout << '\n';
+		AstNode::indent(indent);
+		Logger::raw("{}\n", class_name());
 
 		m_expression->dump(indent + 1);
 	}
 
-	const char *ReturnStatement::node_name() const noexcept
+	AstNode::Category ReturnStatement::class_category() const noexcept
+	{
+		return AstNode::Category::ReturnStatement;
+	}
+
+	std::string_view ReturnStatement::class_name() const noexcept
 	{
 		return "ReturnStatement";
 	}
 
-	AstNode::Category ReturnStatement::node_category() const noexcept
-	{
-		return Category::ReturnStatement;
-	}
-
-	const std::unique_ptr<Expression> &ReturnStatement::expression() const
+	const ExpressionPtr &ReturnStatement::expression() const
 	{
 		return m_expression;
 	}

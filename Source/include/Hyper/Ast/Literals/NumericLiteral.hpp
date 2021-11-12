@@ -8,24 +8,35 @@
 
 #include "Hyper/Ast/Literals/Literal.hpp"
 
-#include <cstdint>
-
 namespace Hyper
 {
 	class NumericLiteral final : public Literal
 	{
 	public:
-		NumericLiteral(int64_t value);
+		enum class Type : unsigned char
+		{
+			Signed = 0,
+			Unsigned
+		};
+
+	public:
+		NumericLiteral(Type type, uint64_t value);
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
 
-		const char *node_name() const noexcept override;
-		Category node_category() const noexcept override;
+		Category class_category() const noexcept override;
+		std::string_view class_name() const noexcept override;
 
-		int64_t value() const noexcept;
+		Type type() const noexcept;
+		uint64_t value() const noexcept;
 
 	private:
-		int64_t m_value = 0;
+		Type m_type = {};
+		uint64_t m_value = 0;
 	};
+
+	std::ostream &operator<<(
+		std::ostream &ostream,
+		const NumericLiteral::Type &type);
 } // namespace Hyper

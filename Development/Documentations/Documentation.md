@@ -35,18 +35,18 @@ let z: i16 = x - y;
 
 ### Mutable variables
 ```hyper
-let x: mut i8 = 5;
+let x: mutable i8 = 5;
 x = 6;
 ```
 
 ## Functions
 ```hyper
-fn add(x: i64, y: i64) -> i64
+function add(x: i64, y: i64) -> i64
 {
     return x + y;
 }
 
-fn subtract(x: i64, y: i64) -> i64
+function subtract(x: i64, y: i64) -> i64
 {
     return x - y;
 }
@@ -56,10 +56,10 @@ fn subtract(x: i64, y: i64) -> i64
 ```hyper
 else
 for
-fn
+function
 if
 let
-mut
+mutable
 return
 while
 ```

@@ -4,68 +4,26 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "Hyper/Scanner.hpp"
-#include "Hyper/Parser.hpp"
-#include "Hyper/Ast/AstNode.hpp"
-#include "Hyper/Generators/CGenerator.hpp"
+#include "Hyper/Compiler.hpp"
+#include "Hyper/Logger.hpp"
 
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <sstream>
+#include <string>
+#include <vector>
 
-int main(int argc, char **argv)
+int main(int argc, const char **argv)
 {
 	if (argc < 2)
 	{
-		std::cerr << "hyper: no input files\n";
-		return 1;
+		Hyper::Logger::error("no input files\n");
+		return EXIT_FAILURE;
 	}
 
-	// TODO(SkillerRaptor): Adding Options Parser
-
-	for (size_t i = 1; i < static_cast<size_t>(argc); ++i)
+	const std::vector<std::string> files(argv + 1, argv + argc);
+	const Hyper::Compiler compiler(files);
+	if (!compiler.compile())
 	{
-		const char *path = argv[i];
-		if (!std::filesystem::exists(path))
-		{
-			std::cerr << "hyper: " << path << ": no such file or directory\n";
-			continue;
-		}
-
-		if (std::filesystem::is_directory(path))
-		{
-			std::cerr << "hyper: " << path << ": unable to compile folder\n";
-			continue;
-		}
-
-		const std::ifstream file(path);
-		if (!file.is_open())
-		{
-			std::cerr << "hyper: " << path << ": failed to open file\n";
-			continue;
-		}
-
-		const std::string text = [&file]()
-		{
-			std::stringstream file_string;
-			file_string << file.rdbuf();
-			return file_string.str();
-		}();
-
-		Hyper::Scanner scanner(path, text);
-		const std::vector<Hyper::Token> tokens = scanner.scan_tokens();
-
-		Hyper::Parser parser(tokens);
-		const std::unique_ptr<Hyper::AstNode> ast = parser.parse_tree();
-
-		ast->dump(0);
-
-		Hyper::CGenerator generator(path);
-		generator.generate_pre();
-		ast->accept(generator);
-		generator.generate_post();
+		return EXIT_FAILURE;
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }

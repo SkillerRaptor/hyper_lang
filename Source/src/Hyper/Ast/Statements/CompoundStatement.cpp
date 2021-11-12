@@ -7,16 +7,12 @@
 #include "Hyper/Ast/Statements/CompoundStatement.hpp"
 
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	CompoundStatement::CompoundStatement(
-		std::unique_ptr<Statement> left,
-		std::unique_ptr<Statement> right)
-		: m_left(std::move(left))
-		, m_right(std::move(right))
+	CompoundStatement::CompoundStatement(std::vector<StatementPtr> statements)
+		: m_statements(std::move(statements))
 	{
 	}
 
@@ -27,31 +23,27 @@ namespace Hyper
 
 	void CompoundStatement::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
+		AstNode::indent(indent);
+		Logger::raw("{}\n", class_name());
 
-		std::cout << '\n';
-
-		m_left->dump(indent + 1);
-		m_right->dump(indent + 1);
+		for (const StatementPtr &statement : m_statements)
+		{
+			statement->dump(indent + 1);
+		}
 	}
-	
-	const char *CompoundStatement::node_name() const noexcept
+
+	AstNode::Category CompoundStatement::class_category() const noexcept
+	{
+		return AstNode::Category::CompoundStatement;
+	}
+
+	std::string_view CompoundStatement::class_name() const noexcept
 	{
 		return "CompoundStatement";
 	}
 
-	AstNode::Category CompoundStatement::node_category() const noexcept
+	const std::vector<StatementPtr> &CompoundStatement::statements() const
 	{
-		return Category::CompoundStatement;
-	}
-
-	const std::unique_ptr<Statement> &CompoundStatement::left() const
-	{
-		return m_left;
-	}
-
-	const std::unique_ptr<Statement> &CompoundStatement::right() const
-	{
-		return m_right;
+		return m_statements;
 	}
 } // namespace Hyper

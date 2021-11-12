@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "Hyper/SourceLocation.hpp"
-
+#include <ostream>
 #include <string>
 
 namespace Hyper
@@ -17,7 +16,6 @@ namespace Hyper
 		enum class Type : unsigned char
 		{
 			None = 0,
-
 			Eof,
 
 			// Special
@@ -28,19 +26,13 @@ namespace Hyper
 
 			// Operators
 			Plus,
+			PlusEqual,
 			Minus,
+			MinusEqual,
 			Star,
+			StarEqual,
 			Slash,
-
-			// Indicators
-			LeftBrace,
-			RightBrace,
-			LeftParenthesis,
-			RightParenthesis,
-			LeftBracket,
-			RightBracket,
-			LeftArrow,
-			RightArrow,
+			SlashEqual,
 
 			// Comparisons
 			Equal,
@@ -49,6 +41,17 @@ namespace Hyper
 			GreaterThan,
 			LessEqual,
 			GreaterEqual,
+
+			// Indicators
+			LeftArrow,
+			RightArrow,
+
+			LeftCurlyBracket,
+			RightCurlyBracket,
+			LeftSquareBracket,
+			RightSquareBracket,
+			LeftRoundBracket,
+			RightRoundBracket,
 
 			// Keywords
 			Else,
@@ -62,6 +65,7 @@ namespace Hyper
 			While,
 
 			// Types,
+			Bool,
 			Int8,
 			Int16,
 			Int32,
@@ -70,14 +74,27 @@ namespace Hyper
 			Uint16,
 			Uint32,
 			Uint64,
+			ISize,
+			USize,
 			Void,
 
 			// Literals
-			NumericLiteral
+			NumericLiteral,
+			StringLiteral
+		};
+
+		struct SourceLocation
+		{
+			size_t line = 1;
+			size_t column = 1;
+			size_t length = 1;
+			size_t position = 0;
 		};
 
 		std::string value;
 		Type type = Type::None;
 		SourceLocation location = {};
 	};
+
+	std::ostream &operator<<(std::ostream &ostream, const Token::Type &type);
 } // namespace Hyper

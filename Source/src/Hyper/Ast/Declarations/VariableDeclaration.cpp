@@ -7,18 +7,17 @@
 #include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 
 #include "Hyper/Generators/Generator.hpp"
-
-#include <iostream>
+#include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
 	VariableDeclaration::VariableDeclaration(
-		std::string identifier,
+		std::string name,
 		Type type,
-		bool mut)
-		: m_identifier(std::move(identifier))
+		VariableDeclaration::Immutable immutable)
+		: m_name(std::move(name))
 		, m_type(type)
-		, m_mut(mut)
+		, m_immutable(immutable)
 	{
 	}
 
@@ -29,27 +28,18 @@ namespace Hyper
 
 	void VariableDeclaration::dump(size_t indent) const
 	{
-		AstNode::dump(indent);
-
-		std::cout << "identifier = " << m_identifier << ", ";
-		std::cout << "type = " << m_type << ", ";
-		std::cout << "mutable = " << m_mut;
-		std::cout << '\n';
+		AstNode::indent(indent);
+		Logger::raw(
+			"{} (name{}, type={}, immutable={})\n",
+			class_name(),
+			m_name,
+			m_type,
+			m_immutable);
 	}
 
-	const char *VariableDeclaration::node_name() const noexcept
+	std::string VariableDeclaration::name() const
 	{
-		return "VariableDeclaration";
-	}
-
-	AstNode::Category VariableDeclaration::node_category() const noexcept
-	{
-		return Category::VariableDeclaration;
-	}
-
-	std::string VariableDeclaration::identifier() const
-	{
-		return m_identifier;
+		return m_name;
 	}
 
 	Type VariableDeclaration::type() const noexcept
@@ -57,8 +47,37 @@ namespace Hyper
 		return m_type;
 	}
 
-	bool VariableDeclaration::mut() const noexcept
+	VariableDeclaration::Immutable VariableDeclaration::immutable() const noexcept
 	{
-		return m_mut;
+		return m_immutable;
+	}
+
+	AstNode::Category VariableDeclaration::class_category() const noexcept
+	{
+		return AstNode::Category::VariableDeclaration;
+	}
+
+	std::string_view VariableDeclaration::class_name() const noexcept
+	{
+		return "VariableDeclaration";
+	}
+
+	std::ostream &operator<<(
+		std::ostream &ostream,
+		const VariableDeclaration::Immutable &immutable)
+	{
+		switch (immutable)
+		{
+		case VariableDeclaration::Immutable::No:
+			ostream << "No";
+			break;
+		case VariableDeclaration::Immutable::Yes:
+			ostream << "Yes";
+			break;
+		default:
+			break;
+		}
+
+		return ostream;
 	}
 } // namespace Hyper

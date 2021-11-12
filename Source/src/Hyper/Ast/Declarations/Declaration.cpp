@@ -4,17 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-#pragma once
-
-#include <cstddef>
+#include "Hyper/Ast/Declarations/Declaration.hpp"
 
 namespace Hyper
 {
-	struct SourceLocation
+	std::string_view Declaration::class_name() const noexcept
 	{
-		size_t line = 1;
-		size_t column = 1;
-		size_t length = 1;
-		size_t start = 0;
-	};
+		return "Declaration";
+	}
 } // namespace Hyper

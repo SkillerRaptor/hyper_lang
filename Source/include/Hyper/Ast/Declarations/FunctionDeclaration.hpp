@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
+#pragma once
+
 #include "Hyper/Ast/Declarations/Declaration.hpp"
+#include "Hyper/Ast/Expressions/Expression.hpp"
+#include "Hyper/Type.hpp"
 
-#include "Hyper/Types.hpp"
-
-#include <memory>
+#include <vector>
 
 namespace Hyper
 {
@@ -16,23 +18,26 @@ namespace Hyper
 	{
 	public:
 		FunctionDeclaration(
-			std::string identifier,
+			std::string name,
+			std::vector<DeclarationPtr> arguments,
 			Type return_type,
-			std::unique_ptr<Statement> body);
+			StatementPtr body);
 
 		void accept(Generator &generator) const override;
 		void dump(size_t indent) const override;
 
-		const char *node_name() const noexcept override;
-		Category node_category() const noexcept override;
+		Category class_category() const noexcept override;
+		std::string_view class_name() const noexcept override;
 
-		std::string identifier() const;
+		std::string name() const;
+		const std::vector<DeclarationPtr> &arguments() const;
 		Type return_type() const noexcept;
-		const std::unique_ptr<Statement>& body() const;
+		const StatementPtr &body() const;
 
 	private:
-		std::string m_identifier;
-		Type m_return_type = Type::None;
-		std::unique_ptr<Statement> m_body = nullptr;
+		std::string m_name;
+		std::vector<DeclarationPtr> m_arguments = {};
+		Type m_return_type = {};
+		StatementPtr m_body = nullptr;
 	};
 } // namespace Hyper
