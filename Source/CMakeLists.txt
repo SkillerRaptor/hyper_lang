@@ -70,6 +70,11 @@ set(HEADERS
         include/Hyper/Generators/CGenerator.hpp
         include/Hyper/Generators/Generator.hpp)
 
+find_package(LLVM QUIET)
+if (LLVM_FOUND)
+    message(STATUS "LLVM found and enabled")
+endif ()
+
 add_executable(hyper ${SOURCES} ${HEADERS})
 target_link_libraries(
         hyper
