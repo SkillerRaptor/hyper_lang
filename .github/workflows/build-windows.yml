@@ -39,8 +39,9 @@ jobs:
       - name: Building/Installing LLVM
         run: |
           git clone https://github.com/llvm/llvm-project/ --branch llvmorg-13.0.0 --single-branch --depth=1
-          cmake -S llvm-project/llvm -B build -DLLVM_ENABLE_PROJECTS="llvm;lld" -DLLVM_TARGETS_TO_BUILD="X86" -Thost=x64
-          cmake --build llvm-project/build --target install
+          cd llvm-project
+          cmake -S llvm -B build -DLLVM_ENABLE_PROJECTS="llvm;lld" -DLLVM_TARGETS_TO_BUILD="X86" -Thost=x64
+          cmake --build build --target install
 
       - name: Configure CMake
         run: |
