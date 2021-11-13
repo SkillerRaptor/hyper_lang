@@ -36,11 +36,18 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Building/Installing LLVM
+      - name: Building & Installing LLVM
         run: |
           git clone https://github.com/llvm/llvm-project/ --branch llvmorg-13.0.0 --single-branch --depth=1
           cd llvm-project
-          cmake -S llvm -B build -DLLVM_ENABLE_PROJECTS="llvm;lld" -DLLVM_TARGETS_TO_BUILD="X86" -Thost=x64
+          cmake \
+            -S llvm \
+            -B build \
+            -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
+            -D CMAKE_CXX_FLAGS="/MP" \
+            -D LLVM_ENABLE_PROJECTS="llvm;lld" \
+            -D LLVM_TARGETS_TO_BUILD="X86" \
+            -T host=x64
           cmake --build build --target install
 
       - name: Configure CMake
