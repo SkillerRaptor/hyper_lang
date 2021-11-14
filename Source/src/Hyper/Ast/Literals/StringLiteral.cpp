@@ -25,7 +25,7 @@ namespace Hyper
 	{
 		AstNode::print_prefix(prefix, last);
 
-		Logger::raw("(value={})\n", m_value);
+		Logger::raw("({})\n", AstNode::format_member("value", m_value));
 	}
 
 	AstNode::Category StringLiteral::class_category() const noexcept

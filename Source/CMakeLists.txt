@@ -39,6 +39,7 @@ set(SOURCES
         src/Hyper/Generators/Generator.cpp)
 
 set(HEADERS
+        include/Hyper/Colors.hpp
         include/Hyper/Compiler.hpp
         include/Hyper/Formatter.hpp
         include/Hyper/Logger.hpp
@@ -69,11 +70,6 @@ set(HEADERS
         include/Hyper/Ast/Statements/WhileStatement.hpp
         include/Hyper/Generators/CGenerator.hpp
         include/Hyper/Generators/Generator.hpp)
-
-find_package(LLVM QUIET)
-if (LLVM_FOUND)
-    message(STATUS "LLVM found and enabled")
-endif ()
 
 add_executable(hyper ${SOURCES} ${HEADERS})
 target_link_libraries(

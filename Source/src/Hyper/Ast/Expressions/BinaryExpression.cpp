@@ -30,7 +30,7 @@ namespace Hyper
 	{
 		AstNode::print_prefix(prefix, last);
 
-		Logger::raw("(operation={})\n", m_operation);
+		Logger::raw("({})\n", AstNode::format_member("operation", m_operation));
 
 		AstNode::print_next_node(*m_left, prefix, last, false);
 		AstNode::print_next_node(*m_right, prefix, last, true);

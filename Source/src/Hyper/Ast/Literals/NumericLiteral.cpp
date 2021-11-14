@@ -34,11 +34,13 @@ namespace Hyper
 			value += static_cast<uint64_t>(std::numeric_limits<int64_t>::min());
 		}
 
+		const std::string formatted_value =
+			Formatter::format("{}{}", m_type == Type::Signed ? "-" : "", value);
+
 		Logger::raw(
-			"(type={}, value={}{})\n",
-			m_type,
-			m_type == Type::Signed ? "-" : "",
-			value);
+			"({}, {})\n",
+			AstNode::format_member("type", m_type),
+			AstNode::format_member("value", formatted_value));
 	}
 
 	AstNode::Category NumericLiteral::class_category() const noexcept

@@ -29,7 +29,7 @@ namespace Hyper
 	{
 		AstNode::print_prefix(prefix, last);
 
-		Logger::raw("(file={})\n", m_file);
+		Logger::raw("({})\n", AstNode::format_member("file", m_file));
 
 		for (size_t i = 0; i < m_statements.size(); ++i)
 		{

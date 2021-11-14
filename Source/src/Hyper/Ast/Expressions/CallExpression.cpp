@@ -28,7 +28,7 @@ namespace Hyper
 	{
 		AstNode::print_prefix(prefix, last);
 
-		Logger::raw("(identifier={})\n", m_identifier);
+		Logger::raw("({})\n", AstNode::format_member("identifier", m_identifier));
 
 		for (size_t i = 0; i < m_arguments.size(); ++i)
 		{

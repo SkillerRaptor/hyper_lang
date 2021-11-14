@@ -32,7 +32,10 @@ namespace Hyper
 	{
 		AstNode::print_prefix(prefix, last);
 
-		Logger::raw("(name={}, return_type={})\n", m_name, m_return_type);
+		Logger::raw(
+			"({}, {})\n",
+			AstNode::format_member("name", m_name),
+			AstNode::format_member("return_type", m_return_type));
 
 		for (const DeclarationPtr &expression : m_arguments)
 		{

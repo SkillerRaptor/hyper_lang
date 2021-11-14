@@ -6,8 +6,10 @@
 
 #pragma once
 
+#include "Hyper/Colors.hpp"
+#include "Hyper/Logger.hpp"
+
 #include <memory>
-#include <string>
 #include <string_view>
 
 namespace Hyper
@@ -64,11 +66,24 @@ namespace Hyper
 		virtual Category class_category() const noexcept = 0;
 
 	protected:
-		void print_prefix(const std::string &prefix, bool is_last) const;
+		void print_prefix(std::string_view prefix, bool is_last) const;
 		void print_next_node(
 			const AstNode &node,
-			const std::string &prefix,
+			std::string_view prefix,
 			bool is_last,
 			bool next_last) const;
+
+		template <typename T>
+		static std::string format_member(std::string_view name, const T &value)
+		{
+			return Formatter::format(
+				"{}{}{}={}{}{}",
+				s_color_green,
+				name,
+				s_color_reset,
+				s_color_yellow,
+				value,
+				s_color_reset);
+		}
 	};
 } // namespace Hyper

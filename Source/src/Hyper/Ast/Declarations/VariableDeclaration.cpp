@@ -31,7 +31,10 @@ namespace Hyper
 		AstNode::print_prefix(prefix, last);
 
 		Logger::raw(
-			"(name={}, type={}, immutable={})\n", m_name, m_type, m_immutable);
+			"({}, {}, {})\n",
+			AstNode::format_member("name", m_name),
+			AstNode::format_member("type", m_type),
+			AstNode::format_member("immutable", m_immutable));
 	}
 
 	std::string VariableDeclaration::name() const

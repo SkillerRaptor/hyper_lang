@@ -153,7 +153,7 @@ namespace Hyper
 			const std::string real_string = string.data();
 			string_stream << Formatter::format(
 				real_string, std::forward<Args>(args)...);
-
+			
 			std::cout << string_stream.str();
 		}
 	};

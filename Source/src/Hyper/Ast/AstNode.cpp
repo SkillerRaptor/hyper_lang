@@ -6,18 +6,22 @@
 
 #include "Hyper/Ast/AstNode.hpp"
 
-#include "Hyper/Logger.hpp"
-
 namespace Hyper
 {
-	void AstNode::print_prefix(const std::string &prefix, bool is_last) const
+	void AstNode::print_prefix(std::string_view prefix, bool is_last) const
 	{
-		Logger::raw("{}{}{} ", prefix, is_last ? "`-" : "|-", class_name());
+		Logger::raw(
+			"{}{}{}{}{} ",
+			prefix,
+			is_last ? "`-" : "|-",
+			s_color_blue,
+			class_name(),
+			s_color_reset);
 	}
 
 	void AstNode::print_next_node(
 		const AstNode &node,
-		const std::string &prefix,
+		std::string_view prefix,
 		bool is_last,
 		bool next_last) const
 	{
