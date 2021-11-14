@@ -10,14 +10,19 @@
 
 namespace Hyper
 {
-	void AstNode::indent(size_t indention)
+	void AstNode::print_prefix(const std::string &prefix, bool is_last) const
 	{
-		std::string indent_string;
-		for (size_t i = 0; i < indention; ++i)
-		{
-			indent_string += '\t';
-		}
+		Logger::raw("{}{}{} ", prefix, is_last ? "`-" : "|-", class_name());
+	}
 
-		Logger::info(indent_string);
+	void AstNode::print_next_node(
+		const AstNode &node,
+		const std::string &prefix,
+		bool is_last,
+		bool next_last) const
+	{
+		const std::string next_prefix =
+			Formatter::format("{}{}", prefix, is_last ? "  " : "| ");
+		node.dump(next_prefix, next_last);
 	}
 } // namespace Hyper

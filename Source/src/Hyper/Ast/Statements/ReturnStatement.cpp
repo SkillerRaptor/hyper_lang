@@ -22,12 +22,13 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void ReturnStatement::dump(size_t indent) const
+	void ReturnStatement::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{}\n", class_name());
+		AstNode::print_prefix(prefix, last);
+		
+		Logger::raw("\n");
 
-		m_expression->dump(indent + 1);
+		AstNode::print_next_node(*m_expression, prefix, last, true);
 	}
 
 	AstNode::Category ReturnStatement::class_category() const noexcept

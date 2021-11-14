@@ -23,13 +23,14 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void WhileStatement::dump(size_t indent) const
+	void WhileStatement::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{}\n", class_name());
-
-		m_condition->dump(indent + 1);
-		m_body->dump(indent + 1);
+		AstNode::print_prefix(prefix, last);
+		
+		Logger::raw("\n");
+		
+		AstNode::print_next_node(*m_condition, prefix, last, false);
+		AstNode::print_next_node(*m_body, prefix, last, true);
 	}
 
 	AstNode::Category WhileStatement::class_category() const noexcept

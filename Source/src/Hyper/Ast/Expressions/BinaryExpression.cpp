@@ -26,13 +26,14 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void BinaryExpression::dump(size_t indent) const
+	void BinaryExpression::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{} (operation={})\n", class_name(), m_operation);
+		AstNode::print_prefix(prefix, last);
 
-		m_left->dump(indent + 1);
-		m_right->dump(indent + 1);
+		Logger::raw("(operation={})\n", m_operation);
+
+		AstNode::print_next_node(*m_left, prefix, last, false);
+		AstNode::print_next_node(*m_right, prefix, last, true);
 	}
 
 	AstNode::Category BinaryExpression::class_category() const noexcept

@@ -28,17 +28,18 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void FunctionDeclaration::dump(size_t indent) const
+	void FunctionDeclaration::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw(
-			"{} (name={}, return_type={})\n", class_name(), m_name, m_return_type);
+		AstNode::print_prefix(prefix, last);
+
+		Logger::raw("(name={}, return_type={})\n", m_name, m_return_type);
 
 		for (const DeclarationPtr &expression : m_arguments)
 		{
-			expression->dump(indent + 1);
+			AstNode::print_next_node(*expression, prefix, last, false);
 		}
-		m_body->dump(indent + 1);
+
+		AstNode::print_next_node(*m_body, prefix, last, true);
 	}
 
 	AstNode::Category FunctionDeclaration::class_category() const noexcept

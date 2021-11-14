@@ -39,7 +39,6 @@ jobs:
 
       - name: Cloning LLVM
         run: |
-          mkdir C:/llvm-project
           git clone https://github.com/llvm/llvm-project/ C:/llvm-project --branch llvmorg-13.0.0 --single-branch --depth=1
 
       - name: Building & Installing LLVM

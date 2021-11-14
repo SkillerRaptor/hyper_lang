@@ -24,9 +24,9 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void NumericLiteral::dump(size_t indent) const
+	void NumericLiteral::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
+		AstNode::print_prefix(prefix, last);
 
 		uint64_t value = m_value;
 		if (m_type == Type::Signed)
@@ -35,8 +35,7 @@ namespace Hyper
 		}
 
 		Logger::raw(
-			"{} (type={}, value={}{})\n",
-			class_name(),
+			"(type={}, value={}{})\n",
 			m_type,
 			m_type == Type::Signed ? "-" : "",
 			value);

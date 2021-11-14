@@ -24,14 +24,18 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void TranslationUnitDeclaration::dump(size_t indent) const
+	void TranslationUnitDeclaration::dump(const std::string &prefix, bool last)
+		const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{} (file={})\n", class_name(), m_file);
+		AstNode::print_prefix(prefix, last);
 
-		for (const StatementPtr &statement : m_statements)
+		Logger::raw("(file={})\n", m_file);
+
+		for (size_t i = 0; i < m_statements.size(); ++i)
 		{
-			statement->dump(indent + 1);
+			const StatementPtr &statement = m_statements[i];
+			AstNode::print_next_node(
+				*statement, prefix, last, i == m_statements.size() - 1);
 		}
 	}
 

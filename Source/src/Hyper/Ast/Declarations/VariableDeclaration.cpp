@@ -26,15 +26,12 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void VariableDeclaration::dump(size_t indent) const
+	void VariableDeclaration::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
+		AstNode::print_prefix(prefix, last);
+
 		Logger::raw(
-			"{} (name={}, type={}, immutable={})\n",
-			class_name(),
-			m_name,
-			m_type,
-			m_immutable);
+			"(name={}, type={}, immutable={})\n", m_name, m_type, m_immutable);
 	}
 
 	std::string VariableDeclaration::name() const

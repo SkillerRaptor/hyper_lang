@@ -27,17 +27,19 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void IfStatement::dump(size_t indent) const
+	void IfStatement::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{}\n", class_name());
+		AstNode::print_prefix(prefix, last);
 
-		m_condition->dump(indent + 1);
-		m_true_branch->dump(indent + 1);
+		Logger::raw("\n");
+
+		AstNode::print_next_node(*m_condition, prefix, last, false);
+		AstNode::print_next_node(
+			*m_true_branch, prefix, last, m_false_branch == nullptr);
 
 		if (m_false_branch != nullptr)
 		{
-			m_false_branch->dump(indent + 1);
+			AstNode::print_next_node(*m_false_branch, prefix, last, true);
 		}
 	}
 

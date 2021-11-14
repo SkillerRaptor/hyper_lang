@@ -23,7 +23,8 @@ namespace Hyper
 
 	Token Scanner::next_token()
 	{
-		if (m_position < m_text.length())
+		bool is_eof = m_position >= m_text.length();
+		if (!is_eof)
 		{
 			while (m_current_character == ' ' || m_current_character == '\t' ||
 						 m_current_character == '\n' || m_current_character == '\r' ||
@@ -36,7 +37,7 @@ namespace Hyper
 		size_t value_start = m_position - 1;
 		size_t value_length = 0;
 		Token::Type type;
-		if (value_start >= m_text.length())
+		if (is_eof)
 		{
 			type = Token::Type::Eof;
 		}
@@ -65,7 +66,15 @@ namespace Hyper
 		m_current_token.location.length = value_length;
 		m_current_token.location.position = m_position - value_length;
 
-		Logger::info("{} - {}\n", m_current_token.value, m_current_token.type);
+		Logger::file_info(
+			m_file + ":" + std::to_string(m_line_number) + ":" +
+				std::to_string(m_line_column),
+			"{} - {} ({}-{}/{})\n",
+			m_current_token.value,
+			m_current_token.type,
+			value_start,
+			m_position,
+			m_text.length());
 
 		return m_current_token;
 	}

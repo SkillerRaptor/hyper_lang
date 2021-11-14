@@ -21,10 +21,11 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void IdentifierExpression::dump(size_t indent) const
+	void IdentifierExpression::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{} (identifier={})\n", class_name(), m_identifier);
+		AstNode::print_prefix(prefix, last);
+		
+		Logger::raw("(identifier={})\n", m_identifier);
 	}
 
 	AstNode::Category IdentifierExpression::class_category() const noexcept

@@ -29,15 +29,16 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void ForStatement::dump(size_t indent) const
+	void ForStatement::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{}\n", class_name());
+		AstNode::print_prefix(prefix, last);
 
-		m_pre_operation->dump(indent + 1);
-		m_condition->dump(indent + 1);
-		m_post_operation->dump(indent + 1);
-		m_body->dump(indent + 1);
+		Logger::raw("\n");
+
+		AstNode::print_next_node(*m_pre_operation, prefix, last, false);
+		AstNode::print_next_node(*m_condition, prefix, last, false);
+		AstNode::print_next_node(*m_post_operation, prefix, last, false);
+		AstNode::print_next_node(*m_body, prefix, last, true);
 	}
 
 	AstNode::Category ForStatement::class_category() const noexcept

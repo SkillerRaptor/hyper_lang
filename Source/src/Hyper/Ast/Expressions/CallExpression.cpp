@@ -24,14 +24,17 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void CallExpression::dump(size_t indent) const
+	void CallExpression::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{} (identifier={})\n", class_name(), m_identifier);
+		AstNode::print_prefix(prefix, last);
 
-		for (const ExpressionPtr &expression : m_arguments)
+		Logger::raw("(identifier={})\n", m_identifier);
+
+		for (size_t i = 0; i < m_arguments.size(); ++i)
 		{
-			expression->dump(indent + 1);
+			const ExpressionPtr &argument = m_arguments[i];
+			AstNode::print_next_node(
+				*argument, prefix, last, i == m_arguments.size() - 1);
 		}
 	}
 

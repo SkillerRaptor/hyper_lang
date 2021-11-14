@@ -7,6 +7,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include <string_view>
 
 namespace Hyper
@@ -57,12 +58,17 @@ namespace Hyper
 		virtual ~AstNode() = default;
 
 		virtual void accept(Generator &generator) const = 0;
-		virtual void dump(size_t indent) const = 0;
+		virtual void dump(const std::string &prefix, bool is_last) const = 0;
 
 		virtual std::string_view class_name() const noexcept = 0;
 		virtual Category class_category() const noexcept = 0;
 
 	protected:
-		static void indent(size_t indention);
+		void print_prefix(const std::string &prefix, bool is_last) const;
+		void print_next_node(
+			const AstNode &node,
+			const std::string &prefix,
+			bool is_last,
+			bool next_last) const;
 	};
 } // namespace Hyper

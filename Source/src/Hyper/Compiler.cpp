@@ -63,7 +63,7 @@ namespace Hyper
 			Parser parser(file, scanner);
 
 			const std::unique_ptr<AstNode> tree = parser.parse_tree();
-			tree->dump(0);
+			tree->dump("", true);
 
 			std::unique_ptr<Generator> generator = std::make_unique<CGenerator>(file);
 			tree->accept(*generator);

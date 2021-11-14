@@ -21,10 +21,11 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void StringLiteral::dump(size_t indent) const
+	void StringLiteral::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{} (value={})\n", class_name(), m_value);
+		AstNode::print_prefix(prefix, last);
+		
+		Logger::raw("(value={})\n", m_value);
 	}
 
 	AstNode::Category StringLiteral::class_category() const noexcept

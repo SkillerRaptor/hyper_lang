@@ -21,14 +21,17 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void CompoundStatement::dump(size_t indent) const
+	void CompoundStatement::dump(const std::string &prefix, bool last) const
 	{
-		AstNode::indent(indent);
-		Logger::raw("{}\n", class_name());
+		AstNode::print_prefix(prefix, last);
 
-		for (const StatementPtr &statement : m_statements)
+		Logger::raw("\n");
+
+		for (size_t i = 0; i < m_statements.size(); ++i)
 		{
-			statement->dump(indent + 1);
+			const StatementPtr &statement = m_statements[i];
+			AstNode::print_next_node(
+				*statement, prefix, last, i == m_statements.size() - 1);
 		}
 	}
 
