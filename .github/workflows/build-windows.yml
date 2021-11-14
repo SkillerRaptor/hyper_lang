@@ -37,10 +37,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Checkin Drive Space
-        run: |
-          Get-PSDrive
-
       - name: Building & Installing LLVM
         run: |
           mkdir C:/llvm-project
