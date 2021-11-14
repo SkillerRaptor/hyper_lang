@@ -42,7 +42,7 @@ jobs:
           ninja --version
 
       - name: Adding msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.1
+        uses: microsoft/setup-msbuild@v1.1.1
 
       - name: Building & Installing LLVM
         run: |
@@ -51,8 +51,8 @@ jobs:
           cmake ^
             -S llvm ^
             -B build ^
-            -D CMAKE_C_COMPILER=cl ^
-            -D CMAKE_CXX_COMPILER=cl ^
+            -D CMAKE_C_COMPILER=${{ matrix.config.cc }} ^
+            -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} ^
             -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }} ^
             -D LLVM_ENABLE_PROJECTS="llvm;lld" ^
             -D LLVM_TARGETS_TO_BUILD="X86" ^
