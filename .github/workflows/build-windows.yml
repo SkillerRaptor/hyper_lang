@@ -36,10 +36,10 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup Ninja
-        uses: ashutoshvarma/setup-ninja@master
-        with:
-          version: 1.10.0
+      - name: Installing Ninja
+        run: |
+          choco install ninja
+          ninja --version
 
       - name: Building & Installing LLVM
         run: |
