@@ -9,6 +9,8 @@ jobs:
     defaults:
       run:
         shell: cmd
+    env:
+      llvm_path: "C:/llvm-project"
     strategy:
       fail-fast: false
       matrix:
@@ -37,15 +39,31 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Cloning LLVM
-        run: |
-          git clone https://github.com/llvm/llvm-project/ C:/llvm-project --branch llvmorg-13.0.0 --single-branch --depth=1
+      - name: Cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-llvm-source
+        with:
+          path: |
+            ${{ env.llvm_path }}
+          key: ${{ runner.os }}-${{ matrix.config.build_type }}-${{ hashFiles('CMakeLists.txt') }}
 
-      - name: Building & Installing LLVM
-        working-directory: C:/llvm-project
+      - name: Cloning LLVM
+        if: steps.cache-llvm-source.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/llvm/llvm-project/ ${{ env.llvm_path }} --branch llvmorg-13.0.0 --single-branch --depth=1
+
+      - name: Configuring & Building
+        working-directory: ${{ env.llvm_path }}
+        if: steps.cache-llvm-source.outputs.cache-hit != 'true'
         run: |
           cmake -S llvm -B build -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -D LLVM_PARALLEL_LINK_JOBS=1 -D LLVM_ENABLE_PROJECTS="llvm;lld" -D LLVM_TARGETS_TO_BUILD="X86" ${{ matrix.config.cmake_configure_options }}
-          cmake --build build --target install ${{ matrix.config.cmake_build_options }}
+          cmake --build build --target ALL_BUILD ${{ matrix.config.cmake_build_options }}
+
+      - name: Installing
+        working-directory: ${{ env.llvm_path }}
+        run: |
+          cmake --build build --target INSTALL ${{ matrix.config.cmake_build_options }}
 
       - name: Configure CMake
         run: |
