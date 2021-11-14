@@ -42,9 +42,7 @@ jobs:
           ninja --version
 
       - name: Adding MSVC to PATH
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          msbuild-architecture: x64
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Building & Installing LLVM
         run: |
