@@ -42,18 +42,19 @@ jobs:
           git clone https://github.com/llvm/llvm-project/ --branch llvmorg-13.0.0 --single-branch --depth=1
           cd llvm-project
           cmake ^
-            ${{ matrix.config.cmake_configure_options }} ^
-            -Thost=x64
             -S llvm ^
             -B build ^
             -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }} ^
             -D LLVM_PARALLEL_LINK_JOBS=1
             -D LLVM_ENABLE_PROJECTS="llvm;lld" ^
             -D LLVM_TARGETS_TO_BUILD="X86" ^
+            -T host=x64 ^
+            ${{ matrix.config.cmake_configure_options }} ^
+
           cmake ^
-            ${{ matrix.config.cmake_build_options }} ^
             --build build ^
-            --target install
+            --target install ^
+            ${{ matrix.config.cmake_build_options }}
 
       - name: Configure CMake
         run: |
@@ -61,15 +62,15 @@ jobs:
           set CXX=${{ matrix.config.cxx }}
 
           cmake ^
-            ${{ matrix.config.cmake_configure_options }} ^
-            -S .
-            -B build
+            -S . ^
+            -B build ^
+            ${{ matrix.config.cmake_configure_options }}
 
       - name: Build
         run: |
           cmake ^
-             ${{ matrix.config.cmake_build_options }} ^
-            --build build
+            --build build ^
+             ${{ matrix.config.cmake_build_options }}
 
       - name: Prepare upload
         run: |
