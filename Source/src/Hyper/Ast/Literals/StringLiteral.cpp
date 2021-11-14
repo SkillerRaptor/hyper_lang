@@ -24,7 +24,7 @@ namespace Hyper
 	void StringLiteral::dump(const std::string &prefix, bool last) const
 	{
 		AstNode::print_prefix(prefix, last);
-		
+
 		Logger::raw("(value={})\n", m_value);
 	}
 

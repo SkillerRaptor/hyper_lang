@@ -24,7 +24,7 @@ namespace Hyper
 	void IdentifierExpression::dump(const std::string &prefix, bool last) const
 	{
 		AstNode::print_prefix(prefix, last);
-		
+
 		Logger::raw("(identifier={})\n", m_identifier);
 	}
 

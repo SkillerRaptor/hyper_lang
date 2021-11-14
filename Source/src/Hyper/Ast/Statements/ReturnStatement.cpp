@@ -25,7 +25,7 @@ namespace Hyper
 	void ReturnStatement::dump(const std::string &prefix, bool last) const
 	{
 		AstNode::print_prefix(prefix, last);
-		
+
 		Logger::raw("\n");
 
 		AstNode::print_next_node(*m_expression, prefix, last, true);
