@@ -37,10 +37,15 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Checkin Drive Space
+        run: |
+          Get-PSDrive
+
       - name: Building & Installing LLVM
         run: |
-          git clone https://github.com/llvm/llvm-project/ --branch llvmorg-13.0.0 --single-branch --depth=1
-          cd llvm-project
+          mkdir C:/llvm-project
+          git clone https://github.com/llvm/llvm-project/ C:/llvm-project --branch llvmorg-13.0.0 --single-branch --depth=1
+          cd C:/llvm-project
           cmake -S llvm -B build -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -D LLVM_PARALLEL_LINK_JOBS=1 -D LLVM_ENABLE_PROJECTS="llvm;lld" -D LLVM_TARGETS_TO_BUILD="X86" ${{ matrix.config.cmake_configure_options }}
           cmake --build build --target install ${{ matrix.config.cmake_build_options }}
 
