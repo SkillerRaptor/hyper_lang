@@ -36,6 +36,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup Ninja
+        uses: ashutoshvarma/setup-ninja@master
+        with:
+          version: 1.10.0
+
       - name: Building & Installing LLVM
         run: |
           git clone https://github.com/llvm/llvm-project/ --branch llvmorg-13.0.0 --single-branch --depth=1
