@@ -70,11 +70,16 @@ jobs:
           export CC=${{ matrix.config.cc }}
           export CXX=${{ matrix.config.cxx }}
 
-          cmake . -B build -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+          cmake ^
+            -S . ^
+            -B build ^
+            -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
 
       - name: Build
         run: |
-          cmake --build build --parallel $(nproc)
+          cmake ^
+            --build build ^
+            --parallel $(nproc)
 
       - name: Prepare upload
         run: |
