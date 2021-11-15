@@ -13,7 +13,7 @@ set(SOURCES
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
         src/Hyper/Token.cpp
-        src/Hyper/Type.cpp
+        src/Hyper/DataType.cpp
         src/Hyper/Ast/AstNode.cpp
         src/Hyper/Ast/Declarations/Declaration.cpp
         src/Hyper/Ast/Declarations/FunctionDeclaration.cpp
@@ -46,7 +46,7 @@ set(HEADERS
         include/Hyper/Parser.hpp
         include/Hyper/Scanner.hpp
         include/Hyper/Token.hpp
-        include/Hyper/Type.hpp
+        include/Hyper/DataType.hpp
         include/Hyper/Ast/AstNode.hpp
         include/Hyper/Ast/Declarations/Declaration.hpp
         include/Hyper/Ast/Declarations/FunctionDeclaration.hpp
