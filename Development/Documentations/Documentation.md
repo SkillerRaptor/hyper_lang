@@ -10,8 +10,10 @@
 4. [Keywords](#keywords)
 
 ## Introduction
+This documentation contains everything you need to know about the Hyper programming language.
 
 ## Types
+
 ### Primitive types
 ```hyper
 bool
@@ -22,6 +24,9 @@ u8 u16 u32 u64
 f32 f64
 
 isize usize
+
+char
+string
 
 void
 ```
