@@ -10,8 +10,8 @@ jobs:
       run:
         shell: cmd
     env:
-      llvm_source_path: "C:/llvm-project-source"
-      llvm_build_path: "C:/llvm-project-build"
+      llvm_source_path: "C:/llvm-project"
+      llvm_build_path: "C:/llvm-project/build"
     strategy:
       fail-fast: false
       matrix:
@@ -39,6 +39,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
+
+      - name: Creating LLVM folder
+        run: |
+          mkdir ${{ env.llvm_source_path }}
 
       - name: Cache
         uses: actions/cache@v2
