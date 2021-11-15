@@ -1,0 +1,8 @@
+function main() -> i32
+{
+  let i: mutable i8;
+  let j: mutable i8;
+  let k: mutable i8;
+
+  return 0;
+}

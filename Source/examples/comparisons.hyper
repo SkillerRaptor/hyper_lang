@@ -1,0 +1,15 @@
+function main() -> i32
+{
+	let value: mutable bool;
+	value = 7 < 9;
+	value = 7 <= 9;
+	value = 7 != 9;
+	value = 7 == 7;
+	value = 7 >= 7;
+	value = 7 <= 7;
+	value = 9 > 7;
+	value = 9 >= 7;
+	value = 9 != 7;
+
+	return 0;
+}
