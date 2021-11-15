@@ -12,6 +12,13 @@ Anyone is welcome to contribute or use the source of HyperLang.
 - [License](#license)
 
 ## Getting Started
+The intention of Hyper is a type-safe programming language, which has a high level of safety. <br />
+To provide this kind of safety Hyper contains the following features: 
+- No uninitialized data
+- No undefined behavior
+- No global variables
+- No variable shadowing
+- Immutable variables by default
 
 ### Building
 1. Download the source code by using Git and cloning the repository, or downloading it as a zip.
