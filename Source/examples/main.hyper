@@ -10,24 +10,26 @@ function main() -> i32
   let j: mutable i8;
   let k: i8;
 
-	i = 7 < 9;
-  print(i);
-	i = 7 <= 9;
-  print(i);
-	i = 7 != 9;
-  print(i);
-	i = 7 == 7;
-  print(i);
-	i = 7 >= 7;
-  print(i);
-	i = 7 <= 7;
-  print(i);
-	i = 9 > 7;
-  print(i);
-	i = 9 >= 7;
-  print(i);
-	i = 9 != 7;
-  print(i);
+  let a: mutable bool;
+
+	a = 7 < 9;
+  print(a);
+	a = 7 <= 9;
+  print(a);
+	a = 7 != 9;
+  print(a);
+	a = 7 == 7;
+  print(a);
+	a = 7 >= 7;
+  print(a);
+	a = 7 <= 7;
+  print(a);
+	a = 9 > 7;
+  print(a);
+	a = 9 >= 7;
+  print(a);
+	a = 9 != 7;
+  print(a);
 
   i = 6;
   j = 12;
