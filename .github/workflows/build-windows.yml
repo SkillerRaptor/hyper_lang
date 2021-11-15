@@ -44,7 +44,7 @@ jobs:
         id: llvm-source-cache
         with:
           path: ${{ env.llvm_path }}
-          key: ${{ runner.os }}-${{ matrix.config.build_type }}
+          key: ${{ runner.os }}-${{ matrix.config.build_type }}-${{ hashFiles('.github/workflows/build-windows.yml') }}
 
       - name: Cloning LLVM
         if: steps.llvm-source-cache.outputs.cache-hit != 'true'
