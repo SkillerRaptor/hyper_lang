@@ -6,9 +6,9 @@
 
 #pragma once
 
+#include "Hyper/DataType.hpp"
 #include "Hyper/Formatter.hpp"
 #include "Hyper/Generators/Generator.hpp"
-#include "Hyper/Type.hpp"
 
 #include <sstream>
 
@@ -57,7 +57,7 @@ namespace Hyper
 		void enter_scope();
 		void leave_scope();
 
-		std::string map_type(Type type) const;
+		std::string map_type(DataType type) const;
 
 	private:
 		std::stringstream m_source;

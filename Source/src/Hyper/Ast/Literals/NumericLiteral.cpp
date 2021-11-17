@@ -6,6 +6,7 @@
 
 #include "Hyper/Ast/Literals/NumericLiteral.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
@@ -13,9 +14,9 @@
 
 namespace Hyper
 {
-	NumericLiteral::NumericLiteral(Type type, uint64_t value)
-		: m_type(type)
-		, m_value(value)
+	NumericLiteral::NumericLiteral(NumericLiteral::CreateInfo create_info)
+		: m_value(create_info.value)
+		, m_is_signed(create_info.is_signed)
 	{
 	}
 
@@ -24,23 +25,11 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void NumericLiteral::dump(const std::string &prefix, bool last) const
+	void NumericLiteral::dump(const std::string &prefix, bool is_self_last) const
 	{
-		AstNode::print_prefix(prefix, last);
-
-		uint64_t value = m_value;
-		if (m_type == Type::Signed)
-		{
-			value += static_cast<uint64_t>(std::numeric_limits<int64_t>::min());
-		}
-
-		const std::string formatted_value =
-			Formatter::format("{}{}", m_type == Type::Signed ? "-" : "", value);
-
-		Logger::raw(
-			"({}, {})\n",
-			AstNode::format_member("type", m_type),
-			AstNode::format_member("value", formatted_value));
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 	}
 
 	AstNode::Category NumericLiteral::class_category() const noexcept
@@ -53,9 +42,23 @@ namespace Hyper
 		return "NumericLiteral";
 	}
 
-	NumericLiteral::Type NumericLiteral::type() const noexcept
+	std::string NumericLiteral::class_description() const
 	{
-		return m_type;
+		uint64_t numeric_value = m_value;
+		if (m_is_signed)
+		{
+			numeric_value +=
+				static_cast<uint64_t>(std::numeric_limits<int64_t>::min());
+		}
+
+		const std::string extended_value =
+			Formatter::format("{}{}", m_is_signed ? "-" : "", numeric_value);
+		const std::string value =
+			AstFormatter::format_member("value", extended_value);
+		const std::string is_signed =
+			AstFormatter::format_member("is_signed", m_is_signed);
+
+		return Formatter::format("({}, {})", value, is_signed);
 	}
 
 	uint64_t NumericLiteral::value() const noexcept
@@ -63,22 +66,8 @@ namespace Hyper
 		return m_value;
 	}
 
-	std::ostream &operator<<(
-		std::ostream &ostream,
-		const NumericLiteral::Type &type)
+	bool NumericLiteral::is_signed() const noexcept
 	{
-		switch (type)
-		{
-		case NumericLiteral::Type::Signed:
-			ostream << "Signed";
-			break;
-		case NumericLiteral::Type::Unsigned:
-			ostream << "Unsigned";
-			break;
-		default:
-			break;
-		}
-
-		return ostream;
+		return m_is_signed;
 	}
 } // namespace Hyper

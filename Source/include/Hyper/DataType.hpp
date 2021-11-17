@@ -10,7 +10,7 @@
 
 namespace Hyper
 {
-	enum class Type : unsigned char
+	enum class DataType : unsigned char
 	{
 		None = 0,
 
@@ -31,5 +31,5 @@ namespace Hyper
 		Void
 	};
 
-	std::ostream &operator<<(std::ostream &ostream, const Type &type);
+	std::ostream &operator<<(std::ostream &ostream, const DataType &type);
 } // namespace Hyper

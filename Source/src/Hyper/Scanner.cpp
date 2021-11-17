@@ -66,16 +66,6 @@ namespace Hyper
 		m_current_token.location.length = value_length;
 		m_current_token.location.position = m_position - value_length;
 
-		Logger::file_info(
-			m_file + ":" + std::to_string(m_line_number) + ":" +
-				std::to_string(m_line_column),
-			"{} - {} ({}-{}/{})\n",
-			m_current_token.value,
-			m_current_token.type,
-			value_start,
-			m_position,
-			m_text.length());
-
 		return m_current_token;
 	}
 

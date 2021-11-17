@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Hyper/Ast/Expressions/Expression.hpp"
+#include "Hyper/Ast/Forward.hpp"
 
 namespace Hyper
 {
@@ -15,7 +16,9 @@ namespace Hyper
 	public:
 		enum class Operation : unsigned char
 		{
-			Addition = 0,
+			None = 0,
+
+			Addition,
 			Subtraction,
 			Multiplication,
 			Division,
@@ -28,24 +31,29 @@ namespace Hyper
 			GreaterEqual,
 		};
 
+		struct CreateInfo
+		{
+			Operation operation = Operation::None;
+			ExpressionPtr left = nullptr;
+			ExpressionPtr right = nullptr;
+		};
+
 	public:
-		BinaryExpression(
-			Operation operation,
-			ExpressionPtr left,
-			ExpressionPtr right);
+		explicit BinaryExpression(CreateInfo create_info);
 
 		void accept(Generator &generator) const override;
-		void dump(const std::string &prefix, bool last) const override;
+		void dump(const std::string &prefix, bool is_self_last) const override;
 
 		Category class_category() const noexcept override;
 		std::string_view class_name() const noexcept override;
+		std::string class_description() const override;
 
 		Operation operation() const noexcept;
 		const ExpressionPtr &left() const;
 		const ExpressionPtr &right() const;
 
 	private:
-		Operation m_operation = {};
+		Operation m_operation = Operation::None;
 		ExpressionPtr m_left = nullptr;
 		ExpressionPtr m_right = nullptr;
 	};

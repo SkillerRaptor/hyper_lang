@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "Hyper/Ast/Forward.hpp"
 #include "Hyper/Ast/Statements/Statement.hpp"
 
 namespace Hyper
@@ -13,13 +14,20 @@ namespace Hyper
 	class PrintStatement final : public Statement
 	{
 	public:
-		explicit PrintStatement(ExpressionPtr expression);
+		struct CreateInfo
+		{
+			ExpressionPtr expression = nullptr;
+		};
+
+	public:
+		explicit PrintStatement(CreateInfo create_info);
 
 		void accept(Generator &generator) const override;
-		void dump(const std::string &prefix, bool last) const override;
+		void dump(const std::string &prefix, bool is_self_last) const override;
 
 		Category class_category() const noexcept override;
 		std::string_view class_name() const noexcept override;
+		std::string class_description() const override;
 
 		const ExpressionPtr &expression() const;
 

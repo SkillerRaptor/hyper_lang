@@ -6,18 +6,17 @@
 
 #include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
 	VariableDeclaration::VariableDeclaration(
-		std::string name,
-		Type type,
-		VariableDeclaration::Immutable immutable)
-		: m_name(std::move(name))
-		, m_type(type)
-		, m_immutable(immutable)
+		VariableDeclaration::CreateInfo create_info)
+		: m_name(std::move(create_info.name))
+		, m_type(create_info.type)
+		, m_is_immutable(create_info.is_immutable)
 	{
 	}
 
@@ -26,30 +25,12 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void VariableDeclaration::dump(const std::string &prefix, bool last) const
+	void VariableDeclaration::dump(const std::string &prefix, bool is_self_last)
+		const
 	{
-		AstNode::print_prefix(prefix, last);
-
-		Logger::raw(
-			"({}, {}, {})\n",
-			AstNode::format_member("name", m_name),
-			AstNode::format_member("type", m_type),
-			AstNode::format_member("immutable", m_immutable));
-	}
-
-	std::string VariableDeclaration::name() const
-	{
-		return m_name;
-	}
-
-	Type VariableDeclaration::type() const noexcept
-	{
-		return m_type;
-	}
-
-	VariableDeclaration::Immutable VariableDeclaration::immutable() const noexcept
-	{
-		return m_immutable;
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 	}
 
 	AstNode::Category VariableDeclaration::class_category() const noexcept
@@ -62,22 +43,28 @@ namespace Hyper
 		return "VariableDeclaration";
 	}
 
-	std::ostream &operator<<(
-		std::ostream &ostream,
-		const VariableDeclaration::Immutable &immutable)
+	std::string VariableDeclaration::class_description() const
 	{
-		switch (immutable)
-		{
-		case VariableDeclaration::Immutable::No:
-			ostream << "No";
-			break;
-		case VariableDeclaration::Immutable::Yes:
-			ostream << "Yes";
-			break;
-		default:
-			break;
-		}
+		const std::string name = AstFormatter::format_member("name", m_name);
+		const std::string type = AstFormatter::format_member("type", m_type);
+		const std::string is_immutable =
+			AstFormatter::format_member("is_immutable", m_is_immutable);
 
-		return ostream;
+		return Formatter::format("({}, {}, {})", name, type, is_immutable);
+	}
+
+	std::string VariableDeclaration::name() const
+	{
+		return m_name;
+	}
+
+	DataType VariableDeclaration::type() const noexcept
+	{
+		return m_type;
+	}
+
+	bool VariableDeclaration::is_immutable() const noexcept
+	{
+		return m_is_immutable;
 	}
 } // namespace Hyper

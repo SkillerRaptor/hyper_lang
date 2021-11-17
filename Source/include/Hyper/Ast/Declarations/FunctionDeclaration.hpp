@@ -7,37 +7,41 @@
 #pragma once
 
 #include "Hyper/Ast/Declarations/Declaration.hpp"
-#include "Hyper/Ast/Expressions/Expression.hpp"
-#include "Hyper/Type.hpp"
-
-#include <vector>
+#include "Hyper/Ast/Forward.hpp"
+#include "Hyper/DataType.hpp"
 
 namespace Hyper
 {
 	class FunctionDeclaration final : public Declaration
 	{
 	public:
-		FunctionDeclaration(
-			std::string name,
-			std::vector<DeclarationPtr> arguments,
-			Type return_type,
-			StatementPtr body);
+		struct CreateInfo
+		{
+			std::string name;
+			DeclarationList arguments = {};
+			DataType return_type = DataType::None;
+			StatementPtr body = nullptr;
+		};
+
+	public:
+		explicit FunctionDeclaration(CreateInfo create_info);
 
 		void accept(Generator &generator) const override;
-		void dump(const std::string &prefix, bool last) const override;
+		void dump(const std::string &prefix, bool is_self_last) const override;
 
 		Category class_category() const noexcept override;
 		std::string_view class_name() const noexcept override;
+		std::string class_description() const override;
 
 		std::string name() const;
-		const std::vector<DeclarationPtr> &arguments() const;
-		Type return_type() const noexcept;
+		DataType return_type() const noexcept;
+		const DeclarationList &arguments() const;
 		const StatementPtr &body() const;
 
 	private:
 		std::string m_name;
-		std::vector<DeclarationPtr> m_arguments = {};
-		Type m_return_type = {};
+		DeclarationList m_arguments = {};
+		DataType m_return_type = {};
 		StatementPtr m_body = nullptr;
 	};
 } // namespace Hyper

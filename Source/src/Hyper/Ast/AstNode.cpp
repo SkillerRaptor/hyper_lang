@@ -6,27 +6,23 @@
 
 #include "Hyper/Ast/AstNode.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
+
 namespace Hyper
 {
-	void AstNode::print_prefix(std::string_view prefix, bool is_last) const
+	void AstNode::dump_tree() const
 	{
-		Logger::raw(
-			"{}{}{}{}{} ",
-			prefix,
-			is_last ? "`-" : "|-",
-			s_color_blue,
-			class_name(),
-			s_color_reset);
+		dump("", true);
 	}
 
-	void AstNode::print_next_node(
+	void AstNode::dump_next_node(
 		const AstNode &node,
-		std::string_view prefix,
-		bool is_last,
-		bool next_last) const
+		const std::string &prefix,
+		bool is_self_last,
+		bool is_node_last) const
 	{
 		const std::string next_prefix =
-			Formatter::format("{}{}", prefix, is_last ? "  " : "| ");
-		node.dump(next_prefix, next_last);
+			AstFormatter::format_next_prefix(prefix, is_self_last);
+		node.dump(next_prefix, is_node_last);
 	}
 } // namespace Hyper

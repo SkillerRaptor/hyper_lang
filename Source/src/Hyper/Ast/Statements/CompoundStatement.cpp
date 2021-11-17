@@ -6,13 +6,15 @@
 
 #include "Hyper/Ast/Statements/CompoundStatement.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	CompoundStatement::CompoundStatement(std::vector<StatementPtr> statements)
-		: m_statements(std::move(statements))
+	CompoundStatement::CompoundStatement(
+		CompoundStatement::CreateInfo create_info)
+		: m_statements(std::move(create_info.statements))
 	{
 	}
 
@@ -21,17 +23,17 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void CompoundStatement::dump(const std::string &prefix, bool last) const
+	void CompoundStatement::dump(const std::string &prefix, bool is_self_last)
+		const
 	{
-		AstNode::print_prefix(prefix, last);
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 
-		Logger::raw("\n");
-
-		for (size_t i = 0; i < m_statements.size(); ++i)
+		for (const StatementPtr &statement : m_statements)
 		{
-			const StatementPtr &statement = m_statements[i];
-			AstNode::print_next_node(
-				*statement, prefix, last, i == m_statements.size() - 1);
+			const bool is_node_last = &statement == &m_statements.back();
+			AstNode::dump_next_node(*statement, prefix, is_self_last, is_node_last);
 		}
 	}
 
@@ -40,12 +42,17 @@ namespace Hyper
 		return AstNode::Category::CompoundStatement;
 	}
 
+	std::string CompoundStatement::class_description() const
+	{
+		return "";
+	}
+
 	std::string_view CompoundStatement::class_name() const noexcept
 	{
 		return "CompoundStatement";
 	}
 
-	const std::vector<StatementPtr> &CompoundStatement::statements() const
+	const StatementList &CompoundStatement::statements() const
 	{
 		return m_statements;
 	}

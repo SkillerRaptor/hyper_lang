@@ -6,19 +6,17 @@
 
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Ast/Expressions/Expression.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	IfStatement::IfStatement(
-		ExpressionPtr condition,
-		StatementPtr true_branch,
-		StatementPtr false_branch)
-		: m_condition(std::move(condition))
-		, m_true_branch(std::move(true_branch))
-		, m_false_branch(std::move(false_branch))
+	IfStatement::IfStatement(IfStatement::CreateInfo create_info)
+		: m_condition(std::move(create_info.condition))
+		, m_true_branch(std::move(create_info.true_branch))
+		, m_false_branch(std::move(create_info.false_branch))
 	{
 	}
 
@@ -27,19 +25,19 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void IfStatement::dump(const std::string &prefix, bool last) const
+	void IfStatement::dump(const std::string &prefix, bool is_self_last) const
 	{
-		AstNode::print_prefix(prefix, last);
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 
-		Logger::raw("\n");
-
-		AstNode::print_next_node(*m_condition, prefix, last, false);
-		AstNode::print_next_node(
-			*m_true_branch, prefix, last, m_false_branch == nullptr);
+		AstNode::dump_next_node(*m_condition, prefix, is_self_last, false);
+		AstNode::dump_next_node(
+			*m_true_branch, prefix, is_self_last, m_false_branch == nullptr);
 
 		if (m_false_branch != nullptr)
 		{
-			AstNode::print_next_node(*m_false_branch, prefix, last, true);
+			AstNode::dump_next_node(*m_false_branch, prefix, is_self_last, true);
 		}
 	}
 
@@ -51,6 +49,11 @@ namespace Hyper
 	std::string_view IfStatement::class_name() const noexcept
 	{
 		return "IfStatement";
+	}
+
+	std::string IfStatement::class_description() const
+	{
+		return "";
 	}
 
 	const ExpressionPtr &IfStatement::condition() const

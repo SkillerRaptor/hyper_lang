@@ -6,16 +6,16 @@
 
 #include "Hyper/Ast/Declarations/TranslationUnitDeclaration.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
 	TranslationUnitDeclaration::TranslationUnitDeclaration(
-		std::string file,
-		std::vector<StatementPtr> statements)
-		: m_file(std::move(file))
-		, m_statements(std::move(statements))
+		TranslationUnitDeclaration::CreateInfo create_info)
+		: m_file(std::move(create_info.file))
+		, m_statements(std::move(create_info.statements))
 	{
 	}
 
@@ -24,18 +24,18 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void TranslationUnitDeclaration::dump(const std::string &prefix, bool last)
-		const
+	void TranslationUnitDeclaration::dump(
+		const std::string &prefix,
+		bool is_self_last) const
 	{
-		AstNode::print_prefix(prefix, last);
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 
-		Logger::raw("({})\n", AstNode::format_member("file", m_file));
-
-		for (size_t i = 0; i < m_statements.size(); ++i)
+		for (const StatementPtr &statement : m_statements)
 		{
-			const StatementPtr &statement = m_statements[i];
-			AstNode::print_next_node(
-				*statement, prefix, last, i == m_statements.size() - 1);
+			const bool is_node_last = &statement == &m_statements.back();
+			AstNode::dump_next_node(*statement, prefix, is_self_last, is_node_last);
 		}
 	}
 
@@ -49,13 +49,19 @@ namespace Hyper
 		return "TranslationUnitDeclaration";
 	}
 
+	std::string TranslationUnitDeclaration::class_description() const
+	{
+		const std::string file = AstFormatter::format_member("file", m_file);
+
+		return Formatter::format("({})", file);
+	}
+
 	std::string TranslationUnitDeclaration::file() const
 	{
 		return m_file;
 	}
 
-	const std::vector<StatementPtr> &TranslationUnitDeclaration::statements()
-		const
+	const StatementList &TranslationUnitDeclaration::statements() const
 	{
 		return m_statements;
 	}

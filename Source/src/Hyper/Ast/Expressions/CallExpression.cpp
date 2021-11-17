@@ -6,16 +6,15 @@
 
 #include "Hyper/Ast/Expressions/CallExpression.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	CallExpression::CallExpression(
-		std::string identifier,
-		std::vector<ExpressionPtr> arguments)
-		: m_identifier(std::move(identifier))
-		, m_arguments(std::move(arguments))
+	CallExpression::CallExpression(CallExpression::CreateInfo create_info)
+		: m_function(std::move(create_info.function))
+		, m_arguments(std::move(create_info.arguments))
 	{
 	}
 
@@ -24,17 +23,16 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void CallExpression::dump(const std::string &prefix, bool last) const
+	void CallExpression::dump(const std::string &prefix, bool is_self_last) const
 	{
-		AstNode::print_prefix(prefix, last);
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 
-		Logger::raw("({})\n", AstNode::format_member("identifier", m_identifier));
-
-		for (size_t i = 0; i < m_arguments.size(); ++i)
+		for (const ExpressionPtr &argument : m_arguments)
 		{
-			const ExpressionPtr &argument = m_arguments[i];
-			AstNode::print_next_node(
-				*argument, prefix, last, i == m_arguments.size() - 1);
+			const bool is_node_last = &argument == &m_arguments.back();
+			AstNode::dump_next_node(*argument, prefix, is_self_last, is_node_last);
 		}
 	}
 
@@ -48,12 +46,20 @@ namespace Hyper
 		return "CallExpression";
 	}
 
-	std::string CallExpression::identifier() const
+	std::string CallExpression::class_description() const
 	{
-		return m_identifier;
+		const std::string identifier =
+			AstFormatter::format_member("function", m_function);
+
+		return Formatter::format("({})", identifier);
 	}
 
-	const std::vector<ExpressionPtr> &CallExpression::arguments() const
+	std::string CallExpression::function() const
+	{
+		return m_function;
+	}
+
+	const ExpressionList &CallExpression::arguments() const
 	{
 		return m_arguments;
 	}

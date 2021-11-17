@@ -7,30 +7,36 @@
 #pragma once
 
 #include "Hyper/Ast/Declarations/Declaration.hpp"
+#include "Hyper/Ast/Forward.hpp"
 
 #include <string>
-#include <vector>
 
 namespace Hyper
 {
 	class TranslationUnitDeclaration final : public Declaration
 	{
 	public:
-		TranslationUnitDeclaration(
-			std::string file,
-			std::vector<StatementPtr> statements);
+		struct CreateInfo
+		{
+			std::string file;
+			StatementList statements = {};
+		};
+
+	public:
+		explicit TranslationUnitDeclaration(CreateInfo create_info);
 
 		void accept(Generator &generator) const override;
-		void dump(const std::string &prefix, bool last) const override;
+		void dump(const std::string &prefix, bool is_self_last) const override;
 
 		Category class_category() const noexcept override;
 		std::string_view class_name() const noexcept override;
+		std::string class_description() const override;
 
 		std::string file() const;
-		const std::vector<StatementPtr> &statements() const;
+		const StatementList &statements() const;
 
 	private:
 		std::string m_file;
-		std::vector<StatementPtr> m_statements = {};
+		StatementList m_statements = {};
 	};
 } // namespace Hyper

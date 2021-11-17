@@ -6,18 +6,18 @@
 
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
+#include <cassert>
+
 namespace Hyper
 {
-	BinaryExpression::BinaryExpression(
-		BinaryExpression::Operation operation,
-		ExpressionPtr left,
-		ExpressionPtr right)
-		: m_operation(operation)
-		, m_left(std::move(left))
-		, m_right(std::move(right))
+	BinaryExpression::BinaryExpression(BinaryExpression::CreateInfo create_info)
+		: m_operation(create_info.operation)
+		, m_left(std::move(create_info.left))
+		, m_right(std::move(create_info.right))
 	{
 	}
 
@@ -26,14 +26,15 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void BinaryExpression::dump(const std::string &prefix, bool last) const
+	void BinaryExpression::dump(const std::string &prefix, bool is_self_last)
+		const
 	{
-		AstNode::print_prefix(prefix, last);
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 
-		Logger::raw("({})\n", AstNode::format_member("operation", m_operation));
-
-		AstNode::print_next_node(*m_left, prefix, last, false);
-		AstNode::print_next_node(*m_right, prefix, last, true);
+		AstNode::dump_next_node(*m_left, prefix, is_self_last, false);
+		AstNode::dump_next_node(*m_right, prefix, is_self_last, true);
 	}
 
 	AstNode::Category BinaryExpression::class_category() const noexcept
@@ -44,6 +45,14 @@ namespace Hyper
 	std::string_view BinaryExpression::class_name() const noexcept
 	{
 		return "BinaryExpression";
+	}
+
+	std::string BinaryExpression::class_description() const
+	{
+		const std::string operation =
+			AstFormatter::format_member("operation", m_operation);
+
+		return Formatter::format("({})", operation);
 	}
 
 	BinaryExpression::Operation BinaryExpression::operation() const noexcept
@@ -65,6 +74,8 @@ namespace Hyper
 		std::ostream &ostream,
 		const BinaryExpression::Operation &operation)
 	{
+		assert(operation != BinaryExpression::Operation::None);
+
 		switch (operation)
 		{
 		case BinaryExpression::Operation::Addition:
@@ -98,6 +109,7 @@ namespace Hyper
 			ostream << "GreaterEqual";
 			break;
 		default:
+			HYPER_UNREACHABLE();
 			break;
 		}
 

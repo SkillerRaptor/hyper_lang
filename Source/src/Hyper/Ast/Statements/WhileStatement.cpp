@@ -6,15 +6,16 @@
 
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Ast/Expressions/Expression.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	WhileStatement::WhileStatement(ExpressionPtr condition, StatementPtr body)
-		: m_condition(std::move(condition))
-		, m_body(std::move(body))
+	WhileStatement::WhileStatement(WhileStatement::CreateInfo create_info)
+		: m_condition(std::move(create_info.condition))
+		, m_body(std::move(create_info.body))
 	{
 	}
 
@@ -23,14 +24,14 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void WhileStatement::dump(const std::string &prefix, bool last) const
+	void WhileStatement::dump(const std::string &prefix, bool is_self_last) const
 	{
-		AstNode::print_prefix(prefix, last);
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 
-		Logger::raw("\n");
-
-		AstNode::print_next_node(*m_condition, prefix, last, false);
-		AstNode::print_next_node(*m_body, prefix, last, true);
+		AstNode::dump_next_node(*m_condition, prefix, is_self_last, false);
+		AstNode::dump_next_node(*m_body, prefix, is_self_last, true);
 	}
 
 	AstNode::Category WhileStatement::class_category() const noexcept
@@ -41,6 +42,11 @@ namespace Hyper
 	std::string_view WhileStatement::class_name() const noexcept
 	{
 		return "WhileStatement";
+	}
+
+	std::string WhileStatement::class_description() const
+	{
+		return "";
 	}
 
 	const ExpressionPtr &WhileStatement::condition() const

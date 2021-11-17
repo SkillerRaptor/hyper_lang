@@ -6,13 +6,14 @@
 
 #include "Hyper/Ast/Literals/StringLiteral.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	StringLiteral::StringLiteral(std::string value)
-		: m_value(std::move(value))
+	StringLiteral::StringLiteral(StringLiteral::CreateInfo create_info)
+		: m_value(std::move(create_info.value))
 	{
 	}
 
@@ -21,11 +22,11 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void StringLiteral::dump(const std::string &prefix, bool last) const
+	void StringLiteral::dump(const std::string &prefix, bool is_self_last) const
 	{
-		AstNode::print_prefix(prefix, last);
-
-		Logger::raw("({})\n", AstNode::format_member("value", m_value));
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 	}
 
 	AstNode::Category StringLiteral::class_category() const noexcept
@@ -36,6 +37,13 @@ namespace Hyper
 	std::string_view StringLiteral::class_name() const noexcept
 	{
 		return "StringLiteral";
+	}
+
+	std::string StringLiteral::class_description() const
+	{
+		const std::string value = AstFormatter::format_member("value", m_value);
+
+		return Formatter::format("({})", value);
 	}
 
 	std::string StringLiteral::value() const noexcept

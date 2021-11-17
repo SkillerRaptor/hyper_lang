@@ -7,28 +7,36 @@
 #pragma once
 
 #include "Hyper/Ast/Expressions/Expression.hpp"
+#include "Hyper/Ast/Forward.hpp"
 
 #include <string>
-#include <vector>
 
 namespace Hyper
 {
 	class CallExpression final : public Expression
 	{
 	public:
-		CallExpression(std::string function, std::vector<ExpressionPtr> arguments);
+		struct CreateInfo
+		{
+			std::string function;
+			ExpressionList arguments = {};
+		};
+
+	public:
+		explicit CallExpression(CreateInfo create_info);
 
 		void accept(Generator &generator) const override;
-		void dump(const std::string &prefix, bool last) const override;
+		void dump(const std::string &prefix, bool is_self_last) const override;
 
 		Category class_category() const noexcept override;
 		std::string_view class_name() const noexcept override;
+		std::string class_description() const override;
 
-		std::string identifier() const;
-		const std::vector<ExpressionPtr> &arguments() const;
+		std::string function() const;
+		const ExpressionList &arguments() const;
 
 	private:
-		std::string m_identifier;
-		std::vector<ExpressionPtr> m_arguments = {};
+		std::string m_function;
+		ExpressionList m_arguments = {};
 	};
 } // namespace Hyper

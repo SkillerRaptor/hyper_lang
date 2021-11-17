@@ -4,51 +4,55 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "Hyper/Type.hpp"
+#include "Hyper/DataType.hpp"
+
+#include <cassert>
 
 namespace Hyper
 {
-	std::ostream &operator<<(std::ostream &ostream, const Type &type)
+	std::ostream &operator<<(std::ostream &ostream, const DataType &type)
 	{
+		assert(type != DataType::None);
+
 		switch (type)
 		{
-		case Type::None:
+		case DataType::None:
 			ostream << "None";
 			break;
-		case Type::Bool:
+		case DataType::Bool:
 			ostream << "Bool";
 			break;
-		case Type::Int8:
+		case DataType::Int8:
 			ostream << "Int8";
 			break;
-		case Type::Int16:
+		case DataType::Int16:
 			ostream << "Int16";
 			break;
-		case Type::Int32:
+		case DataType::Int32:
 			ostream << "Int32";
 			break;
-		case Type::Int64:
+		case DataType::Int64:
 			ostream << "Int64";
 			break;
-		case Type::Uint8:
+		case DataType::Uint8:
 			ostream << "Uint8";
 			break;
-		case Type::Uint16:
+		case DataType::Uint16:
 			ostream << "Uint16";
 			break;
-		case Type::Uint32:
+		case DataType::Uint32:
 			ostream << "Uint32";
 			break;
-		case Type::Uint64:
+		case DataType::Uint64:
 			ostream << "Uint64";
 			break;
-		case Type::ISize:
+		case DataType::ISize:
 			ostream << "ISize";
 			break;
-		case Type::USize:
+		case DataType::USize:
 			ostream << "USize";
 			break;
-		case Type::Void:
+		case DataType::Void:
 			ostream << "Void";
 			break;
 		default:

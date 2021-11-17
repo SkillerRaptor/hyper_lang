@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Hyper/Formatter.hpp"
+#include "Hyper/Prerequisites.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -28,69 +29,80 @@ namespace Hyper
 
 	public:
 		template <typename... Args>
-		static void raw(std::string_view string, Args &&...args)
+		static void raw(std::string_view format, Args &&...args)
 		{
-			log_base(Level::None, "", string, std::forward<Args>(args)...);
+			log_base(Level::None, "", format, std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>
-		static void info(std::string_view string, Args &&...args)
+		static void info(std::string_view format, Args &&...args)
 		{
-			log_base(Level::Info, "hyper", string, std::forward<Args>(args)...);
+			log_base(Level::Info, "hyper", format, std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>
-		static void warning(std::string_view string, Args &&...args)
+		static void warning(std::string_view format, Args &&...args)
 		{
-			log_base(Level::Warning, "hyper", string, std::forward<Args>(args)...);
+			log_base(Level::Warning, "hyper", format, std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>
-		static void error(std::string_view string, Args &&...args)
+		static void error(std::string_view format, Args &&...args)
 		{
-			log_base(Level::Error, "hyper", string, std::forward<Args>(args)...);
+			log_base(Level::Error, "hyper", format, std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>
-		static void debug(std::string_view string, Args &&...args)
+		static void debug(std::string_view format, Args &&...args)
 		{
-			log_base(Level::Debug, "hyper", string, std::forward<Args>(args)...);
+#ifndef NDEBUG
+			log_base(Level::Debug, "hyper", format, std::forward<Args>(args)...);
+#else
+			HYPER_UNUSED_VARIABLE(format);
+			HYPER_UNUSED_VARIADIC(args);
+#endif
 		}
 
 		template <typename... Args>
 		static void file_info(
 			std::string_view file,
-			std::string_view string,
+			std::string_view format,
 			Args &&...args)
 		{
-			log_base(Level::Info, file, string, std::forward<Args>(args)...);
+			log_base(Level::Info, file, format, std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>
 		static void file_warning(
 			std::string_view file,
-			std::string_view string,
+			std::string_view format,
 			Args &&...args)
 		{
-			log_base(Level::Warning, file, string, std::forward<Args>(args)...);
+			log_base(Level::Warning, file, format, std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>
 		static void file_error(
 			std::string_view file,
-			std::string_view string,
+			std::string_view format,
 			Args &&...args)
 		{
-			log_base(Level::Error, file, string, std::forward<Args>(args)...);
+			log_base(Level::Error, file, format, std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>
 		static void file_debug(
 			std::string_view file,
-			std::string_view string,
+			std::string_view format,
 			Args &&...args)
 		{
-			log_base(Level::Debug, file, string, std::forward<Args>(args)...);
+#ifndef NDEBUG
+			log_base(Level::Debug, file, format, std::forward<Args>(args)...);
+#else
+			HYPER_UNUSED_VARIABLE(file);
+			HYPER_UNUSED_VARIABLE(format);
+			HYPER_UNUSED_VARIADIC(args);
+#endif
 		}
 
 	private:
@@ -98,7 +110,7 @@ namespace Hyper
 		static void log_base(
 			Level level,
 			std::string_view prefix,
-			std::string_view string,
+			std::string_view format,
 			Args &&...args)
 		{
 			std::stringstream string_stream;
@@ -115,15 +127,15 @@ namespace Hyper
 					switch (level)
 					{
 					case Level::Info:
-						return "\033[32m";
+						return Formatter::s_color_green;
 					case Level::Warning:
-						return "\033[33m";
+						return Formatter::s_color_yellow;
 					case Level::Error:
-						return "\033[31m";
+						return Formatter::s_color_red;
 					case Level::Debug:
-						return "\033[36m";
+						return Formatter::s_color_cyan;
 					default:
-						std::abort();
+						HYPER_UNREACHABLE();
 					}
 				}();
 
@@ -140,20 +152,19 @@ namespace Hyper
 					case Level::Debug:
 						return "debug";
 					default:
-						std::abort();
+						HYPER_UNREACHABLE();
 					}
 				}();
 
 				string_stream << level_color;
 				string_stream << level_string;
-				string_stream << "\033[0m";
+				string_stream << Formatter::s_color_reset;
 				string_stream << ": ";
 			}
 
-			const std::string real_string = string.data();
-			string_stream << Formatter::format(
-				real_string, std::forward<Args>(args)...);
-			
+			const std::string string = format.data();
+			string_stream << Formatter::format(string, std::forward<Args>(args)...);
+
 			std::cout << string_stream.str();
 		}
 	};

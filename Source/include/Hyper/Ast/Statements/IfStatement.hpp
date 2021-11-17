@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "Hyper/Ast/Forward.hpp"
 #include "Hyper/Ast/Statements/Statement.hpp"
 
 namespace Hyper
@@ -13,16 +14,22 @@ namespace Hyper
 	class IfStatement final : public Statement
 	{
 	public:
-		IfStatement(
-			ExpressionPtr condition,
-			StatementPtr true_branch,
-			StatementPtr false_branch);
+		struct CreateInfo
+		{
+			ExpressionPtr condition = nullptr;
+			StatementPtr true_branch = nullptr;
+			StatementPtr false_branch = nullptr;
+		};
+
+	public:
+		explicit IfStatement(CreateInfo create_info);
 
 		void accept(Generator &generator) const override;
-		void dump(const std::string &prefix, bool last) const override;
+		void dump(const std::string &prefix, bool is_self_last) const override;
 
 		Category class_category() const noexcept override;
 		std::string_view class_name() const noexcept override;
+		std::string class_description() const override;
 
 		const ExpressionPtr &condition() const;
 		const StatementPtr &true_branch() const;

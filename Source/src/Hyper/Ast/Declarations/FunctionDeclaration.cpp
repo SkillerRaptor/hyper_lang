@@ -6,20 +6,18 @@
 
 #include "Hyper/Ast/Declarations/FunctionDeclaration.hpp"
 
+#include "Hyper/Ast/AstFormatter.hpp"
 #include "Hyper/Generators/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
 	FunctionDeclaration::FunctionDeclaration(
-		std::string name,
-		std::vector<DeclarationPtr> arguments,
-		Type return_type,
-		StatementPtr body)
-		: m_name(std::move(name))
-		, m_arguments(std::move(arguments))
-		, m_return_type(return_type)
-		, m_body(std::move(body))
+		FunctionDeclaration::CreateInfo create_info)
+		: m_name(std::move(create_info.name))
+		, m_arguments(std::move(create_info.arguments))
+		, m_return_type(create_info.return_type)
+		, m_body(std::move(create_info.body))
 	{
 	}
 
@@ -28,21 +26,19 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void FunctionDeclaration::dump(const std::string &prefix, bool last) const
+	void FunctionDeclaration::dump(const std::string &prefix, bool is_self_last)
+		const
 	{
-		AstNode::print_prefix(prefix, last);
+		const std::string current_prefix =
+			AstFormatter::format_prefix(*this, prefix, is_self_last);
+		Logger::debug("{}", current_prefix);
 
-		Logger::raw(
-			"({}, {})\n",
-			AstNode::format_member("name", m_name),
-			AstNode::format_member("return_type", m_return_type));
-
-		for (const DeclarationPtr &expression : m_arguments)
+		for (const DeclarationPtr &argument : m_arguments)
 		{
-			AstNode::print_next_node(*expression, prefix, last, false);
+			AstNode::dump_next_node(*argument, prefix, is_self_last, false);
 		}
 
-		AstNode::print_next_node(*m_body, prefix, last, true);
+		AstNode::dump_next_node(*m_body, prefix, is_self_last, true);
 	}
 
 	AstNode::Category FunctionDeclaration::class_category() const noexcept
@@ -55,17 +51,26 @@ namespace Hyper
 		return "FunctionDeclaration";
 	}
 
+	std::string FunctionDeclaration::class_description() const
+	{
+		const std::string name = AstFormatter::format_member("name", m_name);
+		const std::string return_type =
+			AstFormatter::format_member("return_type", m_return_type);
+
+		return Formatter::format("({}, {})", name, return_type);
+	}
+
 	std::string FunctionDeclaration::name() const
 	{
 		return m_name;
 	}
 
-	const std::vector<DeclarationPtr> &FunctionDeclaration::arguments() const
+	const DeclarationList &FunctionDeclaration::arguments() const
 	{
 		return m_arguments;
 	}
 
-	Type FunctionDeclaration::return_type() const noexcept
+	DataType FunctionDeclaration::return_type() const noexcept
 	{
 		return m_return_type;
 	}

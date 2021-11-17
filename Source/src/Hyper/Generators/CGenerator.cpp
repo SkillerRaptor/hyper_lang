@@ -118,9 +118,7 @@ namespace Hyper
 	void CGenerator::visit(const VariableDeclaration &variable_declaration)
 	{
 		const std::string immutable =
-			variable_declaration.immutable() == VariableDeclaration::Immutable::Yes
-				? "const "
-				: "";
+			variable_declaration.is_immutable() ? "const " : "";
 		print(
 			m_source,
 			"{}{}{} {};\n",
@@ -168,7 +166,7 @@ namespace Hyper
 
 	void CGenerator::visit(const CallExpression &call_expression)
 	{
-		print(m_source, "{}(", call_expression.identifier());
+		print(m_source, "{}(", call_expression.function());
 
 		for (size_t i = 0; i < call_expression.arguments().size(); ++i)
 		{
@@ -290,33 +288,33 @@ namespace Hyper
 		print(m_source, "{}}\n", m_indent);
 	}
 
-	std::string CGenerator::map_type(Type type) const
+	std::string CGenerator::map_type(DataType type) const
 	{
 		switch (type)
 		{
-		case Type::Bool:
+		case DataType::Bool:
 			return "bool";
-		case Type::Int8:
+		case DataType::Int8:
 			return "int8_t";
-		case Type::Int16:
+		case DataType::Int16:
 			return "int16_t";
-		case Type::Int32:
+		case DataType::Int32:
 			return "int32_t";
-		case Type::Int64:
+		case DataType::Int64:
 			return "int64_t";
-		case Type::Uint8:
+		case DataType::Uint8:
 			return "uint8_t";
-		case Type::Uint16:
+		case DataType::Uint16:
 			return "uint16_t";
-		case Type::Uint32:
+		case DataType::Uint32:
 			return "uint32_t";
-		case Type::Uint64:
+		case DataType::Uint64:
 			return "uint64_t";
-		case Type::ISize:
+		case DataType::ISize:
 			return "size_t";
-		case Type::USize:
+		case DataType::USize:
 			return "int64_t";
-		case Type::Void:
+		case DataType::Void:
 			return "void";
 		default:
 			break;

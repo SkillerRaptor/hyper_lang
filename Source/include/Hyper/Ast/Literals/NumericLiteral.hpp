@@ -13,30 +13,27 @@ namespace Hyper
 	class NumericLiteral final : public Literal
 	{
 	public:
-		enum class Type : unsigned char
+		struct CreateInfo
 		{
-			Signed = 0,
-			Unsigned
+			uint64_t value = 0;
+			bool is_signed = true;
 		};
 
 	public:
-		NumericLiteral(Type type, uint64_t value);
+		explicit NumericLiteral(CreateInfo create_info);
 
 		void accept(Generator &generator) const override;
-		void dump(const std::string &prefix, bool last) const override;
+		void dump(const std::string &prefix, bool is_self_last) const override;
 
 		Category class_category() const noexcept override;
 		std::string_view class_name() const noexcept override;
+		std::string class_description() const override;
 
-		Type type() const noexcept;
 		uint64_t value() const noexcept;
+		bool is_signed() const noexcept;
 
 	private:
-		Type m_type = {};
 		uint64_t m_value = 0;
+		bool m_is_signed = true;
 	};
-
-	std::ostream &operator<<(
-		std::ostream &ostream,
-		const NumericLiteral::Type &type);
 } // namespace Hyper

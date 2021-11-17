@@ -36,7 +36,7 @@ namespace Hyper
 		consume();
 	}
 
-	std::unique_ptr<AstNode> Parser::parse_tree()
+	AstPtr Parser::parse_tree()
 	{
 		return parse_translation_unit_declaration();
 	}
@@ -45,35 +45,43 @@ namespace Hyper
 	{
 		consume(Token::Type::Function);
 
-		const std::string function_name = consume(Token::Type::Identifier).value;
+		const std::string name = consume(Token::Type::Identifier).value;
 
 		consume(Token::Type::LeftRoundBracket);
-		// TODO(SkillerRaptor): Implement arguments
+
 		std::vector<DeclarationPtr> arguments = {};
+
 		consume(Token::Type::RightRoundBracket);
 		consume(Token::Type::RightArrow);
 
-		const Type return_type = map_type(m_current_token.type);
+		const DataType return_type = map_type(m_current_token.type);
 		consume();
 
 		StatementPtr body = parse_compound_statement();
 
-		return std::make_unique<FunctionDeclaration>(
-			function_name, std::move(arguments), return_type, std::move(body));
+		FunctionDeclaration::CreateInfo create_info = {};
+		create_info.name = name;
+		create_info.arguments = std::move(arguments);
+		create_info.return_type = return_type;
+		create_info.body = std::move(body);
+
+		return std::make_unique<FunctionDeclaration>(std::move(create_info));
 	}
 
 	DeclarationPtr Parser::parse_translation_unit_declaration()
 	{
 		std::vector<StatementPtr> statements = {};
-
 		while (!match(Token::Type::Eof))
 		{
 			StatementPtr statement = parse_statement();
 			statements.push_back(std::move(statement));
 		}
 
-		return std::make_unique<TranslationUnitDeclaration>(
-			m_file, std::move(statements));
+		TranslationUnitDeclaration::CreateInfo create_info = {};
+		create_info.file = m_file;
+		create_info.statements = std::move(statements);
+
+		return std::make_unique<TranslationUnitDeclaration>(std::move(create_info));
 	}
 
 	DeclarationPtr Parser::parse_variable_declaration()
@@ -84,22 +92,24 @@ namespace Hyper
 
 		consume(Token::Type::Colon);
 
-		VariableDeclaration::Immutable immutable =
-			VariableDeclaration::Immutable::Yes;
+		bool is_immutable = true;
 		if (match(Token::Type::Mutable))
 		{
 			consume();
-			immutable = VariableDeclaration::Immutable::No;
+			is_immutable = false;
 		}
 
-		const Type type = map_type(m_current_token.type);
+		const DataType type = map_type(m_current_token.type);
 		consume();
 
 		consume(Token::Type::Semicolon);
 
-		// TODO(SkillerRaptor): Implementing assignment
+		VariableDeclaration::CreateInfo create_info = {};
+		create_info.name = name;
+		create_info.type = type;
+		create_info.is_immutable = is_immutable;
 
-		return std::make_unique<VariableDeclaration>(name, type, immutable);
+		return std::make_unique<VariableDeclaration>(create_info);
 	}
 
 	ExpressionPtr Parser::parse_primary_expression()
@@ -118,7 +128,7 @@ namespace Hyper
 			break;
 		}
 
-		std::abort();
+		HYPER_UNREACHABLE();
 	}
 
 	ExpressionPtr Parser::parse_binary_expression(uint8_t min_precedence)
@@ -169,8 +179,12 @@ namespace Hyper
 				}
 			}();
 
-			left = std::make_unique<BinaryExpression>(
-				operation, std::move(left), std::move(right));
+			BinaryExpression::CreateInfo create_info = {};
+			create_info.operation = operation;
+			create_info.left = std::move(left);
+			create_info.right = std::move(right);
+
+			left = std::make_unique<BinaryExpression>(std::move(create_info));
 
 			token_type = m_current_token.type;
 			if (
@@ -189,48 +203,63 @@ namespace Hyper
 		std::string function = consume(Token::Type::Identifier).value;
 
 		consume(Token::Type::LeftRoundBracket);
+
 		std::vector<ExpressionPtr> arguments = {};
-		// TODO(SkillerRaptor): Implementing arguments
+
 		consume(Token::Type::RightRoundBracket);
 
-		return std::make_unique<CallExpression>(function, std::move(arguments));
+		CallExpression::CreateInfo create_info = {};
+		create_info.function = function;
+		create_info.arguments = std::move(arguments);
+
+		return std::make_unique<CallExpression>(std::move(create_info));
 	}
 
 	ExpressionPtr Parser::parse_identifier_expression()
 	{
 		const Token identifier_token = consume(Token::Type::Identifier);
-
 		if (match(Token::Type::LeftRoundBracket))
 		{
 			save_token(identifier_token);
 			return parse_call_expression();
 		}
 
-		return std::make_unique<IdentifierExpression>(identifier_token.value);
+		IdentifierExpression::CreateInfo create_info = {};
+		create_info.identifier = identifier_token.value;
+
+		return std::make_unique<IdentifierExpression>(create_info);
 	}
 
 	LiteralPtr Parser::parse_numeric_literal()
 	{
-		NumericLiteral::Type type = NumericLiteral::Type::Unsigned;
+		bool is_signed = false;
 		if (match(Token::Type::Minus))
 		{
 			consume();
-			type = NumericLiteral::Type::Signed;
+			is_signed = true;
 		}
 
 		uint64_t value = std::stoull(consume(Token::Type::NumericLiteral).value);
-		if (type == NumericLiteral::Type::Signed)
+		if (is_signed)
 		{
 			value += static_cast<uint64_t>(std::numeric_limits<int64_t>::min());
 		}
 
-		return std::make_unique<NumericLiteral>(type, value);
+		NumericLiteral::CreateInfo create_info = {};
+		create_info.value = value;
+		create_info.is_signed = is_signed;
+
+		return std::make_unique<NumericLiteral>(create_info);
 	}
 
 	LiteralPtr Parser::parse_string_literal()
 	{
 		std::string value = consume(Token::Type::StringLiteral).value;
-		return std::make_unique<StringLiteral>(value);
+
+		StringLiteral::CreateInfo create_info = {};
+		create_info.value = value;
+
+		return std::make_unique<StringLiteral>(create_info);
 	}
 
 	StatementPtr Parser::parse_statement()
@@ -258,13 +287,12 @@ namespace Hyper
 			break;
 		}
 
-		std::abort();
+		HYPER_UNREACHABLE();
 	}
 
 	StatementPtr Parser::parse_assign_statement()
 	{
 		const Token identifier_token = consume(Token::Type::Identifier);
-
 		if (match(Token::Type::LeftRoundBracket))
 		{
 			save_token(identifier_token);
@@ -275,8 +303,11 @@ namespace Hyper
 
 		ExpressionPtr expression = parse_binary_expression(0);
 
-		return std::make_unique<AssignStatement>(
-			identifier_token.value, std::move(expression));
+		AssignStatement::CreateInfo create_info = {};
+		create_info.identifier = identifier_token.value;
+		create_info.expression = std::move(expression);
+
+		return std::make_unique<AssignStatement>(std::move(create_info));
 	}
 
 	StatementPtr Parser::parse_compound_statement()
@@ -309,12 +340,18 @@ namespace Hyper
 
 		consume(Token::Type::RightCurlyBracket);
 
-		return std::make_unique<CompoundStatement>(std::move(statements));
+		CompoundStatement::CreateInfo create_info = {};
+		create_info.statements = std::move(statements);
+
+		return std::make_unique<CompoundStatement>(std::move(create_info));
 	}
 
 	StatementPtr Parser::parse_expression_statement(ExpressionPtr expression)
 	{
-		return std::make_unique<ExpressionStatement>(std::move(expression));
+		ExpressionStatement::CreateInfo create_info = {};
+		create_info.expression = std::move(expression);
+
+		return std::make_unique<ExpressionStatement>(std::move(create_info));
 	}
 
 	StatementPtr Parser::parse_for_statement()
@@ -333,11 +370,13 @@ namespace Hyper
 
 		std::unique_ptr<Statement> body = parse_compound_statement();
 
-		return std::make_unique<ForStatement>(
-			std::move(pre_operation),
-			std::move(condition),
-			std::move(post_operation),
-			std::move(body));
+		ForStatement::CreateInfo create_info = {};
+		create_info.pre_operation = std::move(pre_operation);
+		create_info.condition = std::move(condition);
+		create_info.post_operation = std::move(post_operation);
+		create_info.body = std::move(body);
+
+		return std::make_unique<ForStatement>(std::move(create_info));
 	}
 
 	StatementPtr Parser::parse_if_statement()
@@ -356,8 +395,12 @@ namespace Hyper
 			false_branch = parse_compound_statement();
 		}
 
-		return std::make_unique<IfStatement>(
-			std::move(condition), std::move(true_branch), std::move(false_branch));
+		IfStatement::CreateInfo create_info = {};
+		create_info.condition = std::move(condition);
+		create_info.true_branch = std::move(true_branch);
+		create_info.false_branch = std::move(false_branch);
+
+		return std::make_unique<IfStatement>(std::move(create_info));
 	}
 
 	StatementPtr Parser::parse_print_statement()
@@ -365,11 +408,14 @@ namespace Hyper
 		consume(Token::Type::Print);
 		consume(Token::Type::LeftRoundBracket);
 
-		ExpressionPtr argument = parse_binary_expression(0);
+		ExpressionPtr expression = parse_binary_expression(0);
 
 		consume(Token::Type::RightRoundBracket);
 
-		return std::make_unique<PrintStatement>(std::move(argument));
+		PrintStatement::CreateInfo create_info = {};
+		create_info.expression = std::move(expression);
+
+		return std::make_unique<PrintStatement>(std::move(create_info));
 	}
 
 	StatementPtr Parser::parse_return_statement()
@@ -378,7 +424,10 @@ namespace Hyper
 
 		ExpressionPtr expression = parse_binary_expression(0);
 
-		return std::make_unique<ReturnStatement>(std::move(expression));
+		ReturnStatement::CreateInfo create_info = {};
+		create_info.expression = std::move(expression);
+
+		return std::make_unique<ReturnStatement>(std::move(create_info));
 	}
 
 	StatementPtr Parser::parse_while_statement()
@@ -391,8 +440,11 @@ namespace Hyper
 
 		StatementPtr body = parse_compound_statement();
 
-		return std::make_unique<WhileStatement>(
-			std::move(condition), std::move(body));
+		WhileStatement::CreateInfo create_info = {};
+		create_info.condition = std::move(condition);
+		create_info.body = std::move(body);
+
+		return std::make_unique<WhileStatement>(std::move(create_info));
 	}
 
 	bool Parser::match(Token::Type token_type) const
@@ -435,36 +487,36 @@ namespace Hyper
 		return consume();
 	}
 
-	Type Parser::map_type(Token::Type token_type) const
+	DataType Parser::map_type(Token::Type token_type) const
 	{
 		switch (token_type)
 		{
 		case Token::Type::Bool:
-			return Type::Bool;
+			return DataType::Bool;
 		case Token::Type::Int8:
-			return Type::Int8;
+			return DataType::Int8;
 		case Token::Type::Int16:
-			return Type::Int16;
+			return DataType::Int16;
 		case Token::Type::Int32:
-			return Type::Int32;
+			return DataType::Int32;
 		case Token::Type::Int64:
-			return Type::Int64;
+			return DataType::Int64;
 		case Token::Type::Uint8:
-			return Type::Uint8;
+			return DataType::Uint8;
 		case Token::Type::Uint16:
-			return Type::Uint16;
+			return DataType::Uint16;
 		case Token::Type::Uint32:
-			return Type::Uint32;
+			return DataType::Uint32;
 		case Token::Type::Uint64:
-			return Type::Uint64;
+			return DataType::Uint64;
 		case Token::Type::ISize:
-			return Type::ISize;
+			return DataType::ISize;
 		case Token::Type::USize:
-			return Type::USize;
+			return DataType::USize;
 		case Token::Type::Void:
-			return Type::Void;
+			return DataType::Void;
 		default:
-			expected("Type");
+			expected("DataType");
 			break;
 		}
 

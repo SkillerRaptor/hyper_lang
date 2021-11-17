@@ -6,13 +6,27 @@
 
 #pragma once
 
+#include "Hyper/Prerequisites.hpp"
+
 #include <sstream>
 #include <string>
+#include <string_view>
 
 namespace Hyper
 {
 	class Formatter
 	{
+	public:
+		static constexpr std::string_view s_color_black = "\033[30m";
+		static constexpr std::string_view s_color_red = "\033[31m";
+		static constexpr std::string_view s_color_green = "\033[32m";
+		static constexpr std::string_view s_color_yellow = "\033[33m";
+		static constexpr std::string_view s_color_blue = "\033[34m";
+		static constexpr std::string_view s_color_magenta = "\033[35m";
+		static constexpr std::string_view s_color_cyan = "\033[36m";
+		static constexpr std::string_view s_color_white = "\033[37m";
+		static constexpr std::string_view s_color_reset = "\033[0m";
+
 	public:
 		template <typename... Args>
 		static std::string format(const std::string &string, Args &&...args)
@@ -50,8 +64,8 @@ namespace Hyper
 	private:
 		static void format(std::stringstream &string_stream, size_t index)
 		{
-			(void) string_stream;
-			(void) index;
+			HYPER_UNUSED_VARIABLE(string_stream);
+			HYPER_UNUSED_VARIABLE(index);
 		}
 
 		template <typename T, typename... Args>
@@ -63,7 +77,14 @@ namespace Hyper
 		{
 			if (index == 0)
 			{
-				string_stream << argument;
+				if constexpr (std::is_same_v<T, bool>)
+				{
+					string_stream << (argument ? "true" : "false");
+				}
+				else
+				{
+					string_stream << argument;
+				}
 				return;
 			}
 

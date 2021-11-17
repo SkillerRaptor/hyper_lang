@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "Hyper/Ast/AstNode.hpp"
+#include "Hyper/Ast/Forward.hpp"
+#include "Hyper/DataType.hpp"
 #include "Hyper/Token.hpp"
-#include "Hyper/Type.hpp"
 
 #include <memory>
 
@@ -21,7 +21,7 @@ namespace Hyper
 	public:
 		Parser(std::string file, Scanner &scanner);
 
-		std::unique_ptr<AstNode> parse_tree();
+		AstPtr parse_tree();
 
 	private:
 		DeclarationPtr parse_function_declaration();
@@ -51,7 +51,7 @@ namespace Hyper
 		Token consume();
 		Token consume(Token::Type token_type);
 
-		Type map_type(Token::Type token_type) const;
+		DataType map_type(Token::Type token_type) const;
 		uint8_t map_precedence(Token::Type token_type) const;
 
 		void save_token(Token token);

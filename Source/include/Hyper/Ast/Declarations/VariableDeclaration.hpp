@@ -7,39 +7,37 @@
 #pragma once
 
 #include "Hyper/Ast/Declarations/Declaration.hpp"
-#include "Hyper/Type.hpp"
+#include "Hyper/DataType.hpp"
 
 namespace Hyper
 {
 	class VariableDeclaration final : public Declaration
 	{
 	public:
-		enum class Immutable
+		struct CreateInfo
 		{
-			No = 0,
-			Yes
+			std::string name;
+			DataType type = DataType::None;
+			bool is_immutable = true;
 		};
 
 	public:
-		VariableDeclaration(std::string name, Type type, Immutable immutable);
+		explicit VariableDeclaration(CreateInfo create_info);
 
 		void accept(Generator &generator) const override;
-		void dump(const std::string &prefix, bool last) const override;
+		void dump(const std::string &prefix, bool is_self_last) const override;
 
 		Category class_category() const noexcept override;
 		std::string_view class_name() const noexcept override;
+		std::string class_description() const override;
 
 		std::string name() const;
-		Type type() const noexcept;
-		Immutable immutable() const noexcept;
+		DataType type() const noexcept;
+		bool is_immutable() const noexcept;
 
 	private:
 		std::string m_name;
-		Type m_type = {};
-		Immutable m_immutable = Immutable::Yes;
+		DataType m_type = {};
+		bool m_is_immutable = true;
 	};
-
-	std::ostream &operator<<(
-		std::ostream &ostream,
-		const VariableDeclaration::Immutable &immutable);
 } // namespace Hyper

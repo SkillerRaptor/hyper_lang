@@ -10,10 +10,11 @@
 set(SOURCES
         src/main.cpp
         src/Hyper/Compiler.cpp
+        src/Hyper/DataType.cpp
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
         src/Hyper/Token.cpp
-        src/Hyper/Type.cpp
+        src/Hyper/Ast/AstFormatter.cpp
         src/Hyper/Ast/AstNode.cpp
         src/Hyper/Ast/Declarations/Declaration.cpp
         src/Hyper/Ast/Declarations/FunctionDeclaration.cpp
@@ -39,15 +40,17 @@ set(SOURCES
         src/Hyper/Generators/Generator.cpp)
 
 set(HEADERS
-        include/Hyper/Colors.hpp
         include/Hyper/Compiler.hpp
+        include/Hyper/DataType.hpp
         include/Hyper/Formatter.hpp
         include/Hyper/Logger.hpp
         include/Hyper/Parser.hpp
+        include/Hyper/Prerequisites.hpp
         include/Hyper/Scanner.hpp
         include/Hyper/Token.hpp
-        include/Hyper/Type.hpp
+        include/Hyper/Ast/AstFormatter.hpp
         include/Hyper/Ast/AstNode.hpp
+        include/Hyper/Ast/Forward.hpp
         include/Hyper/Ast/Declarations/Declaration.hpp
         include/Hyper/Ast/Declarations/FunctionDeclaration.hpp
         include/Hyper/Ast/Declarations/TranslationUnitDeclaration.hpp

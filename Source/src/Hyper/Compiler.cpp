@@ -25,8 +25,9 @@ namespace Hyper
 
 	bool Compiler::compile() const
 	{
-		for (const std::string &file : m_files)
+		for (size_t i = 0; i < m_files.size(); ++i)
 		{
+			const std::string &file = m_files[i];
 			if (!std::filesystem::exists(file))
 			{
 				Logger::file_error(file, "no such file or directory\n");
@@ -62,14 +63,15 @@ namespace Hyper
 			Scanner scanner(file, text);
 			Parser parser(file, scanner);
 
-			const std::unique_ptr<AstNode> tree = parser.parse_tree();
-			tree->dump("", true);
+			const AstPtr tree = parser.parse_tree();
+			tree->dump_tree();
 
 			std::unique_ptr<Generator> generator = std::make_unique<CGenerator>(file);
 			tree->accept(*generator);
 			generator->generate();
 
-			Logger::file_info(file, "compiling hyper file\n");
+			Logger::file_info(
+				file, "compiling hyper file [{}/{}]\n", i + 1, m_files.size());
 		}
 
 		return true;
