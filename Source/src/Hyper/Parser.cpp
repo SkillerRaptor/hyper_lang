@@ -65,11 +65,12 @@ namespace Hyper
 
 		StatementPtr body = parse_compound_statement();
 
-		FunctionDeclaration::CreateInfo create_info = {};
-		create_info.name = name;
-		create_info.arguments = std::move(arguments);
-		create_info.return_type = return_type;
-		create_info.body = std::move(body);
+		FunctionDeclaration::CreateInfo create_info = {
+			.name = name,
+			.arguments = std::move(arguments),
+			.return_type = return_type,
+			.body = std::move(body),
+		};
 
 		DeclarationPtr declaration =
 			std::make_unique<FunctionDeclaration>(std::move(create_info));
@@ -87,9 +88,10 @@ namespace Hyper
 			statements.push_back(std::move(statement));
 		}
 
-		TranslationUnitDeclaration::CreateInfo create_info = {};
-		create_info.file = m_file;
-		create_info.statements = std::move(statements);
+		TranslationUnitDeclaration::CreateInfo create_info = {
+			.file = m_file,
+			.statements = std::move(statements),
+		};
 
 		DeclarationPtr declaration =
 			std::make_unique<TranslationUnitDeclaration>(std::move(create_info));
@@ -118,10 +120,11 @@ namespace Hyper
 
 		consume(Token::Type::Semicolon);
 
-		VariableDeclaration::CreateInfo create_info = {};
-		create_info.name = name;
-		create_info.type = type;
-		create_info.is_immutable = is_immutable;
+		VariableDeclaration::CreateInfo create_info = {
+			.name = name,
+			.type = type,
+			.is_immutable = is_immutable,
+		};
 
 		DeclarationPtr declaration =
 			std::make_unique<VariableDeclaration>(std::move(create_info));
@@ -197,10 +200,11 @@ namespace Hyper
 				}
 			}();
 
-			BinaryExpression::CreateInfo create_info = {};
-			create_info.operation = operation;
-			create_info.left = std::move(left);
-			create_info.right = std::move(right);
+			BinaryExpression::CreateInfo create_info = {
+				.operation = operation,
+				.left = std::move(left),
+				.right = std::move(right),
+			};
 
 			left = std::make_unique<BinaryExpression>(std::move(create_info));
 
@@ -228,9 +232,10 @@ namespace Hyper
 
 		consume(Token::Type::RightRoundBracket);
 
-		CallExpression::CreateInfo create_info = {};
-		create_info.function = function;
-		create_info.arguments = std::move(arguments);
+		CallExpression::CreateInfo create_info = {
+			.function = function,
+			.arguments = std::move(arguments),
+		};
 
 		ExpressionPtr expression =
 			std::make_unique<CallExpression>(std::move(create_info));
@@ -248,8 +253,9 @@ namespace Hyper
 			return parse_call_expression();
 		}
 
-		IdentifierExpression::CreateInfo create_info = {};
-		create_info.identifier = identifier_token.value;
+		IdentifierExpression::CreateInfo create_info = {
+			.identifier = identifier_token.value,
+		};
 
 		ExpressionPtr expression =
 			std::make_unique<IdentifierExpression>(std::move(create_info));
@@ -273,12 +279,12 @@ namespace Hyper
 			value += static_cast<uint64_t>(std::numeric_limits<int64_t>::min());
 		}
 
-		NumericLiteral::CreateInfo create_info = {};
-		create_info.value = value;
-		create_info.is_signed = is_signed;
+		NumericLiteral::CreateInfo create_info = {
+			.value = value,
+			.is_signed = is_signed,
+		};
 
-		LiteralPtr literal =
-			std::make_unique<NumericLiteral>(std::move(create_info));
+		LiteralPtr literal = std::make_unique<NumericLiteral>(create_info);
 		debug_parse(*literal);
 
 		return literal;
@@ -288,8 +294,9 @@ namespace Hyper
 	{
 		std::string value = consume(Token::Type::StringLiteral).value;
 
-		StringLiteral::CreateInfo create_info = {};
-		create_info.value = value;
+		StringLiteral::CreateInfo create_info = {
+			.value = value,
+		};
 
 		LiteralPtr literal =
 			std::make_unique<StringLiteral>(std::move(create_info));
@@ -339,9 +346,10 @@ namespace Hyper
 
 		ExpressionPtr expression = parse_binary_expression(0);
 
-		AssignStatement::CreateInfo create_info = {};
-		create_info.identifier = identifier_token.value;
-		create_info.expression = std::move(expression);
+		AssignStatement::CreateInfo create_info = {
+			.identifier = identifier_token.value,
+			.expression = std::move(expression),
+		};
 
 		StatementPtr statement =
 			std::make_unique<AssignStatement>(std::move(create_info));
@@ -380,8 +388,9 @@ namespace Hyper
 
 		consume(Token::Type::RightCurlyBracket);
 
-		CompoundStatement::CreateInfo create_info = {};
-		create_info.statements = std::move(statements);
+		CompoundStatement::CreateInfo create_info = {
+			.statements = std::move(statements),
+		};
 
 		StatementPtr statement =
 			std::make_unique<CompoundStatement>(std::move(create_info));
@@ -392,8 +401,9 @@ namespace Hyper
 
 	StatementPtr Parser::parse_expression_statement(ExpressionPtr expression)
 	{
-		ExpressionStatement::CreateInfo create_info = {};
-		create_info.expression = std::move(expression);
+		ExpressionStatement::CreateInfo create_info = {
+			.expression = std::move(expression),
+		};
 
 		StatementPtr statement =
 			std::make_unique<ExpressionStatement>(std::move(create_info));
@@ -418,11 +428,12 @@ namespace Hyper
 
 		std::unique_ptr<Statement> body = parse_compound_statement();
 
-		ForStatement::CreateInfo create_info = {};
-		create_info.pre_operation = std::move(pre_operation);
-		create_info.condition = std::move(condition);
-		create_info.post_operation = std::move(post_operation);
-		create_info.body = std::move(body);
+		ForStatement::CreateInfo create_info = {
+			.pre_operation = std::move(pre_operation),
+			.condition = std::move(condition),
+			.post_operation = std::move(post_operation),
+			.body = std::move(body),
+		};
 
 		StatementPtr statement =
 			std::make_unique<ForStatement>(std::move(create_info));
@@ -447,10 +458,11 @@ namespace Hyper
 			false_branch = parse_compound_statement();
 		}
 
-		IfStatement::CreateInfo create_info = {};
-		create_info.condition = std::move(condition);
-		create_info.true_branch = std::move(true_branch);
-		create_info.false_branch = std::move(false_branch);
+		IfStatement::CreateInfo create_info = {
+			.condition = std::move(condition),
+			.true_branch = std::move(true_branch),
+			.false_branch = std::move(false_branch),
+		};
 
 		StatementPtr statement =
 			std::make_unique<IfStatement>(std::move(create_info));
@@ -468,8 +480,9 @@ namespace Hyper
 
 		consume(Token::Type::RightRoundBracket);
 
-		PrintStatement::CreateInfo create_info = {};
-		create_info.expression = std::move(expression);
+		PrintStatement::CreateInfo create_info = {
+			.expression = std::move(expression),
+		};
 
 		StatementPtr statement =
 			std::make_unique<PrintStatement>(std::move(create_info));
@@ -484,8 +497,9 @@ namespace Hyper
 
 		ExpressionPtr expression = parse_binary_expression(0);
 
-		ReturnStatement::CreateInfo create_info = {};
-		create_info.expression = std::move(expression);
+		ReturnStatement::CreateInfo create_info = {
+			.expression = std::move(expression),
+		};
 
 		StatementPtr statement =
 			std::make_unique<ReturnStatement>(std::move(create_info));
@@ -504,9 +518,10 @@ namespace Hyper
 
 		StatementPtr body = parse_compound_statement();
 
-		WhileStatement::CreateInfo create_info = {};
-		create_info.condition = std::move(condition);
-		create_info.body = std::move(body);
+		WhileStatement::CreateInfo create_info = {
+			.condition = std::move(condition),
+			.body = std::move(body),
+		};
 
 		StatementPtr statement =
 			std::make_unique<WhileStatement>(std::move(create_info));
