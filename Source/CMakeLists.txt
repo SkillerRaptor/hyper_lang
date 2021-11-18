@@ -10,6 +10,7 @@
 find_package(LLVM REQUIRED)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+message(STATUS "Libraries located in: ${LLVM_LIBRARY_DIRS}")
 
 set(LLVM_LINK_COMPONENTS
         AllTargetsAsmParsers
@@ -63,17 +64,6 @@ set(lld_libs
         ${LLD_MACHO}
         ${LLD_YAML}
         ${LLD_CORE})
-
-add_library(llvm INTERFACE)
-target_compile_definitions(
-        llvm
-        INTERFACE)
-target_link_libraries(
-        llvm
-        INTERFACE)
-target_include_directories(
-        llvm
-        INTERFACE)
 
 #-------------------------------------------------------------------------------------------
 # Hyper

@@ -76,7 +76,7 @@ jobs:
           set CC=${{ matrix.config.cc }}
           set CXX=${{ matrix.config.cxx }}
 
-          cmake -S . -B build ${{ matrix.config.cmake_configure_options }}
+          cmake -S . -B build ${{ matrix.config.cmake_configure_options }} -D LLVM_DIR="C:\\Program Files\\LLVM\\lib\\cmake"
 
       - name: Build
         run: |
