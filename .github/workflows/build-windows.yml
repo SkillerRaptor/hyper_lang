@@ -58,7 +58,7 @@ jobs:
         working-directory: ${{ env.llvm_path }}
         if: steps.llvm-build-cache.outputs.cache-hit != 'true'
         run: |
-          cmake -S llvm -B build -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -D LLVM_PARALLEL_LINK_JOBS=1 -D LLVM_BUILD_TOOLS=OFF -D LLVM_ENABLE_ASSERTIONS=OFF -D LLVM_ENABLE_DIA_SDK=OFF -D LLVM_INCLUDE_BENCHMARKS=OFF -D LLVM_INCLUDE_EXAMPLES=OFF -D LLVM_INCLUDE_TESTS=OFF -D LLVM_INCLUDE_TOOLS=OFF -D LLVM_ENABLE_PROJECTS="llvm;lld" -D LLVM_TARGETS_TO_BUILD="X86" ${{ matrix.config.cmake_configure_options }}
+          cmake -S llvm -B build -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -D LLVM_PARALLEL_LINK_JOBS=1 -D LLVM_ENABLE_ASSERTIONS=OFF -D LLVM_ENABLE_DIA_SDK=OFF -D LLVM_INCLUDE_BENCHMARKS=OFF -D LLVM_INCLUDE_EXAMPLES=OFF -D LLVM_INCLUDE_TESTS=OFF -D LLVM_ENABLE_PROJECTS="llvm;lld" -D LLVM_TARGETS_TO_BUILD="X86" ${{ matrix.config.cmake_configure_options }}
 
       - name: Building LLVM
         working-directory: ${{ env.llvm_path }}
