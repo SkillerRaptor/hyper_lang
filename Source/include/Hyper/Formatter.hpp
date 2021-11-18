@@ -8,6 +8,7 @@
 
 #include "Hyper/Prerequisites.hpp"
 
+#include <cassert>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -51,7 +52,7 @@ namespace Hyper
 
 				if (*c_str != '}')
 				{
-					// TODO(SkillerRaptor): Print error message (unclosed {})
+					assert(false && "Unclosed formatting parenthesis");
 					std::abort();
 				}
 

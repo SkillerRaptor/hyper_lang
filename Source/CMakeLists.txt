@@ -5,12 +5,18 @@
 #-------------------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------------------
+# Third Party
+#-------------------------------------------------------------------------------------------
+add_subdirectory(third_party)
+
+#-------------------------------------------------------------------------------------------
 # Hyper
 #-------------------------------------------------------------------------------------------
 set(SOURCES
         src/main.cpp
         src/Hyper/Compiler.cpp
         src/Hyper/DataType.cpp
+        src/Hyper/Generator.cpp
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
         src/Hyper/Token.cpp
@@ -35,13 +41,12 @@ set(SOURCES
         src/Hyper/Ast/Statements/PrintStatement.cpp
         src/Hyper/Ast/Statements/ReturnStatement.cpp
         src/Hyper/Ast/Statements/Statement.cpp
-        src/Hyper/Ast/Statements/WhileStatement.cpp
-        src/Hyper/Generators/CGenerator.cpp
-        src/Hyper/Generators/Generator.cpp)
+        src/Hyper/Ast/Statements/WhileStatement.cpp)
 
 set(HEADERS
         include/Hyper/Compiler.hpp
         include/Hyper/DataType.hpp
+        include/Hyper/Generator.hpp
         include/Hyper/Formatter.hpp
         include/Hyper/Logger.hpp
         include/Hyper/Parser.hpp
@@ -70,16 +75,15 @@ set(HEADERS
         include/Hyper/Ast/Statements/PrintStatement.hpp
         include/Hyper/Ast/Statements/ReturnStatement.hpp
         include/Hyper/Ast/Statements/Statement.hpp
-        include/Hyper/Ast/Statements/WhileStatement.hpp
-        include/Hyper/Generators/CGenerator.hpp
-        include/Hyper/Generators/Generator.hpp)
+        include/Hyper/Ast/Statements/WhileStatement.hpp)
 
 add_executable(hyper ${SOURCES} ${HEADERS})
 target_link_libraries(
         hyper
         PRIVATE
         ProjectOptions
-        ProjectWarnings)
+        ProjectWarnings
+        llvm)
 target_include_directories(
         hyper
         PRIVATE include)

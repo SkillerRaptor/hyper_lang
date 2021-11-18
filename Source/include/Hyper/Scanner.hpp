@@ -18,11 +18,13 @@ namespace Hyper
 	class Scanner
 	{
 	public:
-		Scanner(std::string file, std::string text);
+		Scanner(std::string file, std::string text, bool debug_mode);
 
 		Token next_token();
 
 	private:
+		void debug_scan(const Token &token) const;
+
 		void register_keywords();
 		void register_single_char_tokens();
 		void register_two_char_tokens();
@@ -37,6 +39,7 @@ namespace Hyper
 	private:
 		std::string m_file;
 		std::string m_text;
+		bool m_debug_mode = false;
 
 		size_t m_position = 0;
 		size_t m_line_number = 1;

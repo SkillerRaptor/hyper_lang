@@ -44,7 +44,7 @@ namespace Hyper
 	public:
 		virtual ~AstNode() = default;
 
-		void dump_tree() const;
+		void dump_tree(std::string_view file) const;
 
 		virtual void accept(Generator &generator) const = 0;
 
@@ -53,9 +53,13 @@ namespace Hyper
 		virtual std::string class_description() const = 0;
 
 	protected:
-		virtual void dump(const std::string &prefix, bool is_self_last) const = 0;
+		virtual void dump(
+			std::string_view file,
+			const std::string &prefix,
+			bool is_self_last) const = 0;
 
 		void dump_next_node(
+			std::string_view file,
 			const AstNode &node,
 			const std::string &prefix,
 			bool is_self_last,

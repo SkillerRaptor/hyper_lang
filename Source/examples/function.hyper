@@ -1,0 +1,10 @@
+function some_function() -> i32
+{
+	return 666;
+}
+
+function main() -> i32
+{
+	some_function();
+	return 0;
+}

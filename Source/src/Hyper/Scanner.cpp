@@ -10,9 +10,10 @@
 
 namespace Hyper
 {
-	Scanner::Scanner(std::string file, std::string text)
+	Scanner::Scanner(std::string file, std::string text, bool debug_mode)
 		: m_file(std::move(file))
 		, m_text(std::move(text))
+		, m_debug_mode(debug_mode)
 	{
 		register_keywords();
 		register_single_char_tokens();
@@ -65,6 +66,8 @@ namespace Hyper
 		m_current_token.location.column = m_line_column - value_length + 1;
 		m_current_token.location.length = value_length;
 		m_current_token.location.position = m_position - value_length;
+
+		debug_scan(m_current_token);
 
 		return m_current_token;
 	}
@@ -184,7 +187,7 @@ namespace Hyper
 
 	Token::Type Scanner::scan_number(size_t &length)
 	{
-		// TODO(SkillerRaptor): Handle binary, octal and hexadecimal numbers
+		// TODO(SkillerRaptor): Scanning after binary, octal or hexadecimal numbers
 
 		do
 		{
@@ -242,5 +245,21 @@ namespace Hyper
 		consume();
 		length = 0;
 		return Token::Type::None;
+	}
+
+	void Scanner::debug_scan(const Token &token) const
+	{
+		if (!m_debug_mode)
+		{
+			return;
+		}
+
+		Logger::file_info(
+			m_file,
+			"Scanning {} ({}{}{})\n",
+			token.type,
+			Formatter::s_color_yellow,
+			token.value,
+			Formatter::s_color_reset);
 	}
 } // namespace Hyper

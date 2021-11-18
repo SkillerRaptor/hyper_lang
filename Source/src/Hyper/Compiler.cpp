@@ -7,25 +7,28 @@
 #include "Hyper/Compiler.hpp"
 
 #include "Hyper/Ast/AstNode.hpp"
-#include "Hyper/Generators/CGenerator.hpp"
+#include "Hyper/Generator.hpp"
 #include "Hyper/Logger.hpp"
 #include "Hyper/Parser.hpp"
 #include "Hyper/Scanner.hpp"
 
-#include <chrono>
 #include <filesystem>
 #include <fstream>
 
 namespace Hyper
 {
-	Compiler::Compiler(std::vector<std::string> files)
-		: m_files(std::move(files))
+	Compiler::Compiler(const Compiler::CreateInfo &create_info)
+		: m_files(create_info.files)
+		, m_debug_scanner(create_info.debug_scanner)
+		, m_debug_parser(create_info.debug_parser)
+		, m_debug_generator(create_info.debug_generator)
 	{
 	}
 
 	bool Compiler::compile() const
 	{
-		for (size_t i = 0; i < m_files.size(); ++i)
+		const size_t file_count = m_files.size();
+		for (size_t i = 0; i < file_count; ++i)
 		{
 			const std::string &file = m_files[i];
 			if (!std::filesystem::exists(file))
@@ -60,18 +63,19 @@ namespace Hyper
 				return false;
 			}
 
-			Scanner scanner(file, text);
-			Parser parser(file, scanner);
+			Scanner scanner(file, text, m_debug_scanner);
+			Parser parser(file, scanner, m_debug_parser);
 
 			const AstPtr tree = parser.parse_tree();
-			tree->dump_tree();
+			// TODO(SkillerRaptor): Adding semantic validator and type checking
 
-			std::unique_ptr<Generator> generator = std::make_unique<CGenerator>(file);
-			tree->accept(*generator);
-			generator->generate();
+			Generator generator(file, m_debug_generator);
+			tree->accept(generator);
+
+			generator.build();
 
 			Logger::file_info(
-				file, "compiling hyper file [{}/{}]\n", i + 1, m_files.size());
+				file, "compiling hyper file {} [{}/{}]\n", file, i + 1, file_count);
 		}
 
 		return true;

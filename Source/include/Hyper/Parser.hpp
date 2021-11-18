@@ -19,11 +19,13 @@ namespace Hyper
 	class Parser
 	{
 	public:
-		Parser(std::string file, Scanner &scanner);
+		Parser(std::string file, Scanner &scanner, bool debug_mode);
 
 		AstPtr parse_tree();
 
 	private:
+		void debug_parse(const AstNode &node) const;
+
 		DeclarationPtr parse_function_declaration();
 		DeclarationPtr parse_translation_unit_declaration();
 		DeclarationPtr parse_variable_declaration();
@@ -60,6 +62,7 @@ namespace Hyper
 	private:
 		std::string m_file;
 		Scanner &m_scanner;
+		bool m_debug_mode = false;
 
 		Token m_current_token = {};
 		Token m_saved_token = {};

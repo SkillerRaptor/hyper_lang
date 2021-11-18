@@ -23,8 +23,7 @@ namespace Hyper
 			None = 0,
 			Info,
 			Warning,
-			Error,
-			Debug
+			Error
 		};
 
 	public:
@@ -50,17 +49,6 @@ namespace Hyper
 		static void error(std::string_view format, Args &&...args)
 		{
 			log_base(Level::Error, "hyper", format, std::forward<Args>(args)...);
-		}
-
-		template <typename... Args>
-		static void debug(std::string_view format, Args &&...args)
-		{
-#ifndef NDEBUG
-			log_base(Level::Debug, "hyper", format, std::forward<Args>(args)...);
-#else
-			HYPER_UNUSED_VARIABLE(format);
-			HYPER_UNUSED_VARIADIC(args);
-#endif
 		}
 
 		template <typename... Args>
@@ -90,21 +78,6 @@ namespace Hyper
 			log_base(Level::Error, file, format, std::forward<Args>(args)...);
 		}
 
-		template <typename... Args>
-		static void file_debug(
-			std::string_view file,
-			std::string_view format,
-			Args &&...args)
-		{
-#ifndef NDEBUG
-			log_base(Level::Debug, file, format, std::forward<Args>(args)...);
-#else
-			HYPER_UNUSED_VARIABLE(file);
-			HYPER_UNUSED_VARIABLE(format);
-			HYPER_UNUSED_VARIADIC(args);
-#endif
-		}
-
 	private:
 		template <typename... Args>
 		static void log_base(
@@ -132,8 +105,6 @@ namespace Hyper
 						return Formatter::s_color_yellow;
 					case Level::Error:
 						return Formatter::s_color_red;
-					case Level::Debug:
-						return Formatter::s_color_cyan;
 					default:
 						HYPER_UNREACHABLE();
 					}
@@ -149,8 +120,6 @@ namespace Hyper
 						return "warning";
 					case Level::Error:
 						return "error";
-					case Level::Debug:
-						return "debug";
 					default:
 						HYPER_UNREACHABLE();
 					}

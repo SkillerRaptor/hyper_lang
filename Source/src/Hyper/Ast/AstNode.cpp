@@ -10,12 +10,13 @@
 
 namespace Hyper
 {
-	void AstNode::dump_tree() const
+	void AstNode::dump_tree(std::string_view file) const
 	{
-		dump("", true);
+		dump(file, "", true);
 	}
 
 	void AstNode::dump_next_node(
+		std::string_view file,
 		const AstNode &node,
 		const std::string &prefix,
 		bool is_self_last,
@@ -23,6 +24,6 @@ namespace Hyper
 	{
 		const std::string next_prefix =
 			AstFormatter::format_next_prefix(prefix, is_self_last);
-		node.dump(next_prefix, is_node_last);
+		node.dump(file, next_prefix, is_node_last);
 	}
 } // namespace Hyper

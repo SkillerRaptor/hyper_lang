@@ -7,7 +7,7 @@
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
 
 #include "Hyper/Ast/AstFormatter.hpp"
-#include "Hyper/Generators/Generator.hpp"
+#include "Hyper/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
@@ -23,12 +23,14 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void IdentifierExpression::dump(const std::string &prefix, bool is_self_last)
-		const
+	void IdentifierExpression::dump(
+		std::string_view file,
+		const std::string &prefix,
+		bool is_self_last) const
 	{
 		const std::string current_prefix =
 			AstFormatter::format_prefix(*this, prefix, is_self_last);
-		Logger::debug("{}", current_prefix);
+		Logger::file_info(file, "{}", current_prefix);
 	}
 
 	AstNode::Category IdentifierExpression::class_category() const noexcept

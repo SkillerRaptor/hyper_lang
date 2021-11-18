@@ -7,7 +7,7 @@
 #include "Hyper/Ast/Statements/CompoundStatement.hpp"
 
 #include "Hyper/Ast/AstFormatter.hpp"
-#include "Hyper/Generators/Generator.hpp"
+#include "Hyper/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
@@ -23,17 +23,20 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void CompoundStatement::dump(const std::string &prefix, bool is_self_last)
-		const
+	void CompoundStatement::dump(
+		std::string_view file,
+		const std::string &prefix,
+		bool is_self_last) const
 	{
 		const std::string current_prefix =
 			AstFormatter::format_prefix(*this, prefix, is_self_last);
-		Logger::debug("{}", current_prefix);
+		Logger::file_info(file, "{}", current_prefix);
 
 		for (const StatementPtr &statement : m_statements)
 		{
 			const bool is_node_last = &statement == &m_statements.back();
-			AstNode::dump_next_node(*statement, prefix, is_self_last, is_node_last);
+			AstNode::dump_next_node(
+				file, *statement, prefix, is_self_last, is_node_last);
 		}
 	}
 

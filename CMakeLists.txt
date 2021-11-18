@@ -19,7 +19,7 @@ include(Development/CMake/StandardProjectSettings.cmake)
 # Project Libraries
 #-------------------------------------------------------------------------------------------
 add_library(ProjectOptions INTERFACE)
-target_compile_features(ProjectOptions INTERFACE cxx_std_17)
+target_compile_features(ProjectOptions INTERFACE cxx_std_20)
 
 add_library(ProjectWarnings INTERFACE)
 
@@ -41,11 +41,6 @@ include(Development/CMake/Sanitizers.cmake)
 enable_sanitizers(ProjectOptions)
 
 include(Development/CMake/StaticAnalyzers.cmake)
-
-#-------------------------------------------------------------------------------------------
-# Options
-#-------------------------------------------------------------------------------------------
-option(HYPER_USE_LLVM "Using LLVM as backend" ON)
 
 #-------------------------------------------------------------------------------------------
 # Source

@@ -25,20 +25,26 @@
 #include "Hyper/Logger.hpp"
 #include "Hyper/Scanner.hpp"
 
-#include <utility>
-
 namespace Hyper
 {
-	Parser::Parser(std::string file, Scanner &scanner)
+	Parser::Parser(std::string file, Scanner &scanner, bool debug_mode)
 		: m_file(std::move(file))
 		, m_scanner(scanner)
+		, m_debug_mode(debug_mode)
 	{
 		consume();
 	}
 
 	AstPtr Parser::parse_tree()
 	{
-		return parse_translation_unit_declaration();
+		AstPtr node = parse_translation_unit_declaration();
+
+		if (m_debug_mode)
+		{
+			node->dump_tree(m_file);
+		}
+
+		return node;
 	}
 
 	DeclarationPtr Parser::parse_function_declaration()
@@ -65,7 +71,11 @@ namespace Hyper
 		create_info.return_type = return_type;
 		create_info.body = std::move(body);
 
-		return std::make_unique<FunctionDeclaration>(std::move(create_info));
+		DeclarationPtr declaration =
+			std::make_unique<FunctionDeclaration>(std::move(create_info));
+		debug_parse(*declaration);
+
+		return declaration;
 	}
 
 	DeclarationPtr Parser::parse_translation_unit_declaration()
@@ -81,7 +91,11 @@ namespace Hyper
 		create_info.file = m_file;
 		create_info.statements = std::move(statements);
 
-		return std::make_unique<TranslationUnitDeclaration>(std::move(create_info));
+		DeclarationPtr declaration =
+			std::make_unique<TranslationUnitDeclaration>(std::move(create_info));
+		debug_parse(*declaration);
+
+		return declaration;
 	}
 
 	DeclarationPtr Parser::parse_variable_declaration()
@@ -109,7 +123,11 @@ namespace Hyper
 		create_info.type = type;
 		create_info.is_immutable = is_immutable;
 
-		return std::make_unique<VariableDeclaration>(create_info);
+		DeclarationPtr declaration =
+			std::make_unique<VariableDeclaration>(std::move(create_info));
+		debug_parse(*declaration);
+
+		return declaration;
 	}
 
 	ExpressionPtr Parser::parse_primary_expression()
@@ -191,9 +209,11 @@ namespace Hyper
 				token_type == Token::Type::Semicolon ||
 				token_type == Token::Type::RightRoundBracket)
 			{
-				return left;
+				break;
 			}
 		}
+
+		debug_parse(*left);
 
 		return left;
 	}
@@ -212,7 +232,11 @@ namespace Hyper
 		create_info.function = function;
 		create_info.arguments = std::move(arguments);
 
-		return std::make_unique<CallExpression>(std::move(create_info));
+		ExpressionPtr expression =
+			std::make_unique<CallExpression>(std::move(create_info));
+		debug_parse(*expression);
+
+		return expression;
 	}
 
 	ExpressionPtr Parser::parse_identifier_expression()
@@ -227,7 +251,11 @@ namespace Hyper
 		IdentifierExpression::CreateInfo create_info = {};
 		create_info.identifier = identifier_token.value;
 
-		return std::make_unique<IdentifierExpression>(create_info);
+		ExpressionPtr expression =
+			std::make_unique<IdentifierExpression>(std::move(create_info));
+		debug_parse(*expression);
+
+		return expression;
 	}
 
 	LiteralPtr Parser::parse_numeric_literal()
@@ -249,7 +277,11 @@ namespace Hyper
 		create_info.value = value;
 		create_info.is_signed = is_signed;
 
-		return std::make_unique<NumericLiteral>(create_info);
+		LiteralPtr literal =
+			std::make_unique<NumericLiteral>(std::move(create_info));
+		debug_parse(*literal);
+
+		return literal;
 	}
 
 	LiteralPtr Parser::parse_string_literal()
@@ -259,7 +291,11 @@ namespace Hyper
 		StringLiteral::CreateInfo create_info = {};
 		create_info.value = value;
 
-		return std::make_unique<StringLiteral>(create_info);
+		LiteralPtr literal =
+			std::make_unique<StringLiteral>(std::move(create_info));
+		debug_parse(*literal);
+
+		return literal;
 	}
 
 	StatementPtr Parser::parse_statement()
@@ -307,7 +343,11 @@ namespace Hyper
 		create_info.identifier = identifier_token.value;
 		create_info.expression = std::move(expression);
 
-		return std::make_unique<AssignStatement>(std::move(create_info));
+		StatementPtr statement =
+			std::make_unique<AssignStatement>(std::move(create_info));
+		debug_parse(*statement);
+
+		return statement;
 	}
 
 	StatementPtr Parser::parse_compound_statement()
@@ -343,7 +383,11 @@ namespace Hyper
 		CompoundStatement::CreateInfo create_info = {};
 		create_info.statements = std::move(statements);
 
-		return std::make_unique<CompoundStatement>(std::move(create_info));
+		StatementPtr statement =
+			std::make_unique<CompoundStatement>(std::move(create_info));
+		debug_parse(*statement);
+
+		return statement;
 	}
 
 	StatementPtr Parser::parse_expression_statement(ExpressionPtr expression)
@@ -351,7 +395,11 @@ namespace Hyper
 		ExpressionStatement::CreateInfo create_info = {};
 		create_info.expression = std::move(expression);
 
-		return std::make_unique<ExpressionStatement>(std::move(create_info));
+		StatementPtr statement =
+			std::make_unique<ExpressionStatement>(std::move(create_info));
+		debug_parse(*statement);
+
+		return statement;
 	}
 
 	StatementPtr Parser::parse_for_statement()
@@ -376,7 +424,11 @@ namespace Hyper
 		create_info.post_operation = std::move(post_operation);
 		create_info.body = std::move(body);
 
-		return std::make_unique<ForStatement>(std::move(create_info));
+		StatementPtr statement =
+			std::make_unique<ForStatement>(std::move(create_info));
+		debug_parse(*statement);
+
+		return statement;
 	}
 
 	StatementPtr Parser::parse_if_statement()
@@ -400,7 +452,11 @@ namespace Hyper
 		create_info.true_branch = std::move(true_branch);
 		create_info.false_branch = std::move(false_branch);
 
-		return std::make_unique<IfStatement>(std::move(create_info));
+		StatementPtr statement =
+			std::make_unique<IfStatement>(std::move(create_info));
+		debug_parse(*statement);
+
+		return statement;
 	}
 
 	StatementPtr Parser::parse_print_statement()
@@ -415,7 +471,11 @@ namespace Hyper
 		PrintStatement::CreateInfo create_info = {};
 		create_info.expression = std::move(expression);
 
-		return std::make_unique<PrintStatement>(std::move(create_info));
+		StatementPtr statement =
+			std::make_unique<PrintStatement>(std::move(create_info));
+		debug_parse(*statement);
+
+		return statement;
 	}
 
 	StatementPtr Parser::parse_return_statement()
@@ -427,7 +487,11 @@ namespace Hyper
 		ReturnStatement::CreateInfo create_info = {};
 		create_info.expression = std::move(expression);
 
-		return std::make_unique<ReturnStatement>(std::move(create_info));
+		StatementPtr statement =
+			std::make_unique<ReturnStatement>(std::move(create_info));
+		debug_parse(*statement);
+
+		return statement;
 	}
 
 	StatementPtr Parser::parse_while_statement()
@@ -444,7 +508,11 @@ namespace Hyper
 		create_info.condition = std::move(condition);
 		create_info.body = std::move(body);
 
-		return std::make_unique<WhileStatement>(std::move(create_info));
+		StatementPtr statement =
+			std::make_unique<WhileStatement>(std::move(create_info));
+		debug_parse(*statement);
+
+		return statement;
 	}
 
 	bool Parser::match(Token::Type token_type) const
@@ -569,5 +637,16 @@ namespace Hyper
 			"Unexpected token '{}', expected '{}'\n",
 			m_current_token.type,
 			expected);
+	}
+
+	void Parser::debug_parse(const AstNode &node) const
+	{
+		if (!m_debug_mode)
+		{
+			return;
+		}
+
+		Logger::file_info(
+			m_file, "Parsing {} {}\n", node.class_name(), node.class_description());
 	}
 } // namespace Hyper

@@ -20,8 +20,28 @@ int main(int argc, const char **argv)
 		return EXIT_FAILURE;
 	}
 
+	// TODO(SkillerRaptor): Adding options parser for compiler settings
+
 	const std::vector<std::string> files(argv + 1, argv + argc);
-	const Hyper::Compiler compiler(files);
+
+#if defined(NDEBUG)
+	constexpr bool debug_scanner = false;
+	constexpr bool debug_parser = false;
+	constexpr bool debug_generator = false;
+#else
+	constexpr bool debug_scanner = true;
+	constexpr bool debug_parser = true;
+	constexpr bool debug_generator = true;
+#endif
+
+	const Hyper::Compiler::CreateInfo create_info = {
+		.files = files,
+		.debug_scanner = debug_scanner,
+		.debug_parser = debug_parser,
+		.debug_generator = debug_generator
+	};
+
+	const Hyper::Compiler compiler(create_info);
 	if (!compiler.compile())
 	{
 		return EXIT_FAILURE;

@@ -7,7 +7,7 @@
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 
 #include "Hyper/Ast/AstFormatter.hpp"
-#include "Hyper/Generators/Generator.hpp"
+#include "Hyper/Generator.hpp"
 #include "Hyper/Logger.hpp"
 
 #include <cassert>
@@ -26,15 +26,17 @@ namespace Hyper
 		generator.visit(*this);
 	}
 
-	void BinaryExpression::dump(const std::string &prefix, bool is_self_last)
-		const
+	void BinaryExpression::dump(
+		std::string_view file,
+		const std::string &prefix,
+		bool is_self_last) const
 	{
 		const std::string current_prefix =
 			AstFormatter::format_prefix(*this, prefix, is_self_last);
-		Logger::debug("{}", current_prefix);
+		Logger::file_info(file, "{}", current_prefix);
 
-		AstNode::dump_next_node(*m_left, prefix, is_self_last, false);
-		AstNode::dump_next_node(*m_right, prefix, is_self_last, true);
+		AstNode::dump_next_node(file, *m_left, prefix, is_self_last, false);
+		AstNode::dump_next_node(file, *m_right, prefix, is_self_last, true);
 	}
 
 	AstNode::Category BinaryExpression::class_category() const noexcept
