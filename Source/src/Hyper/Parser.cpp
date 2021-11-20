@@ -598,7 +598,7 @@ namespace Hyper
 			break;
 		}
 
-		std::abort();
+		HYPER_UNREACHABLE();
 	}
 
 	uint8_t Parser::map_precedence(Token::Type token_type) const
