@@ -22,10 +22,10 @@ namespace Hyper
 			Token::SourceLocation source_location,
 			std::string_view message) const;
 		[[noreturn]] void warning(
-			 Token::SourceLocation source_location,
+			Token::SourceLocation source_location,
 			std::string_view message) const;
 		[[noreturn]] void error(
-			 Token::SourceLocation source_location,
+			Token::SourceLocation source_location,
 			std::string_view message) const;
 
 	private:

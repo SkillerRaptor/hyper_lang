@@ -78,7 +78,7 @@ namespace Hyper
 				.file = file,
 				.scanner = scanner,
 				.diagnostics = diagnostics,
-				.debug_mode = m_debug_scanner,
+				.debug_mode = m_debug_parser,
 			};
 			Parser parser(parser_create_info);
 

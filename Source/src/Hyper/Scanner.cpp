@@ -203,15 +203,22 @@ namespace Hyper
 	{
 		consume();
 
+		Token::SourceLocation location = {};
 		do
 		{
 			++length;
+
+			location.line = m_line_number;
+			location.column = m_line_column - 1;
+			location.length = 1;
+			location.position = m_position - 1;
+
 			consume();
 		} while (isalnum(m_current_character) || m_current_character == '_');
 
 		if (m_current_character != '"')
 		{
-			std::abort();
+			m_diagnostics.error(location, "unclosed \"\n");
 		}
 
 		consume();
