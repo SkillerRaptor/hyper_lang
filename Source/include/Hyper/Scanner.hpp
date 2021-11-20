@@ -8,17 +8,26 @@
 
 #include "Hyper/Token.hpp"
 
-#include <optional>
 #include <string>
 #include <unordered_map>
-#include <vector>
 
 namespace Hyper
 {
+	class Diagnostics;
+
 	class Scanner
 	{
 	public:
-		Scanner(std::string file, std::string text, bool debug_mode);
+		struct CreateInfo
+		{
+			std::string file;
+			std::string text;
+			const Diagnostics &diagnostics;
+			bool debug_mode;
+		};
+
+	public:
+		explicit Scanner(const CreateInfo &create_info);
 
 		Token next_token();
 
@@ -39,6 +48,7 @@ namespace Hyper
 	private:
 		std::string m_file;
 		std::string m_text;
+		const Diagnostics &m_diagnostics;
 		bool m_debug_mode = false;
 
 		size_t m_position = 0;

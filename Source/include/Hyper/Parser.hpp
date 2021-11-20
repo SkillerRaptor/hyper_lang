@@ -14,12 +14,22 @@
 
 namespace Hyper
 {
+	class Diagnostics;
 	class Scanner;
 
 	class Parser
 	{
 	public:
-		Parser(std::string file, Scanner &scanner, bool debug_mode);
+		struct CreateInfo
+		{
+			std::string file;
+			Scanner &scanner;
+			const Diagnostics &diagnostics;
+			bool debug_mode;
+		};
+
+	public:
+		explicit Parser(const CreateInfo &create_info);
 
 		AstPtr parse_tree();
 
@@ -62,6 +72,7 @@ namespace Hyper
 	private:
 		std::string m_file;
 		Scanner &m_scanner;
+		const Diagnostics &m_diagnostics;
 		bool m_debug_mode = false;
 
 		Token m_current_token = {};

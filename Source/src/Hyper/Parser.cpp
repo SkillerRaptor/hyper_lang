@@ -22,15 +22,17 @@
 #include "Hyper/Ast/Statements/PrintStatement.hpp"
 #include "Hyper/Ast/Statements/ReturnStatement.hpp"
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
+#include "Hyper/Diagnostics.hpp"
 #include "Hyper/Logger.hpp"
 #include "Hyper/Scanner.hpp"
 
 namespace Hyper
 {
-	Parser::Parser(std::string file, Scanner &scanner, bool debug_mode)
-		: m_file(std::move(file))
-		, m_scanner(scanner)
-		, m_debug_mode(debug_mode)
+	Parser::Parser(const Parser::CreateInfo &create_info)
+		: m_file(create_info.file)
+		, m_scanner(create_info.scanner)
+		, m_diagnostics(create_info.diagnostics)
+		, m_debug_mode(create_info.debug_mode)
 	{
 		consume();
 	}
@@ -555,16 +557,9 @@ namespace Hyper
 	{
 		if (!match(token_type))
 		{
-			const Token::SourceLocation location = m_current_token.location;
-			const std::string line_string = std::to_string(location.line);
-			const std::string column_string = std::to_string(location.column);
-			const std::string file = m_file + ":" + line_string + ":" + column_string;
-			Logger::file_error(
-				file,
-				"Unexpected token '{}', expected '{}'\n",
-				m_current_token.type,
-				token_type);
-			std::abort();
+			const std::string error_message = Formatter::format(
+				"expected {} before {}\n", token_type, m_current_token.type);
+			m_diagnostics.error(m_current_token.location, error_message);
 		}
 
 		return consume();
@@ -643,15 +638,9 @@ namespace Hyper
 
 	void Parser::expected(std::string_view expected) const
 	{
-		const Token::SourceLocation location = m_current_token.location;
-		const std::string line_string = std::to_string(location.line);
-		const std::string column_string = std::to_string(location.column);
-		const std::string file = m_file + ":" + line_string + ":" + column_string;
-		Logger::file_error(
-			file,
-			"Unexpected token '{}', expected '{}'\n",
-			m_current_token.type,
-			expected);
+		const std::string error_message = Formatter::format(
+			"expected {} before {}\n", expected, m_current_token.type);
+		m_diagnostics.error(m_current_token.location, error_message);
 	}
 
 	void Parser::debug_parse(const AstNode &node) const

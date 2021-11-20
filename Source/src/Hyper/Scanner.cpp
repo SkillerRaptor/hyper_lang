@@ -6,14 +6,16 @@
 
 #include "Hyper/Scanner.hpp"
 
+#include "Hyper/Diagnostics.hpp"
 #include "Hyper/Logger.hpp"
 
 namespace Hyper
 {
-	Scanner::Scanner(std::string file, std::string text, bool debug_mode)
-		: m_file(std::move(file))
-		, m_text(std::move(text))
-		, m_debug_mode(debug_mode)
+	Scanner::Scanner(const Scanner::CreateInfo &create_info)
+		: m_file(create_info.file)
+		, m_text(create_info.text)
+		, m_diagnostics(create_info.diagnostics)
+		, m_debug_mode(create_info.debug_mode)
 	{
 		register_keywords();
 		register_single_char_tokens();
@@ -24,8 +26,8 @@ namespace Hyper
 
 	Token Scanner::next_token()
 	{
-		bool is_eof = m_position >= m_text.length();
-		if (!is_eof)
+		const bool is_end_of_file = m_position >= m_text.length();
+		if (!is_end_of_file)
 		{
 			while (m_current_character == ' ' || m_current_character == '\t' ||
 						 m_current_character == '\n' || m_current_character == '\r' ||
@@ -35,10 +37,10 @@ namespace Hyper
 			}
 		}
 
-		size_t value_start = m_position - 1;
+		const size_t value_start = m_position - 1;
 		size_t value_length = 0;
-		Token::Type type;
-		if (is_eof)
+		Token::Type type = Token::Type::None;
+		if (is_end_of_file)
 		{
 			type = Token::Type::Eof;
 		}
@@ -63,7 +65,7 @@ namespace Hyper
 		m_current_token.value = m_text.substr(value_start, value_length);
 		m_current_token.type = type;
 		m_current_token.location.line = m_line_number;
-		m_current_token.location.column = m_line_column - value_length + 1;
+		m_current_token.location.column = m_line_column - value_length;
 		m_current_token.location.length = value_length;
 		m_current_token.location.position = m_position - value_length;
 
@@ -153,7 +155,6 @@ namespace Hyper
 	{
 		if (m_position >= m_text.length())
 		{
-			++m_position;
 			return;
 		}
 
@@ -210,7 +211,6 @@ namespace Hyper
 
 		if (m_current_character != '"')
 		{
-			// TODO(SkillerRaptor): Handle unclosed string
 			std::abort();
 		}
 
@@ -222,24 +222,26 @@ namespace Hyper
 
 	Token::Type Scanner::scan_short_tokens(size_t start, size_t &length)
 	{
-		if (m_position < m_text.length())
+		if (m_position >= m_text.length())
 		{
-			const std::string value = m_text.substr(start, 2);
-			if (m_two_char_tokens.find(value) != m_two_char_tokens.end())
-			{
-				consume();
-				consume();
-				length = 2;
-				return m_two_char_tokens[value];
-			}
+			return Token::Type::None;
 		}
 
-		const std::string value = m_text.substr(start, 1);
-		if (m_single_char_tokens.find(value) != m_single_char_tokens.end())
+		const std::string two_char_token = m_text.substr(start, 2);
+		if (m_two_char_tokens.find(two_char_token) != m_two_char_tokens.end())
+		{
+			consume();
+			consume();
+			length = 2;
+			return m_two_char_tokens[two_char_token];
+		}
+
+		const std::string one_char_token = m_text.substr(start, 1);
+		if (m_single_char_tokens.find(one_char_token) != m_single_char_tokens.end())
 		{
 			consume();
 			length = 1;
-			return m_single_char_tokens[value];
+			return m_single_char_tokens[one_char_token];
 		}
 
 		consume();
@@ -254,12 +256,28 @@ namespace Hyper
 			return;
 		}
 
-		Logger::file_info(
-			m_file,
-			"Scanning {} ({}{}{})\n",
-			token.type,
+		const std::string line = Formatter::format(
+			"{}line{}={}{}{}",
+			Formatter::s_color_green,
+			Formatter::s_color_reset,
+			Formatter::s_color_yellow,
+			token.location.line,
+			Formatter::s_color_reset);
+		const std::string column = Formatter::format(
+			"{}column{}={}{}{}",
+			Formatter::s_color_green,
+			Formatter::s_color_reset,
+			Formatter::s_color_yellow,
+			token.location.column,
+			Formatter::s_color_reset);
+		const std::string value = Formatter::format(
+			"{}value{}={}{}{}",
+			Formatter::s_color_green,
+			Formatter::s_color_reset,
 			Formatter::s_color_yellow,
 			token.value,
 			Formatter::s_color_reset);
+		Logger::file_info(
+			m_file, "Scanning {} ({}, {}, {})\n", token.type, line, column, value);
 	}
 } // namespace Hyper

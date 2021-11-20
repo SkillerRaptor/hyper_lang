@@ -7,6 +7,7 @@
 #include "Hyper/Compiler.hpp"
 
 #include "Hyper/Ast/AstNode.hpp"
+#include "Hyper/Diagnostics.hpp"
 #include "Hyper/Generator.hpp"
 #include "Hyper/Logger.hpp"
 #include "Hyper/Parser.hpp"
@@ -63,8 +64,23 @@ namespace Hyper
 				return false;
 			}
 
-			Scanner scanner(file, text, m_debug_scanner);
-			Parser parser(file, scanner, m_debug_parser);
+			const Diagnostics diagnostics(file, text);
+
+			const Scanner::CreateInfo scanner_create_info = {
+				.file = file,
+				.text = text,
+				.diagnostics = diagnostics,
+				.debug_mode = m_debug_scanner,
+			};
+			Scanner scanner(scanner_create_info);
+
+			const Parser::CreateInfo parser_create_info = {
+				.file = file,
+				.scanner = scanner,
+				.diagnostics = diagnostics,
+				.debug_mode = m_debug_scanner,
+			};
+			Parser parser(parser_create_info);
 
 			const AstPtr tree = parser.parse_tree();
 			// TODO(SkillerRaptor): Adding semantic validator and type checking
@@ -75,7 +91,13 @@ namespace Hyper
 			generator.build();
 
 			Logger::file_info(
-				file, "compiling hyper file {} [{}/{}]\n", file, i + 1, file_count);
+				file,
+				"compiling hyper file {}{}{} [{}/{}]\n",
+				Formatter::s_color_yellow,
+				file,
+				Formatter::s_color_reset,
+				i + 1,
+				file_count);
 		}
 
 		return true;

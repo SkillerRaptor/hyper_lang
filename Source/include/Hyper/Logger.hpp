@@ -17,7 +17,7 @@ namespace Hyper
 {
 	class Logger
 	{
-	private:
+	public:
 		enum class Level
 		{
 			None = 0,
@@ -31,6 +31,12 @@ namespace Hyper
 		static void raw(std::string_view format, Args &&...args)
 		{
 			log_base(Level::None, "", format, std::forward<Args>(args)...);
+		}
+
+		template <typename... Args>
+		static void log(Level level, std::string_view format, Args &&...args)
+		{
+			log_base(level, "hyper", format, std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>
@@ -49,6 +55,16 @@ namespace Hyper
 		static void error(std::string_view format, Args &&...args)
 		{
 			log_base(Level::Error, "hyper", format, std::forward<Args>(args)...);
+		}
+
+		template <typename... Args>
+		static void file_log(
+			Level level,
+			std::string_view file,
+			std::string_view format,
+			Args &&...args)
+		{
+			log_base(level, file, format, std::forward<Args>(args)...);
 		}
 
 		template <typename... Args>

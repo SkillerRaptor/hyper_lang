@@ -72,6 +72,7 @@ set(SOURCES
         src/main.cpp
         src/Hyper/Compiler.cpp
         src/Hyper/DataType.cpp
+        src/Hyper/Diagnostics.cpp
         src/Hyper/Generator.cpp
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
@@ -102,6 +103,7 @@ set(SOURCES
 set(HEADERS
         include/Hyper/Compiler.hpp
         include/Hyper/DataType.hpp
+        include/Hyper/Diagnostics.hpp
         include/Hyper/Generator.hpp
         include/Hyper/Formatter.hpp
         include/Hyper/Logger.hpp
