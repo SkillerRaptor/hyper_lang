@@ -49,9 +49,16 @@ namespace Hyper
 	class Generator
 	{
 	public:
-		Generator(std::string file, bool debug_mode);
+		struct CreateInfo
+		{
+			std::string file;
+			bool debug_mode;
+		};
 
-		void build();
+	public:
+		explicit Generator(const CreateInfo &create_info);
+
+		bool build();
 
 		void visit(const AstNode &node);
 

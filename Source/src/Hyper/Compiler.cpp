@@ -9,6 +9,7 @@
 #include "Hyper/Ast/AstNode.hpp"
 #include "Hyper/Diagnostics.hpp"
 #include "Hyper/Generator.hpp"
+#include "Hyper/Linker.hpp"
 #include "Hyper/Logger.hpp"
 #include "Hyper/Parser.hpp"
 #include "Hyper/Scanner.hpp"
@@ -23,11 +24,13 @@ namespace Hyper
 		, m_debug_scanner(create_info.debug_scanner)
 		, m_debug_parser(create_info.debug_parser)
 		, m_debug_generator(create_info.debug_generator)
+		, m_debug_linker(create_info.debug_linker)
 	{
 	}
 
 	bool Compiler::compile() const
 	{
+		std::vector<std::string> object_files = {};
 		const size_t file_count = m_files.size();
 		for (size_t i = 0; i < file_count; ++i)
 		{
@@ -85,10 +88,19 @@ namespace Hyper
 			const AstPtr tree = parser.parse_tree();
 			// TODO(SkillerRaptor): Adding semantic validator and type checking
 
-			Generator generator(file, m_debug_generator);
+			const Generator::CreateInfo generator_create_info = {
+				.file = file,
+				.debug_mode = m_debug_generator,
+			};
+			Generator generator(generator_create_info);
 			tree->accept(generator);
 
-			generator.build();
+			if (!generator.build())
+			{
+				return false;
+			}
+
+			object_files.push_back(file + ".o");
 
 			Logger::file_info(
 				file,
@@ -98,6 +110,24 @@ namespace Hyper
 				Formatter::s_color_reset,
 				i + 1,
 				file_count);
+		}
+
+		const Linker::ObjectFormat object_format =
+#if defined(WIN32)
+			Linker::ObjectFormat::Coff;
+#else
+			Linker::ObjectFormat::Elf;
+#endif
+
+		const Linker::CreateInfo linker_create_info = {
+			.object_files = object_files,
+			.object_format = object_format,
+			.debug_mode = m_debug_linker,
+		};
+		Linker linker(linker_create_info);
+		if (!linker.link())
+		{
+			return false;
 		}
 
 		return true;

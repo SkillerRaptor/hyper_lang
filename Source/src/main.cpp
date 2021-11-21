@@ -28,19 +28,21 @@ int main(int argc, const char **argv)
 	constexpr bool debug_scanner = false;
 	constexpr bool debug_parser = false;
 	constexpr bool debug_generator = false;
+	constexpr bool debug_linker = false;
 #else
 	constexpr bool debug_scanner = true;
 	constexpr bool debug_parser = true;
 	constexpr bool debug_generator = true;
+	constexpr bool debug_linker = true;
 #endif
 
 	const Hyper::Compiler::CreateInfo create_info = {
 		.files = files,
 		.debug_scanner = debug_scanner,
 		.debug_parser = debug_parser,
-		.debug_generator = debug_generator
+		.debug_generator = debug_generator,
+		.debug_linker = debug_linker,
 	};
-
 	const Hyper::Compiler compiler(create_info);
 	if (!compiler.compile())
 	{

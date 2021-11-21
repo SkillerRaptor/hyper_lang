@@ -39,13 +39,13 @@ HYPER_RESTORE_WARNINGS()
 
 namespace Hyper
 {
-	Generator::Generator(std::string file, bool debug_mode)
-		: m_file(std::move(file))
-		, m_debug_mode(debug_mode)
+	Generator::Generator(const Generator::CreateInfo &create_info)
+		: m_file(create_info.file)
+		, m_debug_mode(create_info.debug_mode)
 	{
 	}
 
-	void Generator::build()
+	bool Generator::build()
 	{
 		llvm::InitializeAllTargetInfos();
 		llvm::InitializeAllTargets();
@@ -64,7 +64,7 @@ namespace Hyper
 		{
 			Logger::file_error(
 				m_file, "llvm::TargetRegistry::lookupTarget failed: {}\n", error);
-			return;
+			return false;
 		}
 
 		const std::string cpu = "generic";
@@ -77,14 +77,16 @@ namespace Hyper
 
 		m_module->setDataLayout(target_machine->createDataLayout());
 
+		const std::string file_name = m_file + ".o";
+
 		std::error_code error_code;
 		llvm::raw_fd_ostream destination(
-			m_file + ".o", error_code, llvm::sys::fs::OF_None);
+			file_name, error_code, llvm::sys::fs::OF_None);
 		if (error_code)
 		{
 			Logger::file_error(
 				m_file, "llvm::raw_fd_ostream failed: {}\n", error_code);
-			return;
+			return false;
 		}
 
 		llvm::legacy::PassManager pass_manager;
@@ -94,7 +96,7 @@ namespace Hyper
 		{
 			Logger::file_error(
 				m_file, "llvm::TargetMachine::addPassesToEmitFile failed\n");
-			return;
+			return false;
 		}
 
 		pass_manager.run(*m_module);
@@ -104,6 +106,8 @@ namespace Hyper
 		{
 			m_module->print(llvm::outs(), nullptr);
 		}
+
+		return true;
 	}
 
 	void Generator::visit(const AstNode &node)
@@ -146,6 +150,14 @@ namespace Hyper
 		m_module = std::make_unique<llvm::Module>(
 			translation_unit_declaration.file(), *m_context);
 		m_builder = std::make_unique<llvm::IRBuilder<>>(*m_context);
+
+		std::vector<llvm::Type *> args;
+		args.push_back(llvm::Type::getInt8PtrTy(*m_context));
+
+		llvm::FunctionType *printfType =
+			llvm::FunctionType::get(m_builder->getInt32Ty(), args, true);
+		llvm::Function::Create(
+			printfType, llvm::Function::ExternalLinkage, "printf", *m_module);
 
 		for (const StatementPtr &statement :
 				 translation_unit_declaration.statements())
@@ -193,17 +205,17 @@ namespace Hyper
 			case BinaryExpression::Operation::Division:
 				return m_builder->CreateSDiv(left, right);
 			case BinaryExpression::Operation::Equal:
-				return m_builder->CreateICmpEQ(left, right);
-			case BinaryExpression::Operation::NotEqual:
 				return m_builder->CreateICmpNE(left, right);
+			case BinaryExpression::Operation::NotEqual:
+				return m_builder->CreateICmpEQ(left, right);
 			case BinaryExpression::Operation::LessThan:
-				return m_builder->CreateICmpSLT(left, right);
-			case BinaryExpression::Operation::GreaterThan:
 				return m_builder->CreateICmpSGT(left, right);
+			case BinaryExpression::Operation::GreaterThan:
+				return m_builder->CreateICmpSLT(left, right);
 			case BinaryExpression::Operation::LessEqual:
-				return m_builder->CreateICmpSLE(left, right);
-			case BinaryExpression::Operation::GreaterEqual:
 				return m_builder->CreateICmpSGE(left, right);
+			case BinaryExpression::Operation::GreaterEqual:
+				return m_builder->CreateICmpSLE(left, right);
 			default:
 				HYPER_UNREACHABLE();
 			}
@@ -362,11 +374,17 @@ namespace Hyper
 	{
 		debug_visit(print_statement);
 
-		// TODO(SkillerRaptor): Implement PrintStatement
 		print_statement.expression()->accept(*this);
 		llvm::Value *result = next_value();
 
-		HYPER_UNUSED_VARIABLE(result);
+		static llvm::Value *format_string =
+			m_builder->CreateGlobalStringPtr("%d\n");
+
+		std::vector<llvm::Value *> args = {};
+		args.push_back(format_string);
+		args.push_back(result);
+
+		m_builder->CreateCall(m_module->getFunction("printf"), args);
 	}
 
 	void Generator::visit(const ReturnStatement &return_statement)

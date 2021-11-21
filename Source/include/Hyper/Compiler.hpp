@@ -20,6 +20,7 @@ namespace Hyper
 			bool debug_scanner = false;
 			bool debug_parser = false;
 			bool debug_generator = false;
+			bool debug_linker = false;
 		};
 
 	public:
@@ -32,5 +33,6 @@ namespace Hyper
 		bool m_debug_scanner = false;
 		bool m_debug_parser = false;
 		bool m_debug_generator = false;
+		bool m_debug_linker = false;
 	};
 } // namespace Hyper

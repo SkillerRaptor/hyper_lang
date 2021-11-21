@@ -1,0 +1,26 @@
+function some_function() -> i32
+{
+	return 666;
+}
+
+function main() -> i32
+{
+	print(69);
+	print(some_function());
+
+	let i: mutable i32;
+
+	for (i = 0; i < 10; i = i + 1)
+	{
+		print(i);
+	}
+
+	i = 0;
+	while (i < 10)
+	{
+		print(i);
+		i = i + 1;
+	}
+
+	return 0;
+}
