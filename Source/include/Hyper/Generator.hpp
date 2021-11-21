@@ -6,7 +6,21 @@
 
 #pragma once
 
+#include "Hyper/DataType.hpp"
+#include "Hyper/Prerequisites.hpp"
+
+HYPER_DISABLE_WARNINGS()
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/NoFolder.h>
+#include <llvm/IR/Value.h>
+HYPER_RESTORE_WARNINGS()
+
+#include <memory>
+#include <stack>
 #include <string>
+#include <unordered_map>
 
 namespace Hyper
 {
@@ -64,8 +78,17 @@ namespace Hyper
 	private:
 		void debug_visit(const AstNode &node) const;
 
+		llvm::Value *next_value();
+		llvm::Type *to_type(DataType data_type) const;
+
 	private:
 		std::string m_file;
 		bool m_debug_mode = false;
+
+		std::unique_ptr<llvm::LLVMContext> m_context = nullptr;
+		std::unique_ptr<llvm::Module> m_module = nullptr;
+		std::unique_ptr<llvm::IRBuilder<llvm::NoFolder>> m_builder = nullptr;
+		std::stack<llvm::Value *> m_values = {};
+		std::unordered_map<std::string, llvm::AllocaInst *> m_variables = {};
 	};
 } // namespace Hyper

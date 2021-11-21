@@ -147,11 +147,10 @@ namespace Hyper
 		case Token::Type::StringLiteral:
 			return parse_string_literal();
 		default:
-			expected("Expression");
 			break;
 		}
 
-		HYPER_UNREACHABLE();
+		return nullptr;
 	}
 
 	ExpressionPtr Parser::parse_binary_expression(uint8_t min_precedence)
@@ -226,7 +225,7 @@ namespace Hyper
 
 	ExpressionPtr Parser::parse_call_expression()
 	{
-		std::string function = consume(Token::Type::Identifier).value;
+		const std::string function = consume(Token::Type::Identifier).value;
 
 		consume(Token::Type::LeftRoundBracket);
 
@@ -268,22 +267,17 @@ namespace Hyper
 
 	LiteralPtr Parser::parse_numeric_literal()
 	{
-		bool is_signed = false;
+		std::string value;
 		if (match(Token::Type::Minus))
 		{
+			value += '-';
 			consume();
-			is_signed = true;
 		}
 
-		uint64_t value = std::stoull(consume(Token::Type::NumericLiteral).value);
-		if (is_signed)
-		{
-			value += static_cast<uint64_t>(std::numeric_limits<int64_t>::min());
-		}
+		value += consume(Token::Type::NumericLiteral).value;
 
 		NumericLiteral::CreateInfo create_info = {
 			.value = value,
-			.is_signed = is_signed,
 		};
 
 		LiteralPtr literal = std::make_unique<NumericLiteral>(create_info);
@@ -294,7 +288,7 @@ namespace Hyper
 
 	LiteralPtr Parser::parse_string_literal()
 	{
-		std::string value = consume(Token::Type::StringLiteral).value;
+		const std::string value = consume(Token::Type::StringLiteral).value;
 
 		StringLiteral::CreateInfo create_info = {
 			.value = value,
@@ -328,11 +322,10 @@ namespace Hyper
 		case Token::Type::While:
 			return parse_while_statement();
 		default:
-			expected("Statement");
 			break;
 		}
 
-		HYPER_UNREACHABLE();
+		return nullptr;
 	}
 
 	StatementPtr Parser::parse_assign_statement()
@@ -452,18 +445,18 @@ namespace Hyper
 		ExpressionPtr condition = parse_binary_expression(0);
 		consume(Token::Type::RightRoundBracket);
 
-		StatementPtr true_branch = parse_compound_statement();
-		StatementPtr false_branch = nullptr;
+		StatementPtr true_body = parse_compound_statement();
+		StatementPtr false_body = nullptr;
 		if (m_current_token.type == Token::Type::Else)
 		{
 			consume(Token::Type::Else);
-			false_branch = parse_compound_statement();
+			false_body = parse_compound_statement();
 		}
 
 		IfStatement::CreateInfo create_info = {
 			.condition = std::move(condition),
-			.true_branch = std::move(true_branch),
-			.false_branch = std::move(false_branch),
+			.true_body = std::move(true_body),
+			.false_body = std::move(false_body),
 		};
 
 		StatementPtr statement =

@@ -15,8 +15,7 @@ namespace Hyper
 	public:
 		struct CreateInfo
 		{
-			uint64_t value = 0;
-			bool is_signed = true;
+			std::string value;
 		};
 
 	public:
@@ -32,11 +31,9 @@ namespace Hyper
 		std::string_view class_name() const noexcept override;
 		std::string class_description() const override;
 
-		uint64_t value() const noexcept;
-		bool is_signed() const noexcept;
+		std::string value() const;
 
 	private:
-		uint64_t m_value = 0;
-		bool m_is_signed = true;
+		std::string m_value;
 	};
 } // namespace Hyper

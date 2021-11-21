@@ -17,8 +17,8 @@ namespace Hyper
 		struct CreateInfo
 		{
 			ExpressionPtr condition = nullptr;
-			StatementPtr true_branch = nullptr;
-			StatementPtr false_branch = nullptr;
+			StatementPtr true_body = nullptr;
+			StatementPtr false_body = nullptr;
 		};
 
 	public:
@@ -35,12 +35,12 @@ namespace Hyper
 		std::string class_description() const override;
 
 		const ExpressionPtr &condition() const;
-		const StatementPtr &true_branch() const;
-		const StatementPtr &false_branch() const;
+		const StatementPtr &true_body() const;
+		const StatementPtr &false_body() const;
 
 	private:
 		ExpressionPtr m_condition = nullptr;
-		StatementPtr m_true_branch = nullptr;
-		StatementPtr m_false_branch = nullptr;
+		StatementPtr m_true_body = nullptr;
+		StatementPtr m_false_body = nullptr;
 	};
 } // namespace Hyper

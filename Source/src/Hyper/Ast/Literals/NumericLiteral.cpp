@@ -16,7 +16,6 @@ namespace Hyper
 {
 	NumericLiteral::NumericLiteral(NumericLiteral::CreateInfo create_info)
 		: m_value(create_info.value)
-		, m_is_signed(create_info.is_signed)
 	{
 	}
 
@@ -47,30 +46,14 @@ namespace Hyper
 
 	std::string NumericLiteral::class_description() const
 	{
-		uint64_t numeric_value = m_value;
-		if (m_is_signed)
-		{
-			numeric_value +=
-				static_cast<uint64_t>(std::numeric_limits<int64_t>::min());
-		}
-
-		const std::string extended_value =
-			Formatter::format("{}{}", m_is_signed ? "-" : "", numeric_value);
 		const std::string value =
-			AstFormatter::format_member("value", extended_value);
-		const std::string is_signed =
-			AstFormatter::format_member("is_signed", m_is_signed);
+			AstFormatter::format_member("value", m_value);
 
-		return Formatter::format("({}, {})", value, is_signed);
+		return Formatter::format("({})", value);
 	}
 
-	uint64_t NumericLiteral::value() const noexcept
+	std::string NumericLiteral::value() const
 	{
 		return m_value;
-	}
-
-	bool NumericLiteral::is_signed() const noexcept
-	{
-		return m_is_signed;
 	}
 } // namespace Hyper

@@ -1,11 +1,5 @@
-function main() -> i64
+function main() -> i32
 {
-	let a: mutable bool;
-	let b: mutable i8;
-	let c: mutable i16;
-	let d: mutable i32;
-	let e: mutable i64;
-
 	let value: mutable bool;
 	value = 7 == 7;
 	value = 7 != 9;

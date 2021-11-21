@@ -15,8 +15,8 @@ namespace Hyper
 {
 	IfStatement::IfStatement(IfStatement::CreateInfo create_info)
 		: m_condition(std::move(create_info.condition))
-		, m_true_branch(std::move(create_info.true_branch))
-		, m_false_branch(std::move(create_info.false_branch))
+		, m_true_body(std::move(create_info.true_body))
+		, m_false_body(std::move(create_info.false_body))
 	{
 	}
 
@@ -36,12 +36,11 @@ namespace Hyper
 
 		AstNode::dump_next_node(file, *m_condition, prefix, is_self_last, false);
 		AstNode::dump_next_node(
-			file, *m_true_branch, prefix, is_self_last, m_false_branch == nullptr);
+			file, *m_true_body, prefix, is_self_last, m_false_body == nullptr);
 
-		if (m_false_branch != nullptr)
+		if (m_false_body != nullptr)
 		{
-			AstNode::dump_next_node(
-				file, *m_false_branch, prefix, is_self_last, true);
+			AstNode::dump_next_node(file, *m_false_body, prefix, is_self_last, true);
 		}
 	}
 
@@ -65,13 +64,13 @@ namespace Hyper
 		return m_condition;
 	}
 
-	const StatementPtr &IfStatement::true_branch() const
+	const StatementPtr &IfStatement::true_body() const
 	{
-		return m_true_branch;
+		return m_true_body;
 	}
 
-	const StatementPtr &IfStatement::false_branch() const
+	const StatementPtr &IfStatement::false_body() const
 	{
-		return m_false_branch;
+		return m_false_body;
 	}
 } // namespace Hyper
