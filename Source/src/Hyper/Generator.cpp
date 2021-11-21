@@ -25,6 +25,18 @@
 #include "Hyper/Logger.hpp"
 #include "Hyper/Prerequisites.hpp"
 
+HYPER_DISABLE_WARNINGS()
+#include <llvm/ADT/Triple.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/Support/FileSystem.h>
+#include <llvm/Support/Host.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/Support/TargetRegistry.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Target/TargetMachine.h>
+#include <llvm/Target/TargetOptions.h>
+HYPER_RESTORE_WARNINGS()
+
 namespace Hyper
 {
 	Generator::Generator(std::string file, bool debug_mode)
@@ -33,11 +45,65 @@ namespace Hyper
 	{
 	}
 
-	void Generator::build() const
+	void Generator::build()
 	{
-		Logger::raw("\n");
-		m_module->print(llvm::outs(), nullptr);
-		Logger::raw("\n");
+		llvm::InitializeAllTargetInfos();
+		llvm::InitializeAllTargets();
+		llvm::InitializeAllTargetMCs();
+		llvm::InitializeAllAsmParsers();
+		llvm::InitializeAllAsmPrinters();
+
+		const std::string target_triple = llvm::sys::getDefaultTargetTriple();
+		m_module->setTargetTriple(target_triple);
+
+		std::string error;
+		const llvm::Target *target =
+			llvm::TargetRegistry::lookupTarget(target_triple, error);
+
+		if (target == nullptr)
+		{
+			Logger::file_error(
+				m_file, "llvm::TargetRegistry::lookupTarget failed: {}\n", error);
+			return;
+		}
+
+		const std::string cpu = "generic";
+		const std::string features = "";
+		const llvm::TargetOptions options = {};
+		const llvm::Optional<llvm::Reloc::Model> relocation_model =
+			llvm::Optional<llvm::Reloc::Model>();
+		llvm::TargetMachine *target_machine = target->createTargetMachine(
+			target_triple, cpu, features, options, relocation_model);
+
+		m_module->setDataLayout(target_machine->createDataLayout());
+
+		std::error_code error_code;
+		llvm::raw_fd_ostream destination(
+			m_file + ".o", error_code, llvm::sys::fs::OF_None);
+		if (error_code)
+		{
+			Logger::file_error(
+				m_file, "llvm::raw_fd_ostream failed: {}\n", error_code);
+			return;
+		}
+
+		llvm::legacy::PassManager pass_manager;
+		const llvm::CodeGenFileType file_type = llvm::CGFT_ObjectFile;
+		if (target_machine->addPassesToEmitFile(
+					pass_manager, destination, nullptr, file_type))
+		{
+			Logger::file_error(
+				m_file, "llvm::TargetMachine::addPassesToEmitFile failed\n");
+			return;
+		}
+
+		pass_manager.run(*m_module);
+		destination.flush();
+
+		if (m_debug_mode)
+		{
+			m_module->print(llvm::outs(), nullptr);
+		}
 	}
 
 	void Generator::visit(const AstNode &node)
@@ -79,7 +145,7 @@ namespace Hyper
 		m_context = std::make_unique<llvm::LLVMContext>();
 		m_module = std::make_unique<llvm::Module>(
 			translation_unit_declaration.file(), *m_context);
-		m_builder = std::make_unique<llvm::IRBuilder<llvm::NoFolder>>(*m_context);
+		m_builder = std::make_unique<llvm::IRBuilder<>>(*m_context);
 
 		for (const StatementPtr &statement :
 				 translation_unit_declaration.statements())

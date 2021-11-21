@@ -46,8 +46,7 @@ namespace Hyper
 
 	std::string NumericLiteral::class_description() const
 	{
-		const std::string value =
-			AstFormatter::format_member("value", m_value);
+		const std::string value = AstFormatter::format_member("value", m_value);
 
 		return Formatter::format("({})", value);
 	}

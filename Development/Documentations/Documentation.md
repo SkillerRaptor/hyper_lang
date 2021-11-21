@@ -1,20 +1,24 @@
 # Hyper Documentation
 
 ## Contents
+
 0. [Introduction](#introduction)
 1. [Types](#types)
-   1. [Primitive types](#primitive-types)
+    1. [Primitive types](#primitive-types)
 2. [Variables](#variables)
-   1. [Mutable variables](#mutable-variables)
+    1. [Mutable variables](#mutable-variables)
 3. [Functions](#functions)
 4. [Keywords](#keywords)
 
 ## Introduction
-This documentation contains everything you need to know about the Hyper programming language.
+
+This documentation contains everything you need to know about the Hyper
+programming language.
 
 ## Types
 
 ### Primitive types
+
 ```hyper
 bool
 
@@ -32,6 +36,7 @@ void
 ```
 
 ## Variables
+
 ```hyper
 let x: i8 = 5;
 let y: i16 = -1;
@@ -39,12 +44,14 @@ let z: i16 = x - y;
 ```
 
 ### Mutable variables
+
 ```hyper
 let x: mutable i8 = 5;
 x = 6;
 ```
 
 ## Functions
+
 ```hyper
 function add(x: i64, y: i64) -> i64
 {
@@ -58,6 +65,7 @@ function subtract(x: i64, y: i64) -> i64
 ```
 
 ## Keywords
+
 ```hyper
 else
 for

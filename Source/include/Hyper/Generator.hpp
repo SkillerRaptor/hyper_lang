@@ -51,7 +51,7 @@ namespace Hyper
 	public:
 		Generator(std::string file, bool debug_mode);
 
-		void build() const;
+		void build();
 
 		void visit(const AstNode &node);
 
@@ -87,7 +87,7 @@ namespace Hyper
 
 		std::unique_ptr<llvm::LLVMContext> m_context = nullptr;
 		std::unique_ptr<llvm::Module> m_module = nullptr;
-		std::unique_ptr<llvm::IRBuilder<llvm::NoFolder>> m_builder = nullptr;
+		std::unique_ptr<llvm::IRBuilder<>> m_builder = nullptr;
 		std::stack<llvm::Value *> m_values = {};
 		std::unordered_map<std::string, llvm::AllocaInst *> m_variables = {};
 	};
