@@ -112,16 +112,8 @@ namespace Hyper
 				file_count);
 		}
 
-		const Linker::ObjectFormat object_format =
-#if defined(WIN32)
-			Linker::ObjectFormat::Coff;
-#else
-			Linker::ObjectFormat::Elf;
-#endif
-
 		const Linker::CreateInfo linker_create_info = {
 			.object_files = object_files,
-			.object_format = object_format,
 			.debug_mode = m_debug_linker,
 		};
 		Linker linker(linker_create_info);

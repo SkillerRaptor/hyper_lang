@@ -13,7 +13,6 @@ namespace Hyper
 {
 	Linker::Linker(const Linker::CreateInfo &create_info)
 		: m_object_files(create_info.object_files)
-		, m_object_format(create_info.object_format)
 		, m_debug_mode(create_info.debug_mode)
 	{
 	}
