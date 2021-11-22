@@ -15,8 +15,8 @@ jobs:
           - {
             name: "Ubuntu Clang Debug",
             artifact: "linux-clang-debug.tar.xz",
-            cc: "clang-10",
-            cxx: "clang++-10",
+            cc: "clang-12",
+            cxx: "clang++-12",
             build_type: "Debug"
           }
           - {
@@ -29,8 +29,8 @@ jobs:
           - {
             name: "Ubuntu Clang Release",
             artifact: "linux-clang-release.tar.xz",
-            cc: "clang-10",
-            cxx: "clang++-10",
+            cc: "clang-12",
+            cxx: "clang++-12",
             build_type: "Release"
           }
           - {

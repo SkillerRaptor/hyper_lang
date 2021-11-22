@@ -14,6 +14,7 @@ Checks: '
   clang-analyzer-*,
   clang-diagnostic-*,
   concurrency-*,
+  -concurrency-mt-unsafe,
   google-*,
   llvm-*,
   -google-build-using-namespace,

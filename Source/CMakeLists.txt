@@ -14,31 +14,31 @@ message(STATUS "Libraries located in: ${LLVM_LIBRARY_DIRS}")
 
 set(LLVM_LINK_COMPONENTS
         AllTargetsAsmParsers
+        AllTargetsCodeGens
         AllTargetsDescs
         AllTargetsDisassemblers
         AllTargetsInfos
-        AllTargetsCodeGens
         Analysis
+        AsmPrinter
         BitReader
         Core
+        DebugInfoPDB
         InstCombine
+        IrReader
+        LibDriver
+        Linker
+        LTO
         MC
         MCDisassembler
+        native
+        nativecodegen
         Object
+        Option
         ScalarOpts
         Support
         Target
         TransformUtils
-        native
-        nativecodegen
-        AsmPrinter
-        Linker
-        LTO
-        WindowsManifest
-        DebugInfoPDB
-        LibDriver
-        Option
-        IrReader)
+        WindowsManifest)
 
 llvm_map_components_to_libnames(llvm_libs ${LLVM_LINK_COMPONENTS})
 
@@ -89,6 +89,7 @@ set(HEADERS
         include/Hyper/Parser.hpp
         include/Hyper/Prerequisites.hpp
         include/Hyper/Scanner.hpp
+        include/Hyper/Target.hpp
         include/Hyper/Token.hpp
         include/Hyper/Ast/AstFormatter.hpp
         include/Hyper/Ast/AstNode.hpp

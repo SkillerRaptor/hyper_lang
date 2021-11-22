@@ -13,8 +13,11 @@ namespace Hyper
 {
 	Linker::Linker(const Linker::CreateInfo &create_info)
 		: m_object_files(create_info.object_files)
+		, m_target(create_info.target)
 		, m_debug_mode(create_info.debug_mode)
 	{
+		assert(!m_object_files.empty());
+		assert(m_target != Target::None);
 	}
 
 	bool Linker::link() const
@@ -31,7 +34,75 @@ namespace Hyper
 			Logger::info("Linking {}\n", object_files);
 		}
 
-		// TODO(SkillerRaptor): Invoking system linker
+		switch (m_target)
+		{
+		case Target::Linux:
+		{
+			std::string args;
+			args += "-o ./a.out ";
+			args += "-no-pie ";
+
+			for (const std::string &object_file : m_object_files)
+			{
+				args += object_file + " ";
+			}
+
+			bool is_gcc_available = std::system("which gcc > /dev/null") == 0;
+			if (is_gcc_available)
+			{
+				std::string gcc_command;
+				gcc_command += "gcc ";
+				gcc_command += args;
+				gcc_command += "> /dev/null";
+
+				int was_successful = std::system(gcc_command.c_str());
+				if (!was_successful)
+				{
+					std::string object_files;
+					for (const std::string &object_file : m_object_files)
+					{
+						object_files += object_file;
+						object_files += ' ';
+					}
+					Logger::error("failed to link {}\n", object_files);
+				}
+				break;
+			}
+
+			bool is_clang_available = std::system("which clang > /dev/null") == 0;
+			if (is_clang_available)
+			{
+				std::string clang_command;
+				clang_command += "clang ";
+				clang_command += args;
+				clang_command += "> /dev/null";
+
+				int was_successful = std::system(clang_command.c_str());
+				if (!was_successful)
+				{
+					std::string object_files;
+					for (const std::string &object_file : m_object_files)
+					{
+						object_files += object_file;
+						object_files += ' ';
+					}
+					Logger::error("failed to link {}\n", object_files);
+				}
+				break;
+			}
+
+			Logger::error("failed to find system linker\n");
+			break;
+		}
+		case Target::Windows:
+		{
+			// TODO(SkillerRaptor): Adding windows linker support
+			Logger::error("windows linker is not implemented yet\n");
+			break;
+		}
+		default:
+			HYPER_UNREACHABLE();
+		}
 
 		return true;
 	}

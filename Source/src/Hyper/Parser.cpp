@@ -34,6 +34,8 @@ namespace Hyper
 		, m_diagnostics(create_info.diagnostics)
 		, m_debug_mode(create_info.debug_mode)
 	{
+		assert(!m_file.empty());
+
 		consume();
 	}
 

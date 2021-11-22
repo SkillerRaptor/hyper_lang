@@ -17,6 +17,9 @@ namespace Hyper
 		, m_diagnostics(create_info.diagnostics)
 		, m_debug_mode(create_info.debug_mode)
 	{
+		assert(!m_file.empty());
+		assert(!m_text.empty());
+
 		register_keywords();
 		register_single_char_tokens();
 		register_two_char_tokens();

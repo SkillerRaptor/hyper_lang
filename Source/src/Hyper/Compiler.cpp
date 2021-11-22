@@ -21,16 +21,20 @@ namespace Hyper
 {
 	Compiler::Compiler(const Compiler::CreateInfo &create_info)
 		: m_files(create_info.files)
+		, m_target(create_info.target)
 		, m_debug_scanner(create_info.debug_scanner)
 		, m_debug_parser(create_info.debug_parser)
 		, m_debug_generator(create_info.debug_generator)
 		, m_debug_linker(create_info.debug_linker)
 	{
+		assert(!m_files.empty());
+		assert(m_target != Target::None);
 	}
 
 	bool Compiler::compile() const
 	{
 		std::vector<std::string> object_files = {};
+
 		const size_t file_count = m_files.size();
 		for (size_t i = 0; i < file_count; ++i)
 		{
@@ -90,6 +94,7 @@ namespace Hyper
 
 			const Generator::CreateInfo generator_create_info = {
 				.file = file,
+				.target = m_target,
 				.debug_mode = m_debug_generator,
 			};
 			Generator generator(generator_create_info);
@@ -114,6 +119,7 @@ namespace Hyper
 
 		const Linker::CreateInfo linker_create_info = {
 			.object_files = object_files,
+			.target = m_target,
 			.debug_mode = m_debug_linker,
 		};
 		Linker linker(linker_create_info);
@@ -123,5 +129,5 @@ namespace Hyper
 		}
 
 		return true;
-	}
+	} // namespace Hyper
 } // namespace Hyper

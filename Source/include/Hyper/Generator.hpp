@@ -8,6 +8,7 @@
 
 #include "Hyper/DataType.hpp"
 #include "Hyper/Prerequisites.hpp"
+#include "Hyper/Target.hpp"
 
 HYPER_DISABLE_WARNINGS()
 #include <llvm/IR/IRBuilder.h>
@@ -52,6 +53,7 @@ namespace Hyper
 		struct CreateInfo
 		{
 			std::string file;
+			Target target = Target::None;
 			bool debug_mode;
 		};
 
@@ -90,6 +92,7 @@ namespace Hyper
 
 	private:
 		std::string m_file;
+		Target m_target = Target::None;
 		bool m_debug_mode = false;
 
 		std::unique_ptr<llvm::LLVMContext> m_context = nullptr;

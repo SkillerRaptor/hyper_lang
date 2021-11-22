@@ -41,8 +41,11 @@ namespace Hyper
 {
 	Generator::Generator(const Generator::CreateInfo &create_info)
 		: m_file(create_info.file)
+		, m_target(create_info.target)
 		, m_debug_mode(create_info.debug_mode)
 	{
+		assert(!m_file.empty());
+		assert(m_target != Target::None);
 	}
 
 	bool Generator::build()
@@ -53,7 +56,18 @@ namespace Hyper
 		llvm::InitializeAllAsmParsers();
 		llvm::InitializeAllAsmPrinters();
 
-		const std::string target_triple = llvm::sys::getDefaultTargetTriple();
+		const std::string target_triple = [&]()
+		{
+			switch (m_target)
+			{
+			case Target::Linux:
+				return "x86_64-pc-linux-gnu";
+			case Target::Windows:
+				return "x86_64-pc-windows-msvc";
+			default:
+				HYPER_UNREACHABLE();
+			}
+		}();
 		m_module->setTargetTriple(target_triple);
 
 		std::string error;

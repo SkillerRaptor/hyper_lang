@@ -24,6 +24,12 @@ int main(int argc, const char **argv)
 
 	const std::vector<std::string> files(argv + 1, argv + argc);
 
+#if defined(WIN32)
+	constexpr Hyper::Target target = Hyper::Target::Windows;
+#else
+	constexpr Hyper::Target target = Hyper::Target::Linux;
+#endif
+
 #if defined(NDEBUG)
 	constexpr bool debug_scanner = false;
 	constexpr bool debug_parser = false;
@@ -38,6 +44,7 @@ int main(int argc, const char **argv)
 
 	const Hyper::Compiler::CreateInfo create_info = {
 		.files = files,
+		.target = target,
 		.debug_scanner = debug_scanner,
 		.debug_parser = debug_parser,
 		.debug_generator = debug_generator,
