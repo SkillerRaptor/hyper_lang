@@ -61,9 +61,7 @@ jobs:
             libllvm12 \
             llvm-12 \
             llvm-12-dev \
-            llvm-12-runtime \
-            liblld-12 \
-            liblld-12-dev
+            llvm-12-runtime
 
       - name: Configure CMake
         run: |
