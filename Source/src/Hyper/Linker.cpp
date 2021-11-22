@@ -55,16 +55,10 @@ namespace Hyper
 				gcc_command += args;
 				gcc_command += "> /dev/null";
 
-				int was_successful = std::system(gcc_command.c_str());
-				if (!was_successful)
+				int error_code = std::system(gcc_command.c_str());
+				if (error_code != 0)
 				{
-					std::string object_files;
-					for (const std::string &object_file : m_object_files)
-					{
-						object_files += object_file;
-						object_files += ' ';
-					}
-					Logger::error("failed to link {}\n", object_files);
+					Logger::error("failed to link executable\n");
 				}
 				break;
 			}
@@ -77,21 +71,15 @@ namespace Hyper
 				clang_command += args;
 				clang_command += "> /dev/null";
 
-				int was_successful = std::system(clang_command.c_str());
-				if (!was_successful)
+				int error_code = std::system(clang_command.c_str());
+				if (error_code != 0)
 				{
-					std::string object_files;
-					for (const std::string &object_file : m_object_files)
-					{
-						object_files += object_file;
-						object_files += ' ';
-					}
-					Logger::error("failed to link {}\n", object_files);
+					Logger::error("failed to link executable\n");
 				}
 				break;
 			}
 
-			Logger::error("failed to find system linker\n");
+			Logger::error("failed to find gcc or clang as system linker\n");
 			break;
 		}
 		case Target::Windows:

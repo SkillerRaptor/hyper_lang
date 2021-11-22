@@ -67,7 +67,7 @@ namespace Hyper
 		}
 
 		Logger::raw(" {} | {}\n", line_spaces, error_line);
-		std::abort();
+		std::exit(1);
 	}
 
 	std::string Diagnostics::get_line_content(size_t line) const
