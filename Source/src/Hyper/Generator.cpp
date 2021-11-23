@@ -26,100 +26,47 @@
 #include "Hyper/Prerequisites.hpp"
 
 HYPER_DISABLE_WARNINGS()
-#include <llvm/ADT/Triple.h>
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/Support/FileSystem.h>
-#include <llvm/Support/Host.h>
-#include <llvm/Support/raw_ostream.h>
-#include <llvm/Support/TargetRegistry.h>
-#include <llvm/Support/TargetSelect.h>
-#include <llvm/Target/TargetMachine.h>
-#include <llvm/Target/TargetOptions.h>
 HYPER_RESTORE_WARNINGS()
 
 namespace Hyper
 {
 	Generator::Generator(const Generator::CreateInfo &create_info)
 		: m_file(create_info.file)
-		, m_target(create_info.target)
 		, m_debug_mode(create_info.debug_mode)
 	{
 		assert(!m_file.empty());
-		assert(m_target != Target::None);
 	}
 
-	bool Generator::build()
+	bool Generator::build(
+		const std::string &object_file_name,
+		llvm::TargetMachine *target_machine)
 	{
-		llvm::InitializeAllTargetInfos();
-		llvm::InitializeAllTargets();
-		llvm::InitializeAllTargetMCs();
-		llvm::InitializeAllAsmParsers();
-		llvm::InitializeAllAsmPrinters();
-
-		const std::string target_triple = [&]()
-		{
-			switch (m_target)
-			{
-			case Target::Linux:
-				return "x86_64-pc-linux-gnu";
-			case Target::Windows:
-				return "x86_64-pc-windows-msvc";
-			default:
-				HYPER_UNREACHABLE();
-			}
-		}();
-		m_module->setTargetTriple(target_triple);
-
-		std::string error;
-		const llvm::Target *target =
-			llvm::TargetRegistry::lookupTarget(target_triple, error);
-
-		if (target == nullptr)
-		{
-			Logger::file_error(
-				m_file, "llvm::TargetRegistry::lookupTarget failed: {}\n", error);
-			return false;
-		}
-
-		const std::string cpu = "generic";
-		const std::string features = "";
-		const llvm::TargetOptions options = {};
-		const llvm::Optional<llvm::Reloc::Model> relocation_model =
-			llvm::Optional<llvm::Reloc::Model>();
-		llvm::TargetMachine *target_machine = target->createTargetMachine(
-			target_triple, cpu, features, options, relocation_model);
-
+		m_module->setTargetTriple(target_machine->getTargetTriple().getTriple());
 		m_module->setDataLayout(target_machine->createDataLayout());
 
-		const std::string file_name = m_file + ".o";
-
 		std::error_code error_code;
-		llvm::raw_fd_ostream destination(
-			file_name, error_code, llvm::sys::fs::OF_None);
+		llvm::raw_fd_ostream object_file(
+			object_file_name, error_code, llvm::sys::fs::OF_None);
 		if (error_code)
 		{
 			Logger::file_error(
-				m_file, "llvm::raw_fd_ostream failed: {}\n", error_code);
+				m_file, "failed to open object file stream: {}\n", error_code);
 			return false;
 		}
 
 		llvm::legacy::PassManager pass_manager;
 		const llvm::CodeGenFileType file_type = llvm::CGFT_ObjectFile;
 		if (target_machine->addPassesToEmitFile(
-					pass_manager, destination, nullptr, file_type))
+					pass_manager, object_file, nullptr, file_type))
 		{
-			Logger::file_error(
-				m_file, "llvm::TargetMachine::addPassesToEmitFile failed\n");
+			Logger::file_error(m_file, "failed to emit to object file\n");
 			return false;
 		}
 
 		pass_manager.run(*m_module);
-		destination.flush();
-
-		if (m_debug_mode)
-		{
-			m_module->print(llvm::outs(), nullptr);
-		}
+		object_file.flush();
 
 		return true;
 	}

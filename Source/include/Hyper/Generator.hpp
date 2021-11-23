@@ -8,7 +8,6 @@
 
 #include "Hyper/DataType.hpp"
 #include "Hyper/Prerequisites.hpp"
-#include "Hyper/Target.hpp"
 
 HYPER_DISABLE_WARNINGS()
 #include <llvm/IR/IRBuilder.h>
@@ -16,6 +15,7 @@ HYPER_DISABLE_WARNINGS()
 #include <llvm/IR/Module.h>
 #include <llvm/IR/NoFolder.h>
 #include <llvm/IR/Value.h>
+#include <llvm/Target/TargetMachine.h>
 HYPER_RESTORE_WARNINGS()
 
 #include <memory>
@@ -53,14 +53,15 @@ namespace Hyper
 		struct CreateInfo
 		{
 			std::string file;
-			Target target = Target::None;
 			bool debug_mode;
 		};
 
 	public:
 		explicit Generator(const CreateInfo &create_info);
 
-		bool build();
+		bool build(
+			const std::string &object_file_name,
+			llvm::TargetMachine *target_machine);
 
 		void visit(const AstNode &node);
 
@@ -92,7 +93,6 @@ namespace Hyper
 
 	private:
 		std::string m_file;
-		Target m_target = Target::None;
 		bool m_debug_mode = false;
 
 		std::unique_ptr<llvm::LLVMContext> m_context = nullptr;

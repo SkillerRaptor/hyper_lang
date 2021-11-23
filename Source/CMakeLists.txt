@@ -52,6 +52,7 @@ set(SOURCES
         src/Hyper/Diagnostics.cpp
         src/Hyper/Generator.cpp
         src/Hyper/Linker.cpp
+        src/Hyper/LinkerFinder.cpp
         src/Hyper/Parser.cpp
         src/Hyper/Scanner.cpp
         src/Hyper/Token.cpp
@@ -85,6 +86,7 @@ set(HEADERS
         include/Hyper/Formatter.hpp
         include/Hyper/Generator.hpp
         include/Hyper/Linker.hpp
+        include/Hyper/LinkerFinder.hpp
         include/Hyper/Logger.hpp
         include/Hyper/Parser.hpp
         include/Hyper/Prerequisites.hpp

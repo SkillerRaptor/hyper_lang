@@ -14,6 +14,14 @@
 #include "Hyper/Parser.hpp"
 #include "Hyper/Scanner.hpp"
 
+HYPER_DISABLE_WARNINGS()
+#include <llvm/ADT/Triple.h>
+#include <llvm/Support/Host.h>
+#include <llvm/Support/TargetRegistry.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Target/TargetOptions.h>
+HYPER_RESTORE_WARNINGS()
+
 #include <filesystem>
 #include <fstream>
 
@@ -33,6 +41,41 @@ namespace Hyper
 
 	bool Compiler::compile() const
 	{
+		llvm::InitializeAllTargetInfos();
+		llvm::InitializeAllTargets();
+		llvm::InitializeAllTargetMCs();
+		llvm::InitializeAllAsmParsers();
+		llvm::InitializeAllAsmPrinters();
+
+		const std::string target_triple = [&]()
+		{
+			switch (m_target)
+			{
+			case Target::Linux:
+				return "x86_64-pc-linux-gnu";
+			case Target::Windows:
+				return "x86_64-pc-windows-msvc";
+			default:
+				HYPER_UNREACHABLE();
+			}
+		}();
+
+		std::string error;
+		const llvm::Target *target =
+			llvm::TargetRegistry::lookupTarget(target_triple, error);
+		if (target == nullptr)
+		{
+			Logger::error("failed to lookup target in registry: {}\n", error);
+			return false;
+		}
+
+		const std::string cpu = "generic";
+		const std::string features = "";
+		const llvm::TargetOptions options = {};
+		const llvm::Optional<llvm::Reloc::Model> relocation_model;
+		llvm::TargetMachine *target_machine = target->createTargetMachine(
+			target_triple, cpu, features, options, relocation_model);
+
 		std::vector<std::string> object_files = {};
 
 		const size_t file_count = m_files.size();
@@ -94,18 +137,31 @@ namespace Hyper
 
 			const Generator::CreateInfo generator_create_info = {
 				.file = file,
-				.target = m_target,
 				.debug_mode = m_debug_generator,
 			};
 			Generator generator(generator_create_info);
 			tree->accept(generator);
 
-			if (!generator.build())
+			const std::string object_file = [&]()
 			{
+				switch (m_target)
+				{
+				case Target::Linux:
+					return file + ".o";
+				case Target::Windows:
+					return file + ".obj";
+				default:
+					HYPER_UNREACHABLE();
+				}
+			}();
+
+			if (!generator.build(object_file, target_machine))
+			{
+				Logger::file_error(file, "failed compiling to object file\n");
 				return false;
 			}
 
-			object_files.push_back(file + ".o");
+			object_files.push_back(object_file);
 
 			Logger::file_info(
 				file,

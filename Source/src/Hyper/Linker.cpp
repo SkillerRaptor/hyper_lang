@@ -6,8 +6,12 @@
 
 #include "Hyper/Linker.hpp"
 
+#include "Hyper/LinkerFinder.hpp"
 #include "Hyper/Logger.hpp"
 #include "Hyper/Prerequisites.hpp"
+
+#include <filesystem>
+#include <numeric>
 
 namespace Hyper
 {
@@ -34,62 +38,99 @@ namespace Hyper
 			Logger::info("Linking {}\n", object_files);
 		}
 
+		std::vector<std::string> args = {};
 		switch (m_target)
 		{
 		case Target::Linux:
 		{
-			std::string args;
-			args += "-o ./a.out ";
-			args += "-no-pie ";
+			args.emplace_back("-o ./a.out");
+			args.emplace_back("-no-pie");
+			args.insert(args.end(), m_object_files.begin(), m_object_files.end());
 
-			for (const std::string &object_file : m_object_files)
+			std::string args_string;
+			for (const std::string &argument : args)
 			{
-				args += object_file + " ";
+				args_string += argument;
+				args_string += ' ';
 			}
 
-			bool is_gcc_available = std::system("which gcc > /dev/null") == 0;
-			if (is_gcc_available)
+			const std::optional<std::string> gcc = LinkerFinder::find_gcc();
+			if (gcc.has_value())
 			{
-				std::string gcc_command;
-				gcc_command += "gcc ";
-				gcc_command += args;
-				gcc_command += "> /dev/null";
-
-				int error_code = std::system(gcc_command.c_str());
+				const std::string command =
+					Formatter::format("{} {}> /dev/null", gcc.value(), args_string);
+				int error_code = std::system(command.c_str());
 				if (error_code != 0)
 				{
 					Logger::error("failed to link executable\n");
+					break;
 				}
+
 				break;
 			}
 
-			bool is_clang_available = std::system("which clang > /dev/null") == 0;
-			if (is_clang_available)
+			const std::optional<std::string> clang = LinkerFinder::find_clang();
+			if (clang.has_value())
 			{
-				std::string clang_command;
-				clang_command += "clang ";
-				clang_command += args;
-				clang_command += "> /dev/null";
-
-				int error_code = std::system(clang_command.c_str());
+				const std::string command =
+					Formatter::format("{} {}> /dev/null", clang.value(), args_string);
+				int error_code = std::system(command.c_str());
 				if (error_code != 0)
 				{
 					Logger::error("failed to link executable\n");
+					break;
 				}
+
 				break;
 			}
 
-			Logger::error("failed to find gcc or clang as system linker\n");
+			Logger::error("failed to find GCC or Clang on the system as linker\n");
 			break;
 		}
 		case Target::Windows:
 		{
-			// TODO(SkillerRaptor): Adding windows linker support
-			Logger::error("windows linker is not implemented yet\n");
+			const std::optional<std::string> msvc = LinkerFinder::find_msvc();
+			if (!msvc.has_value())
+			{
+				Logger::error("failed to find MSVC on the system as linker\n");
+				break;
+			}
+
+			args.emplace_back("/libpath:\"\""); // VS lib x64
+			args.emplace_back("/libpath:\"\""); // VS atlmfc lib x64
+			args.emplace_back("/libpath:\"\""); // VS ucrt lib x64
+			args.emplace_back("/libpath:\"\""); // VS um lib x64
+			args.emplace_back("/out:a.exe");
+			args.emplace_back("/machine:x64");
+			args.emplace_back("-defaultlib:libcmt");
+			args.emplace_back("-nologo");
+			args.insert(args.end(), m_object_files.begin(), m_object_files.end());
+
+			std::string args_string;
+			for (const std::string &argument : args)
+			{
+				args_string += argument;
+				args_string += ' ';
+			}
+
+			const std::string command =
+				Formatter::format("\"{} {}\"", msvc.value(), args_string);
+			int error_code = std::system(command.c_str());
+			if (error_code != 0)
+			{
+				Logger::error("failed to link executable\n");
+				break;
+			}
+
 			break;
 		}
 		default:
 			HYPER_UNREACHABLE();
+		}
+
+		for (const std::string &object_file : m_object_files)
+		{
+			std::filesystem::remove(object_file);
 		}
 
 		return true;
