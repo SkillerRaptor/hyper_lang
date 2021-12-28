@@ -4,7 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-int main()
+#include "Hyper/Compiler.hpp"
+
+int main(int argc, char **argv)
 {
-	return 0;
+	// TODO: Check if file was passed
+
+	const Hyper::Compiler compiler(argc, argv);
+	return compiler.compile();
 }
