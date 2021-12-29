@@ -5,7 +5,7 @@
  */
 
 /*
- * TODO: Adding increment, decrement, floating point literal
+ * TODO: Adding floating point literal
  */
 
 #pragma once
@@ -37,10 +37,13 @@ namespace Hyper
 			PercentEqual,
 			BitwiseAndEqual,
 			BitwiseOrEqual,
-			BitwiseNotEqual,
 			BitwiseXorEqual,
 			LeftShiftEqual,
 			RightShiftEqual,
+
+			// NOTE: Operators (Increment / Decrement)
+			Increment,
+			Decrement,
 
 			// NOTE: Operators (Arithmetic)
 			Plus,
@@ -94,10 +97,6 @@ namespace Hyper
 			Mutable,
 			Struct,
 
-			// NOTE: Keywords (Literals)
-			True,
-			False,
-
 			// NOTE: Types
 			Bool,
 			Int8,
@@ -116,6 +115,7 @@ namespace Hyper
 			Void,
 
 			// NOTE: Literals
+			BoolLiteral,
 			IntegerLiteral,
 			StringLiteral,
 		};

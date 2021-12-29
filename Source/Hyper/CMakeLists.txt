@@ -10,14 +10,60 @@
 set(SOURCES
         src/main.cpp
         src/Hyper/Compiler.cpp
-        src/Hyper/Lexer.cpp)
+        src/Hyper/Lexer.cpp
+        src/Hyper/Parser.cpp
+        src/Hyper/Ast/AstNode.cpp
+        src/Hyper/Ast/Declaration.cpp
+        src/Hyper/Ast/Expression.cpp
+        src/Hyper/Ast/Literal.cpp
+        src/Hyper/Ast/Statement.cpp
+        src/Hyper/Ast/Declarations/FunctionDeclaration.cpp
+        src/Hyper/Ast/Declarations/TranslationUnitDeclaration.cpp
+        src/Hyper/Ast/Declarations/VariableDeclaration.cpp
+        src/Hyper/Ast/Expressions/BinaryExpression.cpp
+        src/Hyper/Ast/Expressions/CallExpression.cpp
+        src/Hyper/Ast/Expressions/IdentifierExpression.cpp
+        src/Hyper/Ast/Expressions/UnaryExpression.cpp
+        src/Hyper/Ast/Literals/BoolLiteral.cpp
+        src/Hyper/Ast/Literals/IntegerLiteral.cpp
+        src/Hyper/Ast/Literals/StringLiteral.cpp
+        src/Hyper/Ast/Statements/AssignStatement.cpp
+        src/Hyper/Ast/Statements/CompoundStatement.cpp
+        src/Hyper/Ast/Statements/ExpressionStatement.cpp
+        src/Hyper/Ast/Statements/IfStatement.cpp
+        src/Hyper/Ast/Statements/CompoundAssignStatement.cpp
+        src/Hyper/Ast/Statements/ReturnStatement.cpp
+        src/Hyper/Ast/Statements/WhileStatement.cpp)
 
 set(HEADERS
         include/Hyper/Compiler.hpp
         include/Hyper/Formatter.hpp
         include/Hyper/Lexer.hpp
         include/Hyper/Logger.hpp
-        include/Hyper/Token.hpp)
+        include/Hyper/Parser.hpp
+        include/Hyper/Token.hpp
+        include/Hyper/Ast/AstNode.hpp
+        include/Hyper/Ast/Declaration.hpp
+        include/Hyper/Ast/Expression.hpp
+        include/Hyper/Ast/Literal.hpp
+        include/Hyper/Ast/Statement.hpp
+        include/Hyper/Ast/Declarations/FunctionDeclaration.hpp
+        include/Hyper/Ast/Declarations/TranslationUnitDeclaration.hpp
+        include/Hyper/Ast/Declarations/VariableDeclaration.hpp
+        include/Hyper/Ast/Expressions/BinaryExpression.hpp
+        include/Hyper/Ast/Expressions/CallExpression.hpp
+        include/Hyper/Ast/Expressions/IdentifierExpression.hpp
+        include/Hyper/Ast/Expressions/UnaryExpression.hpp
+        include/Hyper/Ast/Literals/BoolLiteral.hpp
+        include/Hyper/Ast/Literals/IntegerLiteral.hpp
+        include/Hyper/Ast/Literals/StringLiteral.hpp
+        include/Hyper/Ast/Statements/AssignStatement.hpp
+        include/Hyper/Ast/Statements/CompoundStatement.hpp
+        include/Hyper/Ast/Statements/ExpressionStatement.hpp
+        include/Hyper/Ast/Statements/IfStatement.hpp
+        include/Hyper/Ast/Statements/CompoundAssignStatement.hpp
+        include/Hyper/Ast/Statements/ReturnStatement.hpp
+        include/Hyper/Ast/Statements/WhileStatement.hpp)
 
 add_executable(hyper ${SOURCES} ${HEADERS})
 target_link_libraries(

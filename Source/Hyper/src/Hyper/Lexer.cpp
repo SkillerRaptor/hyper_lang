@@ -56,6 +56,14 @@ namespace Hyper
 			type = Token::Type::Assign;
 			break;
 		case '+':
+			if (peek() == '+')
+			{
+				advance();
+				value = "++";
+				type = Token::Type::Increment;
+				break;
+			}
+
 			if (peek() == '=')
 			{
 				advance();
@@ -68,6 +76,14 @@ namespace Hyper
 			type = Token::Type::Plus;
 			break;
 		case '-':
+			if (peek() == '-')
+			{
+				advance();
+				value = "--";
+				type = Token::Type::Decrement;
+				break;
+			}
+
 			if (peek() == '=')
 			{
 				advance();
@@ -164,14 +180,6 @@ namespace Hyper
 			type = Token::Type::BitwiseOr;
 			break;
 		case '~':
-			if (peek() == '=')
-			{
-				advance();
-				value = "~=";
-				type = Token::Type::BitwiseNotEqual;
-				break;
-			}
-
 			value = "~";
 			type = Token::Type::BitwiseNot;
 			break;
@@ -191,7 +199,7 @@ namespace Hyper
 			if (peek() == '<')
 			{
 				advance();
-				if (peek() == '<')
+				if (peek() == '=')
 				{
 					advance();
 					value = "<<=";
@@ -327,6 +335,8 @@ namespace Hyper
 			.line = line,
 			.column = column,
 		};
+
+		Logger::debug("Token '{}' at {}:{}\n", value, line, column);
 
 		return token;
 	}
@@ -484,16 +494,6 @@ namespace Hyper
 			return Token::Type::Struct;
 		}
 
-		if (identifier == "true")
-		{
-			return Token::Type::True;
-		}
-
-		if (identifier == "false")
-		{
-			return Token::Type::False;
-		}
-
 		if (identifier == "bool")
 		{
 			return Token::Type::Bool;
@@ -567,6 +567,11 @@ namespace Hyper
 		if (identifier == "void")
 		{
 			return Token::Type::Void;
+		}
+
+		if (identifier == "true" || identifier == "false")
+		{
+			return Token::Type::BoolLiteral;
 		}
 
 		return Token::Type::Invalid;

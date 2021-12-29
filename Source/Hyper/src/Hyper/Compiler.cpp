@@ -6,8 +6,10 @@
 
 #include "Hyper/Compiler.hpp"
 
+#include "Hyper/Ast/AstNode.hpp"
 #include "Hyper/Lexer.hpp"
 #include "Hyper/Logger.hpp"
+#include "Hyper/Parser.hpp"
 
 #include <fstream>
 
@@ -35,14 +37,10 @@ namespace Hyper
 			// TODO: Check if `text` is empty
 
 			Lexer lexer(file, text);
+			Parser parser(file, lexer);
 
-			Token token = lexer.next_token();
-			while (token.type != Token::Type::Eof)
-			{
-				Logger::file_info(
-					file, "'{}' at {}:{}\n", token.value, token.line, token.column);
-				token = lexer.next_token();
-			}
+			const std::unique_ptr<AstNode> ast = parser.parse_tree();
+			ast->dump();
 		}
 
 		return EXIT_SUCCESS;

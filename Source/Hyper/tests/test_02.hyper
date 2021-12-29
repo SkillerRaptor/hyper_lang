@@ -1,0 +1,9 @@
+fn function_01() -> void
+{
+}
+
+fn main() -> i32
+{
+	function_01();
+	return 0;
+}
