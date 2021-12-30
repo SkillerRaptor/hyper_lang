@@ -10,8 +10,8 @@ namespace Hyper
 {
 	BinaryExpression::BinaryExpression(
 		Operation operation,
-		std::unique_ptr<Expression> left,
-		std::unique_ptr<Expression> right)
+		ExpressionPtr left,
+		ExpressionPtr right)
 		: m_operation(operation)
 		, m_left(std::move(left))
 		, m_right(std::move(right))

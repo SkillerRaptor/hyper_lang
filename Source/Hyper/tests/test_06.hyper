@@ -1,0 +1,14 @@
+fn main() -> i32
+{
+	let x: mutable i32 = 0;
+  x += 1;
+  x -= 1;
+  x *= 1;
+  x /= 1;
+  x %= 1;
+  x &= 1;
+  x |= 1;
+  x ^= 1;
+  
+	return 0;
+}

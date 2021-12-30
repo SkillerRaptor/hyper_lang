@@ -23,6 +23,7 @@ namespace Hyper
 			// NOTE: Expressions
 			BinaryExpression,
 			CallExpression,
+			ConditionalExpression,
 			IdentifierExpression,
 			UnaryExpression,
 

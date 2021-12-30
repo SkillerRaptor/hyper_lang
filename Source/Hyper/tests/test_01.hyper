@@ -1,4 +1,10 @@
+fn function() -> void
+{
+}
+
 fn main() -> i32
 {
+	function();
+
 	return 0;
 }

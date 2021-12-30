@@ -8,9 +8,7 @@
 
 namespace Hyper
 {
-	UnaryExpression::UnaryExpression(
-		Kind kind,
-		std::unique_ptr<Expression> expression)
+	UnaryExpression::UnaryExpression(Kind kind, ExpressionPtr expression)
 		: m_kind(kind)
 		, m_expression(std::move(expression))
 	{
@@ -20,6 +18,8 @@ namespace Hyper
 	void UnaryExpression::dump(std::string_view prefix, bool self_last) const
 	{
 		AstNode::dump_self(prefix, self_last);
+
+		AstNode::dump_node(*m_expression, prefix, self_last, true);
 	}
 
 	AstNode::Category UnaryExpression::class_category() const noexcept

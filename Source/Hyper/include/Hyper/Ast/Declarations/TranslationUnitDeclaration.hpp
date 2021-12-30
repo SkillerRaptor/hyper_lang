@@ -7,10 +7,9 @@
 #pragma once
 
 #include "Hyper/Ast/Declaration.hpp"
+#include "Hyper/Ast/Forward.hpp"
 
-#include <memory>
 #include <string>
-#include <vector>
 
 namespace Hyper
 {
@@ -18,8 +17,8 @@ namespace Hyper
 	{
 	public:
 		TranslationUnitDeclaration(
-			std::string file,
-			std::vector<std::unique_ptr<Declaration>> declarations);
+			std::string translation_unit,
+			DeclarationList declarations);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -27,7 +26,7 @@ namespace Hyper
 		std::string_view class_name() const noexcept override;
 
 	private:
-		std::string m_file;
-		std::vector<std::unique_ptr<Declaration>> m_declarations = {};
+		std::string m_translation_unit;
+		DeclarationList m_declarations = {};
 	};
 } // namespace Hyper

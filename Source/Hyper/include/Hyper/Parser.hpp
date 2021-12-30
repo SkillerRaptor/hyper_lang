@@ -6,63 +6,58 @@
 
 #pragma once
 
+#include "Hyper/Ast/Forward.hpp"
 #include "Hyper/Token.hpp"
+#include "Hyper/Type.hpp"
 
-#include <memory>
 #include <string>
 
 namespace Hyper
 {
-	class AstNode;
-	class Declaration;
-	class Expression;
-	class Literal;
 	class Lexer;
-	class Statement;
 
 	class Parser
 	{
 	public:
 		Parser(std::string file, Lexer &lexer);
 
-		std::unique_ptr<AstNode> parse_tree();
+		AstPtr parse_tree();
 
 	private:
-		std::unique_ptr<Declaration> parse_function_declaration();
-		std::unique_ptr<Declaration> parse_translation_unit_declaration();
-		std::unique_ptr<Declaration> parse_variable_declaration();
+		DeclarationPtr parse_function_declaration();
+		DeclarationPtr parse_translation_unit_declaration();
+		DeclarationPtr parse_variable_declaration();
 
-		std::unique_ptr<Expression> parse_prefix_expression();
-		std::unique_ptr<Expression> parse_postfix_expression();
-		std::unique_ptr<Expression> parse_paren_expression();
-		std::unique_ptr<Expression> parse_primary_expression();
-		std::unique_ptr<Expression> parse_binary_expression(uint8_t precedence);
-		std::unique_ptr<Expression> parse_call_expression();
-		std::unique_ptr<Expression> parse_identifier_expression();
+		ExpressionPtr parse_prefix_expression();
+		ExpressionPtr parse_postfix_expression();
+		ExpressionPtr parse_paren_expression();
+		ExpressionPtr parse_primary_expression();
+		ExpressionPtr parse_binary_expression(uint8_t precedence);
+		ExpressionPtr parse_call_expression();
+		ExpressionPtr parse_conditional_expression();
+		ExpressionPtr parse_identifier_expression();
 
-		std::unique_ptr<Literal> parse_bool_literal();
-		std::unique_ptr<Literal> parse_integer_literal();
-		std::unique_ptr<Literal> parse_string_literal();
+		LiteralPtr parse_bool_literal();
+		LiteralPtr parse_integer_literal();
+		LiteralPtr parse_string_literal();
 
-		std::unique_ptr<Statement> parse_statement();
-		std::unique_ptr<Statement> parse_assign_statement();
-		std::unique_ptr<Statement> parse_compound_statement();
-		std::unique_ptr<Statement> parse_compound_assign_statement();
-		std::unique_ptr<Statement> parse_expression_statement(
-			std::unique_ptr<Expression> expression);
-		std::unique_ptr<Statement> parse_if_statement();
-		std::unique_ptr<Statement> parse_return_statement();
-		std::unique_ptr<Statement> parse_while_statement();
+		StatementPtr parse_statement();
+		StatementPtr parse_assign_statement();
+		StatementPtr parse_compound_statement();
+		StatementPtr parse_compound_assign_statement();
+		StatementPtr parse_expression_statement(ExpressionPtr expression);
+		StatementPtr parse_if_statement();
+		StatementPtr parse_return_statement();
+		StatementPtr parse_while_statement();
+
+		Token current_token() const noexcept;
+		void save_token(Token token);
 
 		Token consume() noexcept;
 		Token consume(Token::Type token_type) noexcept;
 		bool match(Token::Type token_type) const noexcept;
 
-		void save_token(Token token);
-		Token current_token() const noexcept;
-
-		std::string consume_type();
-
+		Type consume_type();
 		uint8_t map_precedence(Token::Type token_type) const noexcept;
 
 	private:

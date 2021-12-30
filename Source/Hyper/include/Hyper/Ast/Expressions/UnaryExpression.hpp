@@ -7,8 +7,7 @@
 #pragma once
 
 #include "Hyper/Ast/Expression.hpp"
-
-#include <memory>
+#include "Hyper/Ast/Forward.hpp"
 
 namespace Hyper
 {
@@ -31,7 +30,7 @@ namespace Hyper
 		};
 
 	public:
-		UnaryExpression(Kind kind, std::unique_ptr<Expression> expression);
+		UnaryExpression(Kind kind, ExpressionPtr expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -39,7 +38,7 @@ namespace Hyper
 		std::string_view class_name() const noexcept override;
 
 	private:
-		Kind m_kind;
-		std::unique_ptr<Expression> m_expression;
+		Kind m_kind = Kind::Invalid;
+		ExpressionPtr m_expression = nullptr;
 	};
 } // namespace Hyper

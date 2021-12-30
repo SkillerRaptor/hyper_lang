@@ -8,8 +8,7 @@
 
 namespace Hyper
 {
-	CompoundStatement::CompoundStatement(
-		std::vector<std::unique_ptr<Statement>> statements)
+	CompoundStatement::CompoundStatement(StatementList statements)
 		: m_statements(std::move(statements))
 	{
 	}

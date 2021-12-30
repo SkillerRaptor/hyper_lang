@@ -6,16 +6,14 @@
 
 #include "Hyper/Ast/Declarations/FunctionDeclaration.hpp"
 
-#include "Hyper/Logger.hpp"
-
 namespace Hyper
 {
 	FunctionDeclaration::FunctionDeclaration(
-		std::string name,
-		std::vector<std::unique_ptr<Declaration>> arguments,
-		std::string return_type,
-		std::unique_ptr<Statement> body)
-		: m_name(std::move(name))
+		std::string identifier,
+		DeclarationList arguments,
+		Type return_type,
+		StatementPtr body)
+		: m_identifier(std::move(identifier))
 		, m_arguments(std::move(arguments))
 		, m_return_type(std::move(return_type))
 		, m_body(std::move(body))

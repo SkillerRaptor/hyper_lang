@@ -71,6 +71,8 @@ namespace Hyper
 			LessEqual,
 			GreaterEqual,
 
+			QuestionMark,
+
 			// NOTE: Brackets
 			CurlyLeftBracket,
 			CurlyRightBracket,

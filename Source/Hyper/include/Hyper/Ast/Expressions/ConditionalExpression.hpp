@@ -6,14 +6,18 @@
 
 #pragma once
 
-#include "Hyper/Ast/Literal.hpp"
+#include "Hyper/Ast/Expression.hpp"
+#include "Hyper/Ast/Forward.hpp"
 
 namespace Hyper
 {
-	class BoolLiteral : public Literal
+	class ConditionalExpression : public Expression
 	{
 	public:
-		explicit BoolLiteral(bool boolean);
+		ConditionalExpression(
+			ExpressionPtr condition,
+			ExpressionPtr true_expression,
+			ExpressionPtr false_expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -21,6 +25,8 @@ namespace Hyper
 		std::string_view class_name() const noexcept override;
 
 	private:
-		bool m_boolean = false;
+		ExpressionPtr m_condition = nullptr;
+		ExpressionPtr m_true_expression = nullptr;
+		ExpressionPtr m_false_expression = nullptr;
 	};
 } // namespace Hyper

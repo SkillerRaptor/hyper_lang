@@ -116,6 +116,17 @@ namespace Hyper
 			type = Token::Type::Star;
 			break;
 		case '/':
+			if (peek() == '/')
+			{
+				advance();
+				while (peek() != '\n')
+				{
+					advance();
+				}
+
+				return next_token();
+			}
+
 			if (peek() == '=')
 			{
 				advance();
@@ -250,6 +261,10 @@ namespace Hyper
 
 			value = ">";
 			type = Token::Type::GreaterThan;
+			break;
+		case '?':
+			value = "?";
+			type = Token::Type::QuestionMark;
 			break;
 		case '!':
 			if (peek() == '=')

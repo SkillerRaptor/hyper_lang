@@ -13,8 +13,8 @@ namespace Hyper
 	VariableDeclaration::VariableDeclaration(
 		std::string name,
 		VariableDeclaration::Mutable mutable_state,
-		std::string type,
-		std::unique_ptr<Expression> expression)
+		Type type,
+		ExpressionPtr expression)
 		: m_name(std::move(name))
 		, m_mutable(mutable_state)
 		, m_type(std::move(type))

@@ -6,18 +6,15 @@
 
 #pragma once
 
+#include "Hyper/Ast/Forward.hpp"
 #include "Hyper/Ast/Statement.hpp"
-
-#include <memory>
-#include <vector>
 
 namespace Hyper
 {
 	class CompoundStatement : public Statement
 	{
 	public:
-		explicit CompoundStatement(
-			std::vector<std::unique_ptr<Statement>> statements);
+		explicit CompoundStatement(StatementList statements);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -25,6 +22,6 @@ namespace Hyper
 		std::string_view class_name() const noexcept override;
 
 	private:
-		std::vector<std::unique_ptr<Statement>> m_statements = {};
+		StatementList m_statements = {};
 	};
 } // namespace Hyper

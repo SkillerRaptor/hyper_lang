@@ -6,9 +6,8 @@
 
 #pragma once
 
+#include "Hyper/Ast/Forward.hpp"
 #include "Hyper/Ast/Statement.hpp"
-
-#include <memory>
 
 namespace Hyper
 {
@@ -18,9 +17,9 @@ namespace Hyper
 	{
 	public:
 		IfStatement(
-			std::unique_ptr<Expression> condition,
-			std::unique_ptr<Statement> true_body,
-			std::unique_ptr<Statement> false_body);
+			ExpressionPtr condition,
+			StatementPtr true_body,
+			StatementPtr false_body);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -28,8 +27,8 @@ namespace Hyper
 		std::string_view class_name() const noexcept override;
 
 	private:
-		std::unique_ptr<Expression> m_condition = nullptr;
-		std::unique_ptr<Statement> m_true_body = nullptr;
-		std::unique_ptr<Statement> m_false_body = nullptr;
+		ExpressionPtr m_condition = nullptr;
+		StatementPtr m_true_body = nullptr;
+		StatementPtr m_false_body = nullptr;
 	};
 } // namespace Hyper

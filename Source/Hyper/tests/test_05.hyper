@@ -1,0 +1,10 @@
+fn main() -> i32
+{
+	let x: mutable i32 = 0;
+  x = ~5;
+
+	let y: mutable bool = false;
+  y = !y;
+  
+	return 0;
+}

@@ -1,0 +1,14 @@
+fn main() -> i32
+{
+	let x: mutable i32 = 0;
+	if (x > 5)
+	{
+		x = 5;
+	}
+	else
+	{
+		x = 6;
+	}
+  
+	return 0;
+}

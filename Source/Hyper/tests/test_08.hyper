@@ -1,0 +1,10 @@
+fn main() -> i32
+{
+	let x: mutable i32 = 0;
+	while (x < 5)
+	{
+		x += 2;
+	}
+  
+	return 0;
+}

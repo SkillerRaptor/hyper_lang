@@ -10,9 +10,7 @@
 
 namespace Hyper
 {
-	AssignStatement::AssignStatement(
-		std::string name,
-		std::unique_ptr<Expression> expression)
+	AssignStatement::AssignStatement(std::string name, ExpressionPtr expression)
 		: m_name(std::move(name))
 		, m_expression(std::move(expression))
 	{

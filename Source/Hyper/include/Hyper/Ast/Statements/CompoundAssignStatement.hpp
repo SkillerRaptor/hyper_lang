@@ -6,9 +6,9 @@
 
 #pragma once
 
+#include "Hyper/Ast/Forward.hpp"
 #include "Hyper/Ast/Statement.hpp"
 
-#include <memory>
 #include <string>
 
 namespace Hyper
@@ -40,7 +40,7 @@ namespace Hyper
 		CompoundAssignStatement(
 			std::string name,
 			Operation operation,
-			std::unique_ptr<Expression> expression);
+			ExpressionPtr expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -50,6 +50,6 @@ namespace Hyper
 	private:
 		std::string m_name;
 		Operation m_operation = Operation::Invalid;
-		std::unique_ptr<Expression> m_expression = nullptr;
+		ExpressionPtr m_expression = nullptr;
 	};
 } // namespace Hyper

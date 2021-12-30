@@ -13,7 +13,7 @@ namespace Hyper
 	CompoundAssignStatement::CompoundAssignStatement(
 		std::string name,
 		CompoundAssignStatement::Operation operation,
-		std::unique_ptr<Expression> expression)
+		ExpressionPtr expression)
 		: m_name(std::move(name))
 		, m_operation(operation)
 		, m_expression(std::move(expression))

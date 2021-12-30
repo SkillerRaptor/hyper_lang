@@ -7,8 +7,9 @@
 #pragma once
 
 #include "Hyper/Ast/Declaration.hpp"
+#include "Hyper/Ast/Forward.hpp"
+#include "Hyper/Type.hpp"
 
-#include <memory>
 #include <string>
 
 namespace Hyper
@@ -28,8 +29,8 @@ namespace Hyper
 		VariableDeclaration(
 			std::string name,
 			Mutable mutable_state,
-			std::string type,
-			std::unique_ptr<Expression> expression);
+			Type type,
+			ExpressionPtr expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -39,7 +40,7 @@ namespace Hyper
 	private:
 		std::string m_name;
 		Mutable m_mutable = Mutable::No;
-		std::string m_type;
-		std::unique_ptr<Expression> m_expression = nullptr;
+		Type m_type = {};
+		ExpressionPtr m_expression = nullptr;
 	};
 } // namespace Hyper

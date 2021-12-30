@@ -6,14 +6,12 @@
 
 #include "Hyper/Ast/Declarations/TranslationUnitDeclaration.hpp"
 
-#include "Hyper/Logger.hpp"
-
 namespace Hyper
 {
 	TranslationUnitDeclaration::TranslationUnitDeclaration(
-		std::string file,
-		std::vector<std::unique_ptr<Declaration>> declarations)
-		: m_file(std::move(file))
+		std::string translation_unit,
+		DeclarationList declarations)
+		: m_translation_unit(std::move(translation_unit))
 		, m_declarations(std::move(declarations))
 	{
 	}

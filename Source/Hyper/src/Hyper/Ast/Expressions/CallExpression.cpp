@@ -8,9 +8,7 @@
 
 namespace Hyper
 {
-	CallExpression::CallExpression(
-		std::string name,
-		std::vector<std::unique_ptr<Expression>> arguments)
+	CallExpression::CallExpression(std::string name, ExpressionList arguments)
 		: m_name(std::move(name))
 		, m_arguments(std::move(arguments))
 	{

@@ -10,7 +10,7 @@
 
 namespace Hyper
 {
-	ReturnStatement::ReturnStatement(std::unique_ptr<Expression> expression)
+	ReturnStatement::ReturnStatement(ExpressionPtr expression)
 		: m_expression(std::move(expression))
 	{
 	}

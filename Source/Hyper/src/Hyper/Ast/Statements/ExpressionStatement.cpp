@@ -10,8 +10,7 @@
 
 namespace Hyper
 {
-	ExpressionStatement::ExpressionStatement(
-		std::unique_ptr<Expression> expression)
+	ExpressionStatement::ExpressionStatement(ExpressionPtr expression)
 		: m_expression(std::move(expression))
 	{
 	}

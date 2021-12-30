@@ -6,9 +6,8 @@
 
 #pragma once
 
+#include "Hyper/Ast/Forward.hpp"
 #include "Hyper/Ast/Statement.hpp"
-
-#include <memory>
 
 namespace Hyper
 {
@@ -17,9 +16,7 @@ namespace Hyper
 	class WhileStatement : public Statement
 	{
 	public:
-		WhileStatement(
-			std::unique_ptr<Expression> condition,
-			std::unique_ptr<Statement> body);
+		WhileStatement(ExpressionPtr condition, StatementPtr body);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -27,7 +24,7 @@ namespace Hyper
 		std::string_view class_name() const noexcept override;
 
 	private:
-		std::unique_ptr<Expression> m_condition = nullptr;
-		std::unique_ptr<Statement> m_body = nullptr;
+		ExpressionPtr m_condition = nullptr;
+		StatementPtr m_body = nullptr;
 	};
 } // namespace Hyper

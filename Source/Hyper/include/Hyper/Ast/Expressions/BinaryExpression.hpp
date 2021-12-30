@@ -7,8 +7,7 @@
 #pragma once
 
 #include "Hyper/Ast/Expression.hpp"
-
-#include <memory>
+#include "Hyper/Ast/Forward.hpp"
 
 namespace Hyper
 {
@@ -46,8 +45,8 @@ namespace Hyper
 	public:
 		BinaryExpression(
 			Operation operation,
-			std::unique_ptr<Expression> left,
-			std::unique_ptr<Expression> right);
+			ExpressionPtr left,
+			ExpressionPtr right);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -56,7 +55,7 @@ namespace Hyper
 
 	private:
 		Operation m_operation = Operation::Invalid;
-		std::unique_ptr<Expression> m_left = nullptr;
-		std::unique_ptr<Expression> m_right = nullptr;
+		ExpressionPtr m_left = nullptr;
+		ExpressionPtr m_right = nullptr;
 	};
 } // namespace Hyper

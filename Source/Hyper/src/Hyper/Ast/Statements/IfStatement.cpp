@@ -11,9 +11,9 @@
 namespace Hyper
 {
 	IfStatement::IfStatement(
-		std::unique_ptr<Expression> condition,
-		std::unique_ptr<Statement> true_body,
-		std::unique_ptr<Statement> false_body)
+		ExpressionPtr condition,
+		StatementPtr true_body,
+		StatementPtr false_body)
 		: m_condition(std::move(condition))
 		, m_true_body(std::move(true_body))
 		, m_false_body(std::move(false_body))
@@ -31,7 +31,7 @@ namespace Hyper
 
 		if (false_body)
 		{
-			AstNode::dump_node(*m_false_body, prefix, self_last, false);
+			AstNode::dump_node(*m_false_body, prefix, self_last, true);
 		}
 	}
 

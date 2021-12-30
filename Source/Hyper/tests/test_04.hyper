@@ -1,7 +1,7 @@
 fn main() -> i32
 {
 	let x: i32 = 0;
-	let y: mutable i32 = 0;
+	let y: bool = x < 5 ? true : false;
 
 	return 0;
 }

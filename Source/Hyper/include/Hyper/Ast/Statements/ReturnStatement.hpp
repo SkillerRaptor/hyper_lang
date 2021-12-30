@@ -6,9 +6,8 @@
 
 #pragma once
 
+#include "Hyper/Ast/Forward.hpp"
 #include "Hyper/Ast/Statement.hpp"
-
-#include <memory>
 
 namespace Hyper
 {
@@ -17,7 +16,7 @@ namespace Hyper
 	class ReturnStatement : public Statement
 	{
 	public:
-		explicit ReturnStatement(std::unique_ptr<Expression> expression);
+		explicit ReturnStatement(ExpressionPtr expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 
@@ -25,6 +24,6 @@ namespace Hyper
 		std::string_view class_name() const noexcept override;
 
 	private:
-		std::unique_ptr<Expression> m_expression;
+		ExpressionPtr m_expression = nullptr;
 	};
 } // namespace Hyper
