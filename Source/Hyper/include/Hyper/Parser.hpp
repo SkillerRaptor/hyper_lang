@@ -67,6 +67,7 @@ namespace Hyper
 		Lexer &m_lexer;
 		Diagnostics &m_diagnostics;
 
+		Token m_last_token = {};
 		Token m_current_token = {};
 		Token m_saved_token = {};
 	};

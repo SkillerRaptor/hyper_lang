@@ -584,6 +584,7 @@ namespace Hyper
 	Token Parser::consume() noexcept
 	{
 		Token old_token = current_token();
+		m_last_token = old_token;
 		if (m_saved_token.type != Token::Type::Invalid)
 		{
 			m_saved_token.type = Token::Type::Invalid;
@@ -598,13 +599,22 @@ namespace Hyper
 	{
 		if (!match(token_type))
 		{
-			const Token token = current_token();
+			const Token &token = current_token();
+			const Position start_position = [&]()
+			{
+				if (token_type != Token::Type::Semicolon)
+				{
+					return token.position;
+				}
 
-			const Position start_position = token.position;
-			const Position end_position = {
-				.line = start_position.line,
-				.column = start_position.column + token.value.length(),
-			};
+				const Position position = {
+					.line = m_last_token.position.line,
+					.column = m_last_token.position.column + m_last_token.value.length(),
+				};
+				return position;
+			}();
+
+			const Position end_position = token.position;
 
 			const SourceRange source_range = {
 				.start = start_position,
