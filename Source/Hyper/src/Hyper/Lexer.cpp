@@ -6,15 +6,17 @@
 
 #include "Hyper/Lexer.hpp"
 
+#include "Hyper/Diagnostics.hpp"
 #include "Hyper/Logger.hpp"
 
 #include <cctype>
 
 namespace Hyper
 {
-	Lexer::Lexer(std::string file, std::string text)
+	Lexer::Lexer(std::string file, std::string text, Diagnostics &diagnostics)
 		: m_file(std::move(file))
 		, m_text(std::move(text))
+		, m_diagnostics(diagnostics)
 	{
 	}
 
@@ -23,7 +25,6 @@ namespace Hyper
 		advance();
 		skip_whitespace();
 
-		const size_t start = m_position;
 		const size_t line = m_line;
 		const size_t column = m_column;
 
@@ -346,9 +347,7 @@ namespace Hyper
 		Token token = {
 			.value = value,
 			.type = type,
-			.pos = start,
-			.line = line,
-			.column = column,
+			.position = { .line = line, .column = column },
 		};
 
 		Logger::debug("Token '{}' at {}:{}\n", value, line, column);
@@ -358,7 +357,7 @@ namespace Hyper
 
 	void Lexer::advance() noexcept
 	{
-		if (m_position >= m_text.length())
+		if (m_index >= m_text.length())
 		{
 			m_current_char = '\0';
 			return;
@@ -370,19 +369,24 @@ namespace Hyper
 			m_column = 0;
 		}
 
+		if (m_current_char == '\t')
+		{
+			++m_column;
+		}
+
 		++m_column;
 
-		m_current_char = m_text[m_position++];
+		m_current_char = m_text[m_index++];
 	}
 
 	char Lexer::peek() const noexcept
 	{
-		if (m_position + 1 >= m_text.length())
+		if (m_index + 1 >= m_text.length())
 		{
 			return '\0';
 		}
 
-		return m_text[m_position];
+		return m_text[m_index];
 	}
 
 	void Lexer::skip_whitespace() noexcept
@@ -397,7 +401,7 @@ namespace Hyper
 
 	bool Lexer::has_reached_end() const noexcept
 	{
-		return m_position >= m_text.length();
+		return m_index >= m_text.length();
 	}
 
 	std::string Lexer::scan_string()
@@ -405,16 +409,29 @@ namespace Hyper
 		std::string string;
 		string += m_current_char;
 
-		while (true)
+		const size_t start_line = m_line;
+		const size_t start_column = m_column;
+		do
 		{
 			advance();
 			string += m_current_char;
 
-			if (m_current_char == '"')
+			if (has_reached_end())
 			{
-				break;
+				const Position start_position = { .line = start_line,
+																					.column = start_column };
+
+				const Position end_position = { .line = m_line,
+																				.column = m_column - 1 };
+
+				const SourceRange source_range = {
+					.start = start_position,
+					.end = end_position,
+				};
+
+				m_diagnostics.error(source_range, "unterminated double quote string");
 			}
-		}
+		} while (m_current_char != '"');
 
 		return string;
 	}

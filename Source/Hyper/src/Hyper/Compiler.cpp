@@ -7,6 +7,7 @@
 #include "Hyper/Compiler.hpp"
 
 #include "Hyper/Ast/AstNode.hpp"
+#include "Hyper/Diagnostics.hpp"
 #include "Hyper/Lexer.hpp"
 #include "Hyper/Logger.hpp"
 #include "Hyper/Parser.hpp"
@@ -36,8 +37,9 @@ namespace Hyper
 
 			// TODO: Check if `text` is empty
 
-			Lexer lexer(file, text);
-			Parser parser(file, lexer);
+			Diagnostics diagnostics(file, text);
+			Lexer lexer(file, text, diagnostics);
+			Parser parser(file, lexer, diagnostics);
 
 			const std::unique_ptr<AstNode> ast = parser.parse_tree();
 			ast->dump();

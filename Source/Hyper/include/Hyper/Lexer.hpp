@@ -12,10 +12,12 @@
 
 namespace Hyper
 {
+	class Diagnostics;
+
 	class Lexer
 	{
 	public:
-		Lexer(std::string file, std::string text);
+		Lexer(std::string file, std::string text, Diagnostics &diagnostics);
 
 		Token next_token();
 
@@ -34,10 +36,11 @@ namespace Hyper
 	private:
 		std::string m_file;
 		std::string m_text;
+		Diagnostics &m_diagnostics;
 
 		char m_current_char = '\0';
 
-		size_t m_position = 0;
+		size_t m_index = 0;
 		size_t m_line = 1;
 		size_t m_column = 0;
 	};

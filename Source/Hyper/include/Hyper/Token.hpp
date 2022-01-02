@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "Hyper/SourceRange.hpp"
+
 #include <string>
 
 namespace Hyper
@@ -124,8 +126,6 @@ namespace Hyper
 
 		std::string value;
 		Type type = Type::Invalid;
-		size_t pos = 0;
-		size_t line = 0;
-		size_t column = 0;
+		Position position = {};
 	};
 } // namespace Hyper

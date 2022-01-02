@@ -25,11 +25,7 @@ namespace Hyper::Logger
 		};
 
 		template <typename... Args>
-		void log(
-			std::string_view prefix,
-			Level level,
-			std::string_view format,
-			Args &&...args)
+		void log(Level level, std::string_view format, Args &&...args)
 		{
 			const std::string_view color_string = [level]()
 			{
@@ -74,14 +70,11 @@ namespace Hyper::Logger
 			const std::string string = [&]()
 			{
 				std::stringstream string_stream;
-				if (!prefix.empty())
-				{
-					string_stream << "\033[37m";
-					string_stream << prefix;
-					string_stream << "\033[0m: ";
-				}
 				if (level != Level::None)
 				{
+					string_stream << "\033[37m";
+					string_stream << "hyper";
+					string_stream << "\033[0m: ";
 					string_stream << color_string;
 					string_stream << level_string;
 					string_stream << "\033[0m: ";
@@ -97,74 +90,30 @@ namespace Hyper::Logger
 	template <typename... Args>
 	void log(std::string_view format, Args &&...args)
 	{
-		Detail::log("", Detail::Level::None, format, std::forward<Args>(args)...);
+		Detail::log(Detail::Level::None, format, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
 	void info(std::string_view format, Args &&...args)
 	{
-		Detail::log(
-			"hyper", Detail::Level::Info, format, std::forward<Args>(args)...);
+		Detail::log(Detail::Level::Info, format, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
-	void warning(std::string_view format, Args &&...args)
+	void warn(std::string_view format, Args &&...args)
 	{
-		Detail::log(
-			"hyper", Detail::Level::Warning, format, std::forward<Args>(args)...);
+		Detail::log(Detail::Level::Warning, format, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
 	void error(std::string_view format, Args &&...args)
 	{
-		Detail::log(
-			"hyper", Detail::Level::Error, format, std::forward<Args>(args)...);
+		Detail::log(Detail::Level::Error, format, std::forward<Args>(args)...);
 	}
 
 	template <typename... Args>
 	void debug(std::string_view format, Args &&...args)
 	{
-		Detail::log(
-			"hyper", Detail::Level::Debug, format, std::forward<Args>(args)...);
-	}
-
-	template <typename... Args>
-	void file_info(
-		std::string_view prefix,
-		std::string_view format,
-		Args &&...args)
-	{
-		Detail::log(
-			prefix, Detail::Level::Info, format, std::forward<Args>(args)...);
-	}
-
-	template <typename... Args>
-	void file_warning(
-		std::string_view prefix,
-		std::string_view format,
-		Args &&...args)
-	{
-		Detail::log(
-			prefix, Detail::Level::Warning, format, std::forward<Args>(args)...);
-	}
-
-	template <typename... Args>
-	void file_error(
-		std::string_view prefix,
-		std::string_view format,
-		Args &&...args)
-	{
-		Detail::log(
-			prefix, Detail::Level::Error, format, std::forward<Args>(args)...);
-	}
-
-	template <typename... Args>
-	void file_debug(
-		std::string_view prefix,
-		std::string_view format,
-		Args &&...args)
-	{
-		Detail::log(
-			prefix, Detail::Level::Debug, format, std::forward<Args>(args)...);
+		Detail::log(Detail::Level::Debug, format, std::forward<Args>(args)...);
 	}
 } // namespace Hyper::Logger

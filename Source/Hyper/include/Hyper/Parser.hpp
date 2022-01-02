@@ -14,12 +14,13 @@
 
 namespace Hyper
 {
+	class Diagnostics;
 	class Lexer;
 
 	class Parser
 	{
 	public:
-		Parser(std::string file, Lexer &lexer);
+		Parser(std::string file, Lexer &lexer, Diagnostics &diagnostics);
 
 		AstPtr parse_tree();
 
@@ -59,10 +60,12 @@ namespace Hyper
 
 		Type consume_type();
 		uint8_t map_precedence(Token::Type token_type) const noexcept;
+		std::string map_value(Token::Type token_type) const noexcept;
 
 	private:
 		std::string m_file;
 		Lexer &m_lexer;
+		Diagnostics &m_diagnostics;
 
 		Token m_current_token = {};
 		Token m_saved_token = {};

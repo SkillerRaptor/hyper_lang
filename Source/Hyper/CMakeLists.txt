@@ -10,6 +10,7 @@
 set(SOURCES
         src/main.cpp
         src/Hyper/Compiler.cpp
+        src/Hyper/Diagnostics.cpp
         src/Hyper/Lexer.cpp
         src/Hyper/Parser.cpp
         src/Hyper/Ast/AstNode.cpp
@@ -38,10 +39,12 @@ set(SOURCES
 
 set(HEADERS
         include/Hyper/Compiler.hpp
+        include/Hyper/Diagnostics.hpp
         include/Hyper/Formatter.hpp
         include/Hyper/Lexer.hpp
         include/Hyper/Logger.hpp
         include/Hyper/Parser.hpp
+        include/Hyper/SourceRange.hpp
         include/Hyper/Token.hpp
         include/Hyper/Type.hpp
         include/Hyper/Ast/AstNode.hpp
