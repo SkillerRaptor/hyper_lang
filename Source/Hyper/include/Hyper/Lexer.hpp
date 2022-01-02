@@ -28,6 +28,9 @@ namespace Hyper
 		void skip_whitespace() noexcept;
 		bool has_reached_end() const noexcept;
 
+		Token scan_comment();
+		Token scan_multiline_comment();
+
 		std::string scan_string();
 		std::string scan_integer_literal();
 		std::string scan_identifier();

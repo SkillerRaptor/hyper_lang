@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020-2022, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 // This is a comment
 
 fn function_1() -> void

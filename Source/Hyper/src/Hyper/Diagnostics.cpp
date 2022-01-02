@@ -61,6 +61,8 @@ namespace Hyper
 
 		const size_t digit_count = get_digit_count(end.line);
 		const std::string spaces(digit_count, ' ');
+		const std::string extra_spaces(
+			digit_count - get_digit_count(start.line), ' ');
 
 		Logger::log("{}--> {}:{}:{}\n", spaces, m_file, start.line, start.column);
 		Logger::log("{} |\n", spaces);
@@ -70,7 +72,8 @@ namespace Hyper
 			const std::string start_spaces(start.column - 1, ' ');
 			const std::string column_pointers(end.column - start.column, '^');
 
-			Logger::log("{} | {}\n", start.line, get_line_content(start.line));
+			Logger::log(
+				"{}{} | {}\n", extra_spaces, start.line, get_line_content(start.line));
 			Logger::log("{} | {}{}\n", spaces, start_spaces, column_pointers);
 		}
 		else
@@ -78,7 +81,11 @@ namespace Hyper
 			const std::string start_underscore(start.column, '_');
 			const std::string end_underscore(end.column, '_');
 
-			Logger::log("{} |   {}\n", start.line, get_line_content(start.line));
+			Logger::log(
+				"{}{} |   {}\n",
+				extra_spaces,
+				start.line,
+				get_line_content(start.line));
 			Logger::log("{} |  {}^\n", spaces, start_underscore);
 			Logger::log("{} | | {}\n", end.line, get_line_content(end.line));
 			Logger::log("{} | |{}^\n", spaces, end_underscore);

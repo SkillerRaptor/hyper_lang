@@ -119,13 +119,12 @@ namespace Hyper
 		case '/':
 			if (peek() == '/')
 			{
-				advance();
-				while (peek() != '\n')
-				{
-					advance();
-				}
+				return scan_comment();
+			}
 
-				return next_token();
+			if (peek() == '*')
+			{
+				return scan_multiline_comment();
 			}
 
 			if (peek() == '=')
@@ -404,6 +403,62 @@ namespace Hyper
 		return m_index >= m_text.length();
 	}
 
+	Token Lexer::scan_comment()
+	{
+		advance();
+		while (peek() != '\n')
+		{
+			advance();
+		}
+
+		return next_token();
+	}
+
+	Token Lexer::scan_multiline_comment()
+	{
+		const size_t start_line = m_line;
+		const size_t start_column = m_column;
+		while (true)
+		{
+			advance();
+
+			if (has_reached_end())
+			{
+				const Position start_position = {
+					.line = start_line,
+					.column = start_column,
+				};
+
+				const Position end_position = {
+					.line = m_line,
+					.column = m_column - 1,
+				};
+
+				const SourceRange source_range = {
+					.start = start_position,
+					.end = end_position,
+				};
+
+				m_diagnostics.error(source_range, "unterminated block comment");
+			}
+
+			if (peek() != '*')
+			{
+				continue;
+			}
+
+			advance();
+
+			if (peek() == '/')
+			{
+				advance();
+				break;
+			}
+		}
+
+		return next_token();
+	}
+
 	std::string Lexer::scan_string()
 	{
 		std::string string;
@@ -418,11 +473,15 @@ namespace Hyper
 
 			if (has_reached_end())
 			{
-				const Position start_position = { .line = start_line,
-																					.column = start_column };
+				const Position start_position = {
+					.line = start_line,
+					.column = start_column,
+				};
 
-				const Position end_position = { .line = m_line,
-																				.column = m_column - 1 };
+				const Position end_position = {
+					.line = m_line,
+					.column = m_column - 1,
+				};
 
 				const SourceRange source_range = {
 					.start = start_position,
