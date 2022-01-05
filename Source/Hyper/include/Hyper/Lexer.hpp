@@ -17,7 +17,7 @@ namespace Hyper
 	class Lexer
 	{
 	public:
-		Lexer(std::string file, std::string text, Diagnostics &diagnostics);
+		Lexer(Diagnostics &diagnostics, std::string text);
 
 		Token next_token();
 
@@ -37,9 +37,8 @@ namespace Hyper
 		Token::Type scan_keyword(const std::string &identifier) const noexcept;
 
 	private:
-		std::string m_file;
-		std::string m_text;
 		Diagnostics &m_diagnostics;
+		std::string m_text;
 
 		char m_current_char = '\0';
 

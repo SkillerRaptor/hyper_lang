@@ -11,7 +11,7 @@
 
 namespace Hyper
 {
-	class UnaryExpression : public Expression
+	class UnaryExpression final : public Expression
 	{
 	public:
 		enum class Kind
@@ -33,9 +33,20 @@ namespace Hyper
 		UnaryExpression(Kind kind, ExpressionPtr expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		Kind kind() const;
+		const ExpressionPtr &expression() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::UnaryExpression;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "UnaryExpression";
+		}
 
 	private:
 		Kind m_kind = Kind::Invalid;

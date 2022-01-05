@@ -126,6 +126,6 @@ namespace Hyper
 
 		std::string value;
 		Type type = Type::Invalid;
-		Position position = {};
+		SourceRange range = {};
 	};
 } // namespace Hyper

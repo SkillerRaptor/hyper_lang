@@ -6,6 +6,8 @@
 
 #include "Hyper/Ast/Expressions/ConditionalExpression.hpp"
 
+#include "Hyper/Validator.hpp"
+
 namespace Hyper
 {
 	ConditionalExpression::ConditionalExpression(
@@ -28,13 +30,23 @@ namespace Hyper
 		AstNode::dump_node(*m_false_expression, prefix, self_last, true);
 	}
 
-	AstNode::Category ConditionalExpression::class_category() const noexcept
+	void ConditionalExpression::validate(Validator &validator)
 	{
-		return AstNode::Category::ConditionalExpression;
+		validator.accept(*this);
 	}
 
-	std::string_view ConditionalExpression::class_name() const noexcept
+	const ExpressionPtr &ConditionalExpression::condition() const
 	{
-		return "ConditionalExpression";
+		return m_condition;
+	}
+
+	const ExpressionPtr &ConditionalExpression::true_expression() const
+	{
+		return m_true_expression;
+	}
+
+	const ExpressionPtr &ConditionalExpression::false_expression() const
+	{
+		return m_false_expression;
 	}
 } // namespace Hyper

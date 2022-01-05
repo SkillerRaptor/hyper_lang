@@ -11,7 +11,7 @@
 
 namespace Hyper
 {
-	class ConditionalExpression : public Expression
+	class ConditionalExpression final : public Expression
 	{
 	public:
 		ConditionalExpression(
@@ -20,9 +20,21 @@ namespace Hyper
 			ExpressionPtr false_expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		const ExpressionPtr &condition() const;
+		const ExpressionPtr &true_expression() const;
+		const ExpressionPtr &false_expression() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::ConditionalExpression;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "ConditionalExpression";
+		}
 
 	private:
 		ExpressionPtr m_condition = nullptr;

@@ -6,6 +6,8 @@
 
 #include "Hyper/Ast/Declarations/TranslationUnitDeclaration.hpp"
 
+#include "Hyper/Validator.hpp"
+
 namespace Hyper
 {
 	TranslationUnitDeclaration::TranslationUnitDeclaration(
@@ -28,13 +30,18 @@ namespace Hyper
 		}
 	}
 
-	AstNode::Category TranslationUnitDeclaration::class_category() const noexcept
+	void TranslationUnitDeclaration::validate(Validator &validator)
 	{
-		return AstNode::Category::TranslationUnitDeclaration;
+		validator.accept(*this);
 	}
 
-	std::string_view TranslationUnitDeclaration::class_name() const noexcept
+	std::string TranslationUnitDeclaration::translation_unit() const
 	{
-		return "TranslationUnitDeclaration";
+		return m_translation_unit;
+	}
+
+	const DeclarationList &TranslationUnitDeclaration::declarations() const
+	{
+		return m_declarations;
 	}
 } // namespace Hyper

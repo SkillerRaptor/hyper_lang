@@ -7,6 +7,7 @@
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
 
 #include "Hyper/Ast/Expression.hpp"
+#include "Hyper/Validator.hpp"
 
 namespace Hyper
 {
@@ -24,13 +25,18 @@ namespace Hyper
 		AstNode::dump_node(*m_body, prefix, self_last, true);
 	}
 
-	AstNode::Category WhileStatement::class_category() const noexcept
+	void WhileStatement::validate(Validator &validator)
 	{
-		return AstNode::Category::WhileStatement;
+		validator.accept(*this);
 	}
 
-	std::string_view WhileStatement::class_name() const noexcept
+	const ExpressionPtr &WhileStatement::condition() const
 	{
-		return "WhileStatement";
+		return m_condition;
+	}
+
+	const StatementPtr &WhileStatement::body() const
+	{
+		return m_body;
 	}
 } // namespace Hyper

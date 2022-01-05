@@ -13,15 +13,25 @@ namespace Hyper
 {
 	class Expression;
 
-	class ExpressionStatement : public Statement
+	class ExpressionStatement final : public Statement
 	{
 	public:
 		explicit ExpressionStatement(ExpressionPtr expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		const ExpressionPtr &expression() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::ExpressionStatement;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "ExpressionStatement";
+		}
 
 	private:
 		ExpressionPtr m_expression = nullptr;

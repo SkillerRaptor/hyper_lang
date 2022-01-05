@@ -11,15 +11,25 @@
 
 namespace Hyper
 {
-	class CompoundStatement : public Statement
+	class CompoundStatement final : public Statement
 	{
 	public:
 		explicit CompoundStatement(StatementList statements);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		const StatementList &statements() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::CompoundStatement;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "CompoundStatement";
+		}
 
 	private:
 		StatementList m_statements = {};

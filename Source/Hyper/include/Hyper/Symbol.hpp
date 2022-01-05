@@ -7,44 +7,26 @@
 #pragma once
 
 #include "Hyper/SourceRange.hpp"
+#include "Hyper/Type.hpp"
 
 #include <cstdint>
 #include <string>
 
 namespace Hyper
 {
-	struct Type
+	struct Symbol
 	{
 		enum class Kind : uint8_t
 		{
 			Invalid = 0,
 
-			Bool,
-
-			Int8,
-			Int16,
-			Int32,
-			Int64,
-
-			Uint8,
-			Uint16,
-			Uint32,
-			Uint64,
-
-			ISize,
-			USize,
-
-			Float32,
-			Float64,
-
-			String,
-			Void,
-
-			UserDefined,
+			Function,
+			Variable,
 		};
 
-		std::string value;
+		std::string identifier;
 		Kind kind = Kind::Invalid;
+		Type type = {};
 		SourceRange range = {};
 	};
 } // namespace Hyper

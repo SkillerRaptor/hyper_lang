@@ -6,6 +6,8 @@
 
 #include "Hyper/Ast/Literals/IntegerLiteral.hpp"
 
+#include "Hyper/Validator.hpp"
+
 namespace Hyper
 {
 	IntegerLiteral::IntegerLiteral(std::string integer)
@@ -18,13 +20,13 @@ namespace Hyper
 		AstNode::dump_self(prefix, self_last);
 	}
 
-	AstNode::Category IntegerLiteral::class_category() const noexcept
+	void IntegerLiteral::validate(Validator &validator)
 	{
-		return AstNode::Category::IntegerLiteral;
+		validator.accept(*this);
 	}
 
-	std::string_view IntegerLiteral::class_name() const noexcept
+	std::string IntegerLiteral::integer() const
 	{
-		return "IntegerLiteral";
+		return m_integer;
 	}
 } // namespace Hyper

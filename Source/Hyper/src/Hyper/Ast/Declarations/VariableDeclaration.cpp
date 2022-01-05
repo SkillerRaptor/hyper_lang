@@ -7,20 +7,24 @@
 #include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 
 #include "Hyper/Ast/Expression.hpp"
+#include "Hyper/Validator.hpp"
 
 namespace Hyper
 {
 	VariableDeclaration::VariableDeclaration(
-		std::string name,
+		std::string identifier,
 		VariableDeclaration::Mutable mutable_state,
 		Type type,
-		ExpressionPtr expression)
-		: m_name(std::move(name))
+		ExpressionPtr expression,
+		SourceRange identifier_range,
+		SourceRange type_range)
+		: m_identifier(std::move(identifier))
 		, m_mutable(mutable_state)
 		, m_type(std::move(type))
 		, m_expression(std::move(expression))
+		, m_identifier_range(identifier_range)
+		, m_type_range(type_range)
 	{
-		(void) m_mutable;
 	}
 
 	void VariableDeclaration::dump(std::string_view prefix, bool self_last) const
@@ -28,13 +32,38 @@ namespace Hyper
 		AstNode::dump_self(prefix, self_last);
 	}
 
-	AstNode::Category VariableDeclaration::class_category() const noexcept
+	void VariableDeclaration::validate(Validator &validator)
 	{
-		return AstNode::Category::VariableDeclaration;
+		validator.accept(*this);
 	}
 
-	std::string_view VariableDeclaration::class_name() const noexcept
+	std::string VariableDeclaration::identifier() const
 	{
-		return "VariableDeclaration";
+		return m_identifier;
+	}
+
+	VariableDeclaration::Mutable VariableDeclaration::is_mutable() const
+	{
+		return m_mutable;
+	}
+
+	Type VariableDeclaration::type() const
+	{
+		return m_type;
+	}
+
+	const ExpressionPtr &VariableDeclaration::expression() const
+	{
+		return m_expression;
+	}
+
+	SourceRange VariableDeclaration::identifier_range() const
+	{
+		return m_identifier_range;
+	}
+
+	SourceRange VariableDeclaration::type_range() const
+	{
+		return m_type_range;
 	}
 } // namespace Hyper

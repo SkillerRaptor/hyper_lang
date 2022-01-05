@@ -7,6 +7,7 @@
 #include "Hyper/Ast/Statements/ReturnStatement.hpp"
 
 #include "Hyper/Ast/Expression.hpp"
+#include "Hyper/Validator.hpp"
 
 namespace Hyper
 {
@@ -22,13 +23,13 @@ namespace Hyper
 		AstNode::dump_node(*m_expression, prefix, self_last, true);
 	}
 
-	AstNode::Category ReturnStatement::class_category() const noexcept
+	void ReturnStatement::validate(Validator &validator)
 	{
-		return AstNode::Category::ReturnStatement;
+		validator.accept(*this);
 	}
 
-	std::string_view ReturnStatement::class_name() const noexcept
+	const ExpressionPtr &ReturnStatement::expression() const
 	{
-		return "ReturnStatement";
+		return m_expression;
 	}
 } // namespace Hyper

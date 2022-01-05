@@ -6,12 +6,13 @@
 
 #include "Hyper/Ast/Literals/BoolLiteral.hpp"
 
+#include "Hyper/Validator.hpp"
+
 namespace Hyper
 {
 	BoolLiteral::BoolLiteral(bool boolean)
 		: m_boolean(boolean)
 	{
-		(void) m_boolean;
 	}
 
 	void BoolLiteral::dump(std::string_view prefix, bool self_last) const
@@ -19,13 +20,13 @@ namespace Hyper
 		AstNode::dump_self(prefix, self_last);
 	}
 
-	AstNode::Category BoolLiteral::class_category() const noexcept
+	void BoolLiteral::validate(Validator &validator)
 	{
-		return AstNode::Category::BoolLiteral;
+		validator.accept(*this);
 	}
 
-	std::string_view BoolLiteral::class_name() const noexcept
+	bool BoolLiteral::boolean() const
 	{
-		return "BoolLiteral";
+		return m_boolean;
 	}
 } // namespace Hyper

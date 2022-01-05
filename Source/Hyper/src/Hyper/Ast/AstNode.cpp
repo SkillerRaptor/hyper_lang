@@ -22,11 +22,6 @@ namespace Hyper
 		Logger::debug("{}{}\n", new_prefix, class_name());
 	}
 
-	std::string_view AstNode::class_name() const noexcept
-	{
-		return "Declaration";
-	}
-
 	void AstNode::dump_node(
 		const AstNode &node,
 		std::string_view prefix,

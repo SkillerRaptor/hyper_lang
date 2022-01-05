@@ -7,18 +7,20 @@
 #include "Hyper/Ast/Statements/CompoundAssignStatement.hpp"
 
 #include "Hyper/Ast/Expression.hpp"
+#include "Hyper/Validator.hpp"
 
 namespace Hyper
 {
 	CompoundAssignStatement::CompoundAssignStatement(
-		std::string name,
+		std::string identifier,
 		CompoundAssignStatement::Operation operation,
-		ExpressionPtr expression)
-		: m_name(std::move(name))
+		ExpressionPtr expression,
+		SourceRange identifier_range)
+		: m_identifier(std::move(identifier))
 		, m_operation(operation)
 		, m_expression(std::move(expression))
+		, m_identifier_range(identifier_range)
 	{
-		(void) m_operation;
 	}
 
 	void CompoundAssignStatement::dump(std::string_view prefix, bool self_last)
@@ -29,13 +31,28 @@ namespace Hyper
 		AstNode::dump_node(*m_expression, prefix, self_last, true);
 	}
 
-	AstNode::Category CompoundAssignStatement::class_category() const noexcept
+	void CompoundAssignStatement::validate(Validator &validator)
 	{
-		return AstNode::Category::CompoundAssignStatement;
+		validator.accept(*this);
 	}
 
-	std::string_view CompoundAssignStatement::class_name() const noexcept
+	std::string CompoundAssignStatement::identifier() const
 	{
-		return "CompoundAssignStatement";
+		return m_identifier;
+	}
+
+	CompoundAssignStatement::Operation CompoundAssignStatement::operation() const
+	{
+		return m_operation;
+	}
+
+	const ExpressionPtr &CompoundAssignStatement::expression() const
+	{
+		return m_expression;
+	}
+
+	SourceRange CompoundAssignStatement::identifier_range() const
+	{
+		return m_identifier_range;
 	}
 } // namespace Hyper

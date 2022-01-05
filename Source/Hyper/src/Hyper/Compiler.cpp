@@ -11,6 +11,7 @@
 #include "Hyper/Lexer.hpp"
 #include "Hyper/Logger.hpp"
 #include "Hyper/Parser.hpp"
+#include "Hyper/Validators/ScopeValidator.hpp"
 
 #include <fstream>
 
@@ -38,11 +39,14 @@ namespace Hyper
 			// TODO: Check if `text` is empty
 
 			Diagnostics diagnostics(file, text);
-			Lexer lexer(file, text, diagnostics);
-			Parser parser(file, lexer, diagnostics);
 
-			const std::unique_ptr<AstNode> ast = parser.parse_tree();
-			ast->dump();
+			Lexer lexer(diagnostics, text);
+			Parser parser(diagnostics, lexer, file);
+
+			std::unique_ptr<AstNode> ast = parser.parse_tree();
+
+			ScopeValidator scope_validator(diagnostics, ast);
+			scope_validator.validate();
 		}
 
 		return EXIT_SUCCESS;

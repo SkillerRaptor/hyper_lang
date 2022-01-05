@@ -13,15 +13,26 @@ namespace Hyper
 {
 	class Expression;
 
-	class WhileStatement : public Statement
+	class WhileStatement final : public Statement
 	{
 	public:
 		WhileStatement(ExpressionPtr condition, StatementPtr body);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		const ExpressionPtr &condition() const;
+		const StatementPtr &body() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::WhileStatement;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "WhileStatement";
+		}
 
 	private:
 		ExpressionPtr m_condition = nullptr;

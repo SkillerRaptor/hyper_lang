@@ -7,12 +7,17 @@
 #include "Hyper/Ast/Statements/AssignStatement.hpp"
 
 #include "Hyper/Ast/Expression.hpp"
+#include "Hyper/Validator.hpp"
 
 namespace Hyper
 {
-	AssignStatement::AssignStatement(std::string name, ExpressionPtr expression)
-		: m_name(std::move(name))
+	AssignStatement::AssignStatement(
+		std::string identifier,
+		ExpressionPtr expression,
+		SourceRange identifier_range)
+		: m_identifier(std::move(identifier))
 		, m_expression(std::move(expression))
+		, m_identifier_range(identifier_range)
 	{
 	}
 
@@ -23,13 +28,23 @@ namespace Hyper
 		AstNode::dump_node(*m_expression, prefix, self_last, true);
 	}
 
-	AstNode::Category AssignStatement::class_category() const noexcept
+	void AssignStatement::validate(Validator &validator)
 	{
-		return AstNode::Category::AssignStatement;
+		validator.accept(*this);
 	}
 
-	std::string_view AssignStatement::class_name() const noexcept
+	std::string AssignStatement::identifier() const
 	{
-		return "AssignStatement";
+		return m_identifier;
+	}
+
+	const ExpressionPtr &AssignStatement::expression() const
+	{
+		return m_expression;
+	}
+
+	SourceRange AssignStatement::identifier_range() const
+	{
+		return m_identifier_range;
 	}
 } // namespace Hyper

@@ -28,14 +28,12 @@
 #include "Hyper/Formatter.hpp"
 #include "Hyper/Lexer.hpp"
 
-#include <vector>
-
 namespace Hyper
 {
-	Parser::Parser(std::string file, Lexer &lexer, Diagnostics &diagnostics)
-		: m_file(std::move(file))
+	Parser::Parser(Diagnostics &diagnostics, Lexer &lexer, std::string file)
+		: m_diagnostics(diagnostics)
 		, m_lexer(lexer)
-		, m_diagnostics(diagnostics)
+		, m_file(std::move(file))
 	{
 	}
 
@@ -49,7 +47,7 @@ namespace Hyper
 	{
 		consume(Token::Type::Function);
 
-		const std::string name = consume(Token::Type::Identifier).value;
+		const Token identifier = consume(Token::Type::Identifier);
 
 		consume(Token::Type::RoundLeftBracket);
 
@@ -63,7 +61,12 @@ namespace Hyper
 		auto body = parse_compound_statement();
 
 		return std::make_unique<FunctionDeclaration>(
-			name, std::move(arguments), return_type, std::move(body));
+			identifier.value,
+			std::move(arguments),
+			return_type,
+			std::move(body),
+			identifier.range,
+			return_type.range);
 	}
 
 	DeclarationPtr Parser::parse_translation_unit_declaration()
@@ -83,7 +86,7 @@ namespace Hyper
 	{
 		consume(Token::Type::Let);
 
-		const std::string name = consume(Token::Type::Identifier).value;
+		const Token identifier = consume(Token::Type::Identifier);
 
 		consume(Token::Type::Colon);
 
@@ -117,7 +120,12 @@ namespace Hyper
 		}();
 
 		return std::make_unique<VariableDeclaration>(
-			name, mutable_state, type, std::move(expression));
+			identifier.value,
+			mutable_state,
+			type,
+			std::move(expression),
+			identifier.range,
+			type.range);
 	}
 
 	ExpressionPtr Parser::parse_prefix_expression()
@@ -284,21 +292,9 @@ namespace Hyper
 				default:
 				{
 					const Token token = current_token();
-
-					const Position start_position = token.position;
-					const Position end_position = {
-						.line = start_position.line,
-						.column = start_position.column + token.value.length(),
-					};
-
-					const SourceRange source_range = {
-						.start = start_position,
-						.end = end_position,
-					};
-
 					const std::string error =
 						Formatter::format("expected operator, found '{}'", token.value);
-					m_diagnostics.error(source_range, error);
+					m_diagnostics.error(token.range, error);
 				}
 				}
 			}();
@@ -318,7 +314,7 @@ namespace Hyper
 
 	ExpressionPtr Parser::parse_call_expression()
 	{
-		const std::string name = consume(Token::Type::Identifier).value;
+		const Token identifier = consume(Token::Type::Identifier);
 
 		consume(Token::Type::RoundLeftBracket);
 
@@ -326,31 +322,15 @@ namespace Hyper
 
 		consume(Token::Type::RoundRightBracket);
 
-		return std::make_unique<CallExpression>(name, std::move(arguments));
-	}
-
-	ExpressionPtr Parser::parse_conditional_expression()
-	{
-		auto condition = parse_binary_expression(0);
-
-		consume(Token::Type::QuestionMark);
-
-		auto true_expression = parse_binary_expression(0);
-
-		consume(Token::Type::Colon);
-
-		auto false_expression = parse_binary_expression(0);
-
-		return std::make_unique<ConditionalExpression>(
-			std::move(condition),
-			std::move(true_expression),
-			std::move(false_expression));
+		return std::make_unique<CallExpression>(
+			identifier.value, std::move(arguments), identifier.range);
 	}
 
 	ExpressionPtr Parser::parse_identifier_expression()
 	{
-		const std::string name = consume(Token::Type::Identifier).value;
-		return std::make_unique<IdentifierExpression>(name);
+		const Token identifier = consume(Token::Type::Identifier);
+		return std::make_unique<IdentifierExpression>(
+			identifier.value, identifier.range);
 	}
 
 	LiteralPtr Parser::parse_bool_literal()
@@ -397,17 +377,17 @@ namespace Hyper
 
 	StatementPtr Parser::parse_assign_statement()
 	{
-		const Token name = consume(Token::Type::Identifier);
+		const Token identifier = consume(Token::Type::Identifier);
 		if (match(Token::Type::RoundLeftBracket))
 		{
-			save_token(name);
+			save_token(identifier);
 			return parse_expression_statement(parse_call_expression());
 		}
 
 		// TODO: Postfix can be changed to binary if binary returns null.
 		if (match(Token::Type::Increment) || match(Token::Type::Decrement))
 		{
-			save_token(name);
+			save_token(identifier);
 			return parse_expression_statement(parse_postfix_expression());
 		}
 
@@ -423,7 +403,7 @@ namespace Hyper
 		case Token::Type::BitwiseXorEqual:
 		case Token::Type::LeftShiftEqual:
 		case Token::Type::RightShiftEqual:
-			save_token(name);
+			save_token(identifier);
 			return parse_compound_assign_statement();
 		default:
 			break;
@@ -432,7 +412,8 @@ namespace Hyper
 		consume(Token::Type::Assign);
 
 		auto expression = parse_binary_expression(0);
-		return std::make_unique<AssignStatement>(name.value, std::move(expression));
+		return std::make_unique<AssignStatement>(
+			identifier.value, std::move(expression), identifier.range);
 	}
 
 	StatementPtr Parser::parse_compound_statement()
@@ -473,7 +454,7 @@ namespace Hyper
 
 	StatementPtr Parser::parse_compound_assign_statement()
 	{
-		const std::string name = consume(Token::Type::Identifier).value;
+		const Token identifier = consume(Token::Type::Identifier);
 
 		const CompoundAssignStatement::Operation operation = [this]()
 		{
@@ -513,7 +494,7 @@ namespace Hyper
 
 		auto expression = parse_binary_expression(0);
 		return std::make_unique<CompoundAssignStatement>(
-			name, operation, std::move(expression));
+			identifier.value, operation, std::move(expression), identifier.range);
 	}
 
 	StatementPtr Parser::parse_expression_statement(ExpressionPtr expression)
@@ -604,18 +585,13 @@ namespace Hyper
 			{
 				if (token_type != Token::Type::Semicolon)
 				{
-					return token.position;
+					return token.range.start;
 				}
 
-				const Position position = {
-					.line = m_last_token.position.line,
-					.column = m_last_token.position.column + m_last_token.value.length(),
-				};
-				return position;
+				return m_last_token.range.start;
 			}();
 
-			const Position end_position = token.position;
-
+			const Position end_position = token.range.end;
 			const SourceRange source_range = {
 				.start = start_position,
 				.end = end_position,
@@ -641,55 +617,47 @@ namespace Hyper
 			switch (current_token().type)
 			{
 			case Token::Type::Bool:
-				return { "bool", Type::Kind::Bool };
+				return { "bool", Type::Kind::Bool, current_token().range };
 			case Token::Type::Int8:
-				return { "i8", Type::Kind::Int8 };
+				return { "i8", Type::Kind::Int8, current_token().range };
 			case Token::Type::Int16:
-				return { "i16", Type::Kind::Int16 };
+				return { "i16", Type::Kind::Int16, current_token().range };
 			case Token::Type::Int32:
-				return { "i32", Type::Kind::Int32 };
+				return { "i32", Type::Kind::Int32, current_token().range };
 			case Token::Type::Int64:
-				return { "i64", Type::Kind::Int64 };
+				return { "i64", Type::Kind::Int64, current_token().range };
 			case Token::Type::Uint8:
-				return { "u8", Type::Kind::Uint8 };
+				return { "u8", Type::Kind::Uint8, current_token().range };
 			case Token::Type::Uint16:
-				return { "u16", Type::Kind::Uint16 };
+				return { "u16", Type::Kind::Uint16, current_token().range };
 			case Token::Type::Uint32:
-				return { "u32", Type::Kind::Uint32 };
+				return { "u32", Type::Kind::Uint32, current_token().range };
 			case Token::Type::Uint64:
-				return { "u64", Type::Kind::Uint64 };
+				return { "u64", Type::Kind::Uint64, current_token().range };
 			case Token::Type::ISize:
-				return { "isize", Type::Kind::ISize };
+				return { "isize", Type::Kind::ISize, current_token().range };
 			case Token::Type::USize:
-				return { "usize", Type::Kind::USize };
+				return { "usize", Type::Kind::USize, current_token().range };
 			case Token::Type::Float32:
-				return { "f32", Type::Kind::Float32 };
+				return { "f32", Type::Kind::Float32, current_token().range };
 			case Token::Type::Float64:
-				return { "f64", Type::Kind::Float64 };
+				return { "f64", Type::Kind::Float64, current_token().range };
 			case Token::Type::String:
-				return { "string", Type::Kind::String };
+				return { "string", Type::Kind::String, current_token().range };
 			case Token::Type::Void:
-				return { "void", Type::Kind::Void };
+				return { "void", Type::Kind::Void, current_token().range };
 			case Token::Type::Identifier:
-				return { current_token().value, Type::Kind::UserDefined };
+				return {
+					current_token().value,
+					Type::Kind::UserDefined,
+					current_token().range,
+				};
 			default:
 			{
 				const Token token = current_token();
-
-				const Position start_position = token.position;
-				const Position end_position = {
-					.line = start_position.line,
-					.column = start_position.column + token.value.length(),
-				};
-
-				const SourceRange source_range = {
-					.start = start_position,
-					.end = end_position,
-				};
-
 				const std::string error =
 					Formatter::format("expected type, found '{}'", token.value);
-				m_diagnostics.error(source_range, error);
+				m_diagnostics.error(token.range, error);
 			}
 			}
 		}();

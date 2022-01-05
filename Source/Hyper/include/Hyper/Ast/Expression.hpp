@@ -13,6 +13,9 @@ namespace Hyper
 	class Expression : public AstNode
 	{
 	public:
-		std::string_view class_name() const noexcept override;
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "Expression";
+		}
 	};
 } // namespace Hyper

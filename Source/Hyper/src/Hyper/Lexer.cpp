@@ -7,16 +7,14 @@
 #include "Hyper/Lexer.hpp"
 
 #include "Hyper/Diagnostics.hpp"
-#include "Hyper/Logger.hpp"
 
 #include <cctype>
 
 namespace Hyper
 {
-	Lexer::Lexer(std::string file, std::string text, Diagnostics &diagnostics)
-		: m_file(std::move(file))
+	Lexer::Lexer(Diagnostics &diagnostics, std::string text)
+		: m_diagnostics(diagnostics)
 		, m_text(std::move(text))
-		, m_diagnostics(diagnostics)
 	{
 	}
 
@@ -343,13 +341,26 @@ namespace Hyper
 			break;
 		}
 
+		const Position start_position = {
+			.line = line,
+			.column = column,
+		};
+
+		const Position end_position = {
+			.line = m_line,
+			.column = m_column,
+		};
+
+		const SourceRange range = {
+			.start = start_position,
+			.end = end_position,
+		};
+
 		Token token = {
 			.value = value,
 			.type = type,
-			.position = { .line = line, .column = column },
+			.range = range,
 		};
-
-		Logger::debug("Token '{}' at {}:{}\n", value, line, column);
 
 		return token;
 	}

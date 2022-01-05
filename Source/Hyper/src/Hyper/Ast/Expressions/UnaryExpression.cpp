@@ -6,13 +6,14 @@
 
 #include "Hyper/Ast/Expressions/UnaryExpression.hpp"
 
+#include "Hyper/Validator.hpp"
+
 namespace Hyper
 {
 	UnaryExpression::UnaryExpression(Kind kind, ExpressionPtr expression)
 		: m_kind(kind)
 		, m_expression(std::move(expression))
 	{
-		(void) m_kind;
 	}
 
 	void UnaryExpression::dump(std::string_view prefix, bool self_last) const
@@ -22,13 +23,18 @@ namespace Hyper
 		AstNode::dump_node(*m_expression, prefix, self_last, true);
 	}
 
-	AstNode::Category UnaryExpression::class_category() const noexcept
+	void UnaryExpression::validate(Validator &validator)
 	{
-		return AstNode::Category::UnaryExpression;
+		validator.accept(*this);
 	}
 
-	std::string_view UnaryExpression::class_name() const noexcept
+	UnaryExpression::Kind UnaryExpression::kind() const
 	{
-		return "UnaryExpression";
+		return m_kind;
+	}
+
+	const ExpressionPtr &UnaryExpression::expression() const
+	{
+		return m_expression;
 	}
 } // namespace Hyper

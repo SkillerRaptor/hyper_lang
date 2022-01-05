@@ -7,6 +7,7 @@
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 
 #include "Hyper/Ast/Expression.hpp"
+#include "Hyper/Validator.hpp"
 
 namespace Hyper
 {
@@ -35,13 +36,23 @@ namespace Hyper
 		}
 	}
 
-	AstNode::Category IfStatement::class_category() const noexcept
+	void IfStatement::validate(Validator &validator)
 	{
-		return AstNode::Category::IfStatement;
+		validator.accept(*this);
 	}
 
-	std::string_view IfStatement::class_name() const noexcept
+	const ExpressionPtr &IfStatement::condition() const
 	{
-		return "IfStatement";
+		return m_condition;
+	}
+
+	const StatementPtr &IfStatement::true_body() const
+	{
+		return m_true_body;
+	}
+
+	const StatementPtr &IfStatement::false_body() const
+	{
+		return m_false_body;
 	}
 } // namespace Hyper

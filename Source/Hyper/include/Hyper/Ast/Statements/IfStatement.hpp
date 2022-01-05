@@ -13,7 +13,7 @@ namespace Hyper
 {
 	class Expression;
 
-	class IfStatement : public Statement
+	class IfStatement final : public Statement
 	{
 	public:
 		IfStatement(
@@ -22,9 +22,21 @@ namespace Hyper
 			StatementPtr false_body);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		const ExpressionPtr &condition() const;
+		const StatementPtr &true_body() const;
+		const StatementPtr &false_body() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::IfStatement;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "IfStatement";
+		}
 
 	private:
 		ExpressionPtr m_condition = nullptr;

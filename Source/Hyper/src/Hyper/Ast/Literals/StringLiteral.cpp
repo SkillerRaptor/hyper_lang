@@ -6,6 +6,8 @@
 
 #include "Hyper/Ast/Literals/StringLiteral.hpp"
 
+#include "Hyper/Validator.hpp"
+
 namespace Hyper
 {
 	StringLiteral::StringLiteral(std::string string)
@@ -18,13 +20,13 @@ namespace Hyper
 		AstNode::dump_self(prefix, self_last);
 	}
 
-	AstNode::Category StringLiteral::class_category() const noexcept
+	void StringLiteral::validate(Validator &validator)
 	{
-		return AstNode::Category::StringLiteral;
+		validator.accept(*this);
 	}
 
-	std::string_view StringLiteral::class_name() const noexcept
+	std::string StringLiteral::string()
 	{
-		return "StringLiteral";
+		return m_string;
 	}
 } // namespace Hyper

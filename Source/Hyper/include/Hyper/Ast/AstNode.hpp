@@ -6,10 +6,14 @@
 
 #pragma once
 
+#include "Hyper/SourceRange.hpp"
+
 #include <string_view>
 
 namespace Hyper
 {
+	class Validator;
+
 	class AstNode
 	{
 	public:
@@ -47,8 +51,10 @@ namespace Hyper
 
 		void dump() const;
 
-		virtual Category class_category() const noexcept = 0;
-		virtual std::string_view class_name() const noexcept = 0;
+		virtual void validate(Validator &validator) = 0;
+
+		constexpr virtual Category class_category() const noexcept = 0;
+		constexpr virtual std::string_view class_name() const noexcept = 0;
 
 	protected:
 		virtual void dump(std::string_view prefix, bool self_last) const = 0;

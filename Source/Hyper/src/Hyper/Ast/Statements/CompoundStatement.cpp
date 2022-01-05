@@ -6,6 +6,8 @@
 
 #include "Hyper/Ast/Statements/CompoundStatement.hpp"
 
+#include "Hyper/Validator.hpp"
+
 namespace Hyper
 {
 	CompoundStatement::CompoundStatement(StatementList statements)
@@ -24,13 +26,13 @@ namespace Hyper
 		}
 	}
 
-	AstNode::Category CompoundStatement::class_category() const noexcept
+	void CompoundStatement::validate(Validator &validator)
 	{
-		return AstNode::Category::CompoundStatement;
+		validator.accept(*this);
 	}
 
-	std::string_view CompoundStatement::class_name() const noexcept
+	const StatementList &CompoundStatement::statements() const
 	{
-		return "CompoundStatement";
+		return m_statements;
 	}
 } // namespace Hyper

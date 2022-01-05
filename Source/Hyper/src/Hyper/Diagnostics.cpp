@@ -70,11 +70,11 @@ namespace Hyper
 		if (start.line == end.line)
 		{
 			const std::string start_spaces(start.column - 1, ' ');
-			const std::string column_pointers(end.column - start.column, '^');
+			const std::string tilde_pointers(end.column - start.column - 1, '~');
 
 			Logger::log(
 				"{}{} | {}\n", extra_spaces, start.line, get_line_content(start.line));
-			Logger::log("{} | {}{}\n", spaces, start_spaces, column_pointers);
+			Logger::log("{} | {}^{}\n", spaces, start_spaces, tilde_pointers);
 		}
 		else
 		{

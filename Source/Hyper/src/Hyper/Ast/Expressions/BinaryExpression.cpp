@@ -6,6 +6,8 @@
 
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 
+#include "Hyper/Validator.hpp"
+
 namespace Hyper
 {
 	BinaryExpression::BinaryExpression(
@@ -16,7 +18,6 @@ namespace Hyper
 		, m_left(std::move(left))
 		, m_right(std::move(right))
 	{
-		(void) m_operation;
 	}
 
 	void BinaryExpression::dump(std::string_view prefix, bool self_last) const
@@ -27,13 +28,23 @@ namespace Hyper
 		AstNode::dump_node(*m_right, prefix, self_last, true);
 	}
 
-	AstNode::Category BinaryExpression::class_category() const noexcept
+	void BinaryExpression::validate(Validator &validator)
 	{
-		return AstNode::Category::BinaryExpression;
+		validator.accept(*this);
 	}
 
-	std::string_view BinaryExpression::class_name() const noexcept
+	BinaryExpression::Operation BinaryExpression::operation() const
 	{
-		return "BinaryExpression";
+		return m_operation;
+	}
+
+	const ExpressionPtr &BinaryExpression::left() const
+	{
+		return m_left;
+	}
+
+	const ExpressionPtr &BinaryExpression::right() const
+	{
+		return m_right;
 	}
 } // namespace Hyper

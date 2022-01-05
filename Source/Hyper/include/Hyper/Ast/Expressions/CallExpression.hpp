@@ -8,23 +8,42 @@
 
 #include "Hyper/Ast/Expression.hpp"
 #include "Hyper/Ast/Forward.hpp"
+#include "Hyper/SourceRange.hpp"
 
 #include <string>
 
 namespace Hyper
 {
-	class CallExpression : public Expression
+	class CallExpression final : public Expression
 	{
 	public:
-		CallExpression(std::string name, ExpressionList arguments);
+		CallExpression(
+			std::string identifier,
+			ExpressionList arguments,
+			SourceRange identifier_range);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		std::string identifier() const;
+		const ExpressionList &arguments() const;
+
+		SourceRange identifier_range() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::CallExpression;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "CallExpression";
+		}
 
 	private:
-		std::string m_name;
+		std::string m_identifier;
 		ExpressionList m_arguments = {};
+
+		SourceRange m_identifier_range = {};
 	};
 } // namespace Hyper

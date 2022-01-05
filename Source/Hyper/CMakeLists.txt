@@ -13,11 +13,9 @@ set(SOURCES
         src/Hyper/Diagnostics.cpp
         src/Hyper/Lexer.cpp
         src/Hyper/Parser.cpp
+        src/Hyper/Validator.cpp
+        src/Hyper/Validators/ScopeValidator.cpp
         src/Hyper/Ast/AstNode.cpp
-        src/Hyper/Ast/Declaration.cpp
-        src/Hyper/Ast/Expression.cpp
-        src/Hyper/Ast/Literal.cpp
-        src/Hyper/Ast/Statement.cpp
         src/Hyper/Ast/Declarations/FunctionDeclaration.cpp
         src/Hyper/Ast/Declarations/TranslationUnitDeclaration.cpp
         src/Hyper/Ast/Declarations/VariableDeclaration.cpp
@@ -45,8 +43,11 @@ set(HEADERS
         include/Hyper/Logger.hpp
         include/Hyper/Parser.hpp
         include/Hyper/SourceRange.hpp
+        include/Hyper/Symbol.hpp
         include/Hyper/Token.hpp
         include/Hyper/Type.hpp
+        include/Hyper/Validator.hpp
+        include/Hyper/Validators/ScopeValidator.hpp
         include/Hyper/Ast/AstNode.hpp
         include/Hyper/Ast/Declaration.hpp
         include/Hyper/Ast/Expression.hpp

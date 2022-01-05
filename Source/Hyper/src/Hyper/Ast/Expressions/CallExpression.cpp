@@ -6,11 +6,17 @@
 
 #include "Hyper/Ast/Expressions/CallExpression.hpp"
 
+#include "Hyper/Validator.hpp"
+
 namespace Hyper
 {
-	CallExpression::CallExpression(std::string name, ExpressionList arguments)
-		: m_name(std::move(name))
+	CallExpression::CallExpression(
+		std::string identifier,
+		ExpressionList arguments,
+		SourceRange identifier_range)
+		: m_identifier(std::move(identifier))
 		, m_arguments(std::move(arguments))
+		, m_identifier_range(identifier_range)
 	{
 	}
 
@@ -25,13 +31,23 @@ namespace Hyper
 		}
 	}
 
-	AstNode::Category CallExpression::class_category() const noexcept
+	void CallExpression::validate(Validator &validator)
 	{
-		return AstNode::Category::CallExpression;
+		validator.accept(*this);
 	}
 
-	std::string_view CallExpression::class_name() const noexcept
+	std::string CallExpression::identifier() const
 	{
-		return "CallExpression";
+		return m_identifier;
+	}
+
+	const ExpressionList &CallExpression::arguments() const
+	{
+		return m_arguments;
+	}
+
+	SourceRange CallExpression::identifier_range() const
+	{
+		return m_identifier_range;
 	}
 } // namespace Hyper

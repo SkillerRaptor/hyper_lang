@@ -13,7 +13,7 @@
 
 namespace Hyper
 {
-	class TranslationUnitDeclaration : public Declaration
+	class TranslationUnitDeclaration final : public Declaration
 	{
 	public:
 		TranslationUnitDeclaration(
@@ -21,9 +21,20 @@ namespace Hyper
 			DeclarationList declarations);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		std::string translation_unit() const;
+		const DeclarationList &declarations() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::TranslationUnitDeclaration;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "TranslationUnitDeclaration";
+		}
 
 	private:
 		std::string m_translation_unit;

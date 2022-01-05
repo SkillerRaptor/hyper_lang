@@ -11,7 +11,7 @@
 
 namespace Hyper
 {
-	class BinaryExpression : public Expression
+	class BinaryExpression final : public Expression
 	{
 	public:
 		enum class Operation : uint8_t
@@ -49,9 +49,21 @@ namespace Hyper
 			ExpressionPtr right);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::BinaryExpression;
+		}
+
+		Operation operation() const;
+		const ExpressionPtr &left() const;
+		const ExpressionPtr &right() const;
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "BinaryExpression";
+		}
 
 	private:
 		Operation m_operation = Operation::Invalid;

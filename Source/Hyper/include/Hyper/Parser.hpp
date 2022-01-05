@@ -20,7 +20,7 @@ namespace Hyper
 	class Parser
 	{
 	public:
-		Parser(std::string file, Lexer &lexer, Diagnostics &diagnostics);
+		Parser(Diagnostics &diagnostics, Lexer &lexer, std::string file);
 
 		AstPtr parse_tree();
 
@@ -35,7 +35,6 @@ namespace Hyper
 		ExpressionPtr parse_primary_expression();
 		ExpressionPtr parse_binary_expression(uint8_t precedence);
 		ExpressionPtr parse_call_expression();
-		ExpressionPtr parse_conditional_expression();
 		ExpressionPtr parse_identifier_expression();
 
 		LiteralPtr parse_bool_literal();
@@ -63,9 +62,9 @@ namespace Hyper
 		std::string map_value(Token::Type token_type) const noexcept;
 
 	private:
-		std::string m_file;
-		Lexer &m_lexer;
 		Diagnostics &m_diagnostics;
+		Lexer &m_lexer;
+		std::string m_file;
 
 		Token m_last_token = {};
 		Token m_current_token = {};

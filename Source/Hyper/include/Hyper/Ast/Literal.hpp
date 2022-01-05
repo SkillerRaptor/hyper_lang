@@ -13,6 +13,9 @@ namespace Hyper
 	class Literal : public Expression
 	{
 	public:
-		std::string_view class_name() const noexcept override;
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "Literal";
+		}
 	};
 } // namespace Hyper

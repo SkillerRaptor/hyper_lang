@@ -12,15 +12,25 @@
 
 namespace Hyper
 {
-	class IntegerLiteral : public Literal
+	class IntegerLiteral final : public Literal
 	{
 	public:
 		explicit IntegerLiteral(std::string integer);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		std::string integer() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::IntegerLiteral;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "IntegerLiteral";
+		}
 
 	private:
 		std::string m_integer;

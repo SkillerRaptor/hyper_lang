@@ -10,15 +10,25 @@
 
 namespace Hyper
 {
-	class BoolLiteral : public Literal
+	class BoolLiteral final : public Literal
 	{
 	public:
 		explicit BoolLiteral(bool boolean);
 
 		void dump(std::string_view prefix, bool self_last) const override;
+		void validate(Validator &validator) override;
 
-		Category class_category() const noexcept override;
-		std::string_view class_name() const noexcept override;
+		bool boolean() const;
+
+		constexpr Category class_category() const noexcept override
+		{
+			return AstNode::Category::BoolLiteral;
+		}
+
+		constexpr std::string_view class_name() const noexcept override
+		{
+			return "BoolLiteral";
+		}
 
 	private:
 		bool m_boolean = false;
