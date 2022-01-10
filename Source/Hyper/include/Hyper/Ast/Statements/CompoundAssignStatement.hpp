@@ -8,9 +8,8 @@
 
 #include "Hyper/Ast/Forward.hpp"
 #include "Hyper/Ast/Statement.hpp"
+#include "Hyper/Identifier.hpp"
 #include "Hyper/SourceRange.hpp"
-
-#include <string>
 
 namespace Hyper
 {
@@ -39,19 +38,17 @@ namespace Hyper
 
 	public:
 		CompoundAssignStatement(
-			std::string identifier,
+			SourceRange range,
+			Identifier identifier,
 			Operation operation,
-			ExpressionPtr expression,
-			SourceRange identifier_range);
+			ExpressionPtr expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;
 
-		std::string identifier() const;
+		Identifier identifier() const;
 		Operation operation() const;
 		const ExpressionPtr &expression() const;
-
-		SourceRange identifier_range() const;
 
 		constexpr Category class_category() const noexcept override
 		{
@@ -64,10 +61,8 @@ namespace Hyper
 		}
 
 	private:
-		std::string m_identifier;
+		Identifier m_identifier;
 		Operation m_operation = Operation::Invalid;
 		ExpressionPtr m_expression = nullptr;
-
-		SourceRange m_identifier_range = {};
 	};
 } // namespace Hyper

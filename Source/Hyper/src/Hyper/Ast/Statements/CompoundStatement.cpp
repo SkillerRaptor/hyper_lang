@@ -10,8 +10,11 @@
 
 namespace Hyper
 {
-	CompoundStatement::CompoundStatement(StatementList statements)
-		: m_statements(std::move(statements))
+	CompoundStatement::CompoundStatement(
+		SourceRange range,
+		StatementList statements)
+		: Statement(range)
+		, m_statements(std::move(statements))
 	{
 	}
 

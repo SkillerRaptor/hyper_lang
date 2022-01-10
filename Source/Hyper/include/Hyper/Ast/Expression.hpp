@@ -13,6 +13,8 @@ namespace Hyper
 	class Expression : public AstNode
 	{
 	public:
+		explicit Expression(SourceRange range);
+
 		constexpr std::string_view class_name() const noexcept override
 		{
 			return "Expression";

@@ -15,7 +15,7 @@ namespace Hyper
 	class IntegerLiteral final : public Literal
 	{
 	public:
-		explicit IntegerLiteral(std::string integer);
+		IntegerLiteral(SourceRange range, std::string integer);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;

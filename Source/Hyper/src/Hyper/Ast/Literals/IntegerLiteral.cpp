@@ -10,8 +10,9 @@
 
 namespace Hyper
 {
-	IntegerLiteral::IntegerLiteral(std::string integer)
-		: m_integer(std::move(integer))
+	IntegerLiteral::IntegerLiteral(SourceRange range, std::string integer)
+		: Literal(range)
+		, m_integer(std::move(integer))
 	{
 	}
 

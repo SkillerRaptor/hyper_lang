@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Hyper/Ast/Expression.hpp"
+#include "Hyper/Identifier.hpp"
 #include "Hyper/SourceRange.hpp"
 
 #include <string>
@@ -16,14 +17,12 @@ namespace Hyper
 	class IdentifierExpression final : public Expression
 	{
 	public:
-		IdentifierExpression(std::string identifier, SourceRange identifier_range);
+		IdentifierExpression(SourceRange range, Identifier identifier);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;
 
-		std::string identifier() const;
-
-		SourceRange identifier_range() const;
+		Identifier identifier() const;
 
 		constexpr Category class_category() const noexcept override
 		{
@@ -36,8 +35,6 @@ namespace Hyper
 		}
 
 	private:
-		std::string m_identifier;
-
-		SourceRange m_identifier_range = {};
+		Identifier m_identifier;
 	};
 } // namespace Hyper

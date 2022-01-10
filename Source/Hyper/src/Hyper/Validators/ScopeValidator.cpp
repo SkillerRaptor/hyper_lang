@@ -13,6 +13,7 @@
 #include "Hyper/Ast/Expressions/CallExpression.hpp"
 #include "Hyper/Ast/Expressions/ConditionalExpression.hpp"
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
+#include "Hyper/Ast/Expressions/CastExpression.hpp"
 #include "Hyper/Ast/Expressions/UnaryExpression.hpp"
 #include "Hyper/Ast/Literals/BoolLiteral.hpp"
 #include "Hyper/Ast/Literals/IntegerLiteral.hpp"
@@ -25,7 +26,7 @@
 #include "Hyper/Ast/Statements/ReturnStatement.hpp"
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
 #include "Hyper/Diagnostics.hpp"
-#include "Hyper/Logger.hpp"
+#include "Hyper/Formatter.hpp"
 
 namespace Hyper
 {
@@ -36,18 +37,18 @@ namespace Hyper
 
 	void ScopeValidator::accept(FunctionDeclaration &declaration)
 	{
-		if (contains_symbol(declaration.identifier()))
+		if (contains_symbol(declaration.identifier().value))
 		{
 			const std::string error = Formatter::format(
-				"redefinition of identifier '{}'", declaration.identifier());
-			m_diagnostics.error(declaration.identifier_range(), error);
+				"redefinition of identifier '{}'", declaration.identifier().value);
+			m_diagnostics.error(declaration.identifier().range, error);
 		}
 
 		const Symbol symbol = {
-			.identifier = declaration.identifier(),
+			.identifier = declaration.identifier().value,
 			.kind = Symbol::Kind::Function,
 			.type = declaration.return_type(),
-			.range = declaration.identifier_range(),
+			.range = declaration.identifier().range,
 		};
 
 		m_symbols.emplace_back(symbol);
@@ -65,18 +66,18 @@ namespace Hyper
 
 	void ScopeValidator::accept(VariableDeclaration &declaration)
 	{
-		if (contains_symbol(declaration.identifier()))
+		if (contains_symbol(declaration.identifier().value))
 		{
 			const std::string error = Formatter::format(
-				"redefinition of identifier '{}'", declaration.identifier());
-			m_diagnostics.error(declaration.identifier_range(), error);
+				"redefinition of identifier '{}'", declaration.identifier().value);
+			m_diagnostics.error(declaration.identifier().range, error);
 		}
 
 		const Symbol symbol = {
-			.identifier = declaration.identifier(),
+			.identifier = declaration.identifier().value,
 			.kind = Symbol::Kind::Variable,
 			.type = declaration.type(),
-			.range = declaration.identifier_range(),
+			.range = declaration.identifier().range,
 		};
 
 		m_symbols.emplace_back(symbol);
@@ -97,12 +98,17 @@ namespace Hyper
 
 	void ScopeValidator::accept(CallExpression &expression)
 	{
-		if (!contains_symbol(expression.identifier(), Symbol::Kind::Function))
+		if (!contains_symbol(expression.identifier().value, Symbol::Kind::Function))
 		{
 			const std::string error = Formatter::format(
-				"use of undeclared function '{}'", expression.identifier());
-			m_diagnostics.error(expression.identifier_range(), error);
+				"use of undeclared function '{}'", expression.identifier().value);
+			m_diagnostics.error(expression.identifier().range, error);
 		}
+	}
+
+	void ScopeValidator::accept(CastExpression &expression)
+	{
+		expression.expression()->validate(*this);
 	}
 
 	void ScopeValidator::accept(ConditionalExpression &expression)
@@ -114,11 +120,11 @@ namespace Hyper
 
 	void ScopeValidator::accept(IdentifierExpression &expression)
 	{
-		if (!contains_symbol(expression.identifier(), Symbol::Kind::Variable))
+		if (!contains_symbol(expression.identifier().value, Symbol::Kind::Variable))
 		{
 			const std::string error = Formatter::format(
-				"use of undeclared identifier '{}'", expression.identifier());
-			m_diagnostics.error(expression.identifier_range(), error);
+				"use of undeclared identifier '{}'", expression.identifier().value);
+			m_diagnostics.error(expression.identifier().range, error);
 		}
 	}
 
@@ -141,11 +147,11 @@ namespace Hyper
 
 	void ScopeValidator::accept(AssignStatement &statement)
 	{
-		if (!contains_symbol(statement.identifier(), Symbol::Kind::Variable))
+		if (!contains_symbol(statement.identifier().value, Symbol::Kind::Variable))
 		{
 			const std::string error = Formatter::format(
-				"use of undeclared identifier '{}'", statement.identifier());
-			m_diagnostics.error(statement.identifier_range(), error);
+				"use of undeclared identifier '{}'", statement.identifier().value);
+			m_diagnostics.error(statement.identifier().range, error);
 		}
 
 		statement.expression()->validate(*this);
@@ -153,11 +159,11 @@ namespace Hyper
 
 	void ScopeValidator::accept(CompoundAssignStatement &statement)
 	{
-		if (!contains_symbol(statement.identifier(), Symbol::Kind::Variable))
+		if (!contains_symbol(statement.identifier().value, Symbol::Kind::Variable))
 		{
 			const std::string error = Formatter::format(
-				"use of undeclared identifier '{}'", statement.identifier());
-			m_diagnostics.error(statement.identifier_range(), error);
+				"use of undeclared identifier '{}'", statement.identifier().value);
+			m_diagnostics.error(statement.identifier().range, error);
 		}
 
 		statement.expression()->validate(*this);

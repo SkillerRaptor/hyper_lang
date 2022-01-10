@@ -70,7 +70,7 @@ namespace Hyper
 		if (start.line == end.line)
 		{
 			const std::string start_spaces(start.column - 1, ' ');
-			const std::string tilde_pointers(end.column - start.column - 1, '~');
+			const std::string tilde_pointers(end.column - start.column, '~');
 
 			Logger::log(
 				"{}{} | {}\n", extra_spaces, start.line, get_line_content(start.line));
@@ -90,6 +90,8 @@ namespace Hyper
 			Logger::log("{} | | {}\n", end.line, get_line_content(end.line));
 			Logger::log("{} | |{}^\n", spaces, end_underscore);
 		}
+
+		Logger::log("{} |\n", spaces);
 	}
 
 	std::string Diagnostics::get_line_content(size_t line) const

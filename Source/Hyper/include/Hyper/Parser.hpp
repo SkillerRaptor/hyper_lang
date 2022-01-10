@@ -35,6 +35,7 @@ namespace Hyper
 		ExpressionPtr parse_primary_expression();
 		ExpressionPtr parse_binary_expression(uint8_t precedence);
 		ExpressionPtr parse_call_expression();
+		ExpressionPtr parse_cast_expression();
 		ExpressionPtr parse_identifier_expression();
 
 		LiteralPtr parse_bool_literal();

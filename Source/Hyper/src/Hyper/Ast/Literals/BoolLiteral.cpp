@@ -10,8 +10,9 @@
 
 namespace Hyper
 {
-	BoolLiteral::BoolLiteral(bool boolean)
-		: m_boolean(boolean)
+	BoolLiteral::BoolLiteral(SourceRange range, bool boolean)
+		: Literal(range)
+		, m_boolean(boolean)
 	{
 	}
 

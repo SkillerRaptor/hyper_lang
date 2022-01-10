@@ -12,12 +12,12 @@
 namespace Hyper
 {
 	AssignStatement::AssignStatement(
-		std::string identifier,
-		ExpressionPtr expression,
-		SourceRange identifier_range)
-		: m_identifier(std::move(identifier))
+		SourceRange range,
+		Identifier identifier,
+		ExpressionPtr expression)
+		: Statement(range)
+		, m_identifier(std::move(identifier))
 		, m_expression(std::move(expression))
-		, m_identifier_range(identifier_range)
 	{
 	}
 
@@ -33,7 +33,7 @@ namespace Hyper
 		validator.accept(*this);
 	}
 
-	std::string AssignStatement::identifier() const
+	Identifier AssignStatement::identifier() const
 	{
 		return m_identifier;
 	}
@@ -41,10 +41,5 @@ namespace Hyper
 	const ExpressionPtr &AssignStatement::expression() const
 	{
 		return m_expression;
-	}
-
-	SourceRange AssignStatement::identifier_range() const
-	{
-		return m_identifier_range;
 	}
 } // namespace Hyper

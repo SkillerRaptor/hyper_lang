@@ -10,9 +10,19 @@
 
 namespace Hyper
 {
+	AstNode::AstNode(SourceRange range)
+		: m_range(range)
+	{
+	}
+
 	void AstNode::dump() const
 	{
 		dump("", true);
+	}
+
+	SourceRange AstNode::range() const noexcept
+	{
+		return m_range;
 	}
 
 	void AstNode::dump_self(std::string_view prefix, bool self_last) const

@@ -15,12 +15,18 @@ set(SOURCES
         src/Hyper/Parser.cpp
         src/Hyper/Validator.cpp
         src/Hyper/Validators/ScopeValidator.cpp
+        src/Hyper/Validators/TypeValidator.cpp
         src/Hyper/Ast/AstNode.cpp
+        src/Hyper/Ast/Declaration.cpp
+        src/Hyper/Ast/Expression.cpp
+        src/Hyper/Ast/Literal.cpp
+        src/Hyper/Ast/Statement.cpp
         src/Hyper/Ast/Declarations/FunctionDeclaration.cpp
         src/Hyper/Ast/Declarations/TranslationUnitDeclaration.cpp
         src/Hyper/Ast/Declarations/VariableDeclaration.cpp
         src/Hyper/Ast/Expressions/BinaryExpression.cpp
         src/Hyper/Ast/Expressions/CallExpression.cpp
+        src/Hyper/Ast/Expressions/CastExpression.cpp
         src/Hyper/Ast/Expressions/ConditionalExpression.cpp
         src/Hyper/Ast/Expressions/IdentifierExpression.cpp
         src/Hyper/Ast/Expressions/UnaryExpression.cpp
@@ -39,6 +45,7 @@ set(HEADERS
         include/Hyper/Compiler.hpp
         include/Hyper/Diagnostics.hpp
         include/Hyper/Formatter.hpp
+        include/Hyper/Identifier.hpp
         include/Hyper/Lexer.hpp
         include/Hyper/Logger.hpp
         include/Hyper/Parser.hpp
@@ -48,6 +55,7 @@ set(HEADERS
         include/Hyper/Type.hpp
         include/Hyper/Validator.hpp
         include/Hyper/Validators/ScopeValidator.hpp
+        include/Hyper/Validators/TypeValidator.hpp
         include/Hyper/Ast/AstNode.hpp
         include/Hyper/Ast/Declaration.hpp
         include/Hyper/Ast/Expression.hpp
@@ -59,6 +67,7 @@ set(HEADERS
         include/Hyper/Ast/Declarations/VariableDeclaration.hpp
         include/Hyper/Ast/Expressions/BinaryExpression.hpp
         include/Hyper/Ast/Expressions/CallExpression.hpp
+        include/Hyper/Ast/Expressions/CastExpression.hpp
         include/Hyper/Ast/Expressions/ConditionalExpression.hpp
         include/Hyper/Ast/Expressions/IdentifierExpression.hpp
         include/Hyper/Ast/Expressions/UnaryExpression.hpp

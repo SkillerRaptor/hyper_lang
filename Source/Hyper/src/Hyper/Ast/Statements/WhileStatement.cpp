@@ -11,8 +11,12 @@
 
 namespace Hyper
 {
-	WhileStatement::WhileStatement(ExpressionPtr condition, StatementPtr body)
-		: m_condition(std::move(condition))
+	WhileStatement::WhileStatement(
+		SourceRange range,
+		ExpressionPtr condition,
+		StatementPtr body)
+		: Statement(range)
+		, m_condition(std::move(condition))
 		, m_body(std::move(body))
 	{
 	}

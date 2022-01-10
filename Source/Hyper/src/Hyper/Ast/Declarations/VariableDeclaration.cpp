@@ -12,18 +12,16 @@
 namespace Hyper
 {
 	VariableDeclaration::VariableDeclaration(
-		std::string identifier,
-		VariableDeclaration::Mutable mutable_state,
+		SourceRange range,
+		Identifier identifier,
+		VariableDeclaration::MutableState mutable_state,
 		Type type,
-		ExpressionPtr expression,
-		SourceRange identifier_range,
-		SourceRange type_range)
-		: m_identifier(std::move(identifier))
-		, m_mutable(mutable_state)
+		ExpressionPtr expression)
+		: Declaration(range)
+		, m_identifier(std::move(identifier))
+		, m_mutable_state(mutable_state)
 		, m_type(std::move(type))
 		, m_expression(std::move(expression))
-		, m_identifier_range(identifier_range)
-		, m_type_range(type_range)
 	{
 	}
 
@@ -37,14 +35,14 @@ namespace Hyper
 		validator.accept(*this);
 	}
 
-	std::string VariableDeclaration::identifier() const
+	Identifier VariableDeclaration::identifier() const
 	{
 		return m_identifier;
 	}
 
-	VariableDeclaration::Mutable VariableDeclaration::is_mutable() const
+	VariableDeclaration::MutableState VariableDeclaration::mutable_state() const
 	{
-		return m_mutable;
+		return m_mutable_state;
 	}
 
 	Type VariableDeclaration::type() const
@@ -55,15 +53,5 @@ namespace Hyper
 	const ExpressionPtr &VariableDeclaration::expression() const
 	{
 		return m_expression;
-	}
-
-	SourceRange VariableDeclaration::identifier_range() const
-	{
-		return m_identifier_range;
-	}
-
-	SourceRange VariableDeclaration::type_range() const
-	{
-		return m_type_range;
 	}
 } // namespace Hyper

@@ -536,6 +536,11 @@ namespace Hyper
 
 	Token::Type Lexer::scan_keyword(const std::string &identifier) const noexcept
 	{
+		if (identifier == "as")
+		{
+			return Token::Type::As;
+		}
+
 		if (identifier == "break")
 		{
 			return Token::Type::Break;

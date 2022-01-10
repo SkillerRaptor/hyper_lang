@@ -13,6 +13,8 @@ namespace Hyper
 	class Statement : public AstNode
 	{
 	public:
+		explicit Statement(SourceRange range);
+
 		constexpr std::string_view class_name() const noexcept override
 		{
 			return "Statement";

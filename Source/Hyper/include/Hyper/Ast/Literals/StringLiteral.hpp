@@ -15,7 +15,7 @@ namespace Hyper
 	class StringLiteral final : public Literal
 	{
 	public:
-		explicit StringLiteral(std::string string);
+		StringLiteral(SourceRange range, std::string string);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;

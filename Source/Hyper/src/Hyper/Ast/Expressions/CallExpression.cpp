@@ -11,12 +11,12 @@
 namespace Hyper
 {
 	CallExpression::CallExpression(
-		std::string identifier,
-		ExpressionList arguments,
-		SourceRange identifier_range)
-		: m_identifier(std::move(identifier))
+		SourceRange range,
+		Identifier identifier,
+		ExpressionList arguments)
+		: Expression(range)
+		, m_identifier(std::move(identifier))
 		, m_arguments(std::move(arguments))
-		, m_identifier_range(identifier_range)
 	{
 	}
 
@@ -36,7 +36,7 @@ namespace Hyper
 		validator.accept(*this);
 	}
 
-	std::string CallExpression::identifier() const
+	Identifier CallExpression::identifier() const
 	{
 		return m_identifier;
 	}
@@ -44,10 +44,5 @@ namespace Hyper
 	const ExpressionList &CallExpression::arguments() const
 	{
 		return m_arguments;
-	}
-
-	SourceRange CallExpression::identifier_range() const
-	{
-		return m_identifier_range;
 	}
 } // namespace Hyper

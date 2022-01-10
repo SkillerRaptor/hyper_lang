@@ -10,8 +10,9 @@
 
 namespace Hyper
 {
-	StringLiteral::StringLiteral(std::string string)
-		: m_string(std::move(string))
+	StringLiteral::StringLiteral(SourceRange range, std::string string)
+		: Literal(range)
+		, m_string(std::move(string))
 	{
 	}
 

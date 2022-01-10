@@ -96,6 +96,7 @@ namespace Hyper
 			Import,
 
 			// NOTE: Keywords (Definitions)
+			As,
 			Function,
 			Let,
 			Mutable,

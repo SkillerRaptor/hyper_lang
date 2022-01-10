@@ -13,7 +13,7 @@ namespace Hyper
 	class BoolLiteral final : public Literal
 	{
 	public:
-		explicit BoolLiteral(bool boolean);
+		BoolLiteral(SourceRange range, bool boolean);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;

@@ -29,6 +29,7 @@ namespace Hyper
 			CallExpression,
 			ConditionalExpression,
 			IdentifierExpression,
+			ImplicitCastExpression,
 			UnaryExpression,
 
 			// NOTE: Literals
@@ -47,11 +48,14 @@ namespace Hyper
 		};
 
 	public:
+		explicit AstNode(SourceRange range);
 		virtual ~AstNode() = default;
 
 		void dump() const;
 
 		virtual void validate(Validator &validator) = 0;
+
+		SourceRange range() const noexcept;
 
 		constexpr virtual Category class_category() const noexcept = 0;
 		constexpr virtual std::string_view class_name() const noexcept = 0;
@@ -65,5 +69,8 @@ namespace Hyper
 			std::string_view prefix,
 			bool self_last,
 			bool node_last) const;
+
+	protected:
+		SourceRange m_range = {};
 	};
 } // namespace Hyper

@@ -12,10 +12,12 @@
 namespace Hyper
 {
 	IfStatement::IfStatement(
+		SourceRange range,
 		ExpressionPtr condition,
 		StatementPtr true_body,
 		StatementPtr false_body)
-		: m_condition(std::move(condition))
+		: Statement(range)
+		, m_condition(std::move(condition))
 		, m_true_body(std::move(true_body))
 		, m_false_body(std::move(false_body))
 	{

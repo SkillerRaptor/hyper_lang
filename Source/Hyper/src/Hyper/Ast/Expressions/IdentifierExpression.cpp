@@ -11,10 +11,10 @@
 namespace Hyper
 {
 	IdentifierExpression::IdentifierExpression(
-		std::string identifier,
-		SourceRange identifier_range)
-		: m_identifier(std::move(identifier))
-		, m_identifier_range(identifier_range)
+		SourceRange range,
+		Identifier identifier)
+		: Expression(range)
+		, m_identifier(std::move(identifier))
 	{
 	}
 
@@ -28,13 +28,8 @@ namespace Hyper
 		validator.accept(*this);
 	}
 
-	std::string IdentifierExpression::identifier() const
+	Identifier IdentifierExpression::identifier() const
 	{
 		return m_identifier;
-	}
-
-	SourceRange IdentifierExpression::identifier_range() const
-	{
-		return m_identifier_range;
 	}
 } // namespace Hyper

@@ -17,6 +17,7 @@ namespace Hyper
 	{
 	public:
 		IfStatement(
+			SourceRange range,
 			ExpressionPtr condition,
 			StatementPtr true_body,
 			StatementPtr false_body);

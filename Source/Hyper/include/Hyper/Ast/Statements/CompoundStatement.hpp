@@ -14,7 +14,7 @@ namespace Hyper
 	class CompoundStatement final : public Statement
 	{
 	public:
-		explicit CompoundStatement(StatementList statements);
+		CompoundStatement(SourceRange range, StatementList statements);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;

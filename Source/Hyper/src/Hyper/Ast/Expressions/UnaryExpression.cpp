@@ -10,8 +10,12 @@
 
 namespace Hyper
 {
-	UnaryExpression::UnaryExpression(Kind kind, ExpressionPtr expression)
-		: m_kind(kind)
+	UnaryExpression::UnaryExpression(
+		SourceRange range,
+		UnaryExpression::Operation operation,
+		ExpressionPtr expression)
+		: Expression(range)
+		, m_operation(operation)
 		, m_expression(std::move(expression))
 	{
 	}
@@ -28,9 +32,9 @@ namespace Hyper
 		validator.accept(*this);
 	}
 
-	UnaryExpression::Kind UnaryExpression::kind() const
+	UnaryExpression::Operation UnaryExpression::operation() const
 	{
-		return m_kind;
+		return m_operation;
 	}
 
 	const ExpressionPtr &UnaryExpression::expression() const

@@ -12,6 +12,7 @@
 #include "Hyper/Logger.hpp"
 #include "Hyper/Parser.hpp"
 #include "Hyper/Validators/ScopeValidator.hpp"
+#include "Hyper/Validators/TypeValidator.hpp"
 
 #include <fstream>
 
@@ -44,9 +45,13 @@ namespace Hyper
 			Parser parser(diagnostics, lexer, file);
 
 			std::unique_ptr<AstNode> ast = parser.parse_tree();
+			ast->dump();
 
 			ScopeValidator scope_validator(diagnostics, ast);
 			scope_validator.validate();
+
+			TypeValidator type_validator(diagnostics, ast, scope_validator.symbols());
+			type_validator.validate();
 		}
 
 		return EXIT_SUCCESS;

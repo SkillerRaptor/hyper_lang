@@ -11,8 +11,9 @@
 
 namespace Hyper
 {
-	ReturnStatement::ReturnStatement(ExpressionPtr expression)
-		: m_expression(std::move(expression))
+	ReturnStatement::ReturnStatement(SourceRange range, ExpressionPtr expression)
+		: Statement(range)
+		, m_expression(std::move(expression))
 	{
 	}
 

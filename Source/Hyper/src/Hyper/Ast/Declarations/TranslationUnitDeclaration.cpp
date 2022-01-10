@@ -11,9 +11,11 @@
 namespace Hyper
 {
 	TranslationUnitDeclaration::TranslationUnitDeclaration(
-		std::string translation_unit,
+		SourceRange range,
+		std::string file,
 		DeclarationList declarations)
-		: m_translation_unit(std::move(translation_unit))
+		: Declaration(range)
+		, m_file(std::move(file))
 		, m_declarations(std::move(declarations))
 	{
 	}
@@ -35,9 +37,9 @@ namespace Hyper
 		validator.accept(*this);
 	}
 
-	std::string TranslationUnitDeclaration::translation_unit() const
+	std::string TranslationUnitDeclaration::file() const
 	{
-		return m_translation_unit;
+		return m_file;
 	}
 
 	const DeclarationList &TranslationUnitDeclaration::declarations() const

@@ -15,6 +15,7 @@ namespace Hyper
 	{
 	public:
 		ConditionalExpression(
+			SourceRange range,
 			ExpressionPtr condition,
 			ExpressionPtr true_expression,
 			ExpressionPtr false_expression);

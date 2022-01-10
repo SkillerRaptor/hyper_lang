@@ -14,36 +14,43 @@ namespace Hyper
 	class BinaryExpression final : public Expression
 	{
 	public:
-		enum class Operation : uint8_t
+		struct Operation
 		{
-			Invalid = 0,
+			enum class Kind : uint8_t
+			{
+				Invalid = 0,
 
-			Addition,
-			Subtraction,
-			Multiplication,
-			Division,
-			Modulo,
+				Addition,
+				Subtraction,
+				Multiplication,
+				Division,
+				Modulo,
 
-			BitwiseAnd,
-			BitwiseOr,
-			BitwiseXor,
+				BitwiseAnd,
+				BitwiseOr,
+				BitwiseXor,
 
-			LeftShift,
-			RightShift,
+				LeftShift,
+				RightShift,
 
-			LogicalAnd,
-			LogicalOr,
+				LogicalAnd,
+				LogicalOr,
 
-			Equal,
-			NotEqual,
-			LessThan,
-			GreaterThan,
-			LessEqual,
-			GreaterEqual,
+				Equal,
+				NotEqual,
+				LessThan,
+				GreaterThan,
+				LessEqual,
+				GreaterEqual,
+			};
+
+			Kind kind = Kind::Invalid;
+			SourceRange range = {};
 		};
 
 	public:
 		BinaryExpression(
+			SourceRange range,
 			Operation operation,
 			ExpressionPtr left,
 			ExpressionPtr right);
@@ -51,14 +58,14 @@ namespace Hyper
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;
 
+		Operation operation() const;
+		const ExpressionPtr &left() const;
+		const ExpressionPtr &right() const;
+
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::BinaryExpression;
 		}
-
-		Operation operation() const;
-		const ExpressionPtr &left() const;
-		const ExpressionPtr &right() const;
 
 		constexpr std::string_view class_name() const noexcept override
 		{
@@ -66,7 +73,7 @@ namespace Hyper
 		}
 
 	private:
-		Operation m_operation = Operation::Invalid;
+		Operation m_operation = {};
 		ExpressionPtr m_left = nullptr;
 		ExpressionPtr m_right = nullptr;
 	};

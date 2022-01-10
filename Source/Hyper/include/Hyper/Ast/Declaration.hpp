@@ -13,6 +13,8 @@ namespace Hyper
 	class Declaration : public Statement
 	{
 	public:
+		explicit Declaration(SourceRange range);
+
 		constexpr std::string_view class_name() const noexcept override
 		{
 			return "Declaration";

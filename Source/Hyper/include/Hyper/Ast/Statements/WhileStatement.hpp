@@ -16,7 +16,10 @@ namespace Hyper
 	class WhileStatement final : public Statement
 	{
 	public:
-		WhileStatement(ExpressionPtr condition, StatementPtr body);
+		WhileStatement(
+			SourceRange range,
+			ExpressionPtr condition,
+			StatementPtr body);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;

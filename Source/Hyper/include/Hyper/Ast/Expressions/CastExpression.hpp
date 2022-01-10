@@ -8,57 +8,36 @@
 
 #include "Hyper/Ast/Expression.hpp"
 #include "Hyper/Ast/Forward.hpp"
+#include "Hyper/Type.hpp"
 
 namespace Hyper
 {
-	class UnaryExpression final : public Expression
+	class CastExpression : public Expression
 	{
 	public:
-		struct Operation
-		{
-			enum class Kind
-			{
-				Invalid = 0,
-
-				Not,
-				Negative,
-				Inverse,
-
-				PreIncrement,
-				PreDecrement,
-
-				PostIncrement,
-				PostDecrement,
-			};
-
-			Kind kind = Kind::Invalid;
-			SourceRange range = {};
-		};
-
-	public:
-		UnaryExpression(
+		CastExpression(
 			SourceRange range,
-			Operation operation,
-			ExpressionPtr expression);
+			ExpressionPtr expression,
+			Type type);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;
 
-		Operation operation() const;
 		const ExpressionPtr &expression() const;
+		Type type() const;
 
 		constexpr Category class_category() const noexcept override
 		{
-			return AstNode::Category::UnaryExpression;
+			return AstNode::Category::ImplicitCastExpression;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
 		{
-			return "UnaryExpression";
+			return "CastExpression";
 		}
 
 	private:
-		Operation m_operation = {};
 		ExpressionPtr m_expression = nullptr;
+		Type m_type = {};
 	};
 } // namespace Hyper

@@ -11,18 +11,16 @@
 namespace Hyper
 {
 	FunctionDeclaration::FunctionDeclaration(
-		std::string identifier,
+		SourceRange range,
+		Identifier identifier,
 		DeclarationList arguments,
 		Type return_type,
-		StatementPtr body,
-		SourceRange identifier_range,
-		SourceRange return_type_range)
-		: m_identifier(std::move(identifier))
+		StatementPtr body)
+		: Declaration(range)
+		, m_identifier(std::move(identifier))
 		, m_arguments(std::move(arguments))
 		, m_return_type(std::move(return_type))
 		, m_body(std::move(body))
-		, m_identifier_range(identifier_range)
-		, m_return_type_range(return_type_range)
 	{
 	}
 
@@ -43,7 +41,7 @@ namespace Hyper
 		validator.accept(*this);
 	}
 
-	std::string FunctionDeclaration::identifier() const
+	Identifier FunctionDeclaration::identifier() const
 	{
 		return m_identifier;
 	}
@@ -61,15 +59,5 @@ namespace Hyper
 	const StatementPtr &FunctionDeclaration::body() const
 	{
 		return m_body;
-	}
-
-	SourceRange FunctionDeclaration::identifier_range() const
-	{
-		return m_identifier_range;
-	}
-
-	SourceRange FunctionDeclaration::return_type_range() const
-	{
-		return m_return_type_range;
 	}
 } // namespace Hyper

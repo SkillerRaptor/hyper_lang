@@ -14,10 +14,13 @@ namespace Hyper
 {
 	class Diagnostics;
 
-	class ScopeValidator final : public Validator
+	class TypeValidator final : public Validator
 	{
 	public:
-		ScopeValidator(Diagnostics &diagnostics, AstPtr &ast);
+		TypeValidator(
+			Diagnostics &diagnostics,
+			AstPtr &ast,
+			std::vector<Symbol> symbols);
 
 		void accept(FunctionDeclaration &declaration) override;
 		void accept(TranslationUnitDeclaration &declaration) override;
@@ -42,14 +45,14 @@ namespace Hyper
 		void accept(ReturnStatement &statement) override;
 		void accept(WhileStatement &statement) override;
 
-		std::vector<Symbol> symbols() const;
-
 	private:
-		bool contains_symbol(
-			const std::string &identifier,
-			Symbol::Kind symbol_kind = Symbol::Kind::Invalid) const;
+		Symbol find_symbol(const std::string &identifier) const;
 
 	private:
 		std::vector<Symbol> m_symbols = {};
+
+		Symbol m_current_function = {};
+
+		Type m_current_type = {};
 	};
 } // namespace Hyper

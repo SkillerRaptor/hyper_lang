@@ -1,0 +1,6 @@
+fn main() -> i32
+{
+	let x: u64 = 0 as u64;
+  
+	return 0;
+}

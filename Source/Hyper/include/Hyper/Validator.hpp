@@ -20,6 +20,7 @@ namespace Hyper
 	class CallExpression;
 	class ConditionalExpression;
 	class IdentifierExpression;
+	class CastExpression;
 	class UnaryExpression;
 
 	class BoolLiteral;
@@ -50,6 +51,7 @@ namespace Hyper
 		virtual void accept(CallExpression &expression) = 0;
 		virtual void accept(ConditionalExpression &expression) = 0;
 		virtual void accept(IdentifierExpression &expression) = 0;
+		virtual void accept(CastExpression &expression) = 0;
 		virtual void accept(UnaryExpression &expression) = 0;
 
 		virtual void accept(BoolLiteral &literal) = 0;

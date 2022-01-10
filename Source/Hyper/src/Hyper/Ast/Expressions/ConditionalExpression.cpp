@@ -11,10 +11,12 @@
 namespace Hyper
 {
 	ConditionalExpression::ConditionalExpression(
+		SourceRange range,
 		ExpressionPtr condition,
 		ExpressionPtr true_expression,
 		ExpressionPtr false_expression)
-		: m_condition(std::move(condition))
+		: Expression(range)
+		, m_condition(std::move(condition))
 		, m_true_expression(std::move(true_expression))
 		, m_false_expression(std::move(false_expression))
 	{

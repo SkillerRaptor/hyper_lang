@@ -16,7 +16,7 @@ namespace Hyper
 	class ReturnStatement final : public Statement
 	{
 	public:
-		explicit ReturnStatement(ExpressionPtr expression);
+		ReturnStatement(SourceRange range, ExpressionPtr expression);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;

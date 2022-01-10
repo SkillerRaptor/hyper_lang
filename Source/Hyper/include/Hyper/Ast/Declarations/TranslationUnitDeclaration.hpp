@@ -17,13 +17,14 @@ namespace Hyper
 	{
 	public:
 		TranslationUnitDeclaration(
-			std::string translation_unit,
+			SourceRange range,
+			std::string file,
 			DeclarationList declarations);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;
 
-		std::string translation_unit() const;
+		std::string file() const;
 		const DeclarationList &declarations() const;
 
 		constexpr Category class_category() const noexcept override
@@ -37,7 +38,7 @@ namespace Hyper
 		}
 
 	private:
-		std::string m_translation_unit;
+		std::string m_file;
 		DeclarationList m_declarations = {};
 	};
 } // namespace Hyper
