@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "Hyper/Formatter.hpp"
 #include "Hyper/SourceRange.hpp"
 
 #include <string>
@@ -26,11 +27,66 @@ namespace Hyper
 	public:
 		Diagnostics(std::string file, std::string text);
 
-		void info(const SourceRange &source_range, std::string_view message) const;
-		void warn(const SourceRange &source_range, std::string_view message) const;
+		template <typename... Args>
+		void info(
+			const SourceRange &source_range,
+			std::string_view format,
+			Args &&...args) const
+		{
+			if constexpr (sizeof...(Args) == 0)
+			{
+				report(Level::Info, source_range, format);
+				return;
+			}
+			else
+			{
+				report(
+					Level::Info,
+					source_range,
+					Formatter::format(format, std::forward<Args>(args)...));
+			}
+		}
+
+		template <typename... Args>
+		void warn(
+			const SourceRange &source_range,
+			std::string_view format,
+			Args &&...args) const
+		{
+			if constexpr (sizeof...(Args) == 0)
+			{
+				report(Level::Info, source_range, format);
+				return;
+			}
+			else
+			{
+				report(
+					Level::Warning,
+					source_range,
+					Formatter::format(format, std::forward<Args>(args)...));
+			}
+		}
+
+		template <typename... Args>
 		[[noreturn]] void error(
 			const SourceRange &source_range,
-			std::string_view message) const;
+			std::string_view format,
+			Args &&...args) const
+		{
+			if constexpr (sizeof...(Args) == 0)
+			{
+				report(Level::Error, source_range, format);
+			}
+			else
+			{
+				report(
+					Level::Error,
+					source_range,
+					Formatter::format(format, std::forward<Args>(args)...));
+			}
+
+			std::exit(1);
+		}
 
 	private:
 		void report(

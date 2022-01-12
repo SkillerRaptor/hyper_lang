@@ -11,9 +11,9 @@
 #include "Hyper/Ast/Declarations/VariableDeclaration.hpp"
 #include "Hyper/Ast/Expressions/BinaryExpression.hpp"
 #include "Hyper/Ast/Expressions/CallExpression.hpp"
+#include "Hyper/Ast/Expressions/CastExpression.hpp"
 #include "Hyper/Ast/Expressions/ConditionalExpression.hpp"
 #include "Hyper/Ast/Expressions/IdentifierExpression.hpp"
-#include "Hyper/Ast/Expressions/CastExpression.hpp"
 #include "Hyper/Ast/Expressions/UnaryExpression.hpp"
 #include "Hyper/Ast/Literals/BoolLiteral.hpp"
 #include "Hyper/Ast/Literals/IntegerLiteral.hpp"
@@ -39,9 +39,10 @@ namespace Hyper
 	{
 		if (contains_symbol(declaration.identifier().value))
 		{
-			const std::string error = Formatter::format(
-				"redefinition of identifier '{}'", declaration.identifier().value);
-			m_diagnostics.error(declaration.identifier().range, error);
+			m_diagnostics.error(
+				declaration.identifier().range,
+				"redefinition of identifier '{}'",
+				declaration.identifier().value);
 		}
 
 		const Symbol symbol = {
@@ -68,9 +69,10 @@ namespace Hyper
 	{
 		if (contains_symbol(declaration.identifier().value))
 		{
-			const std::string error = Formatter::format(
-				"redefinition of identifier '{}'", declaration.identifier().value);
-			m_diagnostics.error(declaration.identifier().range, error);
+			m_diagnostics.error(
+				declaration.identifier().range,
+				"redefinition of identifier '{}'",
+				declaration.identifier().value);
 		}
 
 		const Symbol symbol = {
@@ -100,9 +102,10 @@ namespace Hyper
 	{
 		if (!contains_symbol(expression.identifier().value, Symbol::Kind::Function))
 		{
-			const std::string error = Formatter::format(
-				"use of undeclared function '{}'", expression.identifier().value);
-			m_diagnostics.error(expression.identifier().range, error);
+			m_diagnostics.error(
+				expression.identifier().range,
+				"use of undeclared function '{}'",
+				expression.identifier().value);
 		}
 	}
 
@@ -122,9 +125,10 @@ namespace Hyper
 	{
 		if (!contains_symbol(expression.identifier().value, Symbol::Kind::Variable))
 		{
-			const std::string error = Formatter::format(
-				"use of undeclared identifier '{}'", expression.identifier().value);
-			m_diagnostics.error(expression.identifier().range, error);
+			m_diagnostics.error(
+				expression.identifier().range,
+				"use of undeclared identifier '{}'",
+				expression.identifier().value);
 		}
 	}
 
@@ -149,9 +153,10 @@ namespace Hyper
 	{
 		if (!contains_symbol(statement.identifier().value, Symbol::Kind::Variable))
 		{
-			const std::string error = Formatter::format(
-				"use of undeclared identifier '{}'", statement.identifier().value);
-			m_diagnostics.error(statement.identifier().range, error);
+			m_diagnostics.error(
+				statement.identifier().range,
+				"use of undeclared identifier '{}'",
+				statement.identifier().value);
 		}
 
 		statement.expression()->validate(*this);
@@ -161,9 +166,10 @@ namespace Hyper
 	{
 		if (!contains_symbol(statement.identifier().value, Symbol::Kind::Variable))
 		{
-			const std::string error = Formatter::format(
-				"use of undeclared identifier '{}'", statement.identifier().value);
-			m_diagnostics.error(statement.identifier().range, error);
+			m_diagnostics.error(
+				statement.identifier().range,
+				"use of undeclared identifier '{}'",
+				statement.identifier().value);
 		}
 
 		statement.expression()->validate(*this);
@@ -226,7 +232,7 @@ namespace Hyper
 		return false;
 	}
 
-	std::vector<Symbol> ScopeValidator::symbols() const
+	const std::vector<Symbol> &ScopeValidator::symbols() const
 	{
 		return m_symbols;
 	}

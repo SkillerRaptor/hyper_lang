@@ -16,28 +16,6 @@ namespace Hyper
 	{
 	}
 
-	void Diagnostics::info(
-		const SourceRange &source_range,
-		std::string_view message) const
-	{
-		report(Level::Info, source_range, message);
-	}
-
-	void Diagnostics::warn(
-		const SourceRange &source_range,
-		std::string_view message) const
-	{
-		report(Level::Warning, source_range, message);
-	}
-
-	void Diagnostics::error(
-		const SourceRange &source_range,
-		std::string_view message) const
-	{
-		report(Level::Error, source_range, message);
-		std::exit(1);
-	}
-
 	void Diagnostics::report(
 		Diagnostics::Level level,
 		const SourceRange &source_range,

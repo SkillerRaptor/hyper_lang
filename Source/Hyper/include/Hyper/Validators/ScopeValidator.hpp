@@ -42,7 +42,7 @@ namespace Hyper
 		void accept(ReturnStatement &statement) override;
 		void accept(WhileStatement &statement) override;
 
-		std::vector<Symbol> symbols() const;
+		const std::vector<Symbol> &symbols() const;
 
 	private:
 		bool contains_symbol(

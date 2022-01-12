@@ -26,7 +26,6 @@
 #include "Hyper/Ast/Statements/ReturnStatement.hpp"
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
 #include "Hyper/Diagnostics.hpp"
-#include "Hyper/Formatter.hpp"
 
 namespace Hyper
 {
@@ -69,7 +68,6 @@ namespace Hyper
 
 	void TypeValidator::accept(BinaryExpression &expression)
 	{
-		(void) expression;
 		expression.left()->validate(*this);
 		expression.right()->validate(*this);
 	}
@@ -87,7 +85,6 @@ namespace Hyper
 
 	void TypeValidator::accept(ConditionalExpression &expression)
 	{
-		(void) expression;
 		expression.condition()->validate(*this);
 		expression.true_expression()->validate(*this);
 		expression.false_expression()->validate(*this);
@@ -101,7 +98,6 @@ namespace Hyper
 
 	void TypeValidator::accept(UnaryExpression &expression)
 	{
-		(void) expression;
 		expression.expression()->validate(*this);
 	}
 
@@ -145,15 +141,15 @@ namespace Hyper
 		const Symbol symbol = find_symbol(statement.identifier().value);
 		if (symbol.type.kind != m_current_type.kind)
 		{
-			const std::string error = Formatter::format(
-				"assigning to '{}' from incompatible type '{}'",
-				symbol.type.value,
-				m_current_type.value);
 			const SourceRange range = {
 				.start = symbol.type.range.start,
 				.end = statement.expression()->range().end,
 			};
-			m_diagnostics.error(range, error);
+			m_diagnostics.error(
+				range,
+				"assigning to '{}' from incompatible type '{}'",
+				symbol.type.value,
+				m_current_type.value);
 		}
 	}
 
@@ -164,15 +160,15 @@ namespace Hyper
 		const Symbol symbol = find_symbol(statement.identifier().value);
 		if (symbol.type.kind != m_current_type.kind)
 		{
-			const std::string error = Formatter::format(
-				"assigning to '{}' from incompatible type '{}'",
-				symbol.type.value,
-				m_current_type.value);
 			const SourceRange range = {
 				.start = symbol.type.range.start,
 				.end = statement.expression()->range().end,
 			};
-			m_diagnostics.error(range, error);
+			m_diagnostics.error(
+				range,
+				"assigning to '{}' from incompatible type '{}'",
+				symbol.type.value,
+				m_current_type.value);
 		}
 	}
 
@@ -206,15 +202,15 @@ namespace Hyper
 
 		if (m_current_function.type.kind != m_current_type.kind)
 		{
-			const std::string error = Formatter::format(
-				"returning '{}' from a function with incompatible result type '{}'",
-				m_current_type.value,
-				m_current_function.type.value);
 			const SourceRange range = {
 				.start = m_current_function.type.range.start,
 				.end = statement.expression()->range().end,
 			};
-			m_diagnostics.error(range, error);
+			m_diagnostics.error(
+				range,
+				"returning '{}' from a function with incompatible result type '{}'",
+				m_current_type.value,
+				m_current_function.type.value);
 		}
 	}
 

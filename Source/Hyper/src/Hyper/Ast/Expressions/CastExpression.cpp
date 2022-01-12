@@ -20,8 +20,7 @@ namespace Hyper
 	{
 	}
 
-	void CastExpression::dump(std::string_view prefix, bool self_last)
-		const
+	void CastExpression::dump(std::string_view prefix, bool self_last) const
 	{
 		AstNode::dump_self(prefix, self_last);
 

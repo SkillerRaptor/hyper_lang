@@ -15,10 +15,7 @@ namespace Hyper
 	class CastExpression : public Expression
 	{
 	public:
-		CastExpression(
-			SourceRange range,
-			ExpressionPtr expression,
-			Type type);
+		CastExpression(SourceRange range, ExpressionPtr expression, Type type);
 
 		void dump(std::string_view prefix, bool self_last) const override;
 		void validate(Validator &validator) override;

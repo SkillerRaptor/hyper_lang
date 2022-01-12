@@ -7,6 +7,7 @@
 #include "Hyper/Lexer.hpp"
 
 #include "Hyper/Diagnostics.hpp"
+#include "Hyper/Hasher.hpp"
 
 #include <cctype>
 
@@ -23,8 +24,10 @@ namespace Hyper
 		advance();
 		skip_whitespace();
 
-		const size_t line = m_line;
-		const size_t column = m_column;
+		const Position start = {
+			.line = m_line,
+			.column = m_column,
+		};
 
 		std::string value;
 		Token::Type type = Token::Type::Invalid;
@@ -122,7 +125,7 @@ namespace Hyper
 
 			if (peek() == '*')
 			{
-				return scan_multiline_comment();
+				return scan_block_comment();
 			}
 
 			if (peek() == '=')
@@ -341,33 +344,24 @@ namespace Hyper
 			break;
 		}
 
-		const Position start_position = {
-			.line = line,
-			.column = column,
-		};
-
-		const Position end_position = {
-			.line = m_line,
-			.column = m_column,
-		};
-
 		const SourceRange range = {
-			.start = start_position,
-			.end = end_position,
-		};
+				.start = start,
+				.end = {
+					.line = m_line,
+					.column = m_column,
+				},
+			};
 
-		Token token = {
+		return {
 			.value = value,
 			.type = type,
 			.range = range,
 		};
-
-		return token;
 	}
 
 	void Lexer::advance() noexcept
 	{
-		if (m_index >= m_text.length())
+		if (has_reached_end())
 		{
 			m_current_char = '\0';
 			return;
@@ -391,7 +385,7 @@ namespace Hyper
 
 	char Lexer::peek() const noexcept
 	{
-		if (m_index + 1 >= m_text.length())
+		if (has_reached_end())
 		{
 			return '\0';
 		}
@@ -414,7 +408,7 @@ namespace Hyper
 		return m_index >= m_text.length();
 	}
 
-	Token Lexer::scan_comment()
+	Token Lexer::scan_comment() noexcept
 	{
 		advance();
 		while (peek() != '\n')
@@ -425,45 +419,38 @@ namespace Hyper
 		return next_token();
 	}
 
-	Token Lexer::scan_multiline_comment()
+	Token Lexer::scan_block_comment() noexcept
 	{
-		const size_t start_line = m_line;
-		const size_t start_column = m_column;
+		const Position start = {
+			.line = m_line,
+			.column = m_column,
+		};
+
 		while (true)
 		{
 			advance();
 
+			if (peek() == '*')
+			{
+				advance();
+				if (peek() == '/')
+				{
+					advance();
+					break;
+				}
+			}
+
 			if (has_reached_end())
 			{
-				const Position start_position = {
-					.line = start_line,
-					.column = start_column,
-				};
-
-				const Position end_position = {
-					.line = m_line,
-					.column = m_column - 1,
-				};
-
 				const SourceRange source_range = {
-					.start = start_position,
-					.end = end_position,
+					.start = start,
+					.end ={
+						.line = m_line,
+						.column = m_column - 1,
+					},
 				};
 
 				m_diagnostics.error(source_range, "unterminated block comment");
-			}
-
-			if (peek() != '*')
-			{
-				continue;
-			}
-
-			advance();
-
-			if (peek() == '/')
-			{
-				advance();
-				break;
 			}
 		}
 
@@ -472,215 +459,124 @@ namespace Hyper
 
 	std::string Lexer::scan_string()
 	{
-		std::string string;
-		string += m_current_char;
+		std::string string(1, m_current_char);
 
-		const size_t start_line = m_line;
-		const size_t start_column = m_column;
+		const Position start = {
+			.line = m_line,
+			.column = m_column,
+		};
+
 		do
 		{
 			advance();
 			string += m_current_char;
+		} while (m_current_char != '"' && !has_reached_end());
 
-			if (has_reached_end())
-			{
-				const Position start_position = {
-					.line = start_line,
-					.column = start_column,
-				};
-
-				const Position end_position = {
+		if (has_reached_end())
+		{
+			const SourceRange source_range = {
+				.start = start,
+				.end = {
 					.line = m_line,
 					.column = m_column - 1,
-				};
+				},
+			};
 
-				const SourceRange source_range = {
-					.start = start_position,
-					.end = end_position,
-				};
-
-				m_diagnostics.error(source_range, "unterminated double quote string");
-			}
-		} while (m_current_char != '"');
+			m_diagnostics.error(source_range, "unterminated double quote string");
+		}
 
 		return string;
 	}
 
 	std::string Lexer::scan_integer_literal()
 	{
-		std::string integer_literal;
-		integer_literal += m_current_char;
-
+		std::string string(1, m_current_char);
 		while (std::isdigit(peek()))
 		{
 			advance();
-			integer_literal += m_current_char;
+			string += m_current_char;
 		}
 
-		return integer_literal;
+		return string;
 	}
 
 	std::string Lexer::scan_identifier()
 	{
-		std::string identifier;
-		identifier += m_current_char;
-
+		std::string string(1, m_current_char);
 		while (std::isalpha(peek()) || std::isdigit(peek()) || peek() == '_')
 		{
 			advance();
-			identifier += m_current_char;
+			string += m_current_char;
 		}
 
-		return identifier;
+		return string;
 	}
 
-	Token::Type Lexer::scan_keyword(const std::string &identifier) const noexcept
+	Token::Type Lexer::scan_keyword(std::string_view identifier) const noexcept
 	{
-		if (identifier == "as")
+		switch (Utils::hash_string(identifier))
 		{
+		case Utils::hash_string<"as">():
 			return Token::Type::As;
-		}
-
-		if (identifier == "break")
-		{
+		case Utils::hash_string<"break">():
 			return Token::Type::Break;
-		}
-
-		if (identifier == "else")
-		{
+		case Utils::hash_string<"else">():
 			return Token::Type::Else;
-		}
-
-		if (identifier == "for")
-		{
+		case Utils::hash_string<"for">():
 			return Token::Type::For;
-		}
-
-		if (identifier == "if")
-		{
+		case Utils::hash_string<"if">():
 			return Token::Type::If;
-		}
-
-		if (identifier == "return")
-		{
+		case Utils::hash_string<"return">():
 			return Token::Type::Return;
-		}
-
-		if (identifier == "while")
-		{
+		case Utils::hash_string<"while">():
 			return Token::Type::While;
-		}
-
-		if (identifier == "export")
-		{
+		case Utils::hash_string<"export">():
 			return Token::Type::Export;
-		}
-
-		if (identifier == "import")
-		{
+		case Utils::hash_string<"import">():
 			return Token::Type::Import;
-		}
-
-		if (identifier == "fn")
-		{
+		case Utils::hash_string<"fn">():
 			return Token::Type::Function;
-		}
-
-		if (identifier == "let")
-		{
+		case Utils::hash_string<"let">():
 			return Token::Type::Let;
-		}
-
-		if (identifier == "mutable")
-		{
+		case Utils::hash_string<"mutable">():
 			return Token::Type::Mutable;
-		}
-
-		if (identifier == "struct")
-		{
+		case Utils::hash_string<"struct">():
 			return Token::Type::Struct;
-		}
-
-		if (identifier == "bool")
-		{
+		case Utils::hash_string<"bool">():
 			return Token::Type::Bool;
-		}
-
-		if (identifier == "i8")
-		{
+		case Utils::hash_string<"i8">():
 			return Token::Type::Int8;
-		}
-
-		if (identifier == "i16")
-		{
+		case Utils::hash_string<"i16">():
 			return Token::Type::Int16;
-		}
-
-		if (identifier == "i32")
-		{
+		case Utils::hash_string<"i32">():
 			return Token::Type::Int32;
-		}
-
-		if (identifier == "i64")
-		{
+		case Utils::hash_string<"i64">():
 			return Token::Type::Int64;
-		}
-
-		if (identifier == "u8")
-		{
+		case Utils::hash_string<"u8">():
 			return Token::Type::Uint8;
-		}
-
-		if (identifier == "u16")
-		{
+		case Utils::hash_string<"u16">():
 			return Token::Type::Uint16;
-		}
-
-		if (identifier == "u32")
-		{
+		case Utils::hash_string<"u32">():
 			return Token::Type::Uint32;
-		}
-
-		if (identifier == "u64")
-		{
+		case Utils::hash_string<"u64">():
 			return Token::Type::Uint64;
-		}
-
-		if (identifier == "isize")
-		{
+		case Utils::hash_string<"isize">():
 			return Token::Type::ISize;
-		}
-
-		if (identifier == "usize")
-		{
+		case Utils::hash_string<"usize">():
 			return Token::Type::USize;
-		}
-
-		if (identifier == "f32")
-		{
+		case Utils::hash_string<"f32">():
 			return Token::Type::Float32;
-		}
-
-		if (identifier == "f64")
-		{
+		case Utils::hash_string<"f64">():
 			return Token::Type::Float64;
-		}
-
-		if (identifier == "string")
-		{
+		case Utils::hash_string<"string">():
 			return Token::Type::String;
-		}
-
-		if (identifier == "void")
-		{
+		case Utils::hash_string<"void">():
 			return Token::Type::Void;
-		}
-
-		if (identifier == "true" || identifier == "false")
-		{
+		case Utils::hash_string<"true">():
+		case Utils::hash_string<"false">():
 			return Token::Type::BoolLiteral;
+		default:
+			return Token::Type::Invalid;
 		}
-
-		return Token::Type::Invalid;
 	}
 } // namespace Hyper

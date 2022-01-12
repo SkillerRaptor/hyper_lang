@@ -28,13 +28,14 @@ namespace Hyper
 		void skip_whitespace() noexcept;
 		bool has_reached_end() const noexcept;
 
-		Token scan_comment();
-		Token scan_multiline_comment();
+		Token scan_comment() noexcept;
+		Token scan_block_comment() noexcept;
 
 		std::string scan_string();
 		std::string scan_integer_literal();
 		std::string scan_identifier();
-		Token::Type scan_keyword(const std::string &identifier) const noexcept;
+
+		Token::Type scan_keyword(std::string_view identifier) const noexcept;
 
 	private:
 		Diagnostics &m_diagnostics;

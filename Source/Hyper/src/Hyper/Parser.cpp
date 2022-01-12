@@ -25,8 +25,6 @@
 #include "Hyper/Ast/Statements/IfStatement.hpp"
 #include "Hyper/Ast/Statements/ReturnStatement.hpp"
 #include "Hyper/Ast/Statements/WhileStatement.hpp"
-#include "Hyper/Diagnostics.hpp"
-#include "Hyper/Formatter.hpp"
 #include "Hyper/Lexer.hpp"
 
 namespace Hyper
@@ -46,30 +44,30 @@ namespace Hyper
 
 	DeclarationPtr Parser::parse_function_declaration()
 	{
-		const Position start = consume(Token::Type::Function).range.start;
+		const SourceRange function_range = consume<Token::Type::Function>().range;
 
-		const Token identifier_token = consume(Token::Type::Identifier);
+		const Token identifier_token = consume<Token::Type::Identifier>();
 
-		consume(Token::Type::RoundLeftBracket);
+		consume<Token::Type::RoundLeftBracket>();
 
-		// TODO: Adding arguments
 		DeclarationList arguments = {};
 
-		consume(Token::Type::RoundRightBracket);
-		consume(Token::Type::Arrow);
+		consume<Token::Type::RoundRightBracket>();
+
+		consume<Token::Type::Arrow>();
 
 		const Type return_type = consume_type();
 
 		auto body = parse_compound_statement();
 
-		const SourceRange range = {
-			.start = start,
-			.end = body->range().end,
-		};
-
 		const Identifier identifier = {
 			.value = identifier_token.value,
 			.range = identifier_token.range,
+		};
+
+		const SourceRange range = {
+			.start = function_range.start,
+			.end = body->range().end,
 		};
 
 		return std::make_unique<FunctionDeclaration>(
@@ -79,10 +77,20 @@ namespace Hyper
 	DeclarationPtr Parser::parse_translation_unit_declaration()
 	{
 		DeclarationList declarations = {};
-		while (!match(Token::Type::Eof))
+		while (!match<Token::Type::Eof>())
 		{
-			// TODO: Adding import declaration
-			declarations.emplace_back(parse_function_declaration());
+			switch (current_token().type)
+			{
+			case Token::Type::Function:
+				declarations.emplace_back(parse_function_declaration());
+				break;
+			case Token::Type::Import:
+				// TODO: Adding import declaration
+				break;
+			default:
+				// TODO: Adding error
+				break;
+			}
 		}
 
 		const SourceRange range = {
@@ -96,44 +104,44 @@ namespace Hyper
 
 	DeclarationPtr Parser::parse_variable_declaration()
 	{
-		const Position start = consume(Token::Type::Let).range.start;
+		const SourceRange let_range = consume<Token::Type::Let>().range;
 
-		const Token identifier_token = consume(Token::Type::Identifier);
+		const Token identifier_token = consume<Token::Type::Identifier>();
 
-		consume(Token::Type::Colon);
+		consume<Token::Type::Colon>();
 
-		VariableDeclaration::MutableState mutable_state =
-			VariableDeclaration::MutableState::No;
-		if (match(Token::Type::Mutable))
+		const VariableDeclaration::MutableState mutable_state = [this]()
 		{
-			consume();
-			mutable_state = VariableDeclaration::MutableState::Yes;
-		}
+			if (match<Token::Type::Mutable>())
+			{
+				consume();
+				return VariableDeclaration::MutableState::Yes;
+			}
+
+			return VariableDeclaration::MutableState::No;
+		}();
 
 		const Type type = consume_type();
 
 		auto expression = [this]() -> ExpressionPtr
 		{
-			if (match(Token::Type::Assign))
+			if (match<Token::Type::Assign>())
 			{
-				consume(Token::Type::Assign);
+				consume<Token::Type::Assign>();
 				return parse_binary_expression(0);
 			}
 
 			return nullptr;
 		}();
 
-		const Position end =
-			expression == nullptr ? type.range.end : expression->range().end;
-
-		const SourceRange range = {
-			.start = start,
-			.end = end,
-		};
-
 		const Identifier identifier = {
 			.value = identifier_token.value,
 			.range = identifier_token.range,
+		};
+
+		const SourceRange range = {
+			.start = let_range.start,
+			.end = expression == nullptr ? type.range.end : expression->range().end,
 		};
 
 		return std::make_unique<VariableDeclaration>(
@@ -142,8 +150,9 @@ namespace Hyper
 
 	ExpressionPtr Parser::parse_prefix_expression()
 	{
-		const Token operation_token = current_token();
-		const UnaryExpression::Operation::Kind kind = [&]()
+		const Token &operation_token = current_token();
+
+		const UnaryExpression::Operation::Kind kind = [&operation_token]()
 		{
 			switch (operation_token.type)
 			{
@@ -162,33 +171,34 @@ namespace Hyper
 			}
 		}();
 
-		if (kind != UnaryExpression::Operation::Kind::Invalid)
+		if (kind == UnaryExpression::Operation::Kind::Invalid)
 		{
-			consume();
-
-			auto expression = parse_primary_expression();
-
-			const SourceRange range = {
-				.start = operation_token.range.start,
-				.end = expression->range().end,
-			};
-
-			const UnaryExpression::Operation operation = {
-				.kind = kind,
-				.range = operation_token.range,
-			};
-
-			return std::make_unique<UnaryExpression>(
-				range, operation, std::move(expression));
+			return parse_primary_expression();
 		}
 
-		return parse_primary_expression();
+		consume();
+
+		auto expression = parse_primary_expression();
+
+		const UnaryExpression::Operation operation = {
+			.kind = kind,
+			.range = operation_token.range,
+		};
+
+		const SourceRange range = {
+			.start = operation_token.range.start,
+			.end = expression->range().end,
+		};
+
+		return std::make_unique<UnaryExpression>(
+			range, operation, std::move(expression));
 	}
 
 	ExpressionPtr Parser::parse_postfix_expression()
 	{
-		const Token identifier_token = consume(Token::Type::Identifier);
-		if (match(Token::Type::RoundLeftBracket))
+		const Token identifier_token = consume<Token::Type::Identifier>();
+
+		if (match<Token::Type::RoundLeftBracket>())
 		{
 			save_token(identifier_token);
 			return parse_call_expression();
@@ -198,8 +208,9 @@ namespace Hyper
 
 		auto expression = parse_identifier_expression();
 
-		const Token operation_token = current_token();
-		const UnaryExpression::Operation::Kind kind = [&]()
+		const Token &operation_token = current_token();
+
+		const UnaryExpression::Operation::Kind kind = [&operation_token]()
 		{
 			switch (operation_token.type)
 			{
@@ -212,34 +223,34 @@ namespace Hyper
 			}
 		}();
 
-		if (kind != UnaryExpression::Operation::Kind::Invalid)
+		if (kind == UnaryExpression::Operation::Kind::Invalid)
 		{
-			consume();
-
-			const SourceRange range = {
-				.start = identifier_token.range.start,
-				.end = expression->range().end,
-			};
-
-			const UnaryExpression::Operation operation = {
-				.kind = kind,
-				.range = operation_token.range,
-			};
-
-			return std::make_unique<UnaryExpression>(
-				range, operation, std::move(expression));
+			return expression;
 		}
 
-		return expression;
+		consume();
+
+		const UnaryExpression::Operation operation = {
+			.kind = kind,
+			.range = operation_token.range,
+		};
+
+		const SourceRange range = {
+			.start = identifier_token.range.start,
+			.end = expression->range().end,
+		};
+
+		return std::make_unique<UnaryExpression>(
+			range, operation, std::move(expression));
 	}
 
 	ExpressionPtr Parser::parse_paren_expression()
 	{
-		consume(Token::Type::RoundLeftBracket);
+		consume<Token::Type::RoundLeftBracket>();
 
 		auto expression = parse_binary_expression(0);
 
-		consume(Token::Type::RoundRightBracket);
+		consume<Token::Type::RoundRightBracket>();
 
 		return expression;
 	}
@@ -269,9 +280,13 @@ namespace Hyper
 	{
 		auto left = parse_prefix_expression();
 
-		Token token = current_token();
-		if (token.type == Token::Type::As)
+		Token token = [this, &left]()
 		{
+			if (current_token().type != Token::Type::As)
+			{
+				return current_token();
+			}
+
 			consume();
 
 			const Type type = consume_type();
@@ -283,10 +298,12 @@ namespace Hyper
 
 			left = std::make_unique<CastExpression>(range, std::move(left), type);
 
-			token = current_token();
-		}
+			return current_token();
+		}();
 
-		if (match(Token::Type::Semicolon) || match(Token::Type::RoundRightBracket))
+		if (
+			match<Token::Type::Semicolon>() ||
+			match<Token::Type::RoundRightBracket>())
 		{
 			return left;
 		}
@@ -297,7 +314,8 @@ namespace Hyper
 
 			auto right = parse_binary_expression(map_precedence(token.type));
 
-			if (token.type == Token::Type::QuestionMark && match(Token::Type::Colon))
+			if (
+				token.type == Token::Type::QuestionMark && match<Token::Type::Colon>())
 			{
 				consume();
 
@@ -312,7 +330,7 @@ namespace Hyper
 					range, std::move(left), std::move(right), std::move(temp));
 			}
 
-			const BinaryExpression::Operation::Kind kind = [&]()
+			const BinaryExpression::Operation::Kind kind = [this, &token]()
 			{
 				switch (token.type)
 				{
@@ -353,30 +371,29 @@ namespace Hyper
 				case Token::Type::GreaterEqual:
 					return BinaryExpression::Operation::Kind::GreaterEqual;
 				default:
-				{
-					const Token this_token = current_token();
-					const std::string error =
-						Formatter::format("expected operator, found '{}'", token.value);
-					m_diagnostics.error(token.range, error);
-				}
+					m_diagnostics.error(
+						token.range, "expected operator, found '{}'", token.value);
 				}
 			}();
-
-			const SourceRange range = {
-				.start = left->range().start,
-				.end = right->range().end,
-			};
 
 			const BinaryExpression::Operation operation = {
 				.kind = kind,
 				.range = token.range,
 			};
 
+			const SourceRange range = {
+				.start = left->range().start,
+				.end = right->range().end,
+			};
+
 			left = std::make_unique<BinaryExpression>(
 				range, operation, std::move(left), std::move(right));
+
 			token.type = current_token().type;
+
 			if (
-				match(Token::Type::Semicolon) || match(Token::Type::RoundRightBracket))
+				match<Token::Type::Semicolon>() ||
+				match<Token::Type::RoundRightBracket>())
 			{
 				break;
 			}
@@ -387,22 +404,23 @@ namespace Hyper
 
 	ExpressionPtr Parser::parse_call_expression()
 	{
-		const Token identifier_token = consume(Token::Type::Identifier);
+		const Token identifier_token = consume<Token::Type::Identifier>();
 
-		consume(Token::Type::RoundLeftBracket);
+		consume<Token::Type::RoundLeftBracket>();
 
 		ExpressionList arguments = {};
 
-		const Position end = consume(Token::Type::RoundRightBracket).range.end;
-
-		const SourceRange range = {
-			.start = identifier_token.range.start,
-			.end = end,
-		};
+		const SourceRange round_right_range =
+			consume<Token::Type::RoundRightBracket>().range;
 
 		const Identifier identifier = {
 			.value = identifier_token.value,
 			.range = identifier_token.range,
+		};
+
+		const SourceRange range = {
+			.start = identifier_token.range.start,
+			.end = round_right_range.end,
 		};
 
 		return std::make_unique<CallExpression>(
@@ -411,7 +429,8 @@ namespace Hyper
 
 	ExpressionPtr Parser::parse_identifier_expression()
 	{
-		const Token identifier_token = consume(Token::Type::Identifier);
+		const Token identifier_token = consume<Token::Type::Identifier>();
+
 		const Identifier identifier = {
 			.value = identifier_token.value,
 			.range = identifier_token.range,
@@ -422,20 +441,20 @@ namespace Hyper
 
 	LiteralPtr Parser::parse_bool_literal()
 	{
-		const Token boolean = consume(Token::Type::BoolLiteral);
+		const Token boolean = consume<Token::Type::BoolLiteral>();
 		return std::make_unique<BoolLiteral>(
 			boolean.range, boolean.value == "true");
 	}
 
 	LiteralPtr Parser::parse_integer_literal()
 	{
-		const Token integer = consume(Token::Type::IntegerLiteral);
+		const Token integer = consume<Token::Type::IntegerLiteral>();
 		return std::make_unique<IntegerLiteral>(integer.range, integer.value);
 	}
 
 	LiteralPtr Parser::parse_string_literal()
 	{
-		const Token string = consume(Token::Type::StringLiteral);
+		const Token string = consume<Token::Type::StringLiteral>();
 		return std::make_unique<StringLiteral>(string.range, string.value);
 	}
 
@@ -465,15 +484,16 @@ namespace Hyper
 
 	StatementPtr Parser::parse_assign_statement()
 	{
-		const Token identifier_token = consume(Token::Type::Identifier);
-		if (match(Token::Type::RoundLeftBracket))
+		const Token identifier_token = consume<Token::Type::Identifier>();
+
+		if (match<Token::Type::RoundLeftBracket>())
 		{
 			save_token(identifier_token);
 			return parse_expression_statement(parse_call_expression());
 		}
 
 		// TODO: Postfix can be changed to binary if binary returns null.
-		if (match(Token::Type::Increment) || match(Token::Type::Decrement))
+		if (match<Token::Type::Increment>() || match<Token::Type::Decrement>())
 		{
 			save_token(identifier_token);
 			return parse_expression_statement(parse_postfix_expression());
@@ -497,18 +517,18 @@ namespace Hyper
 			break;
 		}
 
-		consume(Token::Type::Assign);
+		consume<Token::Type::Assign>();
 
 		auto expression = parse_binary_expression(0);
-
-		const SourceRange range = {
-			.start = identifier_token.range.start,
-			.end = expression->range().end,
-		};
 
 		const Identifier identifier = {
 			.value = identifier_token.value,
 			.range = identifier_token.range,
+		};
+
+		const SourceRange range = {
+			.start = identifier_token.range.start,
+			.end = expression->range().end,
 		};
 
 		return std::make_unique<AssignStatement>(
@@ -517,40 +537,40 @@ namespace Hyper
 
 	StatementPtr Parser::parse_compound_statement()
 	{
-		const Position start = consume(Token::Type::CurlyLeftBracket).range.start;
+		const SourceRange curly_left_range =
+			consume<Token::Type::CurlyLeftBracket>().range;
 
 		StatementList statements = {};
-		while (true)
+		while (!match<Token::Type::CurlyRightBracket>())
 		{
 			auto statement = parse_statement();
-			if (statement != nullptr)
-			{
-				if (
-					statement->class_category() == AstNode::Category::AssignStatement ||
-					statement->class_category() ==
-						AstNode::Category::CompoundAssignStatement ||
-					statement->class_category() ==
-						AstNode::Category::ExpressionStatement ||
-					statement->class_category() == AstNode::Category::ReturnStatement ||
-					statement->class_category() == AstNode::Category::VariableDeclaration)
-				{
-					consume(Token::Type::Semicolon);
-				}
-
-				statements.emplace_back(std::move(statement));
-			}
-
-			if (match(Token::Type::CurlyRightBracket))
+			if (statement == nullptr)
 			{
 				break;
 			}
+
+			switch (statement->class_category())
+			{
+			case AstNode::Category::AssignStatement:
+			case AstNode::Category::CompoundAssignStatement:
+			case AstNode::Category::ExpressionStatement:
+			case AstNode::Category::ReturnStatement:
+			case AstNode::Category::VariableDeclaration:
+				consume<Token::Type::Semicolon>();
+				break;
+			default:
+				break;
+			}
+
+			statements.emplace_back(std::move(statement));
 		}
 
-		const Position end = consume(Token::Type::CurlyRightBracket).range.end;
+		const SourceRange curly_right_range =
+			consume<Token::Type::CurlyRightBracket>().range;
 
 		const SourceRange range = {
-			.start = start,
-			.end = end,
+			.start = curly_left_range.start,
+			.end = curly_right_range.end,
 		};
 
 		return std::make_unique<CompoundStatement>(range, std::move(statements));
@@ -558,7 +578,8 @@ namespace Hyper
 
 	StatementPtr Parser::parse_compound_assign_statement()
 	{
-		const Token identifier_token = consume(Token::Type::Identifier);
+		const Token identifier_token = consume<Token::Type::Identifier>();
+
 		const CompoundAssignStatement::Operation operation = [this]()
 		{
 			switch (current_token().type)
@@ -597,14 +618,14 @@ namespace Hyper
 
 		auto expression = parse_binary_expression(0);
 
-		const SourceRange range = {
-			.start = identifier_token.range.start,
-			.end = expression->range().end,
-		};
-
 		const Identifier identifier = {
 			.value = identifier_token.value,
 			.range = identifier_token.range,
+		};
+
+		const SourceRange range = {
+			.start = identifier_token.range.start,
+			.end = expression->range().end,
 		};
 
 		return std::make_unique<CompoundAssignStatement>(
@@ -619,31 +640,31 @@ namespace Hyper
 
 	StatementPtr Parser::parse_if_statement()
 	{
-		const Position start = consume(Token::Type::If).range.start;
-		consume(Token::Type::RoundLeftBracket);
+		const SourceRange if_range = consume<Token::Type::If>().range;
+
+		consume<Token::Type::RoundLeftBracket>();
 
 		auto condition = parse_binary_expression(0);
 
-		consume(Token::Type::RoundRightBracket);
+		consume<Token::Type::RoundRightBracket>();
 
 		auto true_body = parse_compound_statement();
+
 		auto false_body = [this]() -> StatementPtr
 		{
-			if (current_token().type != Token::Type::Else)
+			if (match<Token::Type::Else>())
 			{
-				return nullptr;
+				consume();
+				return parse_compound_statement();
 			}
 
-			consume();
-			return parse_compound_statement();
+			return nullptr;
 		}();
 
-		const Position end =
-			false_body == nullptr ? true_body->range().end : false_body->range().end;
-
 		const SourceRange range = {
-			.start = start,
-			.end = end,
+			.start = if_range.start,
+			.end = false_body == nullptr ? true_body->range().end
+																	 : false_body->range().end,
 		};
 
 		return std::make_unique<IfStatement>(
@@ -652,9 +673,9 @@ namespace Hyper
 
 	StatementPtr Parser::parse_return_statement()
 	{
-		const SourceRange return_range = consume(Token::Type::Return).range;
+		const SourceRange return_range = consume<Token::Type::Return>().range;
 
-		if (match(Token::Type::Semicolon))
+		if (match<Token::Type::Semicolon>())
 		{
 			return std::make_unique<ReturnStatement>(return_range, nullptr);
 		}
@@ -671,17 +692,18 @@ namespace Hyper
 
 	StatementPtr Parser::parse_while_statement()
 	{
-		const Position start = consume(Token::Type::While).range.start;
-		consume(Token::Type::RoundLeftBracket);
+		const SourceRange while_range = consume<Token::Type::While>().range;
+
+		consume<Token::Type::RoundLeftBracket>();
 
 		auto condition = parse_binary_expression(0);
 
-		consume(Token::Type::RoundRightBracket);
+		consume<Token::Type::RoundRightBracket>();
 
 		auto body = parse_compound_statement();
 
 		const SourceRange range = {
-			.start = start,
+			.start = while_range.start,
 			.end = body->range().end,
 		};
 
@@ -689,10 +711,10 @@ namespace Hyper
 			range, std::move(condition), std::move(body));
 	}
 
-	Token Parser::current_token() const noexcept
+	const Token &Parser::current_token() const noexcept
 	{
-		const bool invalid = m_saved_token.type == Token::Type::Invalid;
-		return invalid ? m_current_token : m_saved_token;
+		return m_saved_token.type == Token::Type::Invalid ? m_current_token
+																											: m_saved_token;
 	}
 
 	void Parser::save_token(Token token)
@@ -702,101 +724,123 @@ namespace Hyper
 
 	Token Parser::consume() noexcept
 	{
-		Token old_token = current_token();
-		m_last_token = old_token;
+		m_last_token = current_token();
 		if (m_saved_token.type != Token::Type::Invalid)
 		{
 			m_saved_token.type = Token::Type::Invalid;
-			return old_token;
+			return m_last_token;
 		}
 
 		m_current_token = m_lexer.next_token();
-		return old_token;
-	}
-
-	Token Parser::consume(Token::Type token_type) noexcept
-	{
-		if (!match(token_type))
-		{
-			const Token &token = current_token();
-			const Position start_position = [&]()
-			{
-				if (token_type != Token::Type::Semicolon)
-				{
-					return token.range.start;
-				}
-
-				return m_last_token.range.start;
-			}();
-
-			const Position end_position = token.range.end;
-			const SourceRange source_range = {
-				.start = start_position,
-				.end = end_position,
-			};
-
-			const std::string error = Formatter::format(
-				"expected '{}', found '{}'", map_value(token_type), token.value);
-			m_diagnostics.error(source_range, error);
-		}
-
-		return consume();
-	}
-
-	bool Parser::match(Token::Type token_type) const noexcept
-	{
-		return current_token().type == token_type;
+		return m_last_token;
 	}
 
 	Type Parser::consume_type()
 	{
 		auto type = [this]() -> Type
 		{
-			switch (current_token().type)
+			const Token &token = current_token();
+			switch (token.type)
 			{
 			case Token::Type::Bool:
-				return { "bool", Type::Kind::Bool, current_token().range };
+				return {
+					.value = "bool",
+					.kind = Type::Kind::Bool,
+					.range = token.range,
+				};
 			case Token::Type::Int8:
-				return { "i8", Type::Kind::Int8, current_token().range };
+				return {
+					.value = "i8",
+					.kind = Type::Kind::Int8,
+					.range = token.range,
+				};
 			case Token::Type::Int16:
-				return { "i16", Type::Kind::Int16, current_token().range };
+				return {
+					.value = "i16",
+					.kind = Type::Kind::Int16,
+					.range = token.range,
+				};
 			case Token::Type::Int32:
-				return { "i32", Type::Kind::Int32, current_token().range };
+				return {
+					.value = "i32",
+					.kind = Type::Kind::Int32,
+					.range = token.range,
+				};
 			case Token::Type::Int64:
-				return { "i64", Type::Kind::Int64, current_token().range };
+				return {
+					.value = "i64",
+					.kind = Type::Kind::Int64,
+					.range = token.range,
+				};
 			case Token::Type::Uint8:
-				return { "u8", Type::Kind::Uint8, current_token().range };
+				return {
+					.value = "u8",
+					.kind = Type::Kind::Uint8,
+					.range = token.range,
+				};
 			case Token::Type::Uint16:
-				return { "u16", Type::Kind::Uint16, current_token().range };
+				return {
+					.value = "u16",
+					.kind = Type::Kind::Uint16,
+					.range = token.range,
+				};
 			case Token::Type::Uint32:
-				return { "u32", Type::Kind::Uint32, current_token().range };
+				return {
+					.value = "u32",
+					.kind = Type::Kind::Uint32,
+					.range = token.range,
+				};
 			case Token::Type::Uint64:
-				return { "u64", Type::Kind::Uint64, current_token().range };
+				return {
+					.value = "u64",
+					.kind = Type::Kind::Uint64,
+					.range = token.range,
+				};
 			case Token::Type::ISize:
-				return { "isize", Type::Kind::ISize, current_token().range };
+				return {
+					.value = "isize",
+					.kind = Type::Kind::ISize,
+					.range = token.range,
+				};
 			case Token::Type::USize:
-				return { "usize", Type::Kind::USize, current_token().range };
+				return {
+					.value = "usize",
+					.kind = Type::Kind::USize,
+					.range = token.range,
+				};
 			case Token::Type::Float32:
-				return { "f32", Type::Kind::Float32, current_token().range };
+				return {
+					.value = "f32",
+					.kind = Type::Kind::Float32,
+					.range = token.range,
+				};
 			case Token::Type::Float64:
-				return { "f64", Type::Kind::Float64, current_token().range };
+				return {
+					.value = "f64",
+					.kind = Type::Kind::Float64,
+					.range = token.range,
+				};
 			case Token::Type::String:
-				return { "string", Type::Kind::String, current_token().range };
+				return {
+					.value = "string",
+					.kind = Type::Kind::String,
+					.range = token.range,
+				};
 			case Token::Type::Void:
-				return { "void", Type::Kind::Void, current_token().range };
+				return {
+					.value = "void",
+					.kind = Type::Kind::Void,
+					.range = token.range,
+				};
 			case Token::Type::Identifier:
 				return {
-					current_token().value,
-					Type::Kind::UserDefined,
-					current_token().range,
+					.value = token.value,
+					.kind = Type::Kind::UserDefined,
+					.range = token.range,
 				};
 			default:
-			{
-				const Token token = current_token();
-				const std::string error =
-					Formatter::format("expected type, found '{}'", token.value);
-				m_diagnostics.error(token.range, error);
-			}
+				m_diagnostics.error(
+					token.range, "expected type, found '{}'", token.value);
 			}
 		}();
 
@@ -843,172 +887,7 @@ namespace Hyper
 		case Token::Type::BitwiseNot:
 			return 120;
 		default:
-			break;
+			return 0;
 		}
-
-		return 0;
-	}
-
-	std::string Parser::map_value(Token::Type token_type) const noexcept
-	{
-		switch (token_type)
-		{
-		case Token::Type::Eof:
-			return "EOF";
-		case Token::Type::Arrow:
-			return "->";
-		case Token::Type::Dot:
-			return ".";
-		case Token::Type::Colon:
-			return ":";
-		case Token::Type::Identifier:
-			return "identifier";
-		case Token::Type::Semicolon:
-			return ";";
-		case Token::Type::Assign:
-			return "=";
-		case Token::Type::PlusEqual:
-			return "!=";
-		case Token::Type::MinusEqual:
-			return "-=";
-		case Token::Type::StarEqual:
-			return "*=";
-		case Token::Type::SlashEqual:
-			return "/=";
-		case Token::Type::PercentEqual:
-			return "%=";
-		case Token::Type::BitwiseAndEqual:
-			return "&=";
-		case Token::Type::BitwiseOrEqual:
-			return "|=";
-		case Token::Type::BitwiseXorEqual:
-			return "^=";
-		case Token::Type::LeftShiftEqual:
-			return "<<=";
-		case Token::Type::RightShiftEqual:
-			return ">>=";
-		case Token::Type::Increment:
-			return "++";
-		case Token::Type::Decrement:
-			return "--";
-		case Token::Type::Plus:
-			return "+";
-		case Token::Type::Minus:
-			return "-";
-		case Token::Type::Star:
-			return "*";
-		case Token::Type::Slash:
-			return "/";
-		case Token::Type::Percent:
-			return "%";
-		case Token::Type::BitwiseAnd:
-			return "&";
-		case Token::Type::BitwiseOr:
-			return "|";
-		case Token::Type::BitwiseNot:
-			return "~";
-		case Token::Type::BitwiseXor:
-			return "^";
-		case Token::Type::LeftShift:
-			return "<<";
-		case Token::Type::RightShift:
-			return ">>";
-		case Token::Type::LogicalNot:
-			return "!";
-		case Token::Type::LogicalAnd:
-			return "&&";
-		case Token::Type::LogicalOr:
-			return "||";
-		case Token::Type::Equal:
-			return "==";
-		case Token::Type::NotEqual:
-			return "!=";
-		case Token::Type::LessThan:
-			return "<";
-		case Token::Type::GreaterThan:
-			return ">";
-		case Token::Type::LessEqual:
-			return "<=";
-		case Token::Type::GreaterEqual:
-			return ">=";
-		case Token::Type::QuestionMark:
-			return "?";
-		case Token::Type::CurlyLeftBracket:
-			return "{";
-		case Token::Type::CurlyRightBracket:
-			return "}";
-		case Token::Type::SquareLeftBracket:
-			return "[";
-		case Token::Type::SquareRightBracket:
-			return "]";
-		case Token::Type::RoundLeftBracket:
-			return "(";
-		case Token::Type::RoundRightBracket:
-			return ")";
-		case Token::Type::Break:
-			return "break";
-		case Token::Type::Else:
-			return "else";
-		case Token::Type::For:
-			return "for";
-		case Token::Type::If:
-			return "if";
-		case Token::Type::Return:
-			return "return";
-		case Token::Type::While:
-			return "while";
-		case Token::Type::Export:
-			return "export";
-		case Token::Type::Import:
-			return "import";
-		case Token::Type::Function:
-			return "fn";
-		case Token::Type::Let:
-			return "let";
-		case Token::Type::Mutable:
-			return "mutable";
-		case Token::Type::Struct:
-			return "struct";
-		case Token::Type::Bool:
-			return "bool";
-		case Token::Type::Int8:
-			return "i8";
-		case Token::Type::Int16:
-			return "";
-		case Token::Type::Int32:
-			return "i32";
-		case Token::Type::Int64:
-			return "i64";
-		case Token::Type::Uint8:
-			return "u8";
-		case Token::Type::Uint16:
-			return "u16";
-		case Token::Type::Uint32:
-			return "u32";
-		case Token::Type::Uint64:
-			return "u64";
-		case Token::Type::ISize:
-			return "isize";
-		case Token::Type::USize:
-			return "usize";
-		case Token::Type::Float32:
-			return "f32";
-		case Token::Type::Float64:
-			return "f64";
-		case Token::Type::String:
-			return "string";
-		case Token::Type::Void:
-			return "void";
-		case Token::Type::BoolLiteral:
-			return "bool literal";
-		case Token::Type::IntegerLiteral:
-			return "integer literal";
-		case Token::Type::StringLiteral:
-			return "string literal";
-		default:
-			break;
-		}
-
-		return "";
 	}
 } // namespace Hyper

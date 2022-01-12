@@ -44,7 +44,9 @@ set(SOURCES
 set(HEADERS
         include/Hyper/Compiler.hpp
         include/Hyper/Diagnostics.hpp
+        include/Hyper/FixedString.hpp
         include/Hyper/Formatter.hpp
+        include/Hyper/Hasher.hpp
         include/Hyper/Identifier.hpp
         include/Hyper/Lexer.hpp
         include/Hyper/Logger.hpp
@@ -54,33 +56,33 @@ set(HEADERS
         include/Hyper/Token.hpp
         include/Hyper/Type.hpp
         include/Hyper/Validator.hpp
-        include/Hyper/Validators/ScopeValidator.hpp
-        include/Hyper/Validators/TypeValidator.hpp
         include/Hyper/Ast/AstNode.hpp
         include/Hyper/Ast/Declaration.hpp
-        include/Hyper/Ast/Expression.hpp
-        include/Hyper/Ast/Forward.hpp
-        include/Hyper/Ast/Literal.hpp
-        include/Hyper/Ast/Statement.hpp
         include/Hyper/Ast/Declarations/FunctionDeclaration.hpp
         include/Hyper/Ast/Declarations/TranslationUnitDeclaration.hpp
         include/Hyper/Ast/Declarations/VariableDeclaration.hpp
+        include/Hyper/Ast/Expression.hpp
         include/Hyper/Ast/Expressions/BinaryExpression.hpp
         include/Hyper/Ast/Expressions/CallExpression.hpp
         include/Hyper/Ast/Expressions/CastExpression.hpp
         include/Hyper/Ast/Expressions/ConditionalExpression.hpp
         include/Hyper/Ast/Expressions/IdentifierExpression.hpp
         include/Hyper/Ast/Expressions/UnaryExpression.hpp
+        include/Hyper/Ast/Forward.hpp
+        include/Hyper/Ast/Literal.hpp
         include/Hyper/Ast/Literals/BoolLiteral.hpp
         include/Hyper/Ast/Literals/IntegerLiteral.hpp
         include/Hyper/Ast/Literals/StringLiteral.hpp
+        include/Hyper/Ast/Statement.hpp
         include/Hyper/Ast/Statements/AssignStatement.hpp
+        include/Hyper/Ast/Statements/CompoundAssignStatement.hpp
         include/Hyper/Ast/Statements/CompoundStatement.hpp
         include/Hyper/Ast/Statements/ExpressionStatement.hpp
         include/Hyper/Ast/Statements/IfStatement.hpp
-        include/Hyper/Ast/Statements/CompoundAssignStatement.hpp
         include/Hyper/Ast/Statements/ReturnStatement.hpp
-        include/Hyper/Ast/Statements/WhileStatement.hpp)
+        include/Hyper/Ast/Statements/WhileStatement.hpp
+        include/Hyper/Validators/ScopeValidator.hpp
+        include/Hyper/Validators/TypeValidator.hpp)
 
 add_executable(hyper ${SOURCES} ${HEADERS})
 target_link_libraries(
