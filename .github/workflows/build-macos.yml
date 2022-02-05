@@ -3,7 +3,7 @@ name: build-macos
 on: [ push, pull_request ]
 
 jobs:
-  build-linux:
+  build-macos:
     runs-on: macos-latest
     defaults:
       run:
