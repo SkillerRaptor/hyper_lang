@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn main() -> i32
+{
+	let variable_01: bool = false;
+	let variable_02: bool = false;
+
+	let variable_03: mutable bool = false;
+	let variable_04: mutable bool = false;
+
+	return 0;
+}

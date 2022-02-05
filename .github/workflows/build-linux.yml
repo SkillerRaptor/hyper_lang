@@ -68,8 +68,8 @@ jobs:
 
       - name: Test
         run: |
-          cd build
-          ctest -C ${{ matrix.config.build_type }}
+          cd build/hyper_test
+          ./hyper_test ../hyper/hyper
 
       - name: Prepare upload
         run: |

@@ -49,8 +49,8 @@ jobs:
 
       - name: Test
         run: |
-          cd build
-          ctest -C ${{ matrix.config.build_type }}
+          cd build\hyper_test\${{ matrix.config.build_type }}
+          .\hyper_test.exe ..\..\hyper\${{ matrix.config.build_type }}\hyper.exe
 
       - name: Prepare upload
         run: |

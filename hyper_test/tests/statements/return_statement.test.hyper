@@ -1,0 +1,10 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn main() -> i32
+{
+	return 0;
+}

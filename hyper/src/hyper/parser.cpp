@@ -303,8 +303,7 @@ namespace hyper
 			ExpressionPtr right =
 				parse_binary_expression(get_operator_precedence(token_type));
 
-			if (
-				token_type == Token::Type::QuestionMark && match(Token::Type::Colon))
+			if (token_type == Token::Type::QuestionMark && match(Token::Type::Colon))
 			{
 				consume();
 
@@ -320,7 +319,8 @@ namespace hyper
 					source_range, std::move(left), std::move(right), std::move(temp));
 			}
 
-			const BinaryExpression::Operation::Kind kind = [this, token_type, &token]()
+			const BinaryExpression::Operation::Kind kind =
+				[this, token_type, &token]()
 			{
 				switch (token_type)
 				{
@@ -467,6 +467,11 @@ namespace hyper
 		case Token::Type::Increment:
 		case Token::Type::Decrement:
 			return parse_expression_statement(parse_prefix_expression());
+		case Token::Type::BoolLiteral:
+		case Token::Type::FloatingLiteral:
+		case Token::Type::IntegerLiteral:
+		case Token::Type::StringLiteral:
+			return parse_expression_statement(parse_binary_expression(0));
 		case Token::Type::Identifier:
 			return parse_assign_statement();
 		case Token::Type::If:

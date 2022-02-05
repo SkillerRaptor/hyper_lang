@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn main() -> i32
+{
+	let variable_01: i8 = 0 as i8;
+	let variable_02: i16 = 0 as i16;
+	let variable_03: i32 = 0 as i32;
+	let variable_04: i64 = 0 as i64;
+	let variable_05: u8 = 0 as u8;
+	let variable_06: u16 = 0 as u16;
+	let variable_07: u32 = 0 as u32;
+	let variable_08: u64 = 0 as u64;
+	let variable_09: f32 = 0.0 as f32;
+	let variable_10: f64 = 0.0 as f64;
+
+	return 0;
+}

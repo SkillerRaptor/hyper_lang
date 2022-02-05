@@ -1,0 +1,89 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn function_01() -> bool
+{
+	return false;
+}
+
+fn function_02() -> i8
+{
+	return 0 as i8;
+}
+
+fn function_03() -> i16
+{
+	return 0 as i16;
+}
+
+fn function_04() -> i32
+{
+	return 0 as i32;
+}
+
+fn function_05() -> i64
+{
+	return 0 as i64;
+}
+
+fn function_06() -> u8
+{
+	return 0 as u8;
+}
+
+fn function_07() -> u16
+{
+	return 0 as u16;
+}
+
+fn function_08() -> u32
+{
+	return 0 as u32;
+}
+
+fn function_09() -> u64
+{
+	return 0 as u64;
+}
+
+fn function_10() -> isize
+{
+	return 0 as isize;
+}
+
+fn function_11() -> usize
+{
+	return 0 as usize;
+}
+
+fn function_12() -> f32
+{
+	return 0.0 as f32;
+}
+
+fn function_13() -> f64
+{
+	return 0.0 as f64;
+}
+
+fn function_14() -> string
+{
+	return "";
+}
+
+fn function_15() -> void
+{
+	return;
+}
+
+fn function_16() -> void
+{
+}
+
+fn main() -> i32
+{
+	return 0;
+}

@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn main() -> i32
+{
+	let variable_01: i8 = 0.0 as i8;
+	let variable_02: i8 = 1.0 as i8;
+	let variable_03: i8 = -0.0 as i8;
+	let variable_04: i8 = -1.0 as i8;
+
+	let variable_05: i16 = 0.0 as i16;
+	let variable_06: i16 = 1.0 as i16;
+	let variable_07: i16 = -0.0 as i16;
+	let variable_08: i16 = -1.0 as i16;
+
+	let variable_09: i32 = 0.0 as i32;
+	let variable_10: i32 = 1.0 as i32;
+	let variable_11: i32 = -0.0 as i32;
+	let variable_12: i32 = -1.0 as i32;
+
+	let variable_13: i64 = 0.0 as i64;
+	let variable_14: i64 = 1.0 as i64;
+	let variable_15: i64 = -0.0 as i64;
+	let variable_16: i64 = -1.0 as i64;
+
+	let variable_17: u8 = 0.0 as u8;
+	let variable_18: u8 = 1.0 as u8;
+
+	let variable_19: u16 = 0.0 as u16;
+	let variable_20: u16 = 1.0 as u16;
+
+	let variable_21: u32 = 0.0 as u32;
+	let variable_22: u32 = 1.0 as u32;
+
+	let variable_23: u64 = 0.0 as u64;
+	let variable_24: u64 = 1.0 as u64;
+
+	let variable_01: mutable i8 = 0.0 as i8;
+	let variable_02: mutable i8 = 1.0 as i8;
+	let variable_03: mutable i8 = -0.0 as i8;
+	let variable_04: mutable i8 = -1.0 as i8;
+
+	let variable_05: mutable i16 = 0.0 as i16;
+	let variable_06: mutable i16 = 1.0 as i16;
+	let variable_07: mutable i16 = -0.0 as i16;
+	let variable_08: mutable i16 = -1.0 as i16;
+
+	let variable_09: mutable i32 = 0.0 as i32;
+	let variable_10: mutable i32 = 1.0 as i32;
+	let variable_11: mutable i32 = -0.0 as i32;
+	let variable_12: mutable i32 = -1.0 as i32;
+
+	let variable_13: mutable i64 = 0.0 as i64;
+	let variable_14: mutable i64 = 1.0 as i64;
+	let variable_15: mutable i64 = -0.0 as i64;
+	let variable_16: mutable i64 = -1.0 as i64;
+
+	let variable_17: mutable u8 = 0.0 as u8;
+	let variable_18: mutable u8 = 1.0 as u8;
+
+	let variable_19: mutable u16 = 0.0 as u16;
+	let variable_20: mutable u16 = 1.0 as u16;
+
+	let variable_21: mutable u32 = 0.0 as u32;
+	let variable_22: mutable u32 = 1.0 as u32;
+
+	let variable_23: mutable u64 = 0.0 as u64;
+	let variable_24: mutable u64 = 1.0 as u64;
+
+	return 0;
+}

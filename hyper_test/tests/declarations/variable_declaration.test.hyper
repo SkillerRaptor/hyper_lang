@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn main() -> i32
+{
+	let variable_01: bool = false;
+	let variable_02: i8 = 0 as i8;
+	let variable_03: i16 = 0 as i16;
+	let variable_04: i32 = 0 as i32;
+	let variable_05: i64 = 0 as i64;
+	let variable_06: u8 = 0 as u8;
+	let variable_07: u16 = 0 as u16;
+	let variable_08: u32 = 0 as u32;
+	let variable_09: u64 = 0 as u64;
+	let variable_10: f32 = 0.0 as f32;
+	let variable_11: f64 = 0.0 as f64;
+	let variable_12: string = "";
+
+	let variable_13: mutable bool = false;
+	let variable_14: mutable i8 = 0 as i8;
+	let variable_15: mutable i16 = 0 as i16;
+	let variable_16: mutable i32 = 0 as i32;
+	let variable_17: mutable i64 = 0 as i64;
+	let variable_18: mutable u8 = 0 as u8;
+	let variable_19: mutable u16 = 0 as u16;
+	let variable_20: mutable u32 = 0 as u32;
+	let variable_21: mutable u64 = 0 as u64;
+	let variable_22: mutable f32 = 0.0 as f32;
+	let variable_23: mutable f64 = 0.0 as f64;
+	let variable_24: mutable string = "";
+
+	return 0;
+}

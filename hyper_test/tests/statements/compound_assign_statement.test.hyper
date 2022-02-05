@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn main() -> i32
+{
+	let variable_01: mutable i8 = 0;
+	variable_01 += 0;
+	variable_01 -= 0;
+	variable_01 *= 0;
+	variable_01 /= 0;
+	variable_01 %= 0;
+
+	return 0;
+}

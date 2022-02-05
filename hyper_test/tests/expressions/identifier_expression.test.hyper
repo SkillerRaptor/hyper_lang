@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn main() -> i32
+{
+	let variable_01: bool = false;
+	let variable_02: bool = variable_01;
+
+	let variable_03: i8 = 0 as i8;
+	let variable_04: i8 = variable_03;
+
+	let variable_05: i16 = 0 as i16;
+	let variable_06: i16 = variable_05;
+
+	let variable_07: i32 = 0 as i32;
+	let variable_08: i32 = variable_07;
+
+	let variable_09: i64 = 0 as i64;
+	let variable_10: i64 = variable_09;
+
+	let variable_11: u8 = 0 as u8;
+	let variable_12: u8 = variable_11;
+
+	let variable_13: u16 = 0 as u16;
+	let variable_14: u16 = variable_13;
+
+	let variable_15: u32 = 0 as u32;
+	let variable_16: u32 = variable_15;
+
+	let variable_17: u64 = 0 as u64;
+	let variable_18: u64 = variable_17;
+
+	let variable_19: f32 = 0.0 as f32;
+	let variable_20: f32 = variable_19;
+
+	let variable_21: f64 = 0.0 as f64;
+	let variable_22: f64 = variable_21;
+
+	let variable_23: f64 = 0.0 as f64;
+	let variable_24: f64 = variable_23;
+
+	let variable_25: mutable bool = false;
+	let variable_26: mutable bool = variable_25;
+
+	let variable_27: mutable i8 = 0 as i8;
+	let variable_28: mutable i8 = variable_27;
+
+	let variable_29: mutable i16 = 0 as i16;
+	let variable_30: mutable i16 = variable_29;
+
+	let variable_31: mutable i32 = 0 as i32;
+	let variable_32: mutable i32 = variable_31;
+
+	let variable_33: mutable i64 = 0 as i64;
+	let variable_34: mutable i64 = variable_33;
+
+	let variable_35: mutable u8 = 0 as u8;
+	let variable_36: mutable u8 = variable_35;
+
+	let variable_37: mutable u16 = 0 as u16;
+	let variable_38: mutable u16 = variable_37;
+
+	let variable_39: mutable u32 = 0 as u32;
+	let variable_40: mutable u32 = variable_39;
+
+	let variable_41: mutable u64 = 0 as u64;
+	let variable_42: mutable u64 = variable_41;
+
+	let variable_43: mutable f32 = 0.0 as f32;
+	let variable_44: mutable f32 = variable_43;
+
+	let variable_45: mutable f64 = 0.0 as f64;
+	let variable_46: mutable f64 = variable_45;
+
+	let variable_47: mutable f64 = 0.0 as f64;
+	let variable_48: mutable f64 = variable_47;
+
+	return 0;
+}

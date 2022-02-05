@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn main() -> i32
+{
+	let variable_01: i8 = false ? 0 as i8 : 1 as i8;
+	let variable_02: i8 = true ? 0 as i8 : 1 as i8;
+	let variable_03: i16 = false ? 0 as i16 : 1 as i16;
+  let variable_04: i16 = true ? 0 as i16 : 1 as i16;
+	let variable_05: i32 = false ? 0 as i32 : 1 as i32;
+  let variable_06: i32 = true ? 0 as i32 : 1 as i32;
+	let variable_07: i64 = false ? 0 as i64 : 1 as i64;
+  let variable_08: i64 = true ? 0 as i64 : 1 as i64;
+	let variable_09: f32 = false ? 0.0 as f32 : 1.0 as f32;
+	let variable_10: f32 = false ? 0.0 as f32 : 1.0 as f32;
+  let variable_11: f64 = true ? 0.0 as f64 : 1.0 as f64;
+  let variable_12: f64 = true ? 0.0 as f64 : 1.0 as f64;
+  
+	let variable_13: u8 = false ? 0 as u8 : 1 as u8;
+	let variable_14: u8 = true ? 0 as u8 : 1 as u8;
+	let variable_15: u16 = false ? 0 as u16 : 1 as u16;
+  let variable_16: u16 = true ? 0 as u16 : 1 as u16;
+	let variable_17: u32 = false ? 0 as u32 : 1 as u32;
+  let variable_18: u32 = true ? 0 as u32 : 1 as u32;
+	let variable_19: u64 = false ? 0 as u64 : 1 as u64;
+  let variable_20: u64 = true ? 0 as u64 : 1 as u64;
+	let variable_21: f32 = false ? 0.0 as f32 : 1.0 as f32;
+  let variable_22: f32 = true ? 0.0 as f32 : 1.0 as f32;
+	let variable_23: f64 = false ? 0.0 as f64 : 1.0 as f64;
+  let variable_24: f64 = true ? 0.0 as f64 : 1.0 as f64;
+
+	return 0;
+}
