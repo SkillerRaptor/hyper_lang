@@ -20,6 +20,7 @@ namespace hyper
 		, m_operation(operation)
 		, m_expression(std::move(expression))
 	{
+		(void) m_operation;
 	}
 
 	void CompoundAssignStatement::validate_scope(

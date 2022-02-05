@@ -32,6 +32,7 @@ namespace hyper
 		void info(SourceRange source_range, ErrorCode error_code, Args &&...args)
 			const
 		{
+			(void) source_range;
 			Logger::info(fetch_message(error_code), std::forward<Args>(args)...);
 
 			// FIXME: Implement this function
@@ -41,6 +42,7 @@ namespace hyper
 		void warn(SourceRange source_range, ErrorCode error_code, Args &&...args)
 			const
 		{
+			(void) source_range;
 			Logger::warn(fetch_message(error_code), std::forward<Args>(args)...);
 
 			// FIXME: Implement this function

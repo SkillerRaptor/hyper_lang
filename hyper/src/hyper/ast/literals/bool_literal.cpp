@@ -12,6 +12,7 @@ namespace hyper
 		: Literal(source_range)
 		, m_boolean(boolean)
 	{
+		(void) m_boolean;
 	}
 
 	void BoolLiteral::validate_scope(const ScopeValidator &scope_validator) const

@@ -22,6 +22,7 @@ namespace hyper
 		, m_type(std::move(type))
 		, m_expression(std::move(expression))
 	{
+		(void) m_mutable_state;
 	}
 
 	void VariableDeclaration::validate_scope(
