@@ -1,11 +1,11 @@
 #-------------------------------------------------------------------------------------------
-# Copyright (c) 2020-2021, SkillerRaptor <skillerraptor@protonmail.com>
+# Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
 #
 # SPDX-License-Identifier: MIT
 #-------------------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------------------
-# CMake Info
+# cmake Info
 #-------------------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.15)
 project(Hyper LANGUAGES C CXX)
@@ -13,33 +13,33 @@ project(Hyper LANGUAGES C CXX)
 #-------------------------------------------------------------------------------------------
 # Modules
 #-------------------------------------------------------------------------------------------
-include(Development/CMake/StandardProjectSettings.cmake)
+include(cmake/standard_project_settings.cmake)
 
 #-------------------------------------------------------------------------------------------
 # Project Libraries
 #-------------------------------------------------------------------------------------------
-add_library(ProjectOptions INTERFACE)
-target_compile_features(ProjectOptions INTERFACE cxx_std_20)
+add_library(project_options INTERFACE)
+target_compile_features(project_options INTERFACE cxx_std_20)
 
-add_library(ProjectWarnings INTERFACE)
+add_library(project_warnings INTERFACE)
 
 #-------------------------------------------------------------------------------------------
 # Standard Settings
 #-------------------------------------------------------------------------------------------
-include(Development/CMake/Cache.cmake)
+include(cmake/cache.cmake)
 
-include(Development/CMake/CompilerWarnings.cmake)
-enable_warnings(ProjectWarnings)
+include(cmake/compiler_warnings.cmake)
+enable_warnings(project_warnings)
 
-include(Development/CMake/Sanitizers.cmake)
-enable_sanitizers(ProjectOptions)
+include(cmake/sanitizers.cmake)
+enable_sanitizers(project_options)
 
-include(Development/CMake/Doxygen.cmake)
+include(cmake/doxygen.cmake)
 enable_doxygen()
 
-include(Development/CMake/StaticAnalyzers.cmake)
+include(cmake/static_analyzers.cmake)
 
 #-------------------------------------------------------------------------------------------
-# Source
+# hyper
 #-------------------------------------------------------------------------------------------
-add_subdirectory(Source)
+add_subdirectory(hyper)

@@ -1,0 +1,99 @@
+#-------------------------------------------------------------------------------------------
+# Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+#
+# SPDX-License-Identifier: MIT
+#-------------------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------------------
+# hyper
+#-------------------------------------------------------------------------------------------
+set(SOURCES
+        src/main.cpp
+        src/hyper/compiler.cpp
+        src/hyper/data_type.cpp
+        src/hyper/diagnostics.cpp
+        src/hyper/formatter.cpp
+        src/hyper/lexer.cpp
+        src/hyper/parser.cpp
+        src/hyper/token.cpp
+        src/hyper/ast/ast_node.cpp
+        src/hyper/ast/declaration.cpp
+        src/hyper/ast/expression.cpp
+        src/hyper/ast/literal.cpp
+        src/hyper/ast/statement.cpp
+        src/hyper/ast/declarations/function_declaration.cpp
+        src/hyper/ast/declarations/translation_unit_declaration.cpp
+        src/hyper/ast/declarations/variable_declaration.cpp
+        src/hyper/ast/expressions/binary_expression.cpp
+        src/hyper/ast/expressions/call_expression.cpp
+        src/hyper/ast/expressions/cast_expression.cpp
+        src/hyper/ast/expressions/conditional_expression.cpp
+        src/hyper/ast/expressions/identifier_expression.cpp
+        src/hyper/ast/expressions/unary_expression.cpp
+        src/hyper/ast/literals/bool_literal.cpp
+        src/hyper/ast/literals/floating_literal.cpp
+        src/hyper/ast/literals/integer_literal.cpp
+        src/hyper/ast/literals/string_literal.cpp
+        src/hyper/ast/statements/assign_statement.cpp
+        src/hyper/ast/statements/compound_statement.cpp
+        src/hyper/ast/statements/expression_statement.cpp
+        src/hyper/ast/statements/if_statement.cpp
+        src/hyper/ast/statements/compound_assign_statement.cpp
+        src/hyper/ast/statements/return_statement.cpp
+        src/hyper/ast/statements/while_statement.cpp)
+
+set(HEADERS
+        include/hyper/compiler.hpp
+        include/hyper/diagnostics.hpp
+        include/hyper/formatter.hpp
+        include/hyper/lexer.hpp
+        include/hyper/logger.hpp
+        include/hyper/parser.hpp
+        include/hyper/source_range.hpp
+        include/hyper/token.hpp
+        include/hyper/utilities.hpp
+        include/hyper/ast/ast.hpp
+        include/hyper/ast/ast_node.hpp
+        include/hyper/ast/declaration.hpp
+        include/hyper/ast/expression.hpp
+        include/hyper/ast/forward.hpp
+        include/hyper/ast/identifier.hpp
+        include/hyper/ast/literal.hpp
+        include/hyper/ast/statement.hpp
+        include/hyper/data_type.hpp
+        include/hyper/ast/declarations/function_declaration.hpp
+        include/hyper/ast/declarations/translation_unit_declaration.hpp
+        include/hyper/ast/declarations/variable_declaration.hpp
+        include/hyper/ast/expressions/binary_expression.hpp
+        include/hyper/ast/expressions/call_expression.hpp
+        include/hyper/ast/expressions/cast_expression.hpp
+        include/hyper/ast/expressions/conditional_expression.hpp
+        include/hyper/ast/expressions/identifier_expression.hpp
+        include/hyper/ast/expressions/unary_expression.hpp
+        include/hyper/ast/literals/bool_literal.hpp
+        include/hyper/ast/literals/floating_literal.hpp
+        include/hyper/ast/literals/integer_literal.hpp
+        include/hyper/ast/literals/string_literal.hpp
+        include/hyper/ast/statements/assign_statement.hpp
+        include/hyper/ast/statements/compound_assign_statement.hpp
+        include/hyper/ast/statements/compound_statement.hpp
+        include/hyper/ast/statements/expression_statement.hpp
+        include/hyper/ast/statements/if_statement.hpp
+        include/hyper/ast/statements/return_statement.hpp
+        include/hyper/ast/statements/while_statement.hpp)
+
+add_executable(hyper ${SOURCES} ${HEADERS})
+target_link_libraries(
+        hyper
+        PRIVATE
+        project_options
+        project_warnings)
+target_include_directories(
+        hyper
+        PUBLIC
+        include)
+
+add_custom_command(
+        TARGET hyper
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/tests $<TARGET_FILE_DIR:hyper>/tests)

@@ -50,11 +50,12 @@ jobs:
         run: |
           sudo apt update -qq
           sudo apt install -y \
+            clang-12 \
             cmake \
             gcc-10 \
             g++-10
 
-      - name: Configure CMake
+      - name: Configure cmake
         run: |
           export CC=${{ matrix.config.cc }}
           export CXX=${{ matrix.config.cxx }}
