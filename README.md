@@ -1,5 +1,8 @@
 # The Hyper Programming Language
 
+[![Build Linux](https://img.shields.io/github/workflow/status/SkillerRaptor/HyperLang/build-linux?style=flat&label=Build%20Linux&logo=github)](https://github.com/SkillerRaptor/HyperLang/blob/master/.github/workflows/build-linux.yml)
+[![Build MacOS](https://img.shields.io/github/workflow/status/SkillerRaptor/HyperLang/build-macos?style=flat&label=Build%20MacOS&logo=github)](https://github.com/SkillerRaptor/HyperLang/blob/master/.github/workflows/build-macos.yml)
+[![Build Windows](https://img.shields.io/github/workflow/status/SkillerRaptor/HyperLang/build-windows?style=flat&label=Build%20Windows&logo=github)](https://github.com/SkillerRaptor/HyperLang/blob/master/.github/workflows/build-windows.yml)
 [![License](https://img.shields.io/badge/license-MIT-yellow?style=flat)](https://github.com/SkillerRaptor/HyperLang/blob/master/LICENSE)
 
 Hyper is a type-safe programming language, which has a high level of safety.

@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <concepts>
 #include <cstdint>
 #include <string_view>
 
@@ -61,7 +60,8 @@ namespace hyper
 			return text.substr(start, length);
 		}
 
-		template <std::integral T>
+		template <typename T>
+		requires std::is_integral_v<T>
 		static constexpr T count_digits(T number) noexcept
 		{
 			T count = 0;
