@@ -14,6 +14,7 @@
 #include "hyper/scope_validator.hpp"
 #include "hyper/type_validator.hpp"
 
+#include <csignal>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -23,6 +24,13 @@ namespace hyper
 	Compiler::Compiler(const std::vector<std::string> &files)
 		: m_files(files)
 	{
+		std::signal(
+			SIGSEGV,
+			[](int)
+			{
+				Logger::error("Internal compiler error - Segmentation fault");
+				std::exit(1);
+			});
 	}
 
 	int Compiler::compile() const
