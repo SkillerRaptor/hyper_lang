@@ -14,8 +14,9 @@
 
 namespace hyper
 {
-	Tester::Tester(std::string compiler)
-		: m_compiler(std::move(compiler))
+	Tester::Tester(std::string executable_path, std::string compiler)
+		: m_executable_path(std::move(executable_path))
+		, m_compiler(std::move(compiler))
 	{
 	}
 
@@ -26,18 +27,30 @@ namespace hyper
 		size_t failure_count = 0;
 		int64_t duration = 0;
 
+		const std::string tests_folder =
+			std::filesystem::path(m_executable_path).parent_path().string() +
+			"/tests";
+
 		for (const std::filesystem::directory_entry &entry :
-				 std::filesystem::recursive_directory_iterator("tests"))
+				 std::filesystem::recursive_directory_iterator(tests_folder))
 		{
 			if (entry.is_directory())
 			{
 				continue;
 			}
 
-			const std::string file = entry.path().string();
-			const std::string command = m_compiler + " " + file;
+#if defined(WIN32) || defined(WIN64)
+			const char *null = " > nul 2> nul";
+#else
+			const char *null = " > /dev/null";
+#endif
 
-			hyper::Logger::log("\033[0m  START   {}", entry.path().string());
+			const std::string real_file = entry.path().string();
+			const std::string discarded_file =
+				real_file.substr(tests_folder.length() + 1, real_file.length());
+			const std::string command = m_compiler + " " + real_file + null;
+
+			hyper::Logger::log("\033[0m  START   {}", discarded_file);
 
 			const auto test_begin = std::chrono::high_resolution_clock::now();
 			const int return_code = system(command.c_str());
@@ -49,13 +62,13 @@ namespace hyper
 			if (return_code == 0)
 			{
 				hyper::Logger::log(
-					"\033[30;102m SUCCESS \033[0m {} ({}ms)", file, test_duration);
+					"\033[30;102m SUCCESS \033[0m {} ({}ms)", discarded_file, test_duration);
 				++success_count;
 			}
 			else
 			{
 				hyper::Logger::log(
-					"\033[30;101m FAILURE \033[0m {} ({}ms)", file, test_duration);
+					"\033[30;101m FAILURE \033[0m {} ({}ms)", discarded_file, test_duration);
 				++failure_count;
 			}
 

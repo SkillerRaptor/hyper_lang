@@ -15,6 +15,6 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	const hyper::Tester tester(argv[1]);
+	const hyper::Tester tester(argv[0], argv[1]);
 	return tester.test();
 }
