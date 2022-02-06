@@ -34,7 +34,7 @@ namespace hyper
 				continue;
 			}
 
-			const char *file = entry.path().c_str();
+			const std::string file = entry.path().string();
 			const std::string command = m_compiler + " " + file;
 
 			hyper::Logger::log("\033[0m  START   {}", entry.path().string());
