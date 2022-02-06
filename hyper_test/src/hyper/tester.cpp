@@ -24,8 +24,8 @@ namespace hyper
 		size_t file_count = 0;
 		size_t success_count = 0;
 		size_t failure_count = 0;
+		int64_t duration = 0;
 
-		const auto program_begin = std::chrono::high_resolution_clock::now();
 		for (const std::filesystem::directory_entry &entry :
 				 std::filesystem::recursive_directory_iterator("tests"))
 		{
@@ -34,50 +34,45 @@ namespace hyper
 				continue;
 			}
 
-			const std::string file = entry.path().string();
-			++file_count;
-
-			std::stringstream command_stream;
-			command_stream << m_compiler;
-			command_stream << " " << file;
+			const char *file = entry.path().c_str();
+			const std::string command = m_compiler + " " + file;
 
 			hyper::Logger::log("\033[0m  START   {}", entry.path().string());
 
 			const auto test_begin = std::chrono::high_resolution_clock::now();
-			const int return_code = system(command_stream.str().c_str());
+			const int return_code = system(command.c_str());
 			const auto test_end = std::chrono::high_resolution_clock::now();
-			const auto duration =
+			const auto test_duration =
 				std::chrono::duration_cast<std::chrono::milliseconds>(
 					test_end - test_begin)
 					.count();
 			if (return_code == 0)
 			{
 				hyper::Logger::log(
-					"\033[30;102m SUCCESS \033[0m {} ({}ms)", file, duration);
+					"\033[30;102m SUCCESS \033[0m {} ({}ms)", file, test_duration);
 				++success_count;
 			}
 			else
 			{
 				hyper::Logger::log(
-					"\033[30;101m FAILURE \033[0m {} ({}ms)", file, duration);
+					"\033[30;101m FAILURE \033[0m {} ({}ms)", file, test_duration);
 				++failure_count;
 			}
-		}
 
-		const auto program_end = std::chrono::high_resolution_clock::now();
-		const auto program_duration =
-			std::chrono::duration_cast<std::chrono::milliseconds>(
-				program_end - program_begin)
-				.count();
+			++file_count;
+			duration += test_duration;
+		}
 
 		hyper::Logger::log("");
 		hyper::Logger::log(
-			"\033[1mTests:\033[0m \033[92m{} success\033[0m, \033[91m{} failed\033[0m, {} total",
+			"\033[1mTests:\033[0m \033[92m{} success\033[0m, \033[91m{} "
+			"failed\033[0m, {} total",
 			success_count,
 			failure_count,
 			success_count + failure_count);
-		hyper::Logger::log("\033[1mFiles:\033[0m \033[93m{} total\033[0m", file_count);
-		hyper::Logger::log("\033[1mTime:\033[0m  \033[93m{}ms\033[0m", program_duration);
+		hyper::Logger::log(
+			"\033[1mFiles:\033[0m \033[93m{} total\033[0m", file_count);
+		hyper::Logger::log("\033[1mTime:\033[0m  \033[93m{}ms\033[0m", duration);
 
 		return failure_count == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
