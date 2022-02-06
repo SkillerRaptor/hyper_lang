@@ -6,7 +6,10 @@
 
 #pragma once
 
+#include "hyper/ast/ast_node.hpp"
 #include "hyper/ast/forward.hpp"
+#include "hyper/diagnostics.hpp"
+#include "hyper/symbol.hpp"
 
 #include <string>
 #include <vector>
@@ -15,13 +18,21 @@ namespace hyper
 {
 	class Compiler
 	{
+	private:
+		struct CompilationUnit
+		{
+			AstNodePtr ast = nullptr;
+			Diagnostics diagnostics = {};
+		};
+
 	public:
 		explicit Compiler(const std::vector<std::string> &files);
 
 		int compile() const;
 
 	private:
-		AstNodePtr parse_file(const std::string &file) const;
+		CompilationUnit parse_file(const std::string &file) const;
+		std::vector<Symbol> parse_symbols(const AstNodePtr &ast) const;
 
 	private:
 		std::vector<std::string> m_files = {};

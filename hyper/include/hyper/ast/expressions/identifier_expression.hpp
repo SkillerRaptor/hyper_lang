@@ -19,8 +19,10 @@ namespace hyper
 	public:
 		IdentifierExpression(SourceRange source_range, Identifier identifier);
 
+		void collect_symbols(std::vector<Symbol> &) const override;
+
 		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(const TypeValidator &type_validator) const override;
+		void validate_type(TypeValidator &) const override;
 
 		constexpr Category class_category() const noexcept override
 		{

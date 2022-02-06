@@ -11,6 +11,8 @@
 #include "hyper/lexer.hpp"
 #include "hyper/logger.hpp"
 #include "hyper/parser.hpp"
+#include "hyper/scope_validator.hpp"
+#include "hyper/type_validator.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -25,31 +27,52 @@ namespace hyper
 
 	int Compiler::compile() const
 	{
-		// TODO: Adding symbol table
+		std::vector<Symbol> symbols = {};
+
+		std::vector<CompilationUnit> trees = {};
 		for (const std::string &file : m_files)
 		{
-			const AstNodePtr ast = parse_file(file);
-			// TODO: Parse symbols from ast
+			CompilationUnit compilation_unit = parse_file(file);
+			if (compilation_unit.ast == nullptr)
+			{
+				continue;
+			}
+
+			const std::vector<Symbol> ast_symbols =
+				parse_symbols(compilation_unit.ast);
+			symbols.insert(symbols.end(), ast_symbols.begin(), ast_symbols.end());
+			trees.push_back(std::move(compilation_unit));
 		}
 
-		// TODO: Implementing validators
+		for (const CompilationUnit &compilation_unit : trees)
+		{
+			const AstNodePtr &ast = compilation_unit.ast;
+			const Diagnostics &diagnostics = compilation_unit.diagnostics;
+
+			hyper::ScopeValidator scope_validator(diagnostics, symbols);
+			ast->validate_scope(scope_validator);
+
+			hyper::TypeValidator type_validator(diagnostics, symbols);
+			ast->validate_type(type_validator);
+		}
+
 		// TODO: Implementing IR Module & Builder
 
 		return EXIT_SUCCESS;
 	}
 
-	AstNodePtr Compiler::parse_file(const std::string &file) const
+	Compiler::CompilationUnit Compiler::parse_file(const std::string &file) const
 	{
 		if (!std::filesystem::exists(file))
 		{
 			hyper::Logger::error("the file '{}' does not exists", file);
-			return nullptr;
+			return {};
 		}
 
 		if (std::filesystem::is_directory(file))
 		{
 			hyper::Logger::error("the file '{}' can't be a directory", file);
-			return nullptr;
+			return {};
 		}
 
 		const std::string text = [&file]()
@@ -63,10 +86,10 @@ namespace hyper
 		if (text.empty())
 		{
 			hyper::Logger::error("the file '{}' does not contain any code", file);
-			return nullptr;
+			return {};
 		}
 
-		hyper::Diagnostics diagnostics(file, text);
+		const hyper::Diagnostics diagnostics(file, text);
 
 		hyper::Lexer lexer(diagnostics, text);
 		const std::vector<hyper::Token> tokens = lexer.lex();
@@ -74,6 +97,13 @@ namespace hyper
 		hyper::Parser parser(diagnostics, tokens, file);
 		std::unique_ptr<hyper::AstNode> ast = parser.parse();
 
-		return ast;
+		return { std::move(ast), diagnostics };
+	}
+
+	std::vector<Symbol> Compiler::parse_symbols(const AstNodePtr &ast) const
+	{
+		std::vector<Symbol> symbols = {};
+		ast->collect_symbols(symbols);
+		return symbols;
 	}
 } // namespace hyper

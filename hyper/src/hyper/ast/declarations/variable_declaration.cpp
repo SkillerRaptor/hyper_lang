@@ -7,6 +7,8 @@
 #include "hyper/ast/declarations/variable_declaration.hpp"
 
 #include "hyper/ast/expression.hpp"
+#include "hyper/scope_validator.hpp"
+#include "hyper/type_validator.hpp"
 
 namespace hyper
 {
@@ -25,15 +27,48 @@ namespace hyper
 		(void) m_mutable_state;
 	}
 
+	void VariableDeclaration::collect_symbols(std::vector<Symbol> &symbols) const
+	{
+		const Symbol symbol = {
+			.name = m_identifier.value,
+			.file = "",
+			.kind = Symbol::Kind::Variable,
+			.data_type = m_type,
+			.source_range = m_identifier.source_range,
+		};
+
+		symbols.emplace_back(symbol);
+
+		m_expression->collect_symbols(symbols);
+	}
+
 	void VariableDeclaration::validate_scope(
 		const ScopeValidator &scope_validator) const
 	{
-		(void) scope_validator;
+		if (
+			scope_validator.is_symbol_present(m_identifier) &&
+			!scope_validator.is_symbol_unique(m_identifier))
+		{
+			scope_validator.report_redefined_identifier(m_identifier);
+		}
+
+		if (m_expression)
+		{
+			m_expression->validate_scope(scope_validator);
+		}
 	}
 
-	void VariableDeclaration::validate_type(
-		const TypeValidator &type_validator) const
+	void VariableDeclaration::validate_type(TypeValidator &type_validator) const
 	{
-		(void) type_validator;
+		if (m_expression)
+		{
+			m_expression->validate_type(type_validator);
+
+			if (!type_validator.match_data_type(m_type))
+			{
+				type_validator.report_mismatch_type(
+					m_type, m_expression->source_range());
+			}
+		}
 	}
 } // namespace hyper

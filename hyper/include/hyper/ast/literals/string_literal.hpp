@@ -17,8 +17,10 @@ namespace hyper
 	public:
 		StringLiteral(SourceRange source_range, std::string string);
 
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(const TypeValidator &type_validator) const override;
+		void collect_symbols(std::vector<Symbol> &) const override;
+
+		void validate_scope(const ScopeValidator &) const override;
+		void validate_type(TypeValidator &type_validator) const override;
 
 		constexpr Category class_category() const noexcept override
 		{

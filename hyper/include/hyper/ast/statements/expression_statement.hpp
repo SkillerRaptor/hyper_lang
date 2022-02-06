@@ -18,8 +18,10 @@ namespace hyper
 	public:
 		ExpressionStatement(SourceRange source_range, ExpressionPtr expression);
 
+		void collect_symbols(std::vector<Symbol> &symbols) const override;
+
 		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(const TypeValidator &type_validator) const override;
+		void validate_type(TypeValidator &type_validator) const override;
 
 		constexpr Category class_category() const noexcept override
 		{

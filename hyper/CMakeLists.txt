@@ -15,7 +15,9 @@ set(SOURCES
         src/hyper/formatter.cpp
         src/hyper/lexer.cpp
         src/hyper/parser.cpp
+        src/hyper/scope_validator.cpp
         src/hyper/token.cpp
+        src/hyper/type_validator.cpp
         src/hyper/ast/ast_node.cpp
         src/hyper/ast/declaration.cpp
         src/hyper/ast/expression.cpp
@@ -50,6 +52,7 @@ set(HEADERS
         include/hyper/logger.hpp
         include/hyper/parser.hpp
         include/hyper/source_range.hpp
+        include/hyper/symbol.hpp
         include/hyper/token.hpp
         include/hyper/utilities.hpp
         include/hyper/ast/ast.hpp

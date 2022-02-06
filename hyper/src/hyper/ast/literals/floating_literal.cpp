@@ -6,6 +6,8 @@
 
 #include "hyper/ast/literals/floating_literal.hpp"
 
+#include "hyper/type_validator.hpp"
+
 namespace hyper
 {
 	FloatingLiteral::FloatingLiteral(
@@ -16,14 +18,17 @@ namespace hyper
 	{
 	}
 
-	void FloatingLiteral::validate_scope(
-		const ScopeValidator &scope_validator) const
+	void FloatingLiteral::collect_symbols(std::vector<Symbol> &) const
 	{
-		(void) scope_validator;
 	}
 
-	void FloatingLiteral::validate_type(const TypeValidator &type_validator) const
+	void FloatingLiteral::validate_scope(const ScopeValidator &) const
 	{
-		(void) type_validator;
+	}
+
+	void FloatingLiteral::validate_type(TypeValidator &type_validator) const
+	{
+		const DataType data_type("f32", DataType::Kind::Float32, m_source_range);
+		type_validator.set_current_data_type(data_type);
 	}
 } // namespace hyper

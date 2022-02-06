@@ -18,15 +18,19 @@ namespace hyper
 	{
 	}
 
+	void ExpressionStatement::collect_symbols(std::vector<Symbol> &symbol) const
+	{
+		m_expression->collect_symbols(symbol);
+	}
+
 	void ExpressionStatement::validate_scope(
 		const ScopeValidator &scope_validator) const
 	{
-		(void) scope_validator;
+		m_expression->validate_scope(scope_validator);
 	}
 
-	void ExpressionStatement::validate_type(
-		const TypeValidator &type_validator) const
+	void ExpressionStatement::validate_type(TypeValidator &type_validator) const
 	{
-		(void) type_validator;
+		m_expression->validate_type(type_validator);
 	}
 } // namespace hyper

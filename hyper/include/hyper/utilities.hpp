@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 #include <string_view>
 
 namespace hyper
@@ -27,9 +28,35 @@ namespace hyper
 			return result;
 		}
 
-		static constexpr std::string_view read_line(
-			std::string_view text,
-			size_t line) noexcept
+		template <typename T>
+		requires std::is_integral_v<T>
+		static constexpr T count_digits(T number) noexcept
+		{
+			T count = 0;
+			while (number != 0)
+			{
+				number /= 10;
+				++count;
+			}
+
+			return count;
+		}
+
+		static std::string replace_string(
+			std::string string,
+			std::string_view search,
+			std::string_view replacement)
+		{
+			size_t position = 0;
+			while ((position = string.find(search, position)) != std::string::npos)
+			{
+				string.replace(position, search.length(), replacement);
+				position += replacement.length();
+			}
+			return string;
+		}
+
+		static std::string read_line(std::string_view text, size_t line) noexcept
 		{
 			size_t start = std::numeric_limits<size_t>::max();
 			size_t length = 0;
@@ -57,21 +84,10 @@ namespace hyper
 				}
 			}
 
-			return text.substr(start, length);
-		}
+			std::string string(text.substr(start, length));
+			string = replace_string(string, "\t", "  ");
 
-		template <typename T>
-		requires std::is_integral_v<T>
-		static constexpr T count_digits(T number) noexcept
-		{
-			T count = 0;
-			while (number != 0)
-			{
-				number /= 10;
-				++count;
-			}
-
-			return count;
+			return string;
 		}
 	};
 } // namespace hyper

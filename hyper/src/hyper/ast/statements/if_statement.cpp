@@ -22,13 +22,36 @@ namespace hyper
 	{
 	}
 
-	void IfStatement::validate_scope(const ScopeValidator &scope_validator) const
+	void IfStatement::collect_symbols(std::vector<Symbol> &symbol) const
 	{
-		(void) scope_validator;
+		m_condition->collect_symbols(symbol);
+		m_true_body->collect_symbols(symbol);
+
+		if (m_false_body)
+		{
+			m_false_body->collect_symbols(symbol);
+		}
 	}
 
-	void IfStatement::validate_type(const TypeValidator &type_validator) const
+	void IfStatement::validate_scope(const ScopeValidator &scope_validator) const
 	{
-		(void) type_validator;
+		m_condition->validate_scope(scope_validator);
+		m_true_body->validate_scope(scope_validator);
+
+		if (m_false_body)
+		{
+			m_false_body->validate_scope(scope_validator);
+		}
+	}
+
+	void IfStatement::validate_type(TypeValidator &type_validator) const
+	{
+		m_condition->validate_type(type_validator);
+		m_true_body->validate_type(type_validator);
+
+		if (m_false_body)
+		{
+			m_false_body->validate_type(type_validator);
+		}
 	}
 } // namespace hyper

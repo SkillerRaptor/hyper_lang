@@ -10,7 +10,6 @@
 #include "hyper/ast/forward.hpp"
 
 #include <string>
-#include <vector>
 
 namespace hyper
 {
@@ -22,8 +21,10 @@ namespace hyper
 			std::string file,
 			std::vector<DeclarationPtr> declarations);
 
+		void collect_symbols(std::vector<Symbol> &symbols) const override;
+
 		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(const TypeValidator &type_validator) const override;
+		void validate_type(TypeValidator &type_validator) const override;
 
 		constexpr Category class_category() const noexcept override
 		{

@@ -20,15 +20,22 @@ namespace hyper
 	{
 	}
 
+	void BinaryExpression::collect_symbols(std::vector<Symbol> &symbols) const
+	{
+		m_left->collect_symbols(symbols);
+		m_right->collect_symbols(symbols);
+	}
+
 	void BinaryExpression::validate_scope(
 		const ScopeValidator &scope_validator) const
 	{
-		(void) scope_validator;
+		m_left->validate_scope(scope_validator);
+		m_right->validate_scope(scope_validator);
 	}
 
-	void BinaryExpression::validate_type(
-		const TypeValidator &type_validator) const
+	void BinaryExpression::validate_type(TypeValidator &type_validator) const
 	{
-		(void) type_validator;
+		m_left->validate_type(type_validator);
+		m_right->validate_type(type_validator);
 	}
 } // namespace hyper

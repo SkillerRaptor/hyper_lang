@@ -6,6 +6,8 @@
 
 #include "hyper/ast/expressions/cast_expression.hpp"
 
+#include "hyper/type_validator.hpp"
+
 namespace hyper
 {
 	CastExpression::CastExpression(
@@ -18,14 +20,21 @@ namespace hyper
 	{
 	}
 
+	void CastExpression::collect_symbols(std::vector<Symbol> &symbols) const
+	{
+		m_expression->collect_symbols(symbols);
+	}
+
 	void CastExpression::validate_scope(
 		const ScopeValidator &scope_validator) const
 	{
-		(void) scope_validator;
+		m_expression->validate_scope(scope_validator);
 	}
 
-	void CastExpression::validate_type(const TypeValidator &type_validator) const
+	void CastExpression::validate_type(TypeValidator &type_validator) const
 	{
-		(void) type_validator;
+		m_expression->validate_type(type_validator);
+
+		type_validator.set_current_data_type(m_type);
 	}
 } // namespace hyper

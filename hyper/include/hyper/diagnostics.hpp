@@ -23,9 +23,13 @@ namespace hyper
 			E0001,
 			E0002,
 			E0003,
+			E0004,
+			E0005,
+			E0006,
 		};
 
 	public:
+		Diagnostics() = default;
 		Diagnostics(std::string file, std::string text);
 
 		template <typename... Args>
@@ -90,7 +94,8 @@ namespace hyper
 					start.line,
 					Utilities::read_line(m_text, start.line));
 				Logger::log("{} |  {}^", spaces, start_underscore);
-				Logger::log("{} | | {}", end.line, Utilities::read_line(m_text, end.line));
+				Logger::log(
+					"{} | | {}", end.line, Utilities::read_line(m_text, end.line));
 				Logger::log("{} | |{}^", spaces, end_underscore);
 			}
 
@@ -111,6 +116,12 @@ namespace hyper
 				return "unterminated double quote string";
 			case ErrorCode::E0003:
 				return "expected '{}', found '{}'";
+			case ErrorCode::E0004:
+				return "use of undeclared identifier '{}'";
+			case ErrorCode::E0005:
+				return "redefinition of identifier '{}'";
+			case ErrorCode::E0006:
+				return "assigning '{}' to a variable with incompatible type '{}'";
 			}
 
 			std::abort();

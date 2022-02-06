@@ -6,6 +6,8 @@
 
 #include "hyper/ast/literals/string_literal.hpp"
 
+#include "hyper/type_validator.hpp"
+
 namespace hyper
 {
 	StringLiteral::StringLiteral(SourceRange source_range, std::string string)
@@ -14,14 +16,17 @@ namespace hyper
 	{
 	}
 
-	void StringLiteral::validate_scope(
-		const ScopeValidator &scope_validator) const
+	void StringLiteral::collect_symbols(std::vector<Symbol> &) const
 	{
-		(void) scope_validator;
 	}
 
-	void StringLiteral::validate_type(const TypeValidator &type_validator) const
+	void StringLiteral::validate_scope(const ScopeValidator &) const
 	{
-		(void) type_validator;
+	}
+
+	void StringLiteral::validate_type(TypeValidator &type_validator) const
+	{
+		const DataType data_type("string", DataType::Kind::String, m_source_range);
+		type_validator.set_current_data_type(data_type);
 	}
 } // namespace hyper

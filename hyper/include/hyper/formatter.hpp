@@ -15,9 +15,7 @@ namespace hyper
 	{
 	public:
 		template <typename... Args>
-		static std::string format(
-			std::string_view format,
-			Args &&...args)
+		static std::string format(std::string_view format, Args &&...args)
 		{
 			size_t index = 0;
 			std::stringstream stream;

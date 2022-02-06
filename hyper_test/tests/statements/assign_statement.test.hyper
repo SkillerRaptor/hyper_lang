@@ -6,7 +6,7 @@
 
 fn main() -> i32
 {
-	let variable_01: i8 = 0;
+	let variable_01: i8 = 0 as i8;
 
 	return 0;
 }

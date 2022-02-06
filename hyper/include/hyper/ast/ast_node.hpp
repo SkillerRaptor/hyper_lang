@@ -7,8 +7,10 @@
 #pragma once
 
 #include "hyper/source_range.hpp"
+#include "hyper/symbol.hpp"
 
 #include <string_view>
+#include <vector>
 
 namespace hyper
 {
@@ -57,9 +59,11 @@ namespace hyper
 
 		SourceRange source_range() const noexcept;
 
+		virtual void collect_symbols(std::vector<Symbol> &symbols) const = 0;
+
 		virtual void validate_scope(
 			const ScopeValidator &scope_validator) const = 0;
-		virtual void validate_type(const TypeValidator &type_validator) const = 0;
+		virtual void validate_type(TypeValidator &type_validator) const = 0;
 
 		constexpr virtual Category class_category() const noexcept = 0;
 		constexpr virtual std::string_view class_name() const noexcept = 0;

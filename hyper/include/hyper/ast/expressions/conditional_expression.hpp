@@ -20,8 +20,10 @@ namespace hyper
 			ExpressionPtr true_expression,
 			ExpressionPtr false_expression);
 
+		void collect_symbols(std::vector<Symbol> &symbols) const override;
+
 		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(const TypeValidator &type_validator) const override;
+		void validate_type(TypeValidator &type_validator) const override;
 
 		constexpr Category class_category() const noexcept override
 		{

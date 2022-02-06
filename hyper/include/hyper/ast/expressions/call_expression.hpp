@@ -12,7 +12,6 @@
 #include "hyper/source_range.hpp"
 
 #include <string>
-#include <vector>
 
 namespace hyper
 {
@@ -24,8 +23,10 @@ namespace hyper
 			Identifier identifier,
 			std::vector<ExpressionPtr> arguments);
 
+		void collect_symbols(std::vector<Symbol> &symbols) const override;
+
 		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(const TypeValidator &type_validator) const override;
+		void validate_type(TypeValidator &type_validator) const override;
 
 		constexpr Category class_category() const noexcept override
 		{

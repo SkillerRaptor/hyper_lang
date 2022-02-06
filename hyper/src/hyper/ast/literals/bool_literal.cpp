@@ -6,6 +6,8 @@
 
 #include "hyper/ast/literals/bool_literal.hpp"
 
+#include "hyper/type_validator.hpp"
+
 namespace hyper
 {
 	BoolLiteral::BoolLiteral(SourceRange source_range, bool boolean)
@@ -15,13 +17,17 @@ namespace hyper
 		(void) m_boolean;
 	}
 
-	void BoolLiteral::validate_scope(const ScopeValidator &scope_validator) const
+	void BoolLiteral::collect_symbols(std::vector<Symbol> &) const
 	{
-		(void) scope_validator;
 	}
 
-	void BoolLiteral::validate_type(const TypeValidator &type_validator) const
+	void BoolLiteral::validate_scope(const ScopeValidator &) const
 	{
-		(void) type_validator;
+	}
+
+	void BoolLiteral::validate_type(TypeValidator &type_validator) const
+	{
+		const DataType data_type("bool", DataType::Kind::Bool, m_source_range);
+		type_validator.set_current_data_type(data_type);
 	}
 } // namespace hyper

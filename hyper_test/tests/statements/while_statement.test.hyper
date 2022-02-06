@@ -6,8 +6,8 @@
 
 fn main() -> i32
 {
-	let variable_01: i8 = 0;
-	while (variable_01 < 10)
+	let variable_01: i8 = 0 as i8;
+	while (variable_01 < 10 as i8)
 	{
 		++variable_01;
 	}

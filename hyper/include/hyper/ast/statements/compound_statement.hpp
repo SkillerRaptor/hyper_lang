@@ -9,8 +9,6 @@
 #include "hyper/ast/forward.hpp"
 #include "hyper/ast/statement.hpp"
 
-#include <vector>
-
 namespace hyper
 {
 	class CompoundStatement final : public Statement
@@ -20,8 +18,10 @@ namespace hyper
 			SourceRange source_range,
 			std::vector<StatementPtr> statements);
 
+		void collect_symbols(std::vector<Symbol> &symbols) const override;
+
 		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(const TypeValidator &type_validator) const override;
+		void validate_type(TypeValidator &type_validator) const override;
 
 		constexpr Category class_category() const noexcept override
 		{

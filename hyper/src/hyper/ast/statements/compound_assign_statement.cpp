@@ -7,6 +7,7 @@
 #include "hyper/ast/statements/compound_assign_statement.hpp"
 
 #include "hyper/ast/expression.hpp"
+#include "hyper/scope_validator.hpp"
 
 namespace hyper
 {
@@ -23,15 +24,26 @@ namespace hyper
 		(void) m_operation;
 	}
 
+	void CompoundAssignStatement::collect_symbols(
+		std::vector<Symbol> &symbols) const
+	{
+		m_expression->collect_symbols(symbols);
+	}
+
 	void CompoundAssignStatement::validate_scope(
 		const ScopeValidator &scope_validator) const
 	{
-		(void) scope_validator;
+		if (!scope_validator.is_symbol_present(m_identifier))
+		{
+			scope_validator.report_undeclared_identifier(m_identifier);
+		}
+
+		m_expression->validate_scope(scope_validator);
 	}
 
 	void CompoundAssignStatement::validate_type(
-		const TypeValidator &type_validator) const
+		TypeValidator &type_validator) const
 	{
-		(void) type_validator;
+		m_expression->validate_type(type_validator);
 	}
 } // namespace hyper

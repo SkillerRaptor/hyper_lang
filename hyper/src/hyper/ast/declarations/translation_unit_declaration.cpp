@@ -18,15 +18,35 @@ namespace hyper
 	{
 	}
 
+	void TranslationUnitDeclaration::collect_symbols(
+		std::vector<Symbol> &symbols) const
+	{
+		for (const DeclarationPtr &declaration : m_declarations)
+		{
+			declaration->collect_symbols(symbols);
+		}
+
+		for (Symbol &symbol : symbols)
+		{
+			symbol.file = m_file;
+		}
+	}
+
 	void TranslationUnitDeclaration::validate_scope(
 		const ScopeValidator &scope_validator) const
 	{
-		(void) scope_validator;
+		for (const DeclarationPtr &declaration : m_declarations)
+		{
+			declaration->validate_scope(scope_validator);
+		}
 	}
 
 	void TranslationUnitDeclaration::validate_type(
-		const TypeValidator &type_validator) const
+		TypeValidator &type_validator) const
 	{
-		(void) type_validator;
+		for (const DeclarationPtr &declaration : m_declarations)
+		{
+			declaration->validate_type(type_validator);
+		}
 	}
 } // namespace hyper

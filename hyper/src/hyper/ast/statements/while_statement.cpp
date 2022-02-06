@@ -20,14 +20,22 @@ namespace hyper
 	{
 	}
 
+	void WhileStatement::collect_symbols(std::vector<Symbol> &symbol) const
+	{
+		m_condition->collect_symbols(symbol);
+		m_body->collect_symbols(symbol);
+	}
+
 	void WhileStatement::validate_scope(
 		const ScopeValidator &scope_validator) const
 	{
-		(void) scope_validator;
+		m_condition->validate_scope(scope_validator);
+		m_body->validate_scope(scope_validator);
 	}
 
-	void WhileStatement::validate_type(const TypeValidator &type_validator) const
+	void WhileStatement::validate_type(TypeValidator &type_validator) const
 	{
-		(void) type_validator;
+		m_condition->validate_type(type_validator);
+		m_body->validate_type(type_validator);
 	}
 } // namespace hyper
