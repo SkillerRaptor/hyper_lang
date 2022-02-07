@@ -23,8 +23,24 @@ namespace hyper
 		while (!has_reached_end())
 		{
 			const Token token = next_token();
-			tokens.emplace_back(token);
+			if (token.type() != Token::Type::Invalid)
+			{
+				tokens.emplace_back(token);
+			}
 		}
+
+		const SourceRange source_range = {
+			.start = {
+				.line = m_line,
+				.column = m_column,
+			},
+			.end = {
+				.line = m_line,
+				.column = m_column,
+			},
+		};
+
+		tokens.emplace_back("", Token::Type::Eof, source_range);
 
 		return tokens;
 	}
@@ -320,8 +336,6 @@ namespace hyper
 		default:
 			if (has_reached_end())
 			{
-				value = "";
-				type = Token::Type::Eof;
 				break;
 			}
 
