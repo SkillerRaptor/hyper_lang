@@ -6,7 +6,7 @@
 
 #include "hyper/ast/literals/bool_literal.hpp"
 
-#include "hyper/type_validator.hpp"
+#include "hyper/validators/type_validator.hpp"
 
 namespace hyper
 {

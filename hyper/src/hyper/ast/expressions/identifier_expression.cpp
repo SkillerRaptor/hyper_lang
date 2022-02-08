@@ -6,7 +6,7 @@
 
 #include "hyper/ast/expressions/identifier_expression.hpp"
 
-#include "hyper/scope_validator.hpp"
+#include "hyper/validators/scope_validator.hpp"
 
 namespace hyper
 {

@@ -7,7 +7,7 @@
 #include "hyper/ast/statements/assign_statement.hpp"
 
 #include "hyper/ast/expression.hpp"
-#include "hyper/scope_validator.hpp"
+#include "hyper/validators/scope_validator.hpp"
 
 namespace hyper
 {

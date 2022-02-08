@@ -7,8 +7,8 @@
 #include "hyper/ast/declarations/function_declaration.hpp"
 
 #include "hyper/logger.hpp"
-#include "hyper/scope_validator.hpp"
-#include "hyper/type_validator.hpp"
+#include "hyper/validators/scope_validator.hpp"
+#include "hyper/validators/type_validator.hpp"
 
 namespace hyper
 {

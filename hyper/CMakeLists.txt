@@ -15,9 +15,7 @@ set(SOURCES
         src/hyper/formatter.cpp
         src/hyper/lexer.cpp
         src/hyper/parser.cpp
-        src/hyper/scope_validator.cpp
         src/hyper/token.cpp
-        src/hyper/type_validator.cpp
         src/hyper/ast/ast_node.cpp
         src/hyper/ast/declaration.cpp
         src/hyper/ast/expression.cpp
@@ -42,10 +40,13 @@ set(SOURCES
         src/hyper/ast/statements/if_statement.cpp
         src/hyper/ast/statements/compound_assign_statement.cpp
         src/hyper/ast/statements/return_statement.cpp
-        src/hyper/ast/statements/while_statement.cpp)
+        src/hyper/ast/statements/while_statement.cpp
+        src/hyper/validators/scope_validator.cpp
+        src/hyper/validators/type_validator.cpp)
 
 set(HEADERS
         include/hyper/compiler.hpp
+        include/hyper/data_type.hpp
         include/hyper/diagnostics.hpp
         include/hyper/formatter.hpp
         include/hyper/lexer.hpp
@@ -63,7 +64,6 @@ set(HEADERS
         include/hyper/ast/identifier.hpp
         include/hyper/ast/literal.hpp
         include/hyper/ast/statement.hpp
-        include/hyper/data_type.hpp
         include/hyper/ast/declarations/function_declaration.hpp
         include/hyper/ast/declarations/translation_unit_declaration.hpp
         include/hyper/ast/declarations/variable_declaration.hpp
@@ -83,7 +83,9 @@ set(HEADERS
         include/hyper/ast/statements/expression_statement.hpp
         include/hyper/ast/statements/if_statement.hpp
         include/hyper/ast/statements/return_statement.hpp
-        include/hyper/ast/statements/while_statement.hpp)
+        include/hyper/ast/statements/while_statement.hpp
+        include/hyper/validators/scope_validator.hpp
+        include/hyper/validators/type_validator.hpp)
 
 add_executable(hyper ${SOURCES} ${HEADERS})
 target_link_libraries(

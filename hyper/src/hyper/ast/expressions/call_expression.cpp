@@ -6,8 +6,8 @@
 
 #include "hyper/ast/expressions/call_expression.hpp"
 
-#include "hyper/scope_validator.hpp"
-#include "hyper/type_validator.hpp"
+#include "hyper/validators/scope_validator.hpp"
+#include "hyper/validators/type_validator.hpp"
 
 namespace hyper
 {

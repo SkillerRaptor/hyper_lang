@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "hyper/scope_validator.hpp"
+#include "hyper/validators/scope_validator.hpp"
 
 namespace hyper
 {
@@ -14,7 +14,6 @@ namespace hyper
 		: m_diagnostics(diagnostics)
 		, m_symbols(symbols)
 	{
-		(void) m_diagnostics;
 	}
 
 	bool ScopeValidator::is_symbol_present(
