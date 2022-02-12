@@ -6,31 +6,25 @@
 
 #include "hyper/ast/statements/expression_statement.hpp"
 
-#include "hyper/ast/expression.hpp"
+#include "hyper/ast/expressions/expression.hpp"
 
 namespace hyper
 {
 	ExpressionStatement::ExpressionStatement(
 		SourceRange source_range,
-		ExpressionPtr expression)
+		Expression *expression)
 		: Statement(source_range)
 		, m_expression(std::move(expression))
 	{
 	}
 
-	void ExpressionStatement::collect_symbols(std::vector<Symbol> &symbol) const
+	ExpressionStatement::~ExpressionStatement()
 	{
-		m_expression->collect_symbols(symbol);
+		delete m_expression;
 	}
 
-	void ExpressionStatement::validate_scope(
-		const ScopeValidator &scope_validator) const
+	const Expression *ExpressionStatement::expression() const
 	{
-		m_expression->validate_scope(scope_validator);
-	}
-
-	void ExpressionStatement::validate_type(TypeValidator &type_validator) const
-	{
-		m_expression->validate_type(type_validator);
+		return m_expression;
 	}
 } // namespace hyper

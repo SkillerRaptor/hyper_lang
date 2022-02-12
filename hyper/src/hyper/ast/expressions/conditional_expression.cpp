@@ -10,36 +10,34 @@ namespace hyper
 {
 	ConditionalExpression::ConditionalExpression(
 		SourceRange source_range,
-		ExpressionPtr condition,
-		ExpressionPtr true_expression,
-		ExpressionPtr false_expression)
+		Expression *condition,
+		Expression *true_expression,
+		Expression *false_expression)
 		: Expression(source_range)
 		, m_condition(std::move(condition))
 		, m_true_expression(std::move(true_expression))
 		, m_false_expression(std::move(false_expression))
 	{
 	}
-
-	void ConditionalExpression::collect_symbols(
-		std::vector<Symbol> &symbols) const
+	ConditionalExpression::~ConditionalExpression()
 	{
-		m_condition->collect_symbols(symbols);
-		m_true_expression->collect_symbols(symbols);
-		m_false_expression->collect_symbols(symbols);
+		delete m_condition;
+		delete m_true_expression;
+		delete m_false_expression;
 	}
 
-	void ConditionalExpression::validate_scope(
-		const ScopeValidator &scope_validator) const
+	const Expression *ConditionalExpression::condition() const
 	{
-		m_condition->validate_scope(scope_validator);
-		m_true_expression->validate_scope(scope_validator);
-		m_false_expression->validate_scope(scope_validator);
+		return m_condition;
 	}
 
-	void ConditionalExpression::validate_type(TypeValidator &type_validator) const
+	const Expression *ConditionalExpression::true_expression() const
 	{
-		m_condition->validate_type(type_validator);
-		m_true_expression->validate_type(type_validator);
-		m_false_expression->validate_type(type_validator);
+		return m_true_expression;
+	}
+
+	const Expression *ConditionalExpression::false_expression() const
+	{
+		return m_false_expression;
 	}
 } // namespace hyper

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "hyper/ast/literal.hpp"
+#include "hyper/ast/literals/literal.hpp"
 
 #include <string>
 
@@ -17,14 +17,16 @@ namespace hyper
 	public:
 		StringLiteral(SourceRange source_range, std::string string);
 
-		void collect_symbols(std::vector<Symbol> &) const override;
-
-		void validate_scope(const ScopeValidator &) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		std::string_view string() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::StringLiteral;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Literal;
 		}
 
 		constexpr std::string_view class_name() const noexcept override

@@ -16,6 +16,84 @@ namespace hyper
 	{
 	}
 
+	void ScopeValidator::visit_function_declaration(
+		const FunctionDeclaration *function_declaration) const
+	{
+		const Identifier &identifier = function_declaration->identifier();
+		if (is_symbol_present(identifier) && !is_symbol_unique(identifier))
+		{
+			m_diagnostics.error(
+				identifier.source_range,
+				Diagnostics::ErrorCode::E0005,
+				identifier.value);
+		}
+	}
+
+	void ScopeValidator::visit_variable_declaration(
+		const VariableDeclaration *variable_declaration) const
+	{
+		const Identifier &identifier = variable_declaration->identifier();
+		if (is_symbol_present(identifier) && !is_symbol_unique(identifier))
+		{
+			m_diagnostics.error(
+				identifier.source_range,
+				Diagnostics::ErrorCode::E0005,
+				identifier.value);
+		}
+	}
+
+	void ScopeValidator::visit_call_expression(
+		const CallExpression *call_expression) const
+	{
+		const Identifier &identifier = call_expression->identifier();
+		if (!is_symbol_present(identifier))
+		{
+			m_diagnostics.error(
+				identifier.source_range,
+				Diagnostics::ErrorCode::E0004,
+				identifier.value);
+		}
+	}
+
+	void ScopeValidator::visit_identifier_expression(
+		const IdentifierExpression *identifier_expression) const
+	{
+		const Identifier &identifier = identifier_expression->identifier();
+		if (!is_symbol_present(identifier))
+		{
+			m_diagnostics.error(
+				identifier.source_range,
+				Diagnostics::ErrorCode::E0004,
+				identifier.value);
+		}
+	}
+
+	void ScopeValidator::visit_assign_statement(
+		const AssignStatement *assign_statement) const
+	{
+		const Identifier &identifier = assign_statement->identifier();
+		if (!is_symbol_present(identifier))
+		{
+			m_diagnostics.error(
+				identifier.source_range,
+				Diagnostics::ErrorCode::E0004,
+				identifier.value);
+		}
+	}
+
+	void ScopeValidator::visit_compound_assign_statement(
+		const CompoundAssignStatement *compound_assign_statement) const
+	{
+		const Identifier &identifier = compound_assign_statement->identifier();
+		if (!is_symbol_present(identifier))
+		{
+			m_diagnostics.error(
+				identifier.source_range,
+				Diagnostics::ErrorCode::E0004,
+				identifier.value);
+		}
+	}
+
 	bool ScopeValidator::is_symbol_present(
 		const Identifier &identifier) const noexcept
 	{
@@ -43,19 +121,5 @@ namespace hyper
 		}
 
 		return count == 1;
-	}
-
-	void ScopeValidator::report_undeclared_identifier(
-		const Identifier &identifier) const noexcept
-	{
-		m_diagnostics.error(
-			identifier.source_range, Diagnostics::ErrorCode::E0004, identifier.value);
-	}
-
-	void ScopeValidator::report_redefined_identifier(
-		const Identifier &identifier) const noexcept
-	{
-		m_diagnostics.error(
-			identifier.source_range, Diagnostics::ErrorCode::E0005, identifier.value);
 	}
 } // namespace hyper

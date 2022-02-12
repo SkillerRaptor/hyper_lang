@@ -6,10 +6,11 @@
 
 #pragma once
 
-#include "hyper/ast/declaration.hpp"
-#include "hyper/ast/forward.hpp"
+#include "hyper/ast/declarations/declaration.hpp"
 
+#include <span>
 #include <string>
+#include <vector>
 
 namespace hyper
 {
@@ -19,16 +20,20 @@ namespace hyper
 		TranslationUnitDeclaration(
 			SourceRange source_range,
 			std::string file,
-			std::vector<DeclarationPtr> declarations);
+			std::vector<Declaration *> declarations);
+		~TranslationUnitDeclaration() override;
 
-		void collect_symbols(std::vector<Symbol> &symbols) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		std::string_view file() const;
+		std::span<const Declaration *const> declarations() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::TranslationUnitDeclaration;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Declaration;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
@@ -38,6 +43,6 @@ namespace hyper
 
 	private:
 		std::string m_file;
-		std::vector<DeclarationPtr> m_declarations = {};
+		std::vector<Declaration *> m_declarations = {};
 	};
 } // namespace hyper

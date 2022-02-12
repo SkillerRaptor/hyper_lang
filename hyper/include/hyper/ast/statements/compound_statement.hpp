@@ -6,8 +6,10 @@
 
 #pragma once
 
-#include "hyper/ast/forward.hpp"
-#include "hyper/ast/statement.hpp"
+#include "hyper/ast/statements/statement.hpp"
+
+#include <span>
+#include <vector>
 
 namespace hyper
 {
@@ -16,16 +18,19 @@ namespace hyper
 	public:
 		CompoundStatement(
 			SourceRange source_range,
-			std::vector<StatementPtr> statements);
+			std::vector<Statement *> statements);
+		~CompoundStatement() override;
 
-		void collect_symbols(std::vector<Symbol> &symbols) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		std::span<const Statement *const> statements() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::CompoundStatement;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Statement;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
@@ -34,6 +39,6 @@ namespace hyper
 		}
 
 	private:
-		std::vector<StatementPtr> m_statements = {};
+		std::vector<Statement *> m_statements = {};
 	};
 } // namespace hyper

@@ -6,36 +6,33 @@
 
 #include "hyper/ast/statements/while_statement.hpp"
 
-#include "hyper/ast/expression.hpp"
+#include "hyper/ast/expressions/expression.hpp"
 
 namespace hyper
 {
 	WhileStatement::WhileStatement(
 		SourceRange source_range,
-		ExpressionPtr condition,
-		StatementPtr body)
+		Expression *condition,
+		Statement *body)
 		: Statement(source_range)
 		, m_condition(std::move(condition))
 		, m_body(std::move(body))
 	{
 	}
 
-	void WhileStatement::collect_symbols(std::vector<Symbol> &symbol) const
+	WhileStatement::~WhileStatement()
 	{
-		m_condition->collect_symbols(symbol);
-		m_body->collect_symbols(symbol);
+		delete m_condition;
+		delete m_body;
 	}
 
-	void WhileStatement::validate_scope(
-		const ScopeValidator &scope_validator) const
+	const Expression *WhileStatement::condition() const
 	{
-		m_condition->validate_scope(scope_validator);
-		m_body->validate_scope(scope_validator);
+		return m_condition;
 	}
 
-	void WhileStatement::validate_type(TypeValidator &type_validator) const
+	const Statement *WhileStatement::body() const
 	{
-		m_condition->validate_type(type_validator);
-		m_body->validate_type(type_validator);
+		return m_body;
 	}
 } // namespace hyper

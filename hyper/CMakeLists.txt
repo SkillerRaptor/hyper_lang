@@ -15,12 +15,10 @@ set(SOURCES
         src/hyper/formatter.cpp
         src/hyper/lexer.cpp
         src/hyper/parser.cpp
+        src/hyper/symbol_collector.cpp
         src/hyper/token.cpp
         src/hyper/ast/ast_node.cpp
-        src/hyper/ast/declaration.cpp
-        src/hyper/ast/expression.cpp
-        src/hyper/ast/literal.cpp
-        src/hyper/ast/statement.cpp
+        src/hyper/ast/declarations/declaration.cpp
         src/hyper/ast/declarations/function_declaration.cpp
         src/hyper/ast/declarations/translation_unit_declaration.cpp
         src/hyper/ast/declarations/variable_declaration.cpp
@@ -28,18 +26,21 @@ set(SOURCES
         src/hyper/ast/expressions/call_expression.cpp
         src/hyper/ast/expressions/cast_expression.cpp
         src/hyper/ast/expressions/conditional_expression.cpp
+        src/hyper/ast/expressions/expression.cpp
         src/hyper/ast/expressions/identifier_expression.cpp
         src/hyper/ast/expressions/unary_expression.cpp
         src/hyper/ast/literals/bool_literal.cpp
         src/hyper/ast/literals/floating_literal.cpp
         src/hyper/ast/literals/integer_literal.cpp
+        src/hyper/ast/literals/literal.cpp
         src/hyper/ast/literals/string_literal.cpp
         src/hyper/ast/statements/assign_statement.cpp
+        src/hyper/ast/statements/compound_assign_statement.cpp
         src/hyper/ast/statements/compound_statement.cpp
         src/hyper/ast/statements/expression_statement.cpp
         src/hyper/ast/statements/if_statement.cpp
-        src/hyper/ast/statements/compound_assign_statement.cpp
         src/hyper/ast/statements/return_statement.cpp
+        src/hyper/ast/statements/statement.cpp
         src/hyper/ast/statements/while_statement.cpp
         src/hyper/validators/scope_validator.cpp
         src/hyper/validators/type_validator.cpp)
@@ -51,19 +52,17 @@ set(HEADERS
         include/hyper/formatter.hpp
         include/hyper/lexer.hpp
         include/hyper/logger.hpp
+        include/hyper/identifier.hpp
         include/hyper/parser.hpp
         include/hyper/source_range.hpp
         include/hyper/symbol.hpp
+        include/hyper/symbol_collector.hpp
         include/hyper/token.hpp
         include/hyper/utilities.hpp
         include/hyper/ast/ast.hpp
         include/hyper/ast/ast_node.hpp
-        include/hyper/ast/declaration.hpp
-        include/hyper/ast/expression.hpp
-        include/hyper/ast/forward.hpp
-        include/hyper/ast/identifier.hpp
-        include/hyper/ast/literal.hpp
-        include/hyper/ast/statement.hpp
+        include/hyper/ast/ast_visitor.hpp
+        include/hyper/ast/declarations/declaration.hpp
         include/hyper/ast/declarations/function_declaration.hpp
         include/hyper/ast/declarations/translation_unit_declaration.hpp
         include/hyper/ast/declarations/variable_declaration.hpp
@@ -71,11 +70,13 @@ set(HEADERS
         include/hyper/ast/expressions/call_expression.hpp
         include/hyper/ast/expressions/cast_expression.hpp
         include/hyper/ast/expressions/conditional_expression.hpp
+        include/hyper/ast/expressions/expression.hpp
         include/hyper/ast/expressions/identifier_expression.hpp
         include/hyper/ast/expressions/unary_expression.hpp
         include/hyper/ast/literals/bool_literal.hpp
         include/hyper/ast/literals/floating_literal.hpp
         include/hyper/ast/literals/integer_literal.hpp
+        include/hyper/ast/literals/literal.hpp
         include/hyper/ast/literals/string_literal.hpp
         include/hyper/ast/statements/assign_statement.hpp
         include/hyper/ast/statements/compound_assign_statement.hpp
@@ -83,6 +84,7 @@ set(HEADERS
         include/hyper/ast/statements/expression_statement.hpp
         include/hyper/ast/statements/if_statement.hpp
         include/hyper/ast/statements/return_statement.hpp
+        include/hyper/ast/statements/statement.hpp
         include/hyper/ast/statements/while_statement.hpp
         include/hyper/validators/scope_validator.hpp
         include/hyper/validators/type_validator.hpp)

@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "hyper/ast/expression.hpp"
-#include "hyper/ast/forward.hpp"
+#include "hyper/ast/expressions/expression.hpp"
 #include "hyper/data_type.hpp"
 
 namespace hyper
@@ -17,17 +16,21 @@ namespace hyper
 	public:
 		CastExpression(
 			SourceRange source_range,
-			ExpressionPtr expression,
+			Expression *expression,
 			DataType type);
+		~CastExpression() override;
 
-		void collect_symbols(std::vector<Symbol> &symbols) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		const Expression *expression() const;
+		DataType type() const;
 
 		constexpr Category class_category() const noexcept override
 		{
-			return AstNode::Category::ImplicitCastExpression;
+			return AstNode::Category::CastExpression;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Expression;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
@@ -36,7 +39,7 @@ namespace hyper
 		}
 
 	private:
-		ExpressionPtr m_expression = nullptr;
+		Expression *m_expression = nullptr;
 		DataType m_type = {};
 	};
 } // namespace hyper

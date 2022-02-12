@@ -7,17 +7,15 @@
 #include "hyper/ast/declarations/function_declaration.hpp"
 
 #include "hyper/logger.hpp"
-#include "hyper/validators/scope_validator.hpp"
-#include "hyper/validators/type_validator.hpp"
 
 namespace hyper
 {
 	FunctionDeclaration::FunctionDeclaration(
 		SourceRange source_range,
 		Identifier identifier,
-		std::vector<DeclarationPtr> arguments,
+		std::vector<Declaration *> arguments,
 		DataType return_type,
-		StatementPtr body)
+		Statement *body)
 		: Declaration(source_range)
 		, m_identifier(std::move(identifier))
 		, m_arguments(std::move(arguments))
@@ -26,53 +24,33 @@ namespace hyper
 	{
 	}
 
-	void FunctionDeclaration::collect_symbols(std::vector<Symbol> &symbols) const
+	FunctionDeclaration::~FunctionDeclaration()
 	{
-		const Symbol symbol = {
-			.name = m_identifier.value,
-			.file = "",
-			.kind = Symbol::Kind::Function,
-			.data_type = m_return_type,
-			.source_range = m_identifier.source_range,
-		};
-
-		symbols.emplace_back(symbol);
-
-		for (const DeclarationPtr &argument : m_arguments)
+		for (const Declaration *argument : m_arguments)
 		{
-			argument->collect_symbols(symbols);
+			delete argument;
 		}
 
-		m_body->collect_symbols(symbols);
+		delete m_body;
 	}
 
-	void FunctionDeclaration::validate_scope(
-		const ScopeValidator &scope_validator) const
+	Identifier FunctionDeclaration::identifier() const
 	{
-		if (
-			scope_validator.is_symbol_present(m_identifier) &&
-			!scope_validator.is_symbol_unique(m_identifier))
-		{
-			scope_validator.report_redefined_identifier(m_identifier);
-		}
-
-		for (const DeclarationPtr &argument : m_arguments)
-		{
-			argument->validate_scope(scope_validator);
-		}
-
-		m_body->validate_scope(scope_validator);
+		return m_identifier;
 	}
 
-	void FunctionDeclaration::validate_type(TypeValidator &type_validator) const
+	std::span<const Declaration *const> FunctionDeclaration::arguments() const
 	{
-		type_validator.set_current_function(m_identifier);
+		return m_arguments;
+	}
 
-		for (const DeclarationPtr &argument : m_arguments)
-		{
-			argument->validate_type(type_validator);
-		}
+	DataType FunctionDeclaration::return_type() const
+	{
+		return m_return_type;
+	}
 
-		m_body->validate_type(type_validator);
+	const Statement *FunctionDeclaration::body() const
+	{
+		return m_body;
 	}
 } // namespace hyper

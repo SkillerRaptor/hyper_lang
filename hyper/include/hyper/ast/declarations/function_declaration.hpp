@@ -6,13 +6,14 @@
 
 #pragma once
 
-#include "hyper/ast/declaration.hpp"
-#include "hyper/ast/forward.hpp"
-#include "hyper/ast/identifier.hpp"
+#include "hyper/ast/declarations/declaration.hpp"
 #include "hyper/data_type.hpp"
+#include "hyper/identifier.hpp"
 #include "hyper/source_range.hpp"
 
+#include <span>
 #include <string>
+#include <vector>
 
 namespace hyper
 {
@@ -22,18 +23,24 @@ namespace hyper
 		FunctionDeclaration(
 			SourceRange source_range,
 			Identifier identifier,
-			std::vector<DeclarationPtr> arguments,
+			std::vector<Declaration *> arguments,
 			DataType return_type,
-			StatementPtr body);
+			Statement *body);
+		~FunctionDeclaration() override;
 
-		void collect_symbols(std::vector<Symbol> &symbols) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		Identifier identifier() const;
+		std::span<const Declaration *const> arguments() const;
+		DataType return_type() const;
+		const Statement *body() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::FunctionDeclaration;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Declaration;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
@@ -43,8 +50,8 @@ namespace hyper
 
 	private:
 		Identifier m_identifier;
-		std::vector<DeclarationPtr> m_arguments = {};
+		std::vector<Declaration *> m_arguments = {};
 		DataType m_return_type = {};
-		StatementPtr m_body = nullptr;
+		Statement *m_body = nullptr;
 	};
 } // namespace hyper

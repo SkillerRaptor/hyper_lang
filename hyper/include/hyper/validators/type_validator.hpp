@@ -6,34 +6,37 @@
 
 #pragma once
 
-#include "hyper/ast/identifier.hpp"
-#include "hyper/data_type.hpp"
+#include "hyper/ast/ast_visitor.hpp"
 #include "hyper/diagnostics.hpp"
 #include "hyper/symbol.hpp"
 
-#include <vector>
-
 namespace hyper
 {
-	class TypeValidator
+	class TypeValidator : public AstVisitor<TypeValidator>
 	{
 	public:
 		TypeValidator(
 			const Diagnostics &diagnostics,
 			const std::vector<Symbol> &symbols);
 
+		void visit_function_declaration(
+			const FunctionDeclaration *function_declaration);
+		void visit_variable_declaration_post(
+			const VariableDeclaration *variable_declaration);
+
+		void visit_bool_literal(const BoolLiteral *bool_literal);
+		void visit_floating_literal(const FloatingLiteral *floating_literal);
+		void visit_integer_literal(const IntegerLiteral *integer_literal);
+		void visit_string_literal(const StringLiteral *string_literal);
+
+		void visit_call_expression_post(const CallExpression *call_expression);
+		void visit_cast_expression_post(const CastExpression *cast_expression);
+
+	private:
 		bool match_data_type(const DataType &data_type) const noexcept;
 
 		DataType find_data_type(const Identifier &identifier) const noexcept;
 
-		void report_mismatch_type(
-			const DataType &data_type,
-			SourceRange source_range) const noexcept;
-
-		void set_current_function(const Identifier &identifier) noexcept;
-		void set_current_data_type(const DataType &data_type) noexcept;
-
-	private:
 		Symbol find_symbol(const Identifier &identifier) const noexcept;
 
 	private:

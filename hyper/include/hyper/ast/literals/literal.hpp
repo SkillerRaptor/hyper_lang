@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "hyper/ast/expression.hpp"
+#include "hyper/ast/expressions/expression.hpp"
 
 namespace hyper
 {

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "hyper/ast/literal.hpp"
+#include "hyper/ast/literals/literal.hpp"
 
 namespace hyper
 {
@@ -15,14 +15,16 @@ namespace hyper
 	public:
 		BoolLiteral(SourceRange source_range, bool boolean);
 
-		void collect_symbols(std::vector<Symbol> &) const override;
-
-		void validate_scope(const ScopeValidator &) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		bool boolean() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::BoolLiteral;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Literal;
 		}
 
 		constexpr std::string_view class_name() const noexcept override

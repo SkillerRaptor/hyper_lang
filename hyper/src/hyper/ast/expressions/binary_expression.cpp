@@ -11,8 +11,8 @@ namespace hyper
 	BinaryExpression::BinaryExpression(
 		SourceRange source_range,
 		Operation operation,
-		ExpressionPtr left,
-		ExpressionPtr right)
+		Expression *left,
+		Expression *right)
 		: Expression(source_range)
 		, m_operation(operation)
 		, m_left(std::move(left))
@@ -20,22 +20,24 @@ namespace hyper
 	{
 	}
 
-	void BinaryExpression::collect_symbols(std::vector<Symbol> &symbols) const
+	BinaryExpression::~BinaryExpression()
 	{
-		m_left->collect_symbols(symbols);
-		m_right->collect_symbols(symbols);
+		delete m_left;
+		delete m_right;
 	}
 
-	void BinaryExpression::validate_scope(
-		const ScopeValidator &scope_validator) const
+	BinaryExpression::Operation BinaryExpression::operation() const
 	{
-		m_left->validate_scope(scope_validator);
-		m_right->validate_scope(scope_validator);
+		return m_operation;
 	}
 
-	void BinaryExpression::validate_type(TypeValidator &type_validator) const
+	const Expression *BinaryExpression::left() const
 	{
-		m_left->validate_type(type_validator);
-		m_right->validate_type(type_validator);
+		return m_left;
+	}
+
+	const Expression *BinaryExpression::right() const
+	{
+		return m_right;
 	}
 } // namespace hyper

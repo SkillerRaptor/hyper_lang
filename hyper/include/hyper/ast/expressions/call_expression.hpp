@@ -6,12 +6,13 @@
 
 #pragma once
 
-#include "hyper/ast/expression.hpp"
-#include "hyper/ast/forward.hpp"
-#include "hyper/ast/identifier.hpp"
+#include "hyper/ast/expressions/expression.hpp"
+#include "hyper/identifier.hpp"
 #include "hyper/source_range.hpp"
 
+#include <span>
 #include <string>
+#include <vector>
 
 namespace hyper
 {
@@ -21,16 +22,20 @@ namespace hyper
 		CallExpression(
 			SourceRange source_range,
 			Identifier identifier,
-			std::vector<ExpressionPtr> arguments);
+			std::vector<Expression *> arguments);
+		~CallExpression() override;
 
-		void collect_symbols(std::vector<Symbol> &symbols) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		Identifier identifier() const;
+		std::span<const Expression *const> arguments() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::CallExpression;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Expression;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
@@ -40,6 +45,6 @@ namespace hyper
 
 	private:
 		Identifier m_identifier;
-		std::vector<ExpressionPtr> m_arguments = {};
+		std::vector<Expression *> m_arguments = {};
 	};
 } // namespace hyper

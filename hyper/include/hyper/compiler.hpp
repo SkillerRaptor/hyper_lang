@@ -7,7 +7,6 @@
 #pragma once
 
 #include "hyper/ast/ast_node.hpp"
-#include "hyper/ast/forward.hpp"
 #include "hyper/diagnostics.hpp"
 #include "hyper/symbol.hpp"
 
@@ -21,7 +20,7 @@ namespace hyper
 	private:
 		struct CompilationUnit
 		{
-			AstNodePtr ast = nullptr;
+			AstNode *ast = nullptr;
 			Diagnostics diagnostics = {};
 		};
 
@@ -32,7 +31,6 @@ namespace hyper
 
 	private:
 		CompilationUnit parse_file(const std::string &file) const;
-		std::vector<Symbol> parse_symbols(const AstNodePtr &ast) const;
 
 	private:
 		std::vector<std::string> m_files = {};

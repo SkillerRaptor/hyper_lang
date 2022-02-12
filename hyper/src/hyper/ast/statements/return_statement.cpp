@@ -6,40 +6,25 @@
 
 #include "hyper/ast/statements/return_statement.hpp"
 
-#include "hyper/ast/expression.hpp"
+#include "hyper/ast/expressions/expression.hpp"
 
 namespace hyper
 {
 	ReturnStatement::ReturnStatement(
 		SourceRange source_range,
-		ExpressionPtr expression)
+		Expression *expression)
 		: Statement(source_range)
 		, m_expression(std::move(expression))
 	{
 	}
 
-	void ReturnStatement::collect_symbols(std::vector<Symbol> &symbol) const
+	ReturnStatement::~ReturnStatement()
 	{
-		if (m_expression)
-		{
-			m_expression->collect_symbols(symbol);
-		}
+		delete m_expression;
 	}
 
-	void ReturnStatement::validate_scope(
-		const ScopeValidator &scope_validator) const
+	const Expression *ReturnStatement::expression() const
 	{
-		if (m_expression)
-		{
-			m_expression->validate_scope(scope_validator);
-		}
-	}
-
-	void ReturnStatement::validate_type(TypeValidator &type_validator) const
-	{
-		if (m_expression)
-		{
-			m_expression->validate_type(type_validator);
-		}
+		return m_expression;
 	}
 } // namespace hyper

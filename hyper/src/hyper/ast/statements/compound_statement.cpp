@@ -10,34 +10,22 @@ namespace hyper
 {
 	CompoundStatement::CompoundStatement(
 		SourceRange source_range,
-		std::vector<StatementPtr> statements)
+		std::vector<Statement *> statements)
 		: Statement(source_range)
 		, m_statements(std::move(statements))
 	{
 	}
 
-	void CompoundStatement::collect_symbols(std::vector<Symbol> &symbols) const
+	CompoundStatement::~CompoundStatement()
 	{
-		for (const StatementPtr &statement : m_statements)
+		for (const Statement *statement : m_statements)
 		{
-			statement->collect_symbols(symbols);
+			delete statement;
 		}
 	}
 
-	void CompoundStatement::validate_scope(
-		const ScopeValidator &scope_validator) const
+	std::span<const Statement *const> CompoundStatement::statements() const
 	{
-		for (const StatementPtr &statement : m_statements)
-		{
-			statement->validate_scope(scope_validator);
-		}
-	}
-
-	void CompoundStatement::validate_type(TypeValidator &type_validator) const
-	{
-		for (const StatementPtr &statement : m_statements)
-		{
-			statement->validate_type(type_validator);
-		}
+		return m_statements;
 	}
 } // namespace hyper

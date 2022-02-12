@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "hyper/ast/declaration.hpp"
+#include "hyper/ast/statements/statement.hpp"
 
 namespace hyper
 {
-	Declaration::Declaration(SourceRange source_range)
-		: Statement(source_range)
+	Statement::Statement(SourceRange source_range)
+		: AstNode(source_range)
 	{
 	}
 } // namespace hyper

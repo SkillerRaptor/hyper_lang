@@ -11,42 +11,29 @@ namespace hyper
 	TranslationUnitDeclaration::TranslationUnitDeclaration(
 		SourceRange source_range,
 		std::string file,
-		std::vector<DeclarationPtr> declarations)
+		std::vector<Declaration *> declarations)
 		: Declaration(source_range)
 		, m_file(std::move(file))
 		, m_declarations(std::move(declarations))
 	{
 	}
 
-	void TranslationUnitDeclaration::collect_symbols(
-		std::vector<Symbol> &symbols) const
+	TranslationUnitDeclaration::~TranslationUnitDeclaration()
 	{
-		for (const DeclarationPtr &declaration : m_declarations)
+		for (const Declaration *declaration : m_declarations)
 		{
-			declaration->collect_symbols(symbols);
-		}
-
-		for (Symbol &symbol : symbols)
-		{
-			symbol.file = m_file;
+			delete declaration;
 		}
 	}
 
-	void TranslationUnitDeclaration::validate_scope(
-		const ScopeValidator &scope_validator) const
+	std::string_view TranslationUnitDeclaration::file() const
 	{
-		for (const DeclarationPtr &declaration : m_declarations)
-		{
-			declaration->validate_scope(scope_validator);
-		}
+		return m_file;
 	}
 
-	void TranslationUnitDeclaration::validate_type(
-		TypeValidator &type_validator) const
+	std::span<const Declaration *const> TranslationUnitDeclaration::declarations()
+		const
 	{
-		for (const DeclarationPtr &declaration : m_declarations)
-		{
-			declaration->validate_type(type_validator);
-		}
+		return m_declarations;
 	}
 } // namespace hyper

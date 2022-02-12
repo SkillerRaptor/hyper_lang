@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "hyper/ast/statement.hpp"
+#include "hyper/ast/statements/statement.hpp"
 
 namespace hyper
 {

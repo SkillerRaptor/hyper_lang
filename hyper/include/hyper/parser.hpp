@@ -6,11 +6,10 @@
 
 #pragma once
 
-#include "hyper/ast/forward.hpp"
-#include "hyper/ast/identifier.hpp"
 #include "hyper/data_type.hpp"
 #include "hyper/diagnostics.hpp"
 #include "hyper/token.hpp"
+#include "identifier.hpp"
 
 #include <memory>
 #include <string>
@@ -18,6 +17,12 @@
 
 namespace hyper
 {
+	class AstNode;
+	class Declaration;
+	class Expression;
+	class Literal;
+	class Statement;
+
 	class Diagnostics;
 	class Lexer;
 
@@ -29,34 +34,34 @@ namespace hyper
 			const std::vector<Token> &tokens,
 			std::string file);
 
-		AstNodePtr parse();
+		AstNode *parse();
 
 	private:
-		DeclarationPtr parse_function_declaration();
-		DeclarationPtr parse_translation_unit_declaration();
-		DeclarationPtr parse_variable_declaration();
+		Declaration *parse_function_declaration();
+		Declaration *parse_translation_unit_declaration();
+		Declaration *parse_variable_declaration();
 
-		ExpressionPtr parse_prefix_expression();
-		ExpressionPtr parse_postfix_expression();
-		ExpressionPtr parse_paren_expression();
-		ExpressionPtr parse_primary_expression();
-		ExpressionPtr parse_binary_expression(uint8_t precedence);
-		ExpressionPtr parse_call_expression();
-		ExpressionPtr parse_identifier_expression();
+		Expression *parse_prefix_expression();
+		Expression *parse_postfix_expression();
+		Expression *parse_paren_expression();
+		Expression *parse_primary_expression();
+		Expression *parse_binary_expression(uint8_t precedence);
+		Expression *parse_call_expression();
+		Expression *parse_identifier_expression();
 
-		LiteralPtr parse_bool_literal();
-		LiteralPtr parse_floating_literal();
-		LiteralPtr parse_integer_literal();
-		LiteralPtr parse_string_literal();
+		Literal *parse_bool_literal();
+		Literal *parse_floating_literal();
+		Literal *parse_integer_literal();
+		Literal *parse_string_literal();
 
-		StatementPtr parse_statement();
-		StatementPtr parse_assign_statement();
-		StatementPtr parse_compound_statement();
-		StatementPtr parse_compound_assign_statement();
-		StatementPtr parse_expression_statement(ExpressionPtr expression);
-		StatementPtr parse_if_statement();
-		StatementPtr parse_return_statement();
-		StatementPtr parse_while_statement();
+		Statement *parse_statement();
+		Statement *parse_assign_statement();
+		Statement *parse_compound_statement();
+		Statement *parse_compound_assign_statement();
+		Statement *parse_expression_statement(Expression *expression);
+		Statement *parse_if_statement();
+		Statement *parse_return_statement();
+		Statement *parse_while_statement();
 
 		Token last_token() const noexcept;
 		Token current_token() const noexcept;

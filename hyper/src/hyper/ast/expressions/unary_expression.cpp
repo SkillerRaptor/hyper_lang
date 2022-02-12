@@ -11,26 +11,25 @@ namespace hyper
 	UnaryExpression::UnaryExpression(
 		SourceRange source_range,
 		UnaryExpression::Operation operation,
-		ExpressionPtr expression)
+		Expression *expression)
 		: Expression(source_range)
 		, m_operation(operation)
 		, m_expression(std::move(expression))
 	{
 	}
 
-	void UnaryExpression::collect_symbols(std::vector<Symbol> &symbols) const
+	UnaryExpression::~UnaryExpression()
 	{
-		m_expression->collect_symbols(symbols);
+		delete m_expression;
 	}
 
-	void UnaryExpression::validate_scope(
-		const ScopeValidator &scope_validator) const
+	UnaryExpression::Operation UnaryExpression::operation() const
 	{
-		m_expression->validate_scope(scope_validator);
+		return m_operation;
 	}
 
-	void UnaryExpression::validate_type(TypeValidator &type_validator) const
+	const Expression *UnaryExpression::expression() const
 	{
-		m_expression->validate_type(type_validator);
+		return m_expression;
 	}
 } // namespace hyper

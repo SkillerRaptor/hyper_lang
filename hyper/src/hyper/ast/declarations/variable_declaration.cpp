@@ -6,9 +6,7 @@
 
 #include "hyper/ast/declarations/variable_declaration.hpp"
 
-#include "hyper/ast/expression.hpp"
-#include "hyper/validators/scope_validator.hpp"
-#include "hyper/validators/type_validator.hpp"
+#include "hyper/ast/expressions/expression.hpp"
 
 namespace hyper
 {
@@ -17,58 +15,37 @@ namespace hyper
 		Identifier identifier,
 		VariableDeclaration::MutableState mutable_state,
 		DataType type,
-		ExpressionPtr expression)
+		Expression *expression)
 		: Declaration(source_range)
 		, m_identifier(std::move(identifier))
 		, m_mutable_state(mutable_state)
 		, m_type(std::move(type))
 		, m_expression(std::move(expression))
 	{
-		(void) m_mutable_state;
 	}
 
-	void VariableDeclaration::collect_symbols(std::vector<Symbol> &symbols) const
+	VariableDeclaration::~VariableDeclaration()
 	{
-		const Symbol symbol = {
-			.name = m_identifier.value,
-			.file = "",
-			.kind = Symbol::Kind::Variable,
-			.data_type = m_type,
-			.source_range = m_identifier.source_range,
-		};
-
-		symbols.emplace_back(symbol);
-
-		m_expression->collect_symbols(symbols);
+		delete m_expression;
 	}
 
-	void VariableDeclaration::validate_scope(
-		const ScopeValidator &scope_validator) const
+	Identifier VariableDeclaration::identifier() const
 	{
-		if (
-			scope_validator.is_symbol_present(m_identifier) &&
-			!scope_validator.is_symbol_unique(m_identifier))
-		{
-			scope_validator.report_redefined_identifier(m_identifier);
-		}
-
-		if (m_expression)
-		{
-			m_expression->validate_scope(scope_validator);
-		}
+		return m_identifier;
 	}
 
-	void VariableDeclaration::validate_type(TypeValidator &type_validator) const
+	VariableDeclaration::MutableState VariableDeclaration::mutable_state() const
 	{
-		if (m_expression)
-		{
-			m_expression->validate_type(type_validator);
+		return m_mutable_state;
+	}
 
-			if (!type_validator.match_data_type(m_type))
-			{
-				type_validator.report_mismatch_type(
-					m_type, m_expression->source_range());
-			}
-		}
+	DataType VariableDeclaration::type() const
+	{
+		return m_type;
+	}
+
+	const Expression *VariableDeclaration::expression() const
+	{
+		return m_expression;
 	}
 } // namespace hyper

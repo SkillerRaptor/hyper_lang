@@ -6,13 +6,11 @@
 
 #include "hyper/ast/expressions/cast_expression.hpp"
 
-#include "hyper/validators/type_validator.hpp"
-
 namespace hyper
 {
 	CastExpression::CastExpression(
 		SourceRange source_range,
-		ExpressionPtr expression,
+		Expression *expression,
 		DataType type)
 		: Expression(source_range)
 		, m_expression(std::move(expression))
@@ -20,21 +18,18 @@ namespace hyper
 	{
 	}
 
-	void CastExpression::collect_symbols(std::vector<Symbol> &symbols) const
+	CastExpression::~CastExpression()
 	{
-		m_expression->collect_symbols(symbols);
+		delete m_expression;
 	}
 
-	void CastExpression::validate_scope(
-		const ScopeValidator &scope_validator) const
+	const Expression *CastExpression::expression() const
 	{
-		m_expression->validate_scope(scope_validator);
+		return m_expression;
 	}
 
-	void CastExpression::validate_type(TypeValidator &type_validator) const
+	DataType CastExpression::type() const
 	{
-		m_expression->validate_type(type_validator);
-
-		type_validator.set_current_data_type(m_type);
+		return m_type;
 	}
 } // namespace hyper

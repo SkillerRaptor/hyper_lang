@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "hyper/ast/expression.hpp"
-#include "hyper/ast/identifier.hpp"
+#include "hyper/ast/expressions/expression.hpp"
+#include "hyper/identifier.hpp"
 #include "hyper/source_range.hpp"
 
 #include <string>
@@ -19,14 +19,16 @@ namespace hyper
 	public:
 		IdentifierExpression(SourceRange source_range, Identifier identifier);
 
-		void collect_symbols(std::vector<Symbol> &) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &) const override;
+		Identifier identifier() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::IdentifierExpression;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Expression;
 		}
 
 		constexpr std::string_view class_name() const noexcept override

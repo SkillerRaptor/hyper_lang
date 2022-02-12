@@ -6,8 +6,6 @@
 
 #include "hyper/ast/expressions/identifier_expression.hpp"
 
-#include "hyper/validators/scope_validator.hpp"
-
 namespace hyper
 {
 	IdentifierExpression::IdentifierExpression(
@@ -18,20 +16,8 @@ namespace hyper
 	{
 	}
 
-	void IdentifierExpression::collect_symbols(std::vector<Symbol> &) const
+	Identifier IdentifierExpression::identifier() const
 	{
-	}
-
-	void IdentifierExpression::validate_scope(
-		const ScopeValidator &scope_validator) const
-	{
-		if (!scope_validator.is_symbol_present(m_identifier))
-		{
-			scope_validator.report_undeclared_identifier(m_identifier);
-		}
-	}
-
-	void IdentifierExpression::validate_type(TypeValidator &) const
-	{
+		return m_identifier;
 	}
 } // namespace hyper

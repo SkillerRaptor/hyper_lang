@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "hyper/ast/forward.hpp"
-#include "hyper/ast/statement.hpp"
+#include "hyper/ast/statements/statement.hpp"
 
 namespace hyper
 {
@@ -16,16 +15,19 @@ namespace hyper
 	class ExpressionStatement final : public Statement
 	{
 	public:
-		ExpressionStatement(SourceRange source_range, ExpressionPtr expression);
+		ExpressionStatement(SourceRange source_range, Expression *expression);
+		~ExpressionStatement() override;
 
-		void collect_symbols(std::vector<Symbol> &symbols) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		const Expression *expression() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::ExpressionStatement;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Statement;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
@@ -34,6 +36,6 @@ namespace hyper
 		}
 
 	private:
-		ExpressionPtr m_expression = nullptr;
+		Expression *m_expression = nullptr;
 	};
 } // namespace hyper

@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "hyper/ast/forward.hpp"
-#include "hyper/ast/statement.hpp"
+#include "hyper/ast/statements/statement.hpp"
 
 namespace hyper
 {
@@ -18,17 +17,21 @@ namespace hyper
 	public:
 		WhileStatement(
 			SourceRange source_range,
-			ExpressionPtr condition,
-			StatementPtr body);
+			Expression *condition,
+			Statement *body);
+		~WhileStatement() override;
 
-		void collect_symbols(std::vector<Symbol> &symbols) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		const Expression *condition() const;
+		const Statement *body() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::WhileStatement;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Statement;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
@@ -37,7 +40,7 @@ namespace hyper
 		}
 
 	private:
-		ExpressionPtr m_condition = nullptr;
-		StatementPtr m_body = nullptr;
+		Expression *m_condition = nullptr;
+		Statement *m_body = nullptr;
 	};
 } // namespace hyper

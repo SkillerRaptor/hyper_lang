@@ -6,8 +6,7 @@
 
 #include "hyper/ast/statements/compound_assign_statement.hpp"
 
-#include "hyper/ast/expression.hpp"
-#include "hyper/validators/scope_validator.hpp"
+#include "hyper/ast/expressions/expression.hpp"
 
 namespace hyper
 {
@@ -15,35 +14,31 @@ namespace hyper
 		SourceRange source_range,
 		Identifier identifier,
 		CompoundAssignStatement::Operation operation,
-		ExpressionPtr expression)
+		Expression *expression)
 		: Statement(source_range)
 		, m_identifier(std::move(identifier))
 		, m_operation(operation)
 		, m_expression(std::move(expression))
 	{
-		(void) m_operation;
 	}
 
-	void CompoundAssignStatement::collect_symbols(
-		std::vector<Symbol> &symbols) const
+	CompoundAssignStatement::~CompoundAssignStatement()
 	{
-		m_expression->collect_symbols(symbols);
+		delete m_expression;
 	}
 
-	void CompoundAssignStatement::validate_scope(
-		const ScopeValidator &scope_validator) const
+	Identifier CompoundAssignStatement::identifier() const
 	{
-		if (!scope_validator.is_symbol_present(m_identifier))
-		{
-			scope_validator.report_undeclared_identifier(m_identifier);
-		}
-
-		m_expression->validate_scope(scope_validator);
+		return m_identifier;
 	}
 
-	void CompoundAssignStatement::validate_type(
-		TypeValidator &type_validator) const
+	CompoundAssignStatement::Operation CompoundAssignStatement::operation() const
 	{
-		m_expression->validate_type(type_validator);
+		return m_operation;
+	}
+
+	const Expression *CompoundAssignStatement::expression() const
+	{
+		return m_expression;
 	}
 } // namespace hyper

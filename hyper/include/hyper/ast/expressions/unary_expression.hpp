@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "hyper/ast/expression.hpp"
-#include "hyper/ast/forward.hpp"
+#include "hyper/ast/expressions/expression.hpp"
 
 namespace hyper
 {
@@ -39,16 +38,20 @@ namespace hyper
 		UnaryExpression(
 			SourceRange source_range,
 			Operation operation,
-			ExpressionPtr expression);
+			Expression *expression);
+		~UnaryExpression() override;
 
-		void collect_symbols(std::vector<Symbol> &symbols) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		Operation operation() const;
+		const Expression *expression() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::UnaryExpression;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Expression;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
@@ -58,6 +61,6 @@ namespace hyper
 
 	private:
 		Operation m_operation = {};
-		ExpressionPtr m_expression = nullptr;
+		Expression *m_expression = nullptr;
 	};
 } // namespace hyper

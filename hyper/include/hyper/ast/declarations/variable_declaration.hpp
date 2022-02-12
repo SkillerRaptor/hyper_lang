@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include "hyper/ast/declaration.hpp"
-#include "hyper/ast/forward.hpp"
-#include "hyper/ast/identifier.hpp"
+#include "hyper/ast/declarations/declaration.hpp"
 #include "hyper/data_type.hpp"
+#include "hyper/identifier.hpp"
 #include "hyper/source_range.hpp"
 
 #include <string>
@@ -33,16 +32,22 @@ namespace hyper
 			Identifier identifier,
 			MutableState mutable_state,
 			DataType type,
-			ExpressionPtr expression);
+			Expression *expression);
+		~VariableDeclaration() override;
 
-		void collect_symbols(std::vector<Symbol> &symbols) const override;
-
-		void validate_scope(const ScopeValidator &scope_validator) const override;
-		void validate_type(TypeValidator &type_validator) const override;
+		Identifier identifier() const;
+		MutableState mutable_state() const;
+		DataType type() const;
+		const Expression *expression() const;
 
 		constexpr Category class_category() const noexcept override
 		{
 			return AstNode::Category::VariableDeclaration;
+		}
+
+		constexpr Kind class_kind() const noexcept override
+		{
+			return AstNode::Kind::Declaration;
 		}
 
 		constexpr std::string_view class_name() const noexcept override
@@ -54,6 +59,6 @@ namespace hyper
 		Identifier m_identifier;
 		MutableState m_mutable_state = {};
 		DataType m_type = {};
-		ExpressionPtr m_expression = nullptr;
+		Expression *m_expression = nullptr;
 	};
 } // namespace hyper

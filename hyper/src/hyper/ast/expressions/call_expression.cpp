@@ -6,51 +6,33 @@
 
 #include "hyper/ast/expressions/call_expression.hpp"
 
-#include "hyper/validators/scope_validator.hpp"
-#include "hyper/validators/type_validator.hpp"
-
 namespace hyper
 {
 	CallExpression::CallExpression(
 		SourceRange source_range,
 		Identifier identifier,
-		std::vector<ExpressionPtr> arguments)
+		std::vector<Expression *> arguments)
 		: Expression(source_range)
 		, m_identifier(std::move(identifier))
 		, m_arguments(std::move(arguments))
 	{
 	}
 
-	void CallExpression::collect_symbols(std::vector<Symbol> &symbols) const
+	CallExpression::~CallExpression()
 	{
-		for (const ExpressionPtr &argument : m_arguments)
+		for (const Expression *argument : m_arguments)
 		{
-			argument->collect_symbols(symbols);
+			delete argument;
 		}
 	}
 
-	void CallExpression::validate_scope(
-		const ScopeValidator &scope_validator) const
+	Identifier CallExpression::identifier() const
 	{
-		if (!scope_validator.is_symbol_present(m_identifier))
-		{
-			scope_validator.report_undeclared_identifier(m_identifier);
-		}
-
-		for (const ExpressionPtr &argument : m_arguments)
-		{
-			argument->validate_scope(scope_validator);
-		}
+		return m_identifier;
 	}
 
-	void CallExpression::validate_type(TypeValidator &type_validator) const
+	std::span<const Expression *const> CallExpression::arguments() const
 	{
-		for (const ExpressionPtr &argument : m_arguments)
-		{
-			argument->validate_type(type_validator);
-		}
-
-		type_validator.set_current_data_type(
-			type_validator.find_data_type(m_identifier));
+		return m_arguments;
 	}
 } // namespace hyper

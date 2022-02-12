@@ -6,39 +6,32 @@
 
 #include "hyper/ast/statements/assign_statement.hpp"
 
-#include "hyper/ast/expression.hpp"
-#include "hyper/validators/scope_validator.hpp"
+#include "hyper/ast/expressions/expression.hpp"
 
 namespace hyper
 {
 	AssignStatement::AssignStatement(
 		SourceRange source_range,
 		Identifier identifier,
-		ExpressionPtr expression)
+		Expression *expression)
 		: Statement(source_range)
 		, m_identifier(std::move(identifier))
 		, m_expression(std::move(expression))
 	{
 	}
 
-	void AssignStatement::collect_symbols(std::vector<Symbol> &symbols) const
+	AssignStatement::~AssignStatement()
 	{
-		m_expression->collect_symbols(symbols);
+		delete m_expression;
 	}
 
-	void AssignStatement::validate_scope(
-		const ScopeValidator &scope_validator) const
+	Identifier AssignStatement::identifier() const
 	{
-		if (!scope_validator.is_symbol_present(m_identifier))
-		{
-			scope_validator.report_undeclared_identifier(m_identifier);
-		}
-
-		m_expression->validate_scope(scope_validator);
+		return m_identifier;
 	}
 
-	void AssignStatement::validate_type(TypeValidator &type_validator) const
+	const Expression *AssignStatement::expression() const
 	{
-		m_expression->validate_type(type_validator);
+		return m_expression;
 	}
 } // namespace hyper

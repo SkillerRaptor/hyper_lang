@@ -21,12 +21,12 @@ namespace hyper
 	{
 	}
 
-	AstNodePtr Parser::parse()
+	AstNode *Parser::parse()
 	{
 		return parse_translation_unit_declaration();
 	}
 
-	DeclarationPtr Parser::parse_function_declaration()
+	Declaration *Parser::parse_function_declaration()
 	{
 		const SourceRange function_range =
 			consume(Token::Type::Function).source_range();
@@ -35,21 +35,21 @@ namespace hyper
 		consume(Token::Type::RoundLeftBracket);
 
 		// TODO: Adding arguments
-		std::vector<DeclarationPtr> arguments = {};
+		std::vector<Declaration *> arguments = {};
 
 		consume(Token::Type::RoundRightBracket);
 		consume(Token::Type::Arrow);
 
 		const DataType return_type = consume_type();
 
-		StatementPtr body = parse_compound_statement();
+		Statement *body = parse_compound_statement();
 
 		const SourceRange source_range = {
 			.start = function_range.start,
 			.end = body->end_position(),
 		};
 
-		return std::make_unique<FunctionDeclaration>(
+		return new FunctionDeclaration(
 			source_range,
 			identifier,
 			std::move(arguments),
@@ -57,9 +57,9 @@ namespace hyper
 			std::move(body));
 	}
 
-	DeclarationPtr Parser::parse_translation_unit_declaration()
+	Declaration *Parser::parse_translation_unit_declaration()
 	{
-		std::vector<DeclarationPtr> declarations = {};
+		std::vector<Declaration *> declarations = {};
 		while (!match(Token::Type::Eof))
 		{
 			switch (current_token().type())
@@ -84,11 +84,11 @@ namespace hyper
 			.end = declarations.back()->end_position(),
 		};
 
-		return std::make_unique<TranslationUnitDeclaration>(
+		return new TranslationUnitDeclaration(
 			source_range, m_file, std::move(declarations));
 	}
 
-	DeclarationPtr Parser::parse_variable_declaration()
+	Declaration *Parser::parse_variable_declaration()
 	{
 		const SourceRange let_range = consume(Token::Type::Let).source_range();
 
@@ -109,7 +109,7 @@ namespace hyper
 
 		const DataType type = consume_type();
 
-		ExpressionPtr expression = [this]() -> ExpressionPtr
+		Expression *expression = [this]() -> Expression *
 		{
 			if (match(Token::Type::Assign))
 			{
@@ -131,11 +131,11 @@ namespace hyper
 																	 : expression->end_position(),
 		};
 
-		return std::make_unique<VariableDeclaration>(
+		return new VariableDeclaration(
 			source_range, identifier, mutable_state, type, std::move(expression));
 	}
 
-	ExpressionPtr Parser::parse_prefix_expression()
+	Expression *Parser::parse_prefix_expression()
 	{
 		const Token &operation_token = current_token();
 
@@ -165,7 +165,7 @@ namespace hyper
 
 		consume();
 
-		ExpressionPtr expression = parse_primary_expression();
+		Expression *expression = parse_primary_expression();
 
 		const UnaryExpression::Operation operation = {
 			.kind = kind,
@@ -177,11 +177,10 @@ namespace hyper
 			.end = expression->end_position(),
 		};
 
-		return std::make_unique<UnaryExpression>(
-			source_range, operation, std::move(expression));
+		return new UnaryExpression(source_range, operation, std::move(expression));
 	}
 
-	ExpressionPtr Parser::parse_postfix_expression()
+	Expression *Parser::parse_postfix_expression()
 	{
 		const Token identifier_token = consume(Token::Type::Identifier);
 		if (match(Token::Type::RoundLeftBracket))
@@ -192,7 +191,7 @@ namespace hyper
 
 		rewind_token();
 
-		ExpressionPtr expression = parse_identifier_expression();
+		Expression *expression = parse_identifier_expression();
 
 		const Token &operation_token = current_token();
 		const UnaryExpression::Operation::Kind kind = [&operation_token]()
@@ -225,22 +224,21 @@ namespace hyper
 			.end = expression->end_position(),
 		};
 
-		return std::make_unique<UnaryExpression>(
-			source_range, operation, std::move(expression));
+		return new UnaryExpression(source_range, operation, std::move(expression));
 	}
 
-	ExpressionPtr Parser::parse_paren_expression()
+	Expression *Parser::parse_paren_expression()
 	{
 		consume(Token::Type::RoundLeftBracket);
 
-		ExpressionPtr expression = parse_binary_expression(0);
+		Expression *expression = parse_binary_expression(0);
 
 		consume(Token::Type::RoundRightBracket);
 
 		return expression;
 	}
 
-	ExpressionPtr Parser::parse_primary_expression()
+	Expression *Parser::parse_primary_expression()
 	{
 		switch (current_token().type())
 		{
@@ -263,9 +261,9 @@ namespace hyper
 		return nullptr;
 	}
 
-	ExpressionPtr Parser::parse_binary_expression(uint8_t precedence)
+	Expression *Parser::parse_binary_expression(uint8_t precedence)
 	{
-		ExpressionPtr left = parse_prefix_expression();
+		Expression *left = parse_prefix_expression();
 
 		const Token token = [this, &left]()
 		{
@@ -283,8 +281,7 @@ namespace hyper
 				.end = type.end_position(),
 			};
 
-			left =
-				std::make_unique<CastExpression>(source_range, std::move(left), type);
+			left = new CastExpression(source_range, std::move(left), type);
 
 			return current_token();
 		}();
@@ -300,14 +297,14 @@ namespace hyper
 		{
 			consume();
 
-			ExpressionPtr right =
+			Expression *right =
 				parse_binary_expression(get_operator_precedence(token_type));
 
 			if (token_type == Token::Type::QuestionMark && match(Token::Type::Colon))
 			{
 				consume();
 
-				ExpressionPtr temp =
+				Expression *temp =
 					parse_binary_expression(get_operator_precedence(token_type));
 
 				const SourceRange source_range = {
@@ -315,7 +312,7 @@ namespace hyper
 					.end = temp->end_position(),
 				};
 
-				return std::make_unique<ConditionalExpression>(
+				return new ConditionalExpression(
 					source_range, std::move(left), std::move(right), std::move(temp));
 			}
 
@@ -379,7 +376,7 @@ namespace hyper
 				.end = right->end_position(),
 			};
 
-			left = std::make_unique<BinaryExpression>(
+			left = new BinaryExpression(
 				source_range, operation, std::move(left), std::move(right));
 
 			token_type = current_token().type();
@@ -394,13 +391,13 @@ namespace hyper
 		return left;
 	}
 
-	ExpressionPtr Parser::parse_call_expression()
+	Expression *Parser::parse_call_expression()
 	{
 		const Token identifier_token = consume(Token::Type::Identifier);
 
 		consume(Token::Type::RoundLeftBracket);
 
-		std::vector<ExpressionPtr> arguments = {};
+		std::vector<Expression *> arguments = {};
 
 		const SourceRange round_right_range =
 			consume(Token::Type::RoundRightBracket).source_range();
@@ -415,11 +412,10 @@ namespace hyper
 			.end = round_right_range.end,
 		};
 
-		return std::make_unique<CallExpression>(
-			source_range, identifier, std::move(arguments));
+		return new CallExpression(source_range, identifier, std::move(arguments));
 	}
 
-	ExpressionPtr Parser::parse_identifier_expression()
+	Expression *Parser::parse_identifier_expression()
 	{
 		const Token identifier_token = consume(Token::Type::Identifier);
 
@@ -428,39 +424,34 @@ namespace hyper
 			.source_range = identifier_token.source_range(),
 		};
 
-		return std::make_unique<IdentifierExpression>(
-			identifier.source_range, identifier);
+		return new IdentifierExpression(identifier.source_range, identifier);
 	}
 
-	LiteralPtr Parser::parse_bool_literal()
+	Literal *Parser::parse_bool_literal()
 	{
 		const Token boolean = consume(Token::Type::BoolLiteral);
-		return std::make_unique<BoolLiteral>(
-			boolean.source_range(), boolean.value() == "true");
+		return new BoolLiteral(boolean.source_range(), boolean.value() == "true");
 	}
 
-	LiteralPtr Parser::parse_floating_literal()
+	Literal *Parser::parse_floating_literal()
 	{
 		const Token floating = consume(Token::Type::FloatingLiteral);
-		return std::make_unique<FloatingLiteral>(
-			floating.source_range(), floating.value());
+		return new FloatingLiteral(floating.source_range(), floating.value());
 	}
 
-	LiteralPtr Parser::parse_integer_literal()
+	Literal *Parser::parse_integer_literal()
 	{
 		const Token integer = consume(Token::Type::IntegerLiteral);
-		return std::make_unique<IntegerLiteral>(
-			integer.source_range(), integer.value());
+		return new IntegerLiteral(integer.source_range(), integer.value());
 	}
 
-	LiteralPtr Parser::parse_string_literal()
+	Literal *Parser::parse_string_literal()
 	{
 		const Token string = consume(Token::Type::StringLiteral);
-		return std::make_unique<StringLiteral>(
-			string.source_range(), string.value());
+		return new StringLiteral(string.source_range(), string.value());
 	}
 
-	StatementPtr Parser::parse_statement()
+	Statement *Parser::parse_statement()
 	{
 		switch (current_token().type())
 		{
@@ -489,7 +480,7 @@ namespace hyper
 		return nullptr;
 	}
 
-	StatementPtr Parser::parse_assign_statement()
+	Statement *Parser::parse_assign_statement()
 	{
 		const Token identifier_token = consume(Token::Type::Identifier);
 
@@ -526,7 +517,7 @@ namespace hyper
 
 		consume(Token::Type::Assign);
 
-		ExpressionPtr expression = parse_binary_expression(0);
+		Expression *expression = parse_binary_expression(0);
 
 		const Identifier identifier = {
 			.value = identifier_token.value(),
@@ -538,19 +529,18 @@ namespace hyper
 			.end = expression->end_position(),
 		};
 
-		return std::make_unique<AssignStatement>(
-			source_range, identifier, std::move(expression));
+		return new AssignStatement(source_range, identifier, std::move(expression));
 	}
 
-	StatementPtr Parser::parse_compound_statement()
+	Statement *Parser::parse_compound_statement()
 	{
 		const SourceRange curly_left_range =
 			consume(Token::Type::CurlyLeftBracket).source_range();
 
-		std::vector<StatementPtr> statements = {};
+		std::vector<Statement *> statements = {};
 		while (!match(Token::Type::CurlyRightBracket))
 		{
-			StatementPtr statement = parse_statement();
+			Statement *statement = parse_statement();
 			if (statement == nullptr)
 			{
 				break;
@@ -580,11 +570,10 @@ namespace hyper
 			.end = curly_right_range.end,
 		};
 
-		return std::make_unique<CompoundStatement>(
-			source_range, std::move(statements));
+		return new CompoundStatement(source_range, std::move(statements));
 	}
 
-	StatementPtr Parser::parse_compound_assign_statement()
+	Statement *Parser::parse_compound_assign_statement()
 	{
 		const Token identifier_token = consume(Token::Type::Identifier);
 
@@ -624,7 +613,7 @@ namespace hyper
 
 		consume();
 
-		ExpressionPtr expression = parse_binary_expression(0);
+		Expression *expression = parse_binary_expression(0);
 
 		const Identifier identifier = {
 			.value = identifier_token.value(),
@@ -636,29 +625,29 @@ namespace hyper
 			.end = expression->end_position(),
 		};
 
-		return std::make_unique<CompoundAssignStatement>(
+		return new CompoundAssignStatement(
 			source_range, identifier, operation, std::move(expression));
 	}
 
-	StatementPtr Parser::parse_expression_statement(ExpressionPtr expression)
+	Statement *Parser::parse_expression_statement(Expression *expression)
 	{
-		return std::make_unique<ExpressionStatement>(
+		return new ExpressionStatement(
 			expression->source_range(), std::move(expression));
 	}
 
-	StatementPtr Parser::parse_if_statement()
+	Statement *Parser::parse_if_statement()
 	{
 		const SourceRange if_range = consume(Token::Type::If).source_range();
 
 		consume(Token::Type::RoundLeftBracket);
 
-		ExpressionPtr condition = parse_binary_expression(0);
+		Expression *condition = parse_binary_expression(0);
 
 		consume(Token::Type::RoundRightBracket);
 
-		StatementPtr true_body = parse_compound_statement();
+		Statement *true_body = parse_compound_statement();
 
-		StatementPtr false_body = [this]() -> StatementPtr
+		Statement *false_body = [this]() -> Statement *
 		{
 			if (match(Token::Type::Else))
 			{
@@ -675,52 +664,51 @@ namespace hyper
 																	 : false_body->end_position(),
 		};
 
-		return std::make_unique<IfStatement>(
+		return new IfStatement(
 			source_range,
 			std::move(condition),
 			std::move(true_body),
 			std::move(false_body));
 	}
 
-	StatementPtr Parser::parse_return_statement()
+	Statement *Parser::parse_return_statement()
 	{
 		const SourceRange return_range =
 			consume(Token::Type::Return).source_range();
 
 		if (match(Token::Type::Semicolon))
 		{
-			return std::make_unique<ReturnStatement>(return_range, nullptr);
+			return new ReturnStatement(return_range, nullptr);
 		}
 
-		ExpressionPtr expression = parse_binary_expression(0);
+		Expression *expression = parse_binary_expression(0);
 
 		const SourceRange source_range = {
 			.start = return_range.start,
 			.end = expression->end_position(),
 		};
 
-		return std::make_unique<ReturnStatement>(
-			source_range, std::move(expression));
+		return new ReturnStatement(source_range, std::move(expression));
 	}
 
-	StatementPtr Parser::parse_while_statement()
+	Statement *Parser::parse_while_statement()
 	{
 		const SourceRange while_range = consume(Token::Type::While).source_range();
 
 		consume(Token::Type::RoundLeftBracket);
 
-		ExpressionPtr condition = parse_binary_expression(0);
+		Expression *condition = parse_binary_expression(0);
 
 		consume(Token::Type::RoundRightBracket);
 
-		StatementPtr body = parse_compound_statement();
+		Statement *body = parse_compound_statement();
 
 		const SourceRange source_range = {
 			.start = while_range.start,
 			.end = body->end_position(),
 		};
 
-		return std::make_unique<WhileStatement>(
+		return new WhileStatement(
 			source_range, std::move(condition), std::move(body));
 	}
 
