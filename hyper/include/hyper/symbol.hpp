@@ -27,6 +27,7 @@ namespace hyper
 		std::string file;
 		Kind kind = Kind::Invalid;
 		DataType data_type = {};
+		bool exported = false;
 		SourceRange source_range = {};
 	};
 } // namespace hyper

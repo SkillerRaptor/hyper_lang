@@ -37,7 +37,9 @@ namespace hyper
 		AstNode *parse();
 
 	private:
+		Declaration *parse_export_declaration();
 		Declaration *parse_function_declaration();
+		Declaration *parse_import_declaration();
 		Declaration *parse_translation_unit_declaration();
 		Declaration *parse_variable_declaration();
 

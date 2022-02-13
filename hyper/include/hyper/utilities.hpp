@@ -9,9 +9,13 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
+#include <type_traits>
 
 namespace hyper
 {
+	template <typename From, typename To>
+	concept ConvertibleTo = std::is_convertible_v<From, To>;
+
 	class Utilities
 	{
 	public:

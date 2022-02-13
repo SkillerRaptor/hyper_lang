@@ -6,11 +6,12 @@
 
 #include "hyper/compiler.hpp"
 
-#include "hyper/ast/ast.hpp"
+#include "hyper/c_generator.hpp"
 #include "hyper/diagnostics.hpp"
 #include "hyper/lexer.hpp"
 #include "hyper/logger.hpp"
 #include "hyper/parser.hpp"
+#include "hyper/post_symbol_collector.hpp"
 #include "hyper/symbol_collector.hpp"
 #include "hyper/validators/scope_validator.hpp"
 #include "hyper/validators/type_validator.hpp"
@@ -19,6 +20,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <unordered_map>
 
 namespace hyper
 {
@@ -36,7 +38,7 @@ namespace hyper
 
 	int Compiler::compile() const
 	{
-		std::vector<Symbol> symbols = {};
+		std::unordered_map<std::string, std::vector<Symbol>> ast_symbols = {};
 
 		size_t current_file = 1;
 		std::vector<CompilationUnit> trees = {};
@@ -54,21 +56,47 @@ namespace hyper
 			SymbolCollector symbol_collector = {};
 			symbol_collector.traverse(compilation_unit.ast);
 
-			const std::vector<Symbol> ast_symbols = symbol_collector.symbols();
-			symbols.insert(symbols.end(), ast_symbols.begin(), ast_symbols.end());
+			const std::vector<Symbol> symbols = symbol_collector.symbols();
+			ast_symbols[file] = symbols;
+
 			trees.push_back(std::move(compilation_unit));
+		}
+
+		{
+			std::vector<Symbol> all_symbols = {};
+			for (auto [file, current_symbols] : ast_symbols)
+			{
+				all_symbols.insert(
+					all_symbols.end(), current_symbols.begin(), current_symbols.end());
+			}
+
+			for (const CompilationUnit &compilation_unit : trees)
+			{
+				PostSymbolCollector post_symbol_collector(all_symbols);
+				post_symbol_collector.traverse(compilation_unit.ast);
+
+				const std::vector<Symbol> post_symbols =
+					post_symbol_collector.symbols();
+
+				std::vector<Symbol> &symbols = ast_symbols[compilation_unit.file];
+				symbols.insert(symbols.end(), post_symbols.begin(), post_symbols.end());
+			}
 		}
 
 		for (const CompilationUnit &compilation_unit : trees)
 		{
 			const AstNode *ast = compilation_unit.ast;
 			const Diagnostics &diagnostics = compilation_unit.diagnostics;
+			const std::vector<Symbol> &symbols = ast_symbols[compilation_unit.file];
 
 			ScopeValidator scope_validator(diagnostics, symbols);
 			scope_validator.traverse(ast);
 
 			TypeValidator type_validator(diagnostics, symbols);
 			type_validator.traverse(ast);
+
+			CGenerator c_generator;
+			c_generator.traverse(ast);
 
 			delete ast;
 		}
@@ -112,6 +140,6 @@ namespace hyper
 		Parser parser(diagnostics, tokens, file);
 		AstNode *ast = parser.parse();
 
-		return { ast, diagnostics };
+		return { ast, diagnostics, file };
 	}
 } // namespace hyper

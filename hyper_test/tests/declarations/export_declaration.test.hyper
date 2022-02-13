@@ -4,13 +4,16 @@
  * SPDX-License-Identifier: MIT
  */
 
+export fn function_01() -> void
+{
+}
+
+export fn function_02() -> i32
+{
+	return 0;
+}
+
 fn main() -> i32
 {
-	let variable_01: mutable i8 = 0 as i8;
-	while (variable_01 < 10 as i8)
-	{
-		++variable_01;
-	}
-
 	return 0;
 }

@@ -7,7 +7,7 @@
 #pragma once
 
 #include "hyper/ast/ast.hpp"
-#include "hyper/logger.hpp"
+#include "hyper/utilities.hpp"
 
 #include <type_traits>
 
@@ -36,11 +36,16 @@ namespace hyper
 	protected:
 		virtual void traverse_declaration(const Declaration *declaration)
 		{
-			Logger::debug("Traverse: {}", declaration->class_name());
 			switch (declaration->class_category())
 			{
+			case AstNode::Category::ExportDeclaration:
+				traverse_export_declaration(declaration);
+				break;
 			case AstNode::Category::FunctionDeclaration:
 				traverse_function_declaration(declaration);
+				break;
+			case AstNode::Category::ImportDeclaration:
+				traverse_import_declaration(declaration);
 				break;
 			case AstNode::Category::TranslationUnitDeclaration:
 				traverse_translation_unit_declaration(declaration);
@@ -55,7 +60,6 @@ namespace hyper
 
 		virtual void traverse_expression(const Expression *expression)
 		{
-			Logger::debug("Traverse: {}", expression->class_name());
 			if (expression->class_kind() == AstNode::Kind::Literal)
 			{
 				const Literal *literal = static_cast<const Literal *>(expression);
@@ -90,7 +94,6 @@ namespace hyper
 
 		virtual void traverse_literal(const Literal *literal)
 		{
-			Logger::debug("Traverse: {}", literal->class_name());
 			switch (literal->class_category())
 			{
 			case AstNode::Category::BoolLiteral:
@@ -112,7 +115,6 @@ namespace hyper
 
 		virtual void traverse_statement(const Statement *statement)
 		{
-			Logger::debug("Traverse: {}", statement->class_name());
 			if (statement->class_kind() == AstNode::Kind::Declaration)
 			{
 				const Declaration *declaration =
@@ -155,29 +157,30 @@ namespace hyper
 			return *static_cast<Derived *>(this);
 		}
 
-#define VISIT_NODE(type, function)                                      \
-	Derived &derived = get_derived();                                     \
-	const type *function = static_cast<const type *>(node);               \
-	do                                                                    \
-	{                                                                     \
-		if constexpr (requires {                                            \
-										std::declval<Derived>().visit_##function(function); \
-									})                                                    \
-		{                                                                   \
-			derived.visit_##function(function);                               \
-		}                                                                   \
+#define VISIT_NODE(type, function)                                       \
+	Derived &derived = get_derived();                                      \
+	const type *function = static_cast<const type *>(node);                \
+	do                                                                     \
+	{                                                                      \
+		if constexpr (requires {                                             \
+										{                                                    \
+											std::declval<Derived>().visit_##function(function) \
+											} -> ConvertibleTo<bool>;                          \
+									})                                                     \
+		{                                                                    \
+			if (!derived.visit_##function(function))                           \
+			{                                                                  \
+				return;                                                          \
+			}                                                                  \
+		}                                                                    \
 	} while (false)
 
-#define POST_VISIT_NODE(function)                                              \
-	do                                                                           \
-	{                                                                            \
-		if constexpr (requires {                                                   \
-										std::declval<Derived>().visit_##function##_post(function); \
-									})                                                           \
-		{                                                                          \
-			derived.visit_##function##_post(function);                               \
-		}                                                                          \
-	} while (false)
+		void traverse_export_declaration(const Declaration *node)
+		{
+			VISIT_NODE(ExportDeclaration, export_declaration);
+
+			derived.traverse_statement(export_declaration->statement());
+		}
 
 		void traverse_function_declaration(const Declaration *node)
 		{
@@ -189,8 +192,11 @@ namespace hyper
 			}
 
 			derived.traverse_statement(function_declaration->body());
+		}
 
-			POST_VISIT_NODE(function_declaration);
+		void traverse_import_declaration(const Declaration *node)
+		{
+			VISIT_NODE(ImportDeclaration, import_declaration);
 		}
 
 		void traverse_translation_unit_declaration(const Declaration *node)
@@ -202,8 +208,6 @@ namespace hyper
 			{
 				derived.traverse_declaration(declaration);
 			}
-
-			POST_VISIT_NODE(translation_unit_declaration);
 		}
 
 		void traverse_variable_declaration(const Declaration *node)
@@ -214,8 +218,6 @@ namespace hyper
 			{
 				derived.traverse_expression(variable_declaration->expression());
 			}
-
-			POST_VISIT_NODE(variable_declaration);
 		}
 
 		void traverse_binary_expression(const Expression *node)
@@ -224,8 +226,6 @@ namespace hyper
 
 			derived.traverse_expression(binary_expression->left());
 			derived.traverse_expression(binary_expression->right());
-
-			POST_VISIT_NODE(binary_expression);
 		}
 
 		void traverse_call_expression(const Expression *node)
@@ -236,8 +236,6 @@ namespace hyper
 			{
 				derived.traverse_expression(argument);
 			}
-
-			POST_VISIT_NODE(call_expression);
 		}
 
 		void traverse_cast_expression(const Expression *node)
@@ -245,8 +243,6 @@ namespace hyper
 			VISIT_NODE(CastExpression, cast_expression);
 
 			derived.traverse_expression(cast_expression->expression());
-
-			POST_VISIT_NODE(cast_expression);
 		}
 
 		void traverse_conditional_expression(const Expression *node)
@@ -260,15 +256,11 @@ namespace hyper
 			{
 				derived.traverse_expression(conditional_expression->false_expression());
 			}
-
-			POST_VISIT_NODE(conditional_expression);
 		}
 
 		void traverse_identifier_expression(const Expression *node)
 		{
 			VISIT_NODE(IdentifierExpression, identifier_expression);
-
-			POST_VISIT_NODE(identifier_expression);
 		}
 
 		void traverse_unary_expression(const Expression *node)
@@ -276,36 +268,26 @@ namespace hyper
 			VISIT_NODE(UnaryExpression, unary_expression);
 
 			derived.traverse_expression(unary_expression->expression());
-
-			POST_VISIT_NODE(unary_expression);
 		}
 
 		void traverse_bool_literal(const Literal *node)
 		{
 			VISIT_NODE(BoolLiteral, bool_literal);
-
-			POST_VISIT_NODE(bool_literal);
 		}
 
 		void traverse_floating_literal(const Literal *node)
 		{
 			VISIT_NODE(FloatingLiteral, floating_literal);
-
-			POST_VISIT_NODE(floating_literal);
 		}
 
 		void traverse_integer_literal(const Literal *node)
 		{
 			VISIT_NODE(IntegerLiteral, integer_literal);
-
-			POST_VISIT_NODE(integer_literal);
 		}
 
 		void traverse_string_literal(const Literal *node)
 		{
 			VISIT_NODE(StringLiteral, string_literal);
-
-			POST_VISIT_NODE(string_literal);
 		}
 
 		void traverse_assign_statement(const Statement *node)
@@ -313,8 +295,6 @@ namespace hyper
 			VISIT_NODE(AssignStatement, assign_statement);
 
 			derived.traverse_expression(assign_statement->expression());
-
-			POST_VISIT_NODE(assign_statement);
 		}
 
 		void traverse_compound_assign_statement(const Statement *node)
@@ -322,8 +302,6 @@ namespace hyper
 			VISIT_NODE(CompoundAssignStatement, compound_assign_statement);
 
 			derived.traverse_expression(compound_assign_statement->expression());
-
-			POST_VISIT_NODE(compound_assign_statement);
 		}
 
 		void traverse_compound_statement(const Statement *node)
@@ -334,8 +312,6 @@ namespace hyper
 			{
 				derived.traverse_statement(statement);
 			}
-
-			POST_VISIT_NODE(compound_statement);
 		}
 
 		void traverse_expression_statement(const Statement *node)
@@ -343,8 +319,6 @@ namespace hyper
 			VISIT_NODE(ExpressionStatement, expression_statement);
 
 			derived.traverse_expression(expression_statement->expression());
-
-			POST_VISIT_NODE(expression_statement);
 		}
 
 		void traverse_if_statement(const Statement *node)
@@ -358,8 +332,6 @@ namespace hyper
 			{
 				derived.traverse_statement(if_statement->false_body());
 			}
-
-			POST_VISIT_NODE(if_statement);
 		}
 
 		void traverse_return_statement(const Statement *node)
@@ -370,8 +342,6 @@ namespace hyper
 			{
 				derived.traverse_expression(return_statement->expression());
 			}
-
-			POST_VISIT_NODE(return_statement);
 		}
 
 		void traverse_while_statement(const Statement *node)
@@ -380,8 +350,6 @@ namespace hyper
 
 			derived.traverse_expression(while_statement->condition());
 			derived.traverse_statement(while_statement->body());
-
-			POST_VISIT_NODE(while_statement);
 		}
 	};
 } // namespace hyper

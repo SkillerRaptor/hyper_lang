@@ -4,13 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
+import std.io;
+
 fn main() -> i32
 {
-	let variable_01: mutable i8 = 0 as i8;
-	while (variable_01 < 10 as i8)
-	{
-		++variable_01;
-	}
-
 	return 0;
 }

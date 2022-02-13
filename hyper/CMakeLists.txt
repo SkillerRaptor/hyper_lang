@@ -9,17 +9,21 @@
 #-------------------------------------------------------------------------------------------
 set(SOURCES
         src/main.cpp
+        src/hyper/c_generator.cpp
         src/hyper/compiler.cpp
         src/hyper/data_type.cpp
         src/hyper/diagnostics.cpp
         src/hyper/formatter.cpp
         src/hyper/lexer.cpp
         src/hyper/parser.cpp
+        src/hyper/post_symbol_collector.cpp
         src/hyper/symbol_collector.cpp
         src/hyper/token.cpp
         src/hyper/ast/ast_node.cpp
         src/hyper/ast/declarations/declaration.cpp
+        src/hyper/ast/declarations/export_declaration.cpp
         src/hyper/ast/declarations/function_declaration.cpp
+        src/hyper/ast/declarations/import_declaration.cpp
         src/hyper/ast/declarations/translation_unit_declaration.cpp
         src/hyper/ast/declarations/variable_declaration.cpp
         src/hyper/ast/expressions/binary_expression.cpp
@@ -46,6 +50,7 @@ set(SOURCES
         src/hyper/validators/type_validator.cpp)
 
 set(HEADERS
+        include/hyper/c_generator.hpp
         include/hyper/compiler.hpp
         include/hyper/data_type.hpp
         include/hyper/diagnostics.hpp
@@ -54,6 +59,7 @@ set(HEADERS
         include/hyper/logger.hpp
         include/hyper/identifier.hpp
         include/hyper/parser.hpp
+        include/hyper/post_symbol_collector.hpp
         include/hyper/source_range.hpp
         include/hyper/symbol.hpp
         include/hyper/symbol_collector.hpp
@@ -63,7 +69,9 @@ set(HEADERS
         include/hyper/ast/ast_node.hpp
         include/hyper/ast/ast_visitor.hpp
         include/hyper/ast/declarations/declaration.hpp
+        include/hyper/ast/declarations/export_declaration.hpp
         include/hyper/ast/declarations/function_declaration.hpp
+        include/hyper/ast/declarations/import_declaration.hpp
         include/hyper/ast/declarations/translation_unit_declaration.hpp
         include/hyper/ast/declarations/variable_declaration.hpp
         include/hyper/ast/expressions/binary_expression.hpp

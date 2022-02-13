@@ -22,6 +22,7 @@ namespace hyper
 		{
 			AstNode *ast = nullptr;
 			Diagnostics diagnostics = {};
+			std::string file;
 		};
 
 	public:

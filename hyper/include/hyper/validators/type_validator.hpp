@@ -19,18 +19,18 @@ namespace hyper
 			const Diagnostics &diagnostics,
 			const std::vector<Symbol> &symbols);
 
-		void visit_function_declaration(
+		bool visit_function_declaration(
 			const FunctionDeclaration *function_declaration);
-		void visit_variable_declaration_post(
+		bool visit_variable_declaration(
 			const VariableDeclaration *variable_declaration);
 
-		void visit_bool_literal(const BoolLiteral *bool_literal);
-		void visit_floating_literal(const FloatingLiteral *floating_literal);
-		void visit_integer_literal(const IntegerLiteral *integer_literal);
-		void visit_string_literal(const StringLiteral *string_literal);
+		bool visit_call_expression(const CallExpression *call_expression);
+		bool visit_cast_expression(const CastExpression *cast_expression);
 
-		void visit_call_expression_post(const CallExpression *call_expression);
-		void visit_cast_expression_post(const CastExpression *cast_expression);
+		bool visit_bool_literal(const BoolLiteral *bool_literal);
+		bool visit_floating_literal(const FloatingLiteral *floating_literal);
+		bool visit_integer_literal(const IntegerLiteral *integer_literal);
+		bool visit_string_literal(const StringLiteral *string_literal);
 
 	private:
 		bool match_data_type(const DataType &data_type) const noexcept;

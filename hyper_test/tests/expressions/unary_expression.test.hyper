@@ -6,7 +6,7 @@
 
 fn main() -> i32
 {
-	let variable_01: i8 = -1 as i8;
+	let variable_01: mutable i8 = -1 as i8;
 	let variable_02: i8 = ++variable_01;
 	let variable_03: i8 = variable_01++;
 	let variable_04: i8 = --variable_01;

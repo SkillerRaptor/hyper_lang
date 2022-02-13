@@ -26,6 +26,32 @@ namespace hyper
 		return parse_translation_unit_declaration();
 	}
 
+	Declaration *Parser::parse_export_declaration()
+	{
+		const SourceRange export_range =
+			consume(Token::Type::Export).source_range();
+
+		// TODO: Adding structure export
+
+		if (!match(Token::Type::Function))
+		{
+			Statement *statement = parse_statement();
+			m_diagnostics.error(
+				statement->source_range(),
+				Diagnostics::ErrorCode::E0007,
+				statement->class_name());
+		}
+
+		Statement *statement = parse_function_declaration();
+
+		const SourceRange source_range = {
+			.start = export_range.start,
+			.end = statement->end_position(),
+		};
+
+		return new ExportDeclaration(source_range, statement);
+	}
+
 	Declaration *Parser::parse_function_declaration()
 	{
 		const SourceRange function_range =
@@ -57,6 +83,60 @@ namespace hyper
 			std::move(body));
 	}
 
+	Declaration *Parser::parse_import_declaration()
+	{
+		const SourceRange import_range =
+			consume(Token::Type::Import).source_range();
+
+		std::string module_name;
+		while (!match(Token::Type::Semicolon))
+		{
+			module_name += consume(Token::Type::Identifier).value();
+
+			if (match(Token::Type::Dot))
+			{
+				consume();
+				module_name += '.';
+			}
+		}
+
+		// TODO: Finding better way to iterate every symbol and check after module
+
+#if defined(WIN32) || defined(WIN64)
+		const std::string slash = "\\";
+#else
+		const std::string slash = "/";
+#endif
+
+		std::string file_name;
+		std::string path;
+
+		size_t dot_position = module_name.find_last_of('.');
+		if (dot_position == std::string::npos)
+		{
+			file_name = module_name;
+			path = "";
+		}
+		else
+		{
+			file_name = module_name.substr(dot_position + 1);
+			path = module_name.substr(0, dot_position);
+		}
+
+		file_name += ".hyper";
+		path = Utilities::replace_string(path, ".", slash);
+		module_name = path + slash + file_name;
+
+		consume(Token::Type::Semicolon);
+
+		const SourceRange source_range = {
+			.start = import_range.start,
+			.end = {},
+		};
+
+		return new ImportDeclaration(source_range, module_name);
+	}
+
 	Declaration *Parser::parse_translation_unit_declaration()
 	{
 		std::vector<Declaration *> declarations = {};
@@ -64,12 +144,15 @@ namespace hyper
 		{
 			switch (current_token().type())
 			{
+			case Token::Type::Export:
+				declarations.emplace_back(parse_export_declaration());
+				break;
 			case Token::Type::Function:
 				declarations.emplace_back(parse_function_declaration());
 				break;
 			case Token::Type::Import:
-				// FIXME: Adding import declaration
-				std::abort();
+				declarations.emplace_back(parse_import_declaration());
+				break;
 			default:
 				m_diagnostics.error(
 					current_token().source_range(),

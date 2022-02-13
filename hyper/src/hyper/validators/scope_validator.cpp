@@ -16,7 +16,7 @@ namespace hyper
 	{
 	}
 
-	void ScopeValidator::visit_function_declaration(
+	bool ScopeValidator::visit_function_declaration(
 		const FunctionDeclaration *function_declaration) const
 	{
 		const Identifier &identifier = function_declaration->identifier();
@@ -27,9 +27,19 @@ namespace hyper
 				Diagnostics::ErrorCode::E0005,
 				identifier.value);
 		}
+
+		return true;
 	}
 
-	void ScopeValidator::visit_variable_declaration(
+	bool ScopeValidator::visit_translation_unit_declaration(
+		const TranslationUnitDeclaration *translation_unit_declaration)
+	{
+		m_current_file = translation_unit_declaration->file();
+
+		return true;
+	}
+
+	bool ScopeValidator::visit_variable_declaration(
 		const VariableDeclaration *variable_declaration) const
 	{
 		const Identifier &identifier = variable_declaration->identifier();
@@ -40,9 +50,11 @@ namespace hyper
 				Diagnostics::ErrorCode::E0005,
 				identifier.value);
 		}
+
+		return true;
 	}
 
-	void ScopeValidator::visit_call_expression(
+	bool ScopeValidator::visit_call_expression(
 		const CallExpression *call_expression) const
 	{
 		const Identifier &identifier = call_expression->identifier();
@@ -53,9 +65,11 @@ namespace hyper
 				Diagnostics::ErrorCode::E0004,
 				identifier.value);
 		}
+
+		return true;
 	}
 
-	void ScopeValidator::visit_identifier_expression(
+	bool ScopeValidator::visit_identifier_expression(
 		const IdentifierExpression *identifier_expression) const
 	{
 		const Identifier &identifier = identifier_expression->identifier();
@@ -66,9 +80,11 @@ namespace hyper
 				Diagnostics::ErrorCode::E0004,
 				identifier.value);
 		}
+
+		return true;
 	}
 
-	void ScopeValidator::visit_assign_statement(
+	bool ScopeValidator::visit_assign_statement(
 		const AssignStatement *assign_statement) const
 	{
 		const Identifier &identifier = assign_statement->identifier();
@@ -79,9 +95,11 @@ namespace hyper
 				Diagnostics::ErrorCode::E0004,
 				identifier.value);
 		}
+
+		return true;
 	}
 
-	void ScopeValidator::visit_compound_assign_statement(
+	bool ScopeValidator::visit_compound_assign_statement(
 		const CompoundAssignStatement *compound_assign_statement) const
 	{
 		const Identifier &identifier = compound_assign_statement->identifier();
@@ -92,6 +110,8 @@ namespace hyper
 				Diagnostics::ErrorCode::E0004,
 				identifier.value);
 		}
+
+		return true;
 	}
 
 	bool ScopeValidator::is_symbol_present(

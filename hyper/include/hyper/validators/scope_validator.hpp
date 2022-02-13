@@ -19,17 +19,19 @@ namespace hyper
 			const Diagnostics &diagnostics,
 			const std::vector<Symbol> &symbols);
 
-		void visit_function_declaration(
+		bool visit_function_declaration(
 			const FunctionDeclaration *function_declaration) const;
-		void visit_variable_declaration(
+		bool visit_translation_unit_declaration(
+			const TranslationUnitDeclaration *translation_unit_declaration);
+		bool visit_variable_declaration(
 			const VariableDeclaration *variable_declaration) const;
 
-		void visit_call_expression(const CallExpression *call_expression) const;
-		void visit_identifier_expression(
+		bool visit_call_expression(const CallExpression *call_expression) const;
+		bool visit_identifier_expression(
 			const IdentifierExpression *identifier_expression) const;
 
-		void visit_assign_statement(const AssignStatement *assign_statement) const;
-		void visit_compound_assign_statement(
+		bool visit_assign_statement(const AssignStatement *assign_statement) const;
+		bool visit_compound_assign_statement(
 			const CompoundAssignStatement *compound_assign_statement) const;
 
 	private:
@@ -39,5 +41,7 @@ namespace hyper
 	private:
 		const Diagnostics &m_diagnostics;
 		const std::vector<Symbol> &m_symbols;
+
+		std::string m_current_file;
 	};
 } // namespace hyper

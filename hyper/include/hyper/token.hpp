@@ -123,8 +123,6 @@ namespace hyper
 			FloatingLiteral,
 			IntegerLiteral,
 			StringLiteral,
-
-			Count,
 		};
 
 	public:

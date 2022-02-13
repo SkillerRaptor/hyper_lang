@@ -26,6 +26,7 @@ namespace hyper
 			E0004,
 			E0005,
 			E0006,
+			E0007,
 		};
 
 	public:
@@ -122,6 +123,8 @@ namespace hyper
 				return "redefinition of identifier '{}'";
 			case ErrorCode::E0006:
 				return "assigning '{}' to a variable with incompatible type '{}'";
+			case ErrorCode::E0007:
+				return "cannot export '{}'";
 			}
 
 			std::abort();
