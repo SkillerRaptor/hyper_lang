@@ -7,11 +7,11 @@
 fn main() -> i32
 {
 	let variable_01: mutable i8 = 0 as i8;
-	variable_01 += 0 as i8;
-	variable_01 -= 0 as i8;
-	variable_01 *= 0 as i8;
-	variable_01 /= 0 as i8;
-	variable_01 %= 0 as i8;
+	variable_01 += 1 as i8;
+	variable_01 -= 1 as i8;
+	variable_01 *= 1 as i8;
+	variable_01 /= 1 as i8;
+	variable_01 %= 1 as i8;
 
 	return 0;
 }

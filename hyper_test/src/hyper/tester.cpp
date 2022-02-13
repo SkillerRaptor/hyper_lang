@@ -42,7 +42,7 @@ namespace hyper
 #if defined(WIN32) || defined(WIN64)
 			const char *null = " > nul 2> nul";
 #else
-			const char *null = " > /dev/null";
+			const char *null = " > /dev/null 2>&1";
 #endif
 
 			const std::string real_file = entry.path().string();
@@ -85,7 +85,7 @@ namespace hyper
 			success_count + failure_count);
 		hyper::Logger::log(
 			"\033[1mFiles:\033[0m \033[93m{} total\033[0m", file_count);
-		hyper::Logger::log("\033[1mTime:\033[0m  \033[93m{}ms\033[0m", duration);
+		hyper::Logger::log("\033[1mTime:\033[0m  \033[93m{}s ({}ms)\033[0m", duration / 1000, duration);
 
 		return failure_count == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 	}

@@ -550,6 +550,8 @@ namespace hyper
 			return parse_assign_statement();
 		case Token::Type::If:
 			return parse_if_statement();
+		case Token::Type::Print:
+			return parse_print_statement();
 		case Token::Type::Let:
 			return parse_variable_declaration();
 		case Token::Type::Return:
@@ -752,6 +754,25 @@ namespace hyper
 			std::move(condition),
 			std::move(true_body),
 			std::move(false_body));
+	}
+
+	Statement *Parser::parse_print_statement()
+	{
+		const SourceRange print_range = consume(Token::Type::Print).source_range();
+
+		consume(Token::Type::RoundLeftBracket);
+
+		Expression *expression = parse_binary_expression(0);
+
+		consume(Token::Type::RoundRightBracket);
+		consume(Token::Type::Semicolon);
+
+		const SourceRange source_range = {
+			.start = print_range.start,
+			.end = expression->end_position(),
+		};
+
+		return new PrintStatement(source_range, std::move(expression));
 	}
 
 	Statement *Parser::parse_return_statement()

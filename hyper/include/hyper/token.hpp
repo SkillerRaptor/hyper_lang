@@ -123,6 +123,9 @@ namespace hyper
 			FloatingLiteral,
 			IntegerLiteral,
 			StringLiteral,
+
+			// NOTE: Debug Purpose Only!
+			Print,
 		};
 
 	public:

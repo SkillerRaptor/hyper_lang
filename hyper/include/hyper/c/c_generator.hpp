@@ -46,6 +46,7 @@ namespace hyper
 		bool visit_expression_statement(
 			const ExpressionStatement *expression_statement);
 		bool visit_if_statement(const IfStatement *if_statement);
+		bool visit_print_statement(const PrintStatement *print_statement);
 		bool visit_return_statement(const ReturnStatement *return_statement);
 		bool visit_while_statement(const WhileStatement *while_statement);
 

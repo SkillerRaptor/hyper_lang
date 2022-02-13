@@ -140,6 +140,9 @@ namespace hyper
 			case AstNode::Category::IfStatement:
 				traverse_if_statement(statement);
 				break;
+			case AstNode::Category::PrintStatement:
+				traverse_print_statement(statement);
+				break;
 			case AstNode::Category::ReturnStatement:
 				traverse_return_statement(statement);
 				break;
@@ -332,6 +335,13 @@ namespace hyper
 			{
 				derived.traverse_statement(if_statement->false_body());
 			}
+		}
+
+		void traverse_print_statement(const Statement *node)
+		{
+			VISIT_NODE(PrintStatement, print_statement);
+
+			derived.traverse_expression(print_statement->expression());
 		}
 
 		void traverse_return_statement(const Statement *node)

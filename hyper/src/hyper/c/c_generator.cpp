@@ -437,6 +437,17 @@ namespace hyper
 		return false;
 	}
 
+	bool CGenerator::visit_print_statement(const PrintStatement *print_statement)
+	{
+		m_source << m_indention << "printf(\"%llu\\n\", ";
+
+		traverse_expression(print_statement->expression());
+
+		m_source << ");\n";
+
+		return false;
+	}
+
 	bool CGenerator::visit_return_statement(
 		const ReturnStatement *return_statement)
 	{

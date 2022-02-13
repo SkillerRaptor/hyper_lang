@@ -692,6 +692,8 @@ namespace hyper
 		case Utilities::hash("true"):
 		case Utilities::hash("false"):
 			return Token::Type::BoolLiteral;
+		case Utilities::hash("print"): // NOTE: Remove after debug
+			return Token::Type::Print;
 		default:
 			return Token::Type::Invalid;
 		}

@@ -58,7 +58,7 @@ namespace hyper
 			Logger::error("failed to link c object files");
 			std::exit(1);
 		}
-#else
+#elif defined(__linux__) || defined(__linux)
 		const int check_gcc = system("gcc --version > /dev/null");
 		if (check_gcc)
 		{
@@ -77,7 +77,7 @@ namespace hyper
 		command << object_files;
 		command << "-o ";
 		command << "./build/a.out";
-		command << " > /dev/null";
+		command << " > /dev/null 2>&1";
 
 		const int return_code = system(command.str().c_str());
 		if (return_code != 0)

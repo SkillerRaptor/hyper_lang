@@ -26,5 +26,6 @@
 #include "hyper/ast/statements/compound_statement.hpp"
 #include "hyper/ast/statements/expression_statement.hpp"
 #include "hyper/ast/statements/if_statement.hpp"
+#include "hyper/ast/statements/print_statement.hpp"
 #include "hyper/ast/statements/return_statement.hpp"
 #include "hyper/ast/statements/while_statement.hpp"

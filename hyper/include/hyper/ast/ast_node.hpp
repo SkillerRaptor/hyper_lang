@@ -43,6 +43,7 @@ namespace hyper
 			CompoundStatement,
 			ExpressionStatement,
 			IfStatement,
+			PrintStatement,
 			ReturnStatement,
 			WhileStatement,
 		};

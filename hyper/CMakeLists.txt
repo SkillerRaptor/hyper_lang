@@ -43,6 +43,7 @@ set(SOURCES
         src/hyper/ast/statements/compound_statement.cpp
         src/hyper/ast/statements/expression_statement.cpp
         src/hyper/ast/statements/if_statement.cpp
+        src/hyper/ast/statements/print_statement.cpp
         src/hyper/ast/statements/return_statement.cpp
         src/hyper/ast/statements/statement.cpp
         src/hyper/ast/statements/while_statement.cpp
@@ -94,6 +95,7 @@ set(HEADERS
         include/hyper/ast/statements/compound_statement.hpp
         include/hyper/ast/statements/expression_statement.hpp
         include/hyper/ast/statements/if_statement.hpp
+        include/hyper/ast/statements/print_statement.hpp
         include/hyper/ast/statements/return_statement.hpp
         include/hyper/ast/statements/statement.hpp
         include/hyper/ast/statements/while_statement.hpp

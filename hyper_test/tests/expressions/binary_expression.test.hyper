@@ -68,11 +68,8 @@ fn main() -> i32
 	let variable_056: u8 = 1 as u8 - 1 as u8;
 	let variable_057: u8 = 0 as u8 * 0 as u8;
 	let variable_058: u8 = 1 as u8 * 1 as u8;
-	let variable_059: u8 = -1 as u8 * -1 as u8;
 	let variable_060: u8 = 1 as u8 / 1 as u8;
-	let variable_061: u8 = -1 as u8 / -1 as u8;
 	let variable_062: u8 = 1 as u8 % 1 as u8;
-	let variable_063: u8 = -1 as u8 % -1 as u8;
 
 	let variable_064: u16 = 0 as u16 + 0 as u16;
 	let variable_065: u16 = 1 as u16 + 1 as u16;
@@ -80,11 +77,8 @@ fn main() -> i32
 	let variable_067: u16 = 1 as u16 - 1 as u16;
 	let variable_068: u16 = 0 as u16 * 0 as u16;
 	let variable_069: u16 = 1 as u16 * 1 as u16;
-	let variable_070: u16 = -1 as u16 * -1 as u16;
 	let variable_071: u16 = 1 as u16 / 1 as u16;
-	let variable_072: u16 = -1 as u16 / -1 as u16;
 	let variable_073: u16 = 1 as u16 % 1 as u16;
-	let variable_074: u16 = -1 as u16 % -1 as u16;
 	
 	let variable_075: u32 = 0 as u32 + 0 as u32;
 	let variable_076: u32 = 1 as u32 + 1 as u32;
@@ -92,11 +86,8 @@ fn main() -> i32
 	let variable_078: u32 = 1 as u32 - 1 as u32;
 	let variable_079: u32 = 0 as u32 * 0 as u32;
 	let variable_080: u32 = 1 as u32 * 1 as u32;
-	let variable_081: u32 = -1 as u32 * -1 as u32;
 	let variable_082: u32 = 1 as u32 / 1 as u32;
-	let variable_083: u32 = -1 as u32 / -1 as u32;
 	let variable_084: u32 = 1 as u32 % 1 as u32;
-	let variable_085: u32 = -1 as u32 % -1 as u32;
 	
 	let variable_086: u64 = 0 as u64 + 0 as u64;
 	let variable_087: u64 = 1 as u64 + 1 as u64;
@@ -104,11 +95,8 @@ fn main() -> i32
 	let variable_089: u64 = 1 as u64 - 1 as u64;
 	let variable_090: u64 = 0 as u64 * 0 as u64;
 	let variable_091: u64 = 1 as u64 * 1 as u64;
-	let variable_092: u64 = -1 as u64 * -1 as u64;
 	let variable_093: u64 = 1 as u64 / 1 as u64;
-	let variable_094: u64 = -1 as u64 / -1 as u64;
 	let variable_095: u64 = 1 as u64 % 1 as u64;
-	let variable_096: u64 = -1 as u64 % -1 as u64;
 
 	let variable_097: f32 = 0.0 as f32 + 0.0 as f32;
 	let variable_098: f32 = 1.0 as f32 + 1.0 as f32;
@@ -117,7 +105,6 @@ fn main() -> i32
 	let variable_101: f32 = 0.0 as f32 * 0.0 as f32;
 	let variable_102: f32 = 1.0 as f32 * 1.0 as f32;
 	let variable_103: f32 = -1.0 as f32 * -1.0 as f32;
-	let variable_104: f32 = 0.0 as f32 / 0.0 as f32;
 	let variable_105: f32 = 1.0 as f32 / 1.0 as f32;
 	let variable_106: f32 = -1.0 as f32 / -1.0 as f32;
 
@@ -128,7 +115,6 @@ fn main() -> i32
 	let variable_111: f64 = 0.0 as f64 * 0.0 as f64;
 	let variable_112: f64 = 1.0 as f64 * 1.0 as f64;
 	let variable_113: f64 = -1.0 as f64 * -1.0 as f64;
-	let variable_114: f64 = 0.0 as f64 / 0.0 as f64;
 	let variable_115: f64 = 1.0 as f64 / 1.0 as f64;
 	let variable_116: f64 = -1.0 as f64 / -1.0 as f64;
 

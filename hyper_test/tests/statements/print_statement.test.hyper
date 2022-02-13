@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn main() -> i32
+{
+	print(1 as i8 + 1 as i8);
+	print(1 as i16 + 1 as i16);
+	print(1 as i32 + 1 as i32);
+	print(1 as i64 + 1 as i64);
+	print(1 as u8 + 1 as u8);
+	print(1 as u16 + 1 as u16);
+	print(1 as u32 + 1 as u32);
+	print(1 as u64 + 1 as u64);
+
+	let variable_01: mutable i8 = 0 as i8;
+	while (variable_01 < 10 as i8)
+	{
+		print(variable_01);
+		++variable_01;
+	}
+
+	return 0;
+}

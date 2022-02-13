@@ -62,6 +62,7 @@ namespace hyper
 		Statement *parse_compound_assign_statement();
 		Statement *parse_expression_statement(Expression *expression);
 		Statement *parse_if_statement();
+		Statement *parse_print_statement();
 		Statement *parse_return_statement();
 		Statement *parse_while_statement();
 
