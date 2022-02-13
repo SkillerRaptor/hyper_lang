@@ -15,6 +15,8 @@ namespace hyper
 	class CGenerator : public AstVisitor<CGenerator>
 	{
 	public:
+		explicit CGenerator(std::string output_file);
+
 		bool visit_export_declaration(const ExportDeclaration *export_declaration);
 		bool visit_function_declaration(
 			const FunctionDeclaration *function_declaration);
@@ -54,6 +56,8 @@ namespace hyper
 		std::string map_data_type(const DataType &data_type) const;
 
 	private:
+		std::string m_output_file;
+
 		std::stringstream m_source;
 		std::stringstream m_header;
 

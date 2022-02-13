@@ -9,7 +9,6 @@
 #-------------------------------------------------------------------------------------------
 set(SOURCES
         src/main.cpp
-        src/hyper/c_generator.cpp
         src/hyper/compiler.cpp
         src/hyper/data_type.cpp
         src/hyper/diagnostics.cpp
@@ -19,6 +18,7 @@ set(SOURCES
         src/hyper/post_symbol_collector.cpp
         src/hyper/symbol_collector.cpp
         src/hyper/token.cpp
+        src/hyper/utilities.cpp
         src/hyper/ast/ast_node.cpp
         src/hyper/ast/declarations/declaration.cpp
         src/hyper/ast/declarations/export_declaration.cpp
@@ -46,11 +46,14 @@ set(SOURCES
         src/hyper/ast/statements/return_statement.cpp
         src/hyper/ast/statements/statement.cpp
         src/hyper/ast/statements/while_statement.cpp
+        src/hyper/c/c_compiler.cpp
+        src/hyper/c/c_generator.cpp
+        src/hyper/c/c_linker.cpp
+        src/hyper/c/microsoft.cpp
         src/hyper/validators/scope_validator.cpp
         src/hyper/validators/type_validator.cpp)
 
 set(HEADERS
-        include/hyper/c_generator.hpp
         include/hyper/compiler.hpp
         include/hyper/data_type.hpp
         include/hyper/diagnostics.hpp
@@ -94,6 +97,10 @@ set(HEADERS
         include/hyper/ast/statements/return_statement.hpp
         include/hyper/ast/statements/statement.hpp
         include/hyper/ast/statements/while_statement.hpp
+        include/hyper/c/c_compiler.hpp
+        include/hyper/c/c_generator.hpp
+        include/hyper/c/c_linker.hpp
+        include/hyper/c/microsoft.hpp
         include/hyper/validators/scope_validator.hpp
         include/hyper/validators/type_validator.hpp)
 

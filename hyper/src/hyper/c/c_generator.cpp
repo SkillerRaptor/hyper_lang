@@ -4,9 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "hyper/c_generator.hpp"
-
-#include "hyper/logger.hpp"
+#include "hyper/c/c_generator.hpp"
 
 #include <algorithm>
 #include <filesystem>
@@ -14,6 +12,11 @@
 
 namespace hyper
 {
+	CGenerator::CGenerator(std::string output_file)
+		: m_output_file(std::move(output_file))
+	{
+	}
+
 	bool CGenerator::visit_export_declaration(
 		const ExportDeclaration *export_declaration)
 	{
@@ -67,11 +70,8 @@ namespace hyper
 	bool CGenerator::visit_translation_unit_declaration(
 		const TranslationUnitDeclaration *translation_unit_declaration)
 	{
-		std::filesystem::create_directory("./build");
-
-		const std::filesystem::path path = translation_unit_declaration->file();
+		const std::filesystem::path path = m_output_file;
 		const std::string file_name = path.filename().string();
-		const std::string file = "./build/" + file_name;
 
 		m_source << "/*\n";
 		m_source << " * Copyright (c) 2020-present, SkillerRaptor "
@@ -116,8 +116,8 @@ namespace hyper
 		m_header << '\n';
 		m_header << "#endif\n";
 
-		std::ofstream source(file + ".c");
-		std::ofstream header(file + ".h");
+		std::ofstream source(m_output_file + ".c");
+		std::ofstream header(m_output_file + ".h");
 
 		source << m_source.str();
 		header << m_header.str();

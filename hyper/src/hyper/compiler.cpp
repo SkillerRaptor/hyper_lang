@@ -6,7 +6,9 @@
 
 #include "hyper/compiler.hpp"
 
-#include "hyper/c_generator.hpp"
+#include "hyper/c/c_compiler.hpp"
+#include "hyper/c/c_generator.hpp"
+#include "hyper/c/c_linker.hpp"
 #include "hyper/diagnostics.hpp"
 #include "hyper/lexer.hpp"
 #include "hyper/logger.hpp"
@@ -83,11 +85,15 @@ namespace hyper
 			}
 		}
 
+		std::filesystem::create_directory("./build");
+
+		std::vector<std::string> output_files = {};
 		for (const CompilationUnit &compilation_unit : trees)
 		{
 			const AstNode *ast = compilation_unit.ast;
 			const Diagnostics &diagnostics = compilation_unit.diagnostics;
-			const std::vector<Symbol> &symbols = ast_symbols[compilation_unit.file];
+			const std::string &file = compilation_unit.file;
+			const std::vector<Symbol> &symbols = ast_symbols[file];
 
 			ScopeValidator scope_validator(diagnostics, symbols);
 			scope_validator.traverse(ast);
@@ -95,11 +101,23 @@ namespace hyper
 			TypeValidator type_validator(diagnostics, symbols);
 			type_validator.traverse(ast);
 
-			CGenerator c_generator;
+			const std::filesystem::path path = file;
+			const std::string file_name = path.filename().string();
+			const std::string output_file = "./build/" + file_name;
+
+			CGenerator c_generator(output_file);
 			c_generator.traverse(ast);
+
+			output_files.emplace_back(output_file);
 
 			delete ast;
 		}
+
+		const CCompiler c_compiler(output_files);
+		c_compiler.compile();
+
+		const CLinker c_linker(output_files);
+		c_linker.link();
 
 		return EXIT_SUCCESS;
 	}
