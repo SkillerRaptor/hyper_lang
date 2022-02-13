@@ -8,6 +8,18 @@
 
 namespace hyper
 {
+	bool SymbolCollector::visit_export_declaration(
+		const ExportDeclaration *export_declaration)
+	{
+		m_capture_symbol = true;
+
+		traverse_statement(export_declaration->statement());
+
+		m_capture_symbol = false;
+
+		return false;
+	}
+
 	bool SymbolCollector::visit_function_declaration(
 		const FunctionDeclaration *function_declaration)
 	{
@@ -25,16 +37,21 @@ namespace hyper
 		return true;
 	}
 
-	bool SymbolCollector::visit_export_declaration(
-		const ExportDeclaration *export_declaration)
+	bool SymbolCollector::visit_parameter_declaration(
+		const ParameterDeclaration *parameter_declaration)
 	{
-		m_capture_symbol = true;
+		const Symbol symbol = {
+			.name = parameter_declaration->identifier().value,
+			.file = m_current_file,
+			.kind = Symbol::Kind::Parameter,
+			.data_type = parameter_declaration->type(),
+			.exported = false,
+			.source_range = parameter_declaration->identifier().source_range,
+		};
 
-		traverse_statement(export_declaration->statement());
+		m_symbols.emplace_back(symbol);
 
-		m_capture_symbol = false;
-
-		return false;
+		return true;
 	}
 
 	bool SymbolCollector::visit_translation_unit_declaration(

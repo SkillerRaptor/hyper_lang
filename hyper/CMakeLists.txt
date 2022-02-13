@@ -24,6 +24,7 @@ set(SOURCES
         src/hyper/ast/declarations/export_declaration.cpp
         src/hyper/ast/declarations/function_declaration.cpp
         src/hyper/ast/declarations/import_declaration.cpp
+        src/hyper/ast/declarations/parameter_declaration.cpp
         src/hyper/ast/declarations/translation_unit_declaration.cpp
         src/hyper/ast/declarations/variable_declaration.cpp
         src/hyper/ast/expressions/binary_expression.cpp
@@ -76,6 +77,7 @@ set(HEADERS
         include/hyper/ast/declarations/export_declaration.hpp
         include/hyper/ast/declarations/function_declaration.hpp
         include/hyper/ast/declarations/import_declaration.hpp
+        include/hyper/ast/declarations/parameter_declaration.hpp
         include/hyper/ast/declarations/translation_unit_declaration.hpp
         include/hyper/ast/declarations/variable_declaration.hpp
         include/hyper/ast/expressions/binary_expression.hpp

@@ -42,18 +42,17 @@ namespace hyper
 	{
 		const std::string type = map_data_type(function_declaration->return_type());
 		m_source << '\n'
-						 << type << " " << function_declaration->identifier().value
-						 << "()\n";
-
-		start_scope();
+						 << type << " " << function_declaration->identifier().value << '(';
 
 		for (const Declaration *argument : function_declaration->arguments())
 		{
 			traverse_declaration(argument);
 		}
 
-		traverse_statement(function_declaration->body());
+		m_source << ")\n";
 
+		start_scope();
+		traverse_statement(function_declaration->body());
 		end_scope();
 
 		return false;
@@ -63,6 +62,24 @@ namespace hyper
 		const ImportDeclaration *import_declaration)
 	{
 		m_header << "#include <" << import_declaration->module_name() << ".h>\n";
+
+		return true;
+	}
+
+	bool CGenerator::visit_parameter_declaration(
+		const ParameterDeclaration *parameter_declaration)
+	{
+		const std::string type = map_data_type(parameter_declaration->type());
+
+		if (
+			parameter_declaration->mutable_state() ==
+				ParameterDeclaration::MutableState::No &&
+			parameter_declaration->type().kind() != DataType::Kind::String)
+		{
+			m_source << "const ";
+		}
+
+		m_source << type << " " << parameter_declaration->identifier().value;
 
 		return true;
 	}
@@ -106,6 +123,7 @@ namespace hyper
 		m_header << '\n';
 		m_header << "#include <stdbool.h>\n";
 		m_header << "#include <stdint.h>\n";
+		m_header << "#include <stdio.h>\n";
 
 		for (const Declaration *declaration :
 				 translation_unit_declaration->declarations())
@@ -137,7 +155,8 @@ namespace hyper
 
 		if (
 			variable_declaration->mutable_state() ==
-			VariableDeclaration::MutableState::No)
+				VariableDeclaration::MutableState::No &&
+			variable_declaration->type().kind() != DataType::Kind::String)
 		{
 			m_source << "const ";
 		}
@@ -520,7 +539,7 @@ namespace hyper
 		case DataType::Kind::Float64:
 			return "double";
 		case DataType::Kind::String:
-			return "const char *";
+			return "const char*";
 		case DataType::Kind::Void:
 			return "void";
 		case DataType::Kind::UserDefined:

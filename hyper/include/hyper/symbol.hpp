@@ -20,6 +20,7 @@ namespace hyper
 			Invalid = 0,
 
 			Function,
+			Parameter,
 			Variable,
 		};
 

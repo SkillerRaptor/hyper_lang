@@ -24,8 +24,9 @@ namespace hyper
 			// NOTE: Special
 			Eof,
 			Arrow,
-			Dot,
 			Colon,
+			Comma,
+			Dot,
 			Identifier,
 			Semicolon,
 

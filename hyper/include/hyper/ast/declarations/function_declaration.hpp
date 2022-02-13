@@ -9,7 +9,6 @@
 #include "hyper/ast/declarations/declaration.hpp"
 #include "hyper/data_type.hpp"
 #include "hyper/identifier.hpp"
-#include "hyper/source_range.hpp"
 
 #include <span>
 #include <string>

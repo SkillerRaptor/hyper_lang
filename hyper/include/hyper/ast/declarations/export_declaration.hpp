@@ -14,6 +14,7 @@ namespace hyper
 	{
 	public:
 		ExportDeclaration(SourceRange source_range, Statement *statement);
+		~ExportDeclaration() override;
 
 		const Statement *statement() const;
 

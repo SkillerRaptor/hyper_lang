@@ -6,8 +6,6 @@
 
 #include "hyper/ast/declarations/function_declaration.hpp"
 
-#include "hyper/logger.hpp"
-
 namespace hyper
 {
 	FunctionDeclaration::FunctionDeclaration(

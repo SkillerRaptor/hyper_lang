@@ -10,13 +10,9 @@
 #include "hyper/data_type.hpp"
 #include "hyper/identifier.hpp"
 
-#include <string>
-
 namespace hyper
 {
-	class Expression;
-
-	class VariableDeclaration final : public Declaration
+	class ParameterDeclaration : public Declaration
 	{
 	public:
 		enum class MutableState : uint8_t
@@ -26,22 +22,19 @@ namespace hyper
 		};
 
 	public:
-		VariableDeclaration(
+		ParameterDeclaration(
 			SourceRange source_range,
 			Identifier identifier,
 			MutableState mutable_state,
-			DataType type,
-			Expression *expression);
-		~VariableDeclaration() override;
+			DataType type);
 
 		Identifier identifier() const;
 		MutableState mutable_state() const;
 		DataType type() const;
-		const Expression *expression() const;
 
 		constexpr Category class_category() const noexcept override
 		{
-			return AstNode::Category::VariableDeclaration;
+			return AstNode::Category::ParameterDeclaration;
 		}
 
 		constexpr Kind class_kind() const noexcept override
@@ -51,13 +44,12 @@ namespace hyper
 
 		constexpr std::string_view class_name() const noexcept override
 		{
-			return "VariableDeclaration";
+			return "ParameterDeclaration";
 		}
 
 	private:
 		Identifier m_identifier;
 		MutableState m_mutable_state = {};
 		DataType m_type = {};
-		Expression *m_expression = nullptr;
 	};
 } // namespace hyper

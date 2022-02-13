@@ -60,8 +60,16 @@ namespace hyper
 
 		consume(Token::Type::RoundLeftBracket);
 
-		// TODO: Adding arguments
 		std::vector<Declaration *> arguments = {};
+		while (!match(Token::Type::RoundRightBracket))
+		{
+			Declaration *parameter_declaration = parse_parameter_declaration();
+			arguments.emplace_back(parameter_declaration);
+			if (match(Token::Type::Comma))
+			{
+				consume();
+			}
+		}
 
 		consume(Token::Type::RoundRightBracket);
 		consume(Token::Type::Arrow);
@@ -135,6 +143,39 @@ namespace hyper
 		};
 
 		return new ImportDeclaration(source_range, module_name);
+	}
+
+	Declaration *Parser::parse_parameter_declaration()
+	{
+		const Token identifier_token = consume(Token::Type::Identifier);
+
+		consume(Token::Type::Colon);
+
+		const ParameterDeclaration::MutableState mutable_state = [this]()
+		{
+			if (match(Token::Type::Mutable))
+			{
+				consume();
+				return ParameterDeclaration::MutableState::Yes;
+			}
+
+			return ParameterDeclaration::MutableState::No;
+		}();
+
+		const DataType type = consume_type();
+
+		const Identifier identifier = {
+			.value = identifier_token.value(),
+			.source_range = identifier_token.source_range(),
+		};
+
+		const SourceRange source_range = {
+			.start = identifier_token.start_position(),
+			.end = type.end_position(),
+		};
+
+		return new ParameterDeclaration(
+			source_range, identifier, mutable_state, type);
 	}
 
 	Declaration *Parser::parse_translation_unit_declaration()
@@ -481,6 +522,16 @@ namespace hyper
 		consume(Token::Type::RoundLeftBracket);
 
 		std::vector<Expression *> arguments = {};
+		while (!match(Token::Type::RoundRightBracket))
+		{
+			Expression *expression = parse_binary_expression(0);
+			arguments.emplace_back(expression);
+
+			if (match(Token::Type::Comma))
+			{
+				consume();
+			}
+		}
 
 		const SourceRange round_right_range =
 			consume(Token::Type::RoundRightBracket).source_range();

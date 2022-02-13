@@ -21,6 +21,8 @@ namespace hyper
 		bool visit_function_declaration(
 			const FunctionDeclaration *function_declaration);
 		bool visit_import_declaration(const ImportDeclaration *import_declaration);
+		bool visit_parameter_declaration(
+			const ParameterDeclaration *parameter_declaration);
 		bool visit_translation_unit_declaration(
 			const TranslationUnitDeclaration *translation_unit_declaration);
 		bool visit_variable_declaration(

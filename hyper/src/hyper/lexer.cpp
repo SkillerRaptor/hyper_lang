@@ -59,13 +59,17 @@ namespace hyper
 		Token::Type type = Token::Type::Invalid;
 		switch (m_current_char)
 		{
-		case '.':
-			value = ".";
-			type = Token::Type::Dot;
-			break;
 		case ':':
 			value = ":";
 			type = Token::Type::Colon;
+			break;
+		case ',':
+			value = ",";
+			type = Token::Type::Comma;
+			break;
+		case '.':
+			value = ".";
+			type = Token::Type::Dot;
 			break;
 		case ';':
 			value = ";";

@@ -11,6 +11,8 @@
 #if defined(WIN32) || defined(WIN64)
 #	include "hyper/c/microsoft.hpp"
 #	include "hyper/utilities.hpp"
+
+#	include <filesystem>
 #endif
 
 namespace hyper
@@ -48,13 +50,18 @@ namespace hyper
 		const std::string &visual_studio_library_path =
 			microsoft_compiler.visual_studio_library_path();
 
+		const std::string sdk_version =
+			std::filesystem::path(sdk_root).filename().string();
+		const std::string sdk_include_path =
+			sdk_root + "\\..\\..\\include\\" + sdk_version;
+
 		std::string include;
 		include += visual_studio_library_path + "\\..\\..\\include;";
-		include += sdk_root + "\\ucrt;";
-		include += sdk_root + "\\shared;";
-		include += sdk_root + "\\um;";
-		include += sdk_root + "\\winrt;";
-		include += sdk_root + "\\cppwinrt;";
+		include += sdk_include_path + "\\ucrt;";
+		include += sdk_include_path + "\\shared;";
+		include += sdk_include_path + "\\um;";
+		include += sdk_include_path + "\\winrt;";
+		include += sdk_include_path + "\\cppwinrt;";
 		SetEnvironmentVariable("INCLUDE", include.c_str());
 
 		std::string lib;

@@ -20,9 +20,10 @@ namespace hyper
 	public:
 		enum class Category : uint8_t
 		{
-			ImportDeclaration,
-			FunctionDeclaration,
 			ExportDeclaration,
+			FunctionDeclaration,
+			ImportDeclaration,
+			ParameterDeclaration,
 			TranslationUnitDeclaration,
 			VariableDeclaration,
 

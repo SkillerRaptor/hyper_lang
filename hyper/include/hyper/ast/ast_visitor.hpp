@@ -47,6 +47,9 @@ namespace hyper
 			case AstNode::Category::ImportDeclaration:
 				traverse_import_declaration(declaration);
 				break;
+			case AstNode::Category::ParameterDeclaration:
+				traverse_parameter_declaration(declaration);
+				break;
 			case AstNode::Category::TranslationUnitDeclaration:
 				traverse_translation_unit_declaration(declaration);
 				break;
@@ -200,6 +203,11 @@ namespace hyper
 		void traverse_import_declaration(const Declaration *node)
 		{
 			VISIT_NODE(ImportDeclaration, import_declaration);
+		}
+
+		void traverse_parameter_declaration(const Declaration *node)
+		{
+			VISIT_NODE(ParameterDeclaration, parameter_declaration);
 		}
 
 		void traverse_translation_unit_declaration(const Declaration *node)

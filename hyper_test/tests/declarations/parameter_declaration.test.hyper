@@ -1,0 +1,95 @@
+/*
+ * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+fn function_01(parameter: bool) -> bool
+{
+	return parameter;
+}
+
+fn function_02(parameter: i8) -> i8
+{
+	return parameter;
+}
+
+fn function_03(parameter: i16) -> i16
+{
+	return parameter;
+}
+
+fn function_04(parameter: i32) -> i32
+{
+	return parameter;
+}
+
+fn function_05(parameter: i64) -> i64
+{
+	return parameter;
+}
+
+fn function_06(parameter: u8) -> u8
+{
+	return parameter;
+}
+
+fn function_07(parameter: u16) -> u16
+{
+	return parameter;
+}
+
+fn function_08(parameter: u32) -> u32
+{
+	return parameter;
+}
+
+fn function_09(parameter: u64) -> u64
+{
+	return parameter;
+}
+
+fn function_10(parameter: isize) -> isize
+{
+	return parameter;
+}
+
+fn function_11(parameter: usize) -> usize
+{
+	return parameter;
+}
+
+fn function_12(parameter: f32) -> f32
+{
+	return parameter;
+}
+
+fn function_13(parameter: f64) -> f64
+{
+	return parameter;
+}
+
+fn function_14(parameter: string) -> string
+{
+	return parameter;
+}
+
+fn main() -> i32
+{
+	let variable_01: bool = function_01(true);
+	let variable_02: i8 = function_02(0 as i8);
+	let variable_03: i16 = function_03(0 as i16);
+	let variable_04: i32 = function_04(0 as i32);
+	let variable_05: i64 = function_05(0 as i64);
+	let variable_06: u8 = function_06(0 as u8);
+	let variable_07: u16 = function_07(0 as u16);
+	let variable_08: u32 = function_08(0 as u32);
+	let variable_09: u64 = function_09(0 as u64);
+	let variable_10: isize = function_10(0 as isize);
+	let variable_11: usize = function_11(0 as usize);
+	let variable_12: f32 = function_12(1.0 as f32);
+	let variable_13: f64 = function_13(1.0 as f64);
+	let variable_14: string = function_14("value_01");
+
+	return 0;
+}

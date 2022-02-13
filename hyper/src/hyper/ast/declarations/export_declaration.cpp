@@ -16,6 +16,11 @@ namespace hyper
 	{
 	}
 
+	ExportDeclaration::~ExportDeclaration()
+	{
+		delete m_statement;
+	}
+
 	const Statement *ExportDeclaration::statement() const
 	{
 		return m_statement;
