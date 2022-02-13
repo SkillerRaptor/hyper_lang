@@ -85,6 +85,8 @@ namespace hyper
 			Logger::error("failed to compile c files");
 			std::exit(1);
 		}
+#else
+		(void) m_output_files;
 #endif
 	}
 } // namespace hyper
