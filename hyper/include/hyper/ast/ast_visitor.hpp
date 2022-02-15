@@ -41,6 +41,9 @@ namespace hyper
 			case AstNode::Category::ExportDeclaration:
 				traverse_export_declaration(declaration);
 				break;
+			case AstNode::Category::ExternDeclaration:
+				traverse_extern_declaration(declaration);
+				break;
 			case AstNode::Category::FunctionDeclaration:
 				traverse_function_declaration(declaration);
 				break;
@@ -188,6 +191,13 @@ namespace hyper
 			derived.traverse_statement(export_declaration->statement());
 		}
 
+		void traverse_extern_declaration(const Declaration *node)
+		{
+			VISIT_NODE(ExternDeclaration, extern_declaration);
+
+			derived.traverse_statement(extern_declaration->statement());
+		}
+
 		void traverse_function_declaration(const Declaration *node)
 		{
 			VISIT_NODE(FunctionDeclaration, function_declaration);
@@ -197,7 +207,10 @@ namespace hyper
 				derived.traverse_declaration(argument);
 			}
 
-			derived.traverse_statement(function_declaration->body());
+			if (function_declaration->body())
+			{
+				derived.traverse_statement(function_declaration->body());
+			}
 		}
 
 		void traverse_import_declaration(const Declaration *node)

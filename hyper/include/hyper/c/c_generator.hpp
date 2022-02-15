@@ -18,6 +18,7 @@ namespace hyper
 		explicit CGenerator(std::string output_file);
 
 		bool visit_export_declaration(const ExportDeclaration *export_declaration);
+		bool visit_extern_declaration(const ExternDeclaration *extern_declaration);
 		bool visit_function_declaration(
 			const FunctionDeclaration *function_declaration);
 		bool visit_import_declaration(const ImportDeclaration *import_declaration);

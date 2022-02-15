@@ -7,6 +7,7 @@
 #pragma once
 
 #include "hyper/ast/declarations/export_declaration.hpp"
+#include "hyper/ast/declarations/extern_declaration.hpp"
 #include "hyper/ast/declarations/function_declaration.hpp"
 #include "hyper/ast/declarations/import_declaration.hpp"
 #include "hyper/ast/declarations/parameter_declaration.hpp"

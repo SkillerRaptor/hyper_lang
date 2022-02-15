@@ -52,6 +52,32 @@ namespace hyper
 		return new ExportDeclaration(source_range, statement);
 	}
 
+	Declaration *Parser::parse_extern_declaration()
+	{
+		const SourceRange extern_range =
+			consume(Token::Type::Extern).source_range();
+
+		// TODO: Adding structure extern
+
+		if (!match(Token::Type::Function))
+		{
+			Statement *statement = parse_statement();
+			m_diagnostics.error(
+				statement->source_range(),
+				Diagnostics::ErrorCode::E0008,
+				statement->class_name());
+		}
+
+		Statement *statement = parse_function_declaration();
+
+		const SourceRange source_range = {
+			.start = extern_range.start,
+			.end = statement->end_position(),
+		};
+
+		return new ExternDeclaration(source_range, statement);
+	}
+
 	Declaration *Parser::parse_function_declaration()
 	{
 		const SourceRange function_range =
@@ -76,11 +102,20 @@ namespace hyper
 
 		const DataType return_type = consume_type();
 
-		Statement *body = parse_compound_statement();
+		Statement *body = nullptr;
+		if (match(Token::Type::Semicolon))
+		{
+			consume();
+		}
+		else
+		{
+			body = parse_compound_statement();
+		}
 
 		const SourceRange source_range = {
 			.start = function_range.start,
-			.end = body->end_position(),
+			.end =
+				body == nullptr ? return_type.end_position() : body->end_position(),
 		};
 
 		return new FunctionDeclaration(
@@ -187,6 +222,9 @@ namespace hyper
 			{
 			case Token::Type::Export:
 				declarations.emplace_back(parse_export_declaration());
+				break;
+			case Token::Type::Extern:
+				declarations.emplace_back(parse_extern_declaration());
 				break;
 			case Token::Type::Function:
 				declarations.emplace_back(parse_function_declaration());

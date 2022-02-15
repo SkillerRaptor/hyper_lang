@@ -27,6 +27,7 @@ namespace hyper
 			E0005,
 			E0006,
 			E0007,
+			E0008,
 		};
 
 	public:
@@ -125,6 +126,8 @@ namespace hyper
 				return "assigning '{}' to a variable with incompatible type '{}'";
 			case ErrorCode::E0007:
 				return "cannot export '{}'";
+			case ErrorCode::E0008:
+				return "cannot extern '{}'";
 			}
 
 			std::abort();

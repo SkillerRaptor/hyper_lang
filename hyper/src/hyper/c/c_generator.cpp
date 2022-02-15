@@ -21,7 +21,6 @@ namespace hyper
 		const ExportDeclaration *export_declaration)
 	{
 		const Statement *statement = export_declaration->statement();
-
 		if (statement->class_category() != AstNode::Category::FunctionDeclaration)
 		{
 			return true;
@@ -35,6 +34,24 @@ namespace hyper
 						 << "();\n";
 
 		return true;
+	}
+
+	bool CGenerator::visit_extern_declaration(
+		const ExternDeclaration *extern_declaration)
+	{
+		const Statement *statement = extern_declaration->statement();
+		if (statement->class_category() != AstNode::Category::FunctionDeclaration)
+		{
+			return true;
+		}
+
+		const FunctionDeclaration *function_declaration =
+			static_cast<const FunctionDeclaration *>(statement);
+		const std::string type = map_data_type(function_declaration->return_type());
+		m_source << "\nextern " << type << " "
+						 << function_declaration->identifier().value << "();\n";
+
+		return false;
 	}
 
 	bool CGenerator::visit_function_declaration(
@@ -52,7 +69,10 @@ namespace hyper
 		m_source << ")\n";
 
 		start_scope();
-		traverse_statement(function_declaration->body());
+		if (function_declaration->body())
+		{
+			traverse_statement(function_declaration->body());
+		}
 		end_scope();
 
 		return false;

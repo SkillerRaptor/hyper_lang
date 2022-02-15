@@ -22,6 +22,7 @@ set(SOURCES
         src/hyper/ast/ast_node.cpp
         src/hyper/ast/declarations/declaration.cpp
         src/hyper/ast/declarations/export_declaration.cpp
+        src/hyper/ast/declarations/extern_declaration.cpp
         src/hyper/ast/declarations/function_declaration.cpp
         src/hyper/ast/declarations/import_declaration.cpp
         src/hyper/ast/declarations/parameter_declaration.cpp
@@ -75,6 +76,7 @@ set(HEADERS
         include/hyper/ast/ast_visitor.hpp
         include/hyper/ast/declarations/declaration.hpp
         include/hyper/ast/declarations/export_declaration.hpp
+        include/hyper/ast/declarations/extern_declaration.hpp
         include/hyper/ast/declarations/function_declaration.hpp
         include/hyper/ast/declarations/import_declaration.hpp
         include/hyper/ast/declarations/parameter_declaration.hpp

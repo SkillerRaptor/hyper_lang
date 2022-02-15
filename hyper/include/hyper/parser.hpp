@@ -38,6 +38,7 @@ namespace hyper
 
 	private:
 		Declaration *parse_export_declaration();
+		Declaration *parse_extern_declaration();
 		Declaration *parse_function_declaration();
 		Declaration *parse_import_declaration();
 		Declaration *parse_parameter_declaration();

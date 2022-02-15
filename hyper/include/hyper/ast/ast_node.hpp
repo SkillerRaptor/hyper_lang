@@ -21,6 +21,7 @@ namespace hyper
 		enum class Category : uint8_t
 		{
 			ExportDeclaration,
+			ExternDeclaration,
 			FunctionDeclaration,
 			ImportDeclaration,
 			ParameterDeclaration,
