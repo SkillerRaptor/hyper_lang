@@ -9,9 +9,18 @@ The following roadmap is always subject to change.
 - [ ] Machine Code
 
 ## Features
-- [ ] Arrays 
+- [ ] Arrays
+- [ ] Attributes
+- [ ] Constructors
+- [ ] Coroutines
+- [ ] Destructors
 - [ ] Enums
+- [x] Export / Import
+- [x] Extern C
 - [ ] For Loops
+- [x] Functions
+- [ ] Inheritance
+- [ ] Macros?
 - [ ] Match
 - [ ] Module Names
 - [ ] Pointers
@@ -20,6 +29,8 @@ The following roadmap is always subject to change.
 - [ ] String formatting
 - [ ] Structs
 - [ ] Templates
+- [ ] Unsafe Mode (Globals)
+- [x] Variables
 
 ## Ports
 - [ ] OpenGL
@@ -36,10 +47,5 @@ The following roadmap is always subject to change.
 ## Tooling
 - [ ] Build System
 - [ ] Documentation Handler
+- [ ] Formatter
 - [ ] Static Analysis
-
-## Finished
-- [x] Export / Import
-- [x] Extern C
-- [x] Functions
-- [x] Variables
