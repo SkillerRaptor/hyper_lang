@@ -7,7 +7,7 @@
 // TODO: Adding std module
 // import std.io;
 
-fn main() -> i32
+function main() -> int32
 {
 	return 0;
 }

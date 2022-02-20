@@ -4,71 +4,71 @@
  * SPDX-License-Identifier: MIT
  */
 
-fn main() -> i32
+function main() -> int32
 {
-	let variable_01: i8 = 0 as i8;
-	let variable_02: i8 = 1 as i8;
-	let variable_03: i8 = -0 as i8;
-	let variable_04: i8 = -1 as i8;
+	let variable_01: int8 = 0 as int8;
+	let variable_02: int8 = 1 as int8;
+	let variable_03: int8 = -0 as int8;
+	let variable_04: int8 = -1 as int8;
 
-	let variable_05: i16 = 0 as i16;
-	let variable_06: i16 = 1 as i16;
-	let variable_07: i16 = -0 as i16;
-	let variable_08: i16 = -1 as i16;
+	let variable_05: int16 = 0 as int16;
+	let variable_06: int16 = 1 as int16;
+	let variable_07: int16 = -0 as int16;
+	let variable_08: int16 = -1 as int16;
 
-	let variable_09: i32 = 0 as i32;
-	let variable_10: i32 = 1 as i32;
-	let variable_11: i32 = -0 as i32;
-	let variable_12: i32 = -1 as i32;
+	let variable_09: int32 = 0 as int32;
+	let variable_10: int32 = 1 as int32;
+	let variable_11: int32 = -0 as int32;
+	let variable_12: int32 = -1 as int32;
 
-	let variable_13: i64 = 0 as i64;
-	let variable_14: i64 = 1 as i64;
-	let variable_15: i64 = -0 as i64;
-	let variable_16: i64 = -1 as i64;
+	let variable_13: int64 = 0 as int64;
+	let variable_14: int64 = 1 as int64;
+	let variable_15: int64 = -0 as int64;
+	let variable_16: int64 = -1 as int64;
 
-	let variable_17: u8 = 0 as u8;
-	let variable_18: u8 = 1 as u8;
+	let variable_17: uint8 = 0 as uint8;
+	let variable_18: uint8 = 1 as uint8;
 
-	let variable_19: u16 = 0 as u16;
-	let variable_20: u16 = 1 as u16;
+	let variable_19: uint16 = 0 as uint16;
+	let variable_20: uint16 = 1 as uint16;
 
-	let variable_21: u32 = 0 as u32;
-	let variable_22: u32 = 1 as u32;
+	let variable_21: uint32 = 0 as uint32;
+	let variable_22: uint32 = 1 as uint32;
 
-	let variable_23: u64 = 0 as u64;
-	let variable_24: u64 = 1 as u64;
+	let variable_23: uint64 = 0 as uint64;
+	let variable_24: uint64 = 1 as uint64;
 
-	let variable_25: mutable i8 = 0 as i8;
-	let variable_26: mutable i8 = 1 as i8;
-	let variable_27: mutable i8 = -0 as i8;
-	let variable_28: mutable i8 = -1 as i8;
+	let variable_25: mutable int8 = 0 as int8;
+	let variable_26: mutable int8 = 1 as int8;
+	let variable_27: mutable int8 = -0 as int8;
+	let variable_28: mutable int8 = -1 as int8;
 
-	let variable_29: mutable i16 = 0 as i16;
-	let variable_30: mutable i16 = 1 as i16;
-	let variable_31: mutable i16 = -0 as i16;
-	let variable_32: mutable i16 = -1 as i16;
+	let variable_29: mutable int16 = 0 as int16;
+	let variable_30: mutable int16 = 1 as int16;
+	let variable_31: mutable int16 = -0 as int16;
+	let variable_32: mutable int16 = -1 as int16;
 
-	let variable_33: mutable i32 = 0 as i32;
-	let variable_34: mutable i32 = 1 as i32;
-	let variable_35: mutable i32 = -0 as i32;
-	let variable_36: mutable i32 = -1 as i32;
+	let variable_33: mutable int32 = 0 as int32;
+	let variable_34: mutable int32 = 1 as int32;
+	let variable_35: mutable int32 = -0 as int32;
+	let variable_36: mutable int32 = -1 as int32;
 
-	let variable_37: mutable i64 = 0 as i64;
-	let variable_38: mutable i64 = 1 as i64;
-	let variable_39: mutable i64 = -0 as i64;
-	let variable_40: mutable i64 = -1 as i64;
+	let variable_37: mutable int64 = 0 as int64;
+	let variable_38: mutable int64 = 1 as int64;
+	let variable_39: mutable int64 = -0 as int64;
+	let variable_40: mutable int64 = -1 as int64;
 
-	let variable_41: mutable u8 = 0 as u8;
-	let variable_42: mutable u8 = 1 as u8;
+	let variable_41: mutable uint8 = 0 as uint8;
+	let variable_42: mutable uint8 = 1 as uint8;
 
-	let variable_43: mutable u16 = 0 as u16;
-	let variable_44: mutable u16 = 1 as u16;
+	let variable_43: mutable uint16 = 0 as uint16;
+	let variable_44: mutable uint16 = 1 as uint16;
 
-	let variable_45: mutable u32 = 0 as u32;
-	let variable_46: mutable u32 = 1 as u32;
+	let variable_45: mutable uint32 = 0 as uint32;
+	let variable_46: mutable uint32 = 1 as uint32;
 
-	let variable_47: mutable u64 = 0 as u64;
-	let variable_48: mutable u64 = 1 as u64;
+	let variable_47: mutable uint64 = 0 as uint64;
+	let variable_48: mutable uint64 = 1 as uint64;
 
 	return 0;
 }

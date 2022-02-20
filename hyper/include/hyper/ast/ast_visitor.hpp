@@ -38,9 +38,6 @@ namespace hyper
 		{
 			switch (declaration->class_category())
 			{
-			case AstNode::Category::ExportDeclaration:
-				traverse_export_declaration(declaration);
-				break;
 			case AstNode::Category::ExternDeclaration:
 				traverse_extern_declaration(declaration);
 				break;
@@ -52,6 +49,9 @@ namespace hyper
 				break;
 			case AstNode::Category::ParameterDeclaration:
 				traverse_parameter_declaration(declaration);
+				break;
+			case AstNode::Category::PublicDeclaration:
+				traverse_public_declaration(declaration);
 				break;
 			case AstNode::Category::TranslationUnitDeclaration:
 				traverse_translation_unit_declaration(declaration);
@@ -184,13 +184,6 @@ namespace hyper
 		}                                                                    \
 	} while (false)
 
-		void traverse_export_declaration(const Declaration *node)
-		{
-			VISIT_NODE(ExportDeclaration, export_declaration);
-
-			derived.traverse_statement(export_declaration->statement());
-		}
-
 		void traverse_extern_declaration(const Declaration *node)
 		{
 			VISIT_NODE(ExternDeclaration, extern_declaration);
@@ -221,6 +214,13 @@ namespace hyper
 		void traverse_parameter_declaration(const Declaration *node)
 		{
 			VISIT_NODE(ParameterDeclaration, parameter_declaration);
+		}
+
+		void traverse_public_declaration(const Declaration *node)
+		{
+			VISIT_NODE(PublicDeclaration, public_declaration);
+
+			derived.traverse_statement(public_declaration->statement());
 		}
 
 		void traverse_translation_unit_declaration(const Declaration *node)

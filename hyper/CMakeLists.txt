@@ -15,7 +15,6 @@ set(SOURCES
         src/hyper/formatter.cpp
         src/hyper/lexer.cpp
         src/hyper/parser.cpp
-        src/hyper/post_symbol_collector.cpp
         src/hyper/symbol_collector.cpp
         src/hyper/token.cpp
         src/hyper/utilities.cpp
@@ -65,7 +64,6 @@ set(HEADERS
         include/hyper/logger.hpp
         include/hyper/identifier.hpp
         include/hyper/parser.hpp
-        include/hyper/post_symbol_collector.hpp
         include/hyper/source_range.hpp
         include/hyper/symbol.hpp
         include/hyper/symbol_collector.hpp
@@ -75,11 +73,11 @@ set(HEADERS
         include/hyper/ast/ast_node.hpp
         include/hyper/ast/ast_visitor.hpp
         include/hyper/ast/declarations/declaration.hpp
-        include/hyper/ast/declarations/export_declaration.hpp
         include/hyper/ast/declarations/extern_declaration.hpp
         include/hyper/ast/declarations/function_declaration.hpp
         include/hyper/ast/declarations/import_declaration.hpp
         include/hyper/ast/declarations/parameter_declaration.hpp
+        include/hyper/ast/declarations/public_declaration.hpp
         include/hyper/ast/declarations/translation_unit_declaration.hpp
         include/hyper/ast/declarations/variable_declaration.hpp
         include/hyper/ast/expressions/binary_expression.hpp

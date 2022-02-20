@@ -18,7 +18,7 @@ namespace hyper
 	}
 
 	bool CGenerator::visit_export_declaration(
-		const ExportDeclaration *export_declaration)
+		const PublicDeclaration *export_declaration)
 	{
 		const Statement *statement = export_declaration->statement();
 		if (statement->class_category() != AstNode::Category::FunctionDeclaration)

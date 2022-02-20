@@ -4,18 +4,18 @@
  * SPDX-License-Identifier: MIT
  */
 
-fn main() -> i32
+function main() -> int32
 {
-	1 as i8 + 1 as i8;
-	1 as i16 + 1 as i16;
-	1 as i32 + 1 as i32;
-	1 as i64 + 1 as i64;
-	1 as u8 + 1 as u8;
-	1 as u16 + 1 as u16;
-	1 as u32 + 1 as u32;
-	1 as u64 + 1 as u64;
-	1.0 as f32 + 1.0 as f32;
-	1.0 as f64 + 1.0 as f64;
+	1 as int8 + 1 as int8;
+	1 as int16 + 1 as int16;
+	1 as int32 + 1 as int32;
+	1 as int64 + 1 as int64;
+	1 as uint8 + 1 as uint8;
+	1 as uint16 + 1 as uint16;
+	1 as uint32 + 1 as uint32;
+	1 as uint64 + 1 as uint64;
+	1.0 as float32 + 1.0 as float32;
+	1.0 as float64 + 1.0 as float64;
 
 	return 0;
 }

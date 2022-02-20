@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-fn main() -> i32
+function main() -> int32
 {
-	let variable_01: mutable i8 = -1 as i8;
-	let variable_02: i8 = ++variable_01;
-	let variable_03: i8 = variable_01++;
-	let variable_04: i8 = --variable_01;
-	let variable_05: i8 = variable_01--;
+	let variable_01: mutable int8 = -1 as int8;
+	let variable_02: int8 = ++variable_01;
+	let variable_03: int8 = variable_01++;
+	let variable_04: int8 = --variable_01;
+	let variable_05: int8 = variable_01--;
 
 	return 0;
 }

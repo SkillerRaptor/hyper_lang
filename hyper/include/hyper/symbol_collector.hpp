@@ -16,7 +16,7 @@ namespace hyper
 	class SymbolCollector : public AstVisitor<SymbolCollector>
 	{
 	public:
-		bool visit_export_declaration(const ExportDeclaration *export_declaration);
+		bool visit_export_declaration(const PublicDeclaration *export_declaration);
 		bool visit_function_declaration(
 			const FunctionDeclaration *function_declaration);
 		bool visit_parameter_declaration(

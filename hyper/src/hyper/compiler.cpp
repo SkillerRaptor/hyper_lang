@@ -13,7 +13,6 @@
 #include "hyper/lexer.hpp"
 #include "hyper/logger.hpp"
 #include "hyper/parser.hpp"
-#include "hyper/post_symbol_collector.hpp"
 #include "hyper/symbol_collector.hpp"
 #include "hyper/validators/scope_validator.hpp"
 #include "hyper/validators/type_validator.hpp"
@@ -62,27 +61,6 @@ namespace hyper
 			ast_symbols[file] = symbols;
 
 			trees.push_back(std::move(compilation_unit));
-		}
-
-		{
-			std::vector<Symbol> all_symbols = {};
-			for (auto [file, current_symbols] : ast_symbols)
-			{
-				all_symbols.insert(
-					all_symbols.end(), current_symbols.begin(), current_symbols.end());
-			}
-
-			for (const CompilationUnit &compilation_unit : trees)
-			{
-				PostSymbolCollector post_symbol_collector(all_symbols);
-				post_symbol_collector.traverse(compilation_unit.ast);
-
-				const std::vector<Symbol> post_symbols =
-					post_symbol_collector.symbols();
-
-				std::vector<Symbol> &symbols = ast_symbols[compilation_unit.file];
-				symbols.insert(symbols.end(), post_symbols.begin(), post_symbols.end());
-			}
 		}
 
 		std::filesystem::create_directory("./build");

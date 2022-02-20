@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-fn main() -> i32
+function main() -> int32
 {
 	return 0;
 }

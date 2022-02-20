@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "hyper/ast/declarations/export_declaration.hpp"
+#include "hyper/ast/declarations/public_declaration.hpp"
 
 namespace hyper
 {
-	ExportDeclaration::ExportDeclaration(
+	PublicDeclaration::PublicDeclaration(
 		SourceRange source_range,
 		Statement *statement)
 		: Declaration(source_range)
@@ -16,12 +16,12 @@ namespace hyper
 	{
 	}
 
-	ExportDeclaration::~ExportDeclaration()
+	PublicDeclaration::~PublicDeclaration()
 	{
 		delete m_statement;
 	}
 
-	const Statement *ExportDeclaration::statement() const
+	const Statement *PublicDeclaration::statement() const
 	{
 		return m_statement;
 	}

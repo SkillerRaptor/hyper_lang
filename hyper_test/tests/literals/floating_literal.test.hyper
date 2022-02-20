@@ -4,27 +4,27 @@
  * SPDX-License-Identifier: MIT
  */
 
-fn main() -> i32
+function main() -> int32
 {
-	let variable_01: f32 = 0.0 as f32;
-	let variable_02: f32 = 1.0 as f32;
-	let variable_03: f32 = -0.0 as f32;
-	let variable_04: f32 = -1.0 as f32;
+	let variable_01: float32 = 0.0 as float32;
+	let variable_02: float32 = 1.0 as float32;
+	let variable_03: float32 = -0.0 as float32;
+	let variable_04: float32 = -1.0 as float32;
 
-	let variable_05: f64 = 0.0 as f64;
-	let variable_06: f64 = 1.0 as f64;
-	let variable_07: f64 = -0.0 as f64;
-	let variable_08: f64 = -1.0 as f64;
+	let variable_05: float64 = 0.0 as float64;
+	let variable_06: float64 = 1.0 as float64;
+	let variable_07: float64 = -0.0 as float64;
+	let variable_08: float64 = -1.0 as float64;
 
-	let variable_09: mutable f32 = 0.0 as f32;
-	let variable_10: mutable f32 = 1.0 as f32;
-	let variable_11: mutable f32 = -0.0 as f32;
-	let variable_12: mutable f32 = -1.0 as f32;
+	let variable_09: mutable float32 = 0.0 as float32;
+	let variable_10: mutable float32 = 1.0 as float32;
+	let variable_11: mutable float32 = -0.0 as float32;
+	let variable_12: mutable float32 = -1.0 as float32;
 
-	let variable_13: mutable f64 = 0.0 as f64;
-	let variable_14: mutable f64 = 1.0 as f64;
-	let variable_15: mutable f64 = -0.0 as f64;
-	let variable_16: mutable f64 = -1.0 as f64;
+	let variable_13: mutable float64 = 0.0 as float64;
+	let variable_14: mutable float64 = 1.0 as float64;
+	let variable_15: mutable float64 = -0.0 as float64;
+	let variable_16: mutable float64 = -1.0 as float64;
 
 	return 0;
 }

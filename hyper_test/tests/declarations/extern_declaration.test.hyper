@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-extern fn strlen(str: string) -> usize;
+extern function strlen(str: string) -> usize;
 
-fn main() -> i32
+function main() -> int32
 {
 	print(strlen("This string has 29 characters"));
 	return 0;

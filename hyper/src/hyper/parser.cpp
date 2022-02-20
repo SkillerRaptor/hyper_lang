@@ -26,10 +26,10 @@ namespace hyper
 		return parse_translation_unit_declaration();
 	}
 
-	Declaration *Parser::parse_export_declaration()
+	Declaration *Parser::parse_public_declaration()
 	{
 		const SourceRange export_range =
-			consume(Token::Type::Export).source_range();
+			consume(Token::Type::Public).source_range();
 
 		// TODO: Adding structure export
 
@@ -49,7 +49,7 @@ namespace hyper
 			.end = statement->end_position(),
 		};
 
-		return new ExportDeclaration(source_range, statement);
+		return new PublicDeclaration(source_range, statement);
 	}
 
 	Declaration *Parser::parse_extern_declaration()
@@ -220,8 +220,8 @@ namespace hyper
 		{
 			switch (current_token().type())
 			{
-			case Token::Type::Export:
-				declarations.emplace_back(parse_export_declaration());
+			case Token::Type::Public:
+				declarations.emplace_back(parse_public_declaration());
 				break;
 			case Token::Type::Extern:
 				declarations.emplace_back(parse_extern_declaration());

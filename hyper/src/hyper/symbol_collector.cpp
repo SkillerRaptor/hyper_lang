@@ -9,7 +9,7 @@
 namespace hyper
 {
 	bool SymbolCollector::visit_export_declaration(
-		const ExportDeclaration *export_declaration)
+		const PublicDeclaration *export_declaration)
 	{
 		m_capture_symbol = true;
 

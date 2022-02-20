@@ -82,7 +82,7 @@ namespace hyper
 		const FloatingLiteral *floating_literal)
 	{
 		const DataType data_type(
-			"f32", DataType::Kind::Float32, floating_literal->source_range());
+			"float32", DataType::Kind::Float32, floating_literal->source_range());
 		m_current_data_type = data_type;
 
 		return true;
@@ -92,7 +92,7 @@ namespace hyper
 		const IntegerLiteral *integer_literal)
 	{
 		const DataType data_type(
-			"i32", DataType::Kind::Int32, integer_literal->source_range());
+			"int32", DataType::Kind::Int32, integer_literal->source_range());
 		m_current_data_type = data_type;
 
 		return true;

@@ -653,11 +653,11 @@ namespace hyper
 			return Token::Type::While;
 		case Utilities::hash("extern"):
 			return Token::Type::Extern;
-		case Utilities::hash("export"):
-			return Token::Type::Export;
+		case Utilities::hash("public"):
+			return Token::Type::Public;
 		case Utilities::hash("import"):
 			return Token::Type::Import;
-		case Utilities::hash("fn"):
+		case Utilities::hash("function"):
 			return Token::Type::Function;
 		case Utilities::hash("let"):
 			return Token::Type::Let;
@@ -667,29 +667,29 @@ namespace hyper
 			return Token::Type::Struct;
 		case Utilities::hash("bool"):
 			return Token::Type::Bool;
-		case Utilities::hash("i8"):
+		case Utilities::hash("int8"):
 			return Token::Type::Int8;
-		case Utilities::hash("i16"):
+		case Utilities::hash("int16"):
 			return Token::Type::Int16;
-		case Utilities::hash("i32"):
+		case Utilities::hash("int32"):
 			return Token::Type::Int32;
-		case Utilities::hash("i64"):
+		case Utilities::hash("int64"):
 			return Token::Type::Int64;
-		case Utilities::hash("u8"):
+		case Utilities::hash("uint8"):
 			return Token::Type::Uint8;
-		case Utilities::hash("u16"):
+		case Utilities::hash("uint16"):
 			return Token::Type::Uint16;
-		case Utilities::hash("u32"):
+		case Utilities::hash("uint32"):
 			return Token::Type::Uint32;
-		case Utilities::hash("u64"):
+		case Utilities::hash("uint64"):
 			return Token::Type::Uint64;
 		case Utilities::hash("isize"):
 			return Token::Type::ISize;
 		case Utilities::hash("usize"):
 			return Token::Type::USize;
-		case Utilities::hash("f32"):
+		case Utilities::hash("float32"):
 			return Token::Type::Float32;
-		case Utilities::hash("f64"):
+		case Utilities::hash("float64"):
 			return Token::Type::Float64;
 		case Utilities::hash("string"):
 			return Token::Type::String;

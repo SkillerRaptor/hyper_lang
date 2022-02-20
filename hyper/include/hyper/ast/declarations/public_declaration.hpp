@@ -10,17 +10,17 @@
 
 namespace hyper
 {
-	class ExportDeclaration : public Declaration
+	class PublicDeclaration : public Declaration
 	{
 	public:
-		ExportDeclaration(SourceRange source_range, Statement *statement);
-		~ExportDeclaration() override;
+		PublicDeclaration(SourceRange source_range, Statement *statement);
+		~PublicDeclaration() override;
 
 		const Statement *statement() const;
 
 		constexpr Category class_category() const noexcept override
 		{
-			return AstNode::Category::ExportDeclaration;
+			return AstNode::Category::PublicDeclaration;
 		}
 
 		constexpr Kind class_kind() const noexcept override
@@ -30,7 +30,7 @@ namespace hyper
 
 		constexpr std::string_view class_name() const noexcept override
 		{
-			return "ExportDeclaration";
+			return "PublicDeclaration";
 		}
 
 	private:

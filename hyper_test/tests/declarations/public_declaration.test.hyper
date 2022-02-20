@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: MIT
  */
 
-export fn function_01() -> void
+public function function_01() -> void
 {
 }
 
-export fn function_02() -> i32
+public function function_02() -> int32
 {
 	return 0;
 }
 
-fn main() -> i32
+function main() -> int32
 {
 	return 0;
 }

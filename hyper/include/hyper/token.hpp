@@ -93,7 +93,7 @@ namespace hyper
 
 			// NOTE: Keywords (Modules)
 			Extern,
-			Export,
+			Public,
 			Import,
 
 			// NOTE: Keywords (Definitions)
@@ -257,12 +257,12 @@ namespace hyper
 				return "return";
 			case Token::Type::While:
 				return "while";
-			case Token::Type::Export:
-				return "export";
+			case Token::Type::Public:
+				return "public";
 			case Token::Type::Import:
 				return "import";
 			case Token::Type::Function:
-				return "fn";
+				return "function";
 			case Token::Type::Let:
 				return "let";
 			case Token::Type::Mutable:
@@ -272,29 +272,29 @@ namespace hyper
 			case Token::Type::Bool:
 				return "bool";
 			case Token::Type::Int8:
-				return "i8";
+				return "int8";
 			case Token::Type::Int16:
-				return "";
+				return "int16";
 			case Token::Type::Int32:
-				return "i32";
+				return "int32";
 			case Token::Type::Int64:
-				return "i64";
+				return "int64";
 			case Token::Type::Uint8:
-				return "u8";
+				return "uint8";
 			case Token::Type::Uint16:
-				return "u16";
+				return "uint16";
 			case Token::Type::Uint32:
-				return "u32";
+				return "uint32";
 			case Token::Type::Uint64:
-				return "u64";
+				return "uint64";
 			case Token::Type::ISize:
 				return "isize";
 			case Token::Type::USize:
 				return "usize";
 			case Token::Type::Float32:
-				return "f32";
+				return "float32";
 			case Token::Type::Float64:
-				return "f64";
+				return "float64";
 			case Token::Type::String:
 				return "string";
 			case Token::Type::Void:
