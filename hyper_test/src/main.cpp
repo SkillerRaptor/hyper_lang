@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
 	if (argc < 2)
 	{
-		hyper::Logger::error("there is no compiler specified");
+		hyper::Logger::error("There is no compiler specified\n");
 		return 1;
 	}
 

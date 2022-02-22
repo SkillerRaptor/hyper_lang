@@ -6,12 +6,10 @@
 
 #include "hyper/diagnostics.hpp"
 
-#include "hyper/logger.hpp"
-
 namespace hyper
 {
-	Diagnostics::Diagnostics(std::string file, std::string text)
-		: m_file(std::move(file))
+	Diagnostics::Diagnostics(std::string_view file, std::string text)
+		: m_file(file)
 		, m_text(std::move(text))
 	{
 	}

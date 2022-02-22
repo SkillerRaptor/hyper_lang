@@ -14,10 +14,10 @@ namespace hyper
 	Parser::Parser(
 		const Diagnostics &diagnostics,
 		const std::vector<Token> &tokens,
-		std::string file)
+		std::string_view file)
 		: m_diagnostics(diagnostics)
 		, m_tokens(tokens)
-		, m_file(std::move(file))
+		, m_file(file)
 	{
 	}
 
@@ -247,7 +247,7 @@ namespace hyper
 		};
 
 		return new TranslationUnitDeclaration(
-			source_range, m_file, std::move(declarations));
+			source_range, std::string(m_file), std::move(declarations));
 	}
 
 	Declaration *Parser::parse_variable_declaration()

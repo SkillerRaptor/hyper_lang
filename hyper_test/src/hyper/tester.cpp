@@ -50,7 +50,7 @@ namespace hyper
 				real_file.substr(tests_folder.length() + 1, real_file.length());
 			const std::string command = m_compiler + " " + real_file + null;
 
-			hyper::Logger::log("\033[0m  START   {}", discarded_file);
+			hyper::Logger::log("\033[0m  START   {}\n", discarded_file);
 
 			const auto test_begin = std::chrono::high_resolution_clock::now();
 			const int return_code = system(command.c_str());
@@ -62,13 +62,17 @@ namespace hyper
 			if (return_code == 0)
 			{
 				hyper::Logger::log(
-					"\033[30;102m SUCCESS \033[0m {} ({}ms)", discarded_file, test_duration);
+					"\033[30;102m SUCCESS \033[0m {} ({}ms)\n",
+					discarded_file,
+					test_duration);
 				++success_count;
 			}
 			else
 			{
 				hyper::Logger::log(
-					"\033[30;101m FAILURE \033[0m {} ({}ms)", discarded_file, test_duration);
+					"\033[30;101m FAILURE \033[0m {} ({}ms)\n",
+					discarded_file,
+					test_duration);
 				++failure_count;
 			}
 
@@ -76,16 +80,19 @@ namespace hyper
 			duration += test_duration;
 		}
 
-		hyper::Logger::log("");
+		hyper::Logger::log("\n");
 		hyper::Logger::log(
 			"\033[1mTests:\033[0m \033[92m{} success\033[0m, \033[91m{} "
-			"failed\033[0m, {} total",
+			"failed\033[0m, {} total\n",
 			success_count,
 			failure_count,
 			success_count + failure_count);
 		hyper::Logger::log(
-			"\033[1mFiles:\033[0m \033[93m{} total\033[0m", file_count);
-		hyper::Logger::log("\033[1mTime:\033[0m  \033[93m{}s ({}ms)\033[0m", duration / 1000, duration);
+			"\033[1mFiles:\033[0m \033[93m{} total\033[0m\n", file_count);
+		hyper::Logger::log(
+			"\033[1mTime:\033[0m  \033[93m{}s ({}ms)\033[0m\n",
+			duration / 1000,
+			duration);
 
 		return failure_count == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 	}

@@ -32,7 +32,7 @@ namespace hyper
 		Parser(
 			const Diagnostics &diagnostics,
 			const std::vector<Token> &tokens,
-			std::string file);
+			std::string_view file);
 
 		AstNode *parse();
 
@@ -87,7 +87,7 @@ namespace hyper
 	private:
 		const Diagnostics &m_diagnostics;
 		const std::vector<Token> &m_tokens;
-		std::string m_file;
+		std::string_view m_file;
 
 		size_t m_token_index = 0;
 	};

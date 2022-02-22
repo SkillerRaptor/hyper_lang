@@ -22,18 +22,18 @@ namespace hyper
 		{
 			AstNode *ast = nullptr;
 			Diagnostics diagnostics = {};
-			std::string file;
+			std::string_view file;
 		};
 
 	public:
-		explicit Compiler(const std::vector<std::string> &files);
+		explicit Compiler(const std::vector<std::string_view> &files);
 
 		int compile() const;
 
 	private:
-		CompilationUnit parse_file(const std::string &file) const;
+		CompilationUnit parse_file(std::string_view file) const;
 
 	private:
-		std::vector<std::string> m_files = {};
+		std::vector<std::string_view> m_files = {};
 	};
 } // namespace hyper

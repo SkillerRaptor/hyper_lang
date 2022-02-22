@@ -105,7 +105,7 @@ namespace hyper
 			{
 				if (level == Level::None)
 				{
-					return format_string + "\n";
+					return format_string;
 				}
 
 				std::stringstream stream;
@@ -116,7 +116,6 @@ namespace hyper
 				stream << level_string;
 				stream << "\033[0m: ";
 				stream << format_string;
-				stream << "\n";
 				return stream.str();
 			}();
 

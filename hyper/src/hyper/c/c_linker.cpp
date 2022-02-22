@@ -28,7 +28,7 @@ namespace hyper
 
 		if (microsoft_compiler.sdk_version() == 0)
 		{
-			Logger::error("failed to find msvc compiler");
+			Logger::error("Failed to find msvc compiler\n");
 			std::exit(1);
 		}
 
@@ -55,14 +55,14 @@ namespace hyper
 		const int return_code = system(command.str().c_str());
 		if (return_code != 0)
 		{
-			Logger::error("failed to link c object files");
+			Logger::error("Failed to link c object files\n");
 			std::exit(1);
 		}
 #elif defined(__linux__) || defined(__linux)
 		const int check_gcc = system("gcc --version > /dev/null");
 		if (check_gcc)
 		{
-			Logger::error("failed to find GCC compiler");
+			Logger::error("Failed to find GCC compiler\n");
 			std::exit(1);
 		}
 
@@ -82,7 +82,7 @@ namespace hyper
 		const int return_code = system(command.str().c_str());
 		if (return_code != 0)
 		{
-			Logger::error("failed to compile c files");
+			Logger::error("Failed to compile c files\n");
 			std::exit(1);
 		}
 #else

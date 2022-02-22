@@ -5,19 +5,29 @@
  */
 
 #include "hyper/compiler.hpp"
-#include "hyper/logger.hpp"
+#include "hyper/utilities/args_parser.hpp"
 
 int main(int argc, const char **argv)
 {
-	if (argc < 2)
+	std::vector<std::string_view> includes = {};
+	std::vector<std::string_view> files = {};
+
+	hyper::ArgsParser args_parser = {};
+	args_parser.set_version("Hyper version 1.0.0");
+	args_parser.add_option(
+		includes, "Include directories", "include", "I", "directories");
+	args_parser.add_positional_argument(files, "Files to compile", "files");
+
+	if (!args_parser.parse(argc, argv))
 	{
-		hyper::Logger::error("there is no input file specified");
 		return EXIT_FAILURE;
 	}
 
-	// TODO: Adding command line options
-
-	const std::vector<std::string> files(argv + 1, argv + argc);
+	if (files.empty())
+	{
+		hyper::Logger::error("There was no input files specified\n");
+		return EXIT_FAILURE;
+	}
 
 	const hyper::Compiler compiler(files);
 	return compiler.compile();

@@ -25,28 +25,31 @@
 
 namespace hyper
 {
-	Compiler::Compiler(const std::vector<std::string> &files)
+	Compiler::Compiler(const std::vector<std::string_view> &files)
 		: m_files(files)
 	{
 		std::signal(
 			SIGSEGV,
 			[](int)
 			{
-				Logger::error("Internal compiler error - Segmentation fault");
+				Logger::error("Internal compiler error - Segmentation fault\n");
 				std::exit(1);
 			});
 	}
 
 	int Compiler::compile() const
 	{
-		std::unordered_map<std::string, std::vector<Symbol>> ast_symbols = {};
+		std::unordered_map<std::string_view, std::vector<Symbol>> ast_symbols = {};
 
 		size_t current_file = 1;
 		std::vector<CompilationUnit> trees = {};
-		for (const std::string &file : m_files)
+		for (std::string_view file : m_files)
 		{
 			Logger::log(
-				"[{}/{}] Building Hyper file {}", current_file++, m_files.size(), file);
+				"[{}/{}] Building Hyper file {}\n",
+				current_file++,
+				m_files.size(),
+				file);
 
 			CompilationUnit compilation_unit = parse_file(file);
 			if (compilation_unit.ast == nullptr)
@@ -70,8 +73,7 @@ namespace hyper
 		{
 			const AstNode *ast = compilation_unit.ast;
 			const Diagnostics &diagnostics = compilation_unit.diagnostics;
-			const std::string &file = compilation_unit.file;
-			const std::vector<Symbol> &symbols = ast_symbols[file];
+			const std::vector<Symbol> &symbols = ast_symbols[compilation_unit.file];
 
 			ScopeValidator scope_validator(diagnostics, symbols);
 			scope_validator.traverse(ast);
@@ -79,7 +81,7 @@ namespace hyper
 			TypeValidator type_validator(diagnostics, symbols);
 			type_validator.traverse(ast);
 
-			const std::filesystem::path path = file;
+			const std::filesystem::path path = compilation_unit.file;
 			const std::string file_name = path.filename().string();
 			const std::string output_file = "./build/" + file_name;
 
@@ -100,23 +102,23 @@ namespace hyper
 		return EXIT_SUCCESS;
 	}
 
-	Compiler::CompilationUnit Compiler::parse_file(const std::string &file) const
+	Compiler::CompilationUnit Compiler::parse_file(std::string_view file) const
 	{
 		if (!std::filesystem::exists(file))
 		{
-			Logger::error("the file '{}' does not exists", file);
+			Logger::error("The file '{}' does not exists\n", file);
 			return {};
 		}
 
 		if (std::filesystem::is_directory(file))
 		{
-			Logger::error("the file '{}' can't be a directory", file);
+			Logger::error("The file '{}' can't be a directory\n", file);
 			return {};
 		}
 
 		const std::string text = [&file]()
 		{
-			std::ifstream stream(file);
+			std::ifstream stream(file.data());
 			std::stringstream content;
 			content << stream.rdbuf();
 			return content.str();
@@ -124,7 +126,7 @@ namespace hyper
 
 		if (text.empty())
 		{
-			Logger::error("the file '{}' does not contain any code", file);
+			Logger::error("The file '{}' does not contain any code\n", file);
 			return {};
 		}
 

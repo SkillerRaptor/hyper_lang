@@ -52,6 +52,7 @@ set(SOURCES
         src/hyper/c/c_generator.cpp
         src/hyper/c/c_linker.cpp
         src/hyper/c/microsoft.cpp
+        src/hyper/utilities/args_parser.cpp
         src/hyper/validators/scope_validator.cpp
         src/hyper/validators/type_validator.cpp)
 
@@ -105,6 +106,7 @@ set(HEADERS
         include/hyper/c/c_generator.hpp
         include/hyper/c/c_linker.hpp
         include/hyper/c/microsoft.hpp
+        include/hyper/utilities/args_parser.hpp
         include/hyper/validators/scope_validator.hpp
         include/hyper/validators/type_validator.hpp)
 

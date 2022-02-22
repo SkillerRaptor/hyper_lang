@@ -32,7 +32,7 @@ namespace hyper
 
 	public:
 		Diagnostics() = default;
-		Diagnostics(std::string file, std::string text);
+		Diagnostics(std::string_view file, std::string text);
 
 		template <typename... Args>
 		void info(SourceRange source_range, ErrorCode error_code, Args &&...args)
@@ -70,8 +70,8 @@ namespace hyper
 			const std::string extra_spaces(
 				digit_count - Utilities::count_digits(start.line), ' ');
 
-			Logger::log("{}--> {}:{}:{}", spaces, m_file, start.line, start.column);
-			Logger::log("{} |", spaces);
+			Logger::log("{}--> {}:{}:{}\n", spaces, m_file, start.line, start.column);
+			Logger::log("{} |\n", spaces);
 
 			if (start.line == end.line)
 			{
@@ -79,11 +79,11 @@ namespace hyper
 				const std::string tilde_pointers(end.column - start.column, '~');
 
 				Logger::log(
-					"{}{} | {}",
+					"{}{} | {}\n",
 					extra_spaces,
 					start.line,
 					Utilities::read_line(m_text, start.line));
-				Logger::log("{} | {}^{}", spaces, start_spaces, tilde_pointers);
+				Logger::log("{} | {}^{}\n", spaces, start_spaces, tilde_pointers);
 			}
 			else
 			{
@@ -91,17 +91,17 @@ namespace hyper
 				const std::string end_underscore(end.column, '_');
 
 				Logger::log(
-					"{}{} |   {}",
+					"{}{} |   {}\n",
 					extra_spaces,
 					start.line,
 					Utilities::read_line(m_text, start.line));
-				Logger::log("{} |  {}^", spaces, start_underscore);
+				Logger::log("{} |  {}^\n", spaces, start_underscore);
 				Logger::log(
-					"{} | | {}", end.line, Utilities::read_line(m_text, end.line));
-				Logger::log("{} | |{}^", spaces, end_underscore);
+					"{} | | {}\n", end.line, Utilities::read_line(m_text, end.line));
+				Logger::log("{} | |{}^\n", spaces, end_underscore);
 			}
 
-			Logger::log("{} |", spaces);
+			Logger::log("{} |\n", spaces);
 
 			std::exit(1);
 		}
@@ -134,7 +134,7 @@ namespace hyper
 		}
 
 	private:
-		std::string m_file;
+		std::string_view m_file;
 		std::string m_text;
 	};
 } // namespace hyper
