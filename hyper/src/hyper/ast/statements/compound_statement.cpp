@@ -24,7 +24,7 @@ namespace hyper
 		}
 	}
 
-	std::span<const Statement *const> CompoundStatement::statements() const
+	std::span<Statement *const> CompoundStatement::statements() const
 	{
 		return m_statements;
 	}

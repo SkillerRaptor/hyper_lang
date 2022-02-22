@@ -227,8 +227,8 @@ namespace hyper
 		{
 			VISIT_NODE(TranslationUnitDeclaration, translation_unit_declaration);
 
-			for (const Declaration *declaration :
-					 translation_unit_declaration->declarations())
+			auto declarations = translation_unit_declaration->declarations();
+			for (const Declaration *declaration : declarations)
 			{
 				derived.traverse_declaration(declaration);
 			}

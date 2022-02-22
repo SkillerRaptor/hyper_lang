@@ -31,7 +31,7 @@ namespace hyper
 		return m_file;
 	}
 
-	std::span<const Declaration *const> TranslationUnitDeclaration::declarations()
+	std::span<Declaration *const> TranslationUnitDeclaration::declarations()
 		const
 	{
 		return m_declarations;

@@ -28,7 +28,7 @@ namespace hyper
 		~FunctionDeclaration() override;
 
 		Identifier identifier() const;
-		std::span<const Declaration *const> arguments() const;
+		std::span<Declaration *const> arguments() const;
 		DataType return_type() const;
 		const Statement *body() const;
 

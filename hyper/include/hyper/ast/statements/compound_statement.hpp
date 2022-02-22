@@ -21,7 +21,7 @@ namespace hyper
 			std::vector<Statement *> statements);
 		~CompoundStatement() override;
 
-		std::span<const Statement *const> statements() const;
+		std::span<Statement *const> statements() const;
 
 		constexpr Category class_category() const noexcept override
 		{

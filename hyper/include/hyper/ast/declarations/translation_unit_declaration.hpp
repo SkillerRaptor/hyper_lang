@@ -24,7 +24,7 @@ namespace hyper
 		~TranslationUnitDeclaration() override;
 
 		std::string_view file() const;
-		std::span<const Declaration *const> declarations() const;
+		std::span<Declaration *const> declarations() const;
 
 		constexpr Category class_category() const noexcept override
 		{

@@ -31,7 +31,7 @@ namespace hyper
 		return m_identifier;
 	}
 
-	std::span<const Expression *const> CallExpression::arguments() const
+	std::span<Expression *const> CallExpression::arguments() const
 	{
 		return m_arguments;
 	}

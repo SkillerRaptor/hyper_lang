@@ -26,7 +26,7 @@ namespace hyper
 		~CallExpression() override;
 
 		Identifier identifier() const;
-		std::span<const Expression *const> arguments() const;
+		std::span<Expression *const> arguments() const;
 
 		constexpr Category class_category() const noexcept override
 		{

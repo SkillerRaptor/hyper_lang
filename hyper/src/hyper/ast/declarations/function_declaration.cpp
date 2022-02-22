@@ -37,7 +37,7 @@ namespace hyper
 		return m_identifier;
 	}
 
-	std::span<const Declaration *const> FunctionDeclaration::arguments() const
+	std::span<Declaration *const> FunctionDeclaration::arguments() const
 	{
 		return m_arguments;
 	}

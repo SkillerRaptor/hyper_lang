@@ -400,7 +400,7 @@ namespace hyper
 				if (!argument.help_string.empty())
 				{
 					const size_t length =
-						30 - argument_stream.str().length() + argument.help_string.length();
+						32 - argument_stream.str().length() + argument.help_string.length();
 					argument_stream << std::setw(static_cast<int>(length));
 					argument_stream << argument.help_string;
 				}
