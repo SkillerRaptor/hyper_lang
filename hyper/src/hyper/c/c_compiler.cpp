@@ -147,6 +147,7 @@ namespace hyper
 		}
 #else
 		(void) m_output_files;
+		(void) m_freestanding;
 #endif
 	}
 } // namespace hyper

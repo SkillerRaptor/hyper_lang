@@ -121,6 +121,9 @@ namespace hyper
 		}
 #else
 		(void) m_output_files;
+		(void) m_freestanding;
+		(void) m_linker_script;
+		(void) m_output_file;
 #endif
 	}
 } // namespace hyper
