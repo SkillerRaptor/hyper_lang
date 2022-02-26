@@ -7,17 +7,20 @@
 #pragma once
 
 #include "hyper/ast/declarations/declaration.hpp"
-
-#include <string>
+#include "hyper/identifier.hpp"
 
 namespace hyper
 {
 	class ImportDeclaration : public Declaration
 	{
 	public:
-		ImportDeclaration(SourceRange source_range, std::string module_name);
+		ImportDeclaration(
+			SourceRange source_range,
+			Identifier identifier,
+			std::string file_name);
 
-		std::string_view module_name() const;
+		Identifier identifier() const;
+		std::string_view file_name() const;
 
 		constexpr Category class_category() const noexcept override
 		{
@@ -35,6 +38,7 @@ namespace hyper
 		}
 
 	private:
-		std::string m_module_name;
+		Identifier m_identifier = {};
+		std::string_view m_file_name = {};
 	};
 } // namespace hyper

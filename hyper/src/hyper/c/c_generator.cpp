@@ -81,7 +81,7 @@ namespace hyper
 	bool CGenerator::visit_import_declaration(
 		const ImportDeclaration *import_declaration)
 	{
-		m_header << "#include <" << import_declaration->module_name() << ".h>\n";
+		m_header << "#include <" << import_declaration->file_name() << ".h>\n";
 
 		return true;
 	}

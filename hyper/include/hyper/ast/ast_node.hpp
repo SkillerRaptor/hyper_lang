@@ -23,6 +23,7 @@ namespace hyper
 			ExternDeclaration,
 			FunctionDeclaration,
 			ImportDeclaration,
+			ModuleDeclaration,
 			ParameterDeclaration,
 			PublicDeclaration,
 			TranslationUnitDeclaration,

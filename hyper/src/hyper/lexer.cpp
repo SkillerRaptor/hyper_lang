@@ -651,6 +651,8 @@ namespace hyper
 			return Token::Type::Return;
 		case Utilities::hash("while"):
 			return Token::Type::While;
+		case Utilities::hash("module"):
+			return Token::Type::Module;
 		case Utilities::hash("extern"):
 			return Token::Type::Extern;
 		case Utilities::hash("public"):

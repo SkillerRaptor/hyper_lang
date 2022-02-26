@@ -26,6 +26,7 @@ The following roadmap is always subject to change.
 - [ ] Pointers
 - [ ] Reflection
 - [ ] Scopes
+- [ ] Static
 - [ ] String formatting
 - [ ] Structs
 - [ ] Templates

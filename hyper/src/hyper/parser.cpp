@@ -27,6 +27,30 @@ namespace hyper
 		return parse_translation_unit_declaration();
 	}
 
+	Declaration *Parser::parse_declaration()
+	{
+		switch (current_token().type())
+		{
+		case Token::Type::Extern:
+			return parse_extern_declaration();
+			break;
+		case Token::Type::Function:
+			return parse_function_declaration();
+			break;
+		case Token::Type::Import:
+			return parse_import_declaration();
+			break;
+		case Token::Type::Module:
+			return parse_module_declaration();
+			break;
+		case Token::Type::Public:
+			return parse_public_declaration();
+			break;
+		default:
+			return nullptr;
+		}
+	}
+
 	Declaration *Parser::parse_public_declaration()
 	{
 		const SourceRange export_range =
@@ -59,6 +83,13 @@ namespace hyper
 			consume(Token::Type::Extern).source_range();
 
 		// TODO: Adding structure extern
+
+		if (match(Token::Type::RoundLeftBracket))
+		{
+			consume();
+			consume(Token::Type::Identifier);
+			consume(Token::Type::RoundRightBracket);
+		}
 
 		if (!match(Token::Type::Function))
 		{
@@ -132,15 +163,27 @@ namespace hyper
 		const SourceRange import_range =
 			consume(Token::Type::Import).source_range();
 
+		Position module_start_position = {};
+		Position module_end_position = {};
 		std::string module_name;
 		while (!match(Token::Type::Semicolon))
 		{
-			module_name += consume(Token::Type::Identifier).value();
+			const Token token = consume(Token::Type::Identifier);
+			if (module_start_position.line == 0)
+			{
+				module_start_position = token.start_position();
+			}
 
-			if (match(Token::Type::Dot))
+			module_end_position = token.end_position();
+
+			module_name += token.value();
+
+			if (
+				match(Token::Type::Colon) && peek_token().type() == Token::Type::Colon)
 			{
 				consume();
-				module_name += '.';
+				consume();
+				module_name += "::";
 			}
 		}
 
@@ -155,7 +198,7 @@ namespace hyper
 		std::string file_name;
 		std::string path;
 
-		size_t dot_position = module_name.find_last_of('.');
+		size_t dot_position = module_name.find_last_of("::");
 		if (dot_position == std::string::npos)
 		{
 			file_name = module_name;
@@ -168,18 +211,89 @@ namespace hyper
 		}
 
 		file_name += ".hyper";
-		path = Utilities::replace_string(path, ".", slash);
-		module_name = path + slash + file_name;
+		path = Utilities::replace_string(path, "::", slash);
+		const std::string file = path + slash + file_name;
 
-		consume(Token::Type::Semicolon);
+		const Position end_position =
+			consume(Token::Type::Semicolon).end_position();
+
+		const Identifier identifier = {
+			.value = module_name,
+			.source_range = {
+				.start = module_start_position,
+				.end = module_end_position,
+			},
+		};
 
 		const SourceRange source_range = {
 			.start = import_range.start,
-			.end = {},
+			.end = end_position,
 		};
 
-		return new ImportDeclaration(source_range, module_name);
+		return new ImportDeclaration(source_range, identifier, file);
 	}
+
+	Declaration *Parser::parse_module_declaration()
+	{
+		const SourceRange module_range =
+			consume(Token::Type::Module).source_range();
+
+		Position module_start_position = {};
+		Position module_end_position = {};
+		std::string module_name;
+		while (!match(Token::Type::CurlyLeftBracket))
+		{
+			const Token token = consume(Token::Type::Identifier);
+			if (module_start_position.line == 0)
+			{
+				module_start_position = token.start_position();
+			}
+
+			module_end_position = token.end_position();
+
+			module_name += token.value();
+
+			if (
+				match(Token::Type::Colon) && peek_token().type() == Token::Type::Colon)
+			{
+				consume();
+				consume();
+				module_name += "::";
+			}
+		}
+
+		consume(Token::Type::CurlyLeftBracket);
+
+		std::vector<Declaration *> declarations = {};
+		while (true)
+		{
+			Declaration *declaration = parse_declaration();
+			if (declaration == nullptr)
+			{
+				break;
+			}
+
+			declarations.emplace_back(declaration);
+		}
+
+		const Position end_position =
+			consume(Token::Type::CurlyRightBracket).end_position();
+
+		const Identifier identifier = {
+			.value = module_name,
+			.source_range = {
+				.start = module_start_position,
+				.end = module_end_position,
+			},
+		};
+
+		const SourceRange source_range = {
+			.start = module_range.start,
+			.end = end_position,
+		};
+
+		return new ModuleDeclaration(source_range, identifier, declarations);
+	} // namespace hyper
 
 	Declaration *Parser::parse_parameter_declaration()
 	{
@@ -219,27 +333,17 @@ namespace hyper
 		std::vector<Declaration *> declarations = {};
 		while (!match(Token::Type::Eof))
 		{
-			switch (current_token().type())
+			Declaration *declaration = parse_declaration();
+			if (declaration == nullptr)
 			{
-			case Token::Type::Public:
-				declarations.emplace_back(parse_public_declaration());
-				break;
-			case Token::Type::Extern:
-				declarations.emplace_back(parse_extern_declaration());
-				break;
-			case Token::Type::Function:
-				declarations.emplace_back(parse_function_declaration());
-				break;
-			case Token::Type::Import:
-				declarations.emplace_back(parse_import_declaration());
-				break;
-			default:
 				m_diagnostics.error(
 					current_token().source_range(),
 					Diagnostics::ErrorCode::E0003,
 					"declaration",
 					current_token().type_string());
 			}
+
+			declarations.emplace_back(declaration);
 		}
 
 		const SourceRange source_range = {

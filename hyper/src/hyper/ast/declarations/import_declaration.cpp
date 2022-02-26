@@ -10,14 +10,21 @@ namespace hyper
 {
 	ImportDeclaration::ImportDeclaration(
 		SourceRange source_range,
-		std::string module_name)
+		Identifier identifier,
+		std::string file_name)
 		: Declaration(source_range)
-		, m_module_name(std::move(module_name))
+		, m_identifier(identifier)
+		, m_file_name(file_name)
 	{
 	}
 
-	std::string_view ImportDeclaration::module_name() const
+	Identifier ImportDeclaration::identifier() const
 	{
-		return m_module_name;
+		return m_identifier;
+	}
+
+	std::string_view ImportDeclaration::file_name() const
+	{
+		return m_file_name;
 	}
 } // namespace hyper

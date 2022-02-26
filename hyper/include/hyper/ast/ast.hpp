@@ -9,6 +9,7 @@
 #include "hyper/ast/declarations/extern_declaration.hpp"
 #include "hyper/ast/declarations/function_declaration.hpp"
 #include "hyper/ast/declarations/import_declaration.hpp"
+#include "hyper/ast/declarations/module_declaration.hpp"
 #include "hyper/ast/declarations/parameter_declaration.hpp"
 #include "hyper/ast/declarations/public_declaration.hpp"
 #include "hyper/ast/declarations/translation_unit_declaration.hpp"

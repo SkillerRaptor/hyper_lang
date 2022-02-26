@@ -92,6 +92,7 @@ namespace hyper
 			While,
 
 			// NOTE: Keywords (Modules)
+			Module,
 			Extern,
 			Public,
 			Import,
