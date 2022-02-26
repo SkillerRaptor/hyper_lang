@@ -43,7 +43,7 @@ namespace hyper
 	public:
 		ArgsParser();
 
-		bool parse(int argc, const char **argv);
+		bool parse(int argc, char **argv);
 
 		void add_option(
 			bool &value,

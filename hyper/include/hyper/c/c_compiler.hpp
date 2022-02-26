@@ -14,11 +14,12 @@ namespace hyper
 	class CCompiler
 	{
 	public:
-		CCompiler(const std::vector<std::string> &output_files);
+		CCompiler(const std::vector<std::string> &output_files, bool freestanding);
 
 		void compile() const;
 
 	private:
 		const std::vector<std::string> &m_output_files;
+		bool m_freestanding = false;
 	};
 } // namespace hyper

@@ -7,22 +7,42 @@
 #include "hyper/c/c_linker.hpp"
 
 #include "hyper/logger.hpp"
+#include "hyper/utilities/platform_detection.hpp"
 
-#if defined(WIN32) || defined(WIN64)
+#if HYPER_PLATFORM_WINDOWS
 #	include "hyper/c/microsoft.hpp"
 #	include "hyper/utilities.hpp"
 #endif
 
 namespace hyper
 {
-	CLinker::CLinker(const std::vector<std::string> &output_files)
+	CLinker::CLinker(
+		const std::vector<std::string> &output_files,
+		bool freestanding,
+		std::string_view linker_script,
+		std::string_view output_file)
 		: m_output_files(output_files)
+		, m_freestanding(freestanding)
+		, m_linker_script(linker_script)
+		, m_output_file(output_file)
 	{
 	}
 
 	void CLinker::link() const
 	{
-#if defined(WIN32) || defined(WIN64)
+#if HYPER_PLATFORM_WINDOWS
+		if (m_freestanding)
+		{
+			Logger::error("The freestanding mode is not supported on windows!\n");
+			std::exit(1);
+		}
+
+		if (!m_linker_script.empty())
+		{
+			Logger::error("The linker script can not be set on windows!\n");
+			std::exit(1);
+		}
+
 		MicrosoftCompiler microsoft_compiler = {};
 		microsoft_compiler.find();
 
@@ -48,7 +68,8 @@ namespace hyper
 		command << "/nologo ";
 		command << "/machine:amd64 ";
 		command << "/subsystem:console ";
-		command << "/out:.\\build\\a.exe ";
+		command << "/out:"
+						<< (!m_output_file.empty() ? m_output_file : ".\\build\\a.exe ");
 		command << files;
 		command << "\" > nul 2> nul";
 
@@ -58,7 +79,7 @@ namespace hyper
 			Logger::error("Failed to link c object files\n");
 			std::exit(1);
 		}
-#elif defined(__linux__) || defined(__linux)
+#elif HYPER_PLATFORM_LINUX
 		const int check_gcc = system("gcc --version > /dev/null");
 		if (check_gcc)
 		{
@@ -74,9 +95,22 @@ namespace hyper
 
 		std::stringstream command;
 		command << "gcc ";
+
+		if (m_freestanding)
+		{
+			command << "-static ";
+			command << "-nostdlib ";
+			command << "-z max-page-size=0x1000 ";
+		}
+
+		if (!m_linker_script.empty())
+		{
+			command << "-T " << m_linker_script << " ";
+		}
+
 		command << object_files;
 		command << "-o ";
-		command << "./build/a.out";
+		command << (!m_output_file.empty() ? m_output_file : "./build/a.out");
 		command << " > /dev/null 2>&1";
 
 		const int return_code = system(command.str().c_str());

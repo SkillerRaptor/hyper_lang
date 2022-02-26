@@ -18,7 +18,7 @@ namespace hyper
 		add_option(m_show_version, "Print version", "version", "");
 	}
 
-	bool ArgsParser::parse(int argc, const char **argv)
+	bool ArgsParser::parse(int argc, char **argv)
 	{
 		size_t current_argument = 1;
 		for (; current_argument < static_cast<size_t>(argc); ++current_argument)
@@ -339,7 +339,9 @@ namespace hyper
 						option_stream << " ";
 						if (option.required)
 						{
+							option_stream << "<";
 							option_stream << option.value_name;
+							option_stream << ">";
 						}
 						else
 						{
@@ -412,7 +414,7 @@ namespace hyper
 
 	void ArgsParser::print_version() const
 	{
-		Logger::info("{}", m_version);
+		Logger::info("{}\n", m_version);
 	}
 
 	void ArgsParser::set_version(std::string_view version)

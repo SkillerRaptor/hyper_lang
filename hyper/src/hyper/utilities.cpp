@@ -6,7 +6,9 @@
 
 #include "hyper/utilities.hpp"
 
-#if defined(WIN32) || defined(WIN64)
+#include "hyper/utilities/platform_detection.hpp"
+
+#if HYPER_PLATFORM_WINDOWS
 #	define WIN32_LEAN_AND_MEAN
 #	define NOMINMAX
 #	include <Windows.h>
@@ -71,7 +73,7 @@ namespace hyper
 
 		std::string return_string;
 
-#if defined(WIN32) || defined(WIN64)
+#if HYPER_PLATFORM_WINDOWS
 		size_t size = 0;
 		size_t begin = 0;
 		size_t position = wstring.find(static_cast<wchar_t>(0), begin);

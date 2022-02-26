@@ -17,7 +17,6 @@
 #include "hyper/validators/scope_validator.hpp"
 #include "hyper/validators/type_validator.hpp"
 
-#include <csignal>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -25,16 +24,15 @@
 
 namespace hyper
 {
-	Compiler::Compiler(const std::vector<std::string_view> &files)
-		: m_files(files)
+	Compiler::Compiler(const Arguments &arguments)
+		: m_freestanding(arguments.freestanding)
+		, m_linker_script(arguments.linker_script)
+		, m_output_file(arguments.output_file)
+		, m_includes(arguments.includes)
+		, m_files(arguments.files)
 	{
-		std::signal(
-			SIGSEGV,
-			[](int)
-			{
-				Logger::error("Internal compiler error - Segmentation fault\n");
-				std::exit(1);
-			});
+		// TODO: Adding includes
+		(void) m_includes;
 	}
 
 	int Compiler::compile() const
@@ -45,11 +43,11 @@ namespace hyper
 		std::vector<CompilationUnit> trees = {};
 		for (std::string_view file : m_files)
 		{
-			Logger::log(
-				"[{}/{}] Building Hyper file {}\n",
+			Logger::info(
+				"Building hyper file {} ({}/{})\n",
+				file,
 				current_file++,
-				m_files.size(),
-				file);
+				m_files.size());
 
 			CompilationUnit compilation_unit = parse_file(file);
 			if (compilation_unit.ast == nullptr)
@@ -93,10 +91,11 @@ namespace hyper
 			delete ast;
 		}
 
-		const CCompiler c_compiler(output_files);
+		const CCompiler c_compiler(output_files, m_freestanding);
 		c_compiler.compile();
 
-		const CLinker c_linker(output_files);
+		const CLinker c_linker(
+			output_files, m_freestanding, m_linker_script, m_output_file);
 		c_linker.link();
 
 		return EXIT_SUCCESS;

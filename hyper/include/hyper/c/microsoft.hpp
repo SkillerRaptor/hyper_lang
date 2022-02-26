@@ -6,7 +6,9 @@
 
 #pragma once
 
-#if defined(WIN32) || defined(WIN64)
+#include "hyper/utilities/platform_detection.hpp"
+
+#if HYPER_PLATFORM_WINDOWS
 
 #	include <functional>
 #	include <string>

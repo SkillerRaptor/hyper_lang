@@ -8,6 +8,7 @@
 
 #include "hyper/ast/ast.hpp"
 #include "hyper/lexer.hpp"
+#include "hyper/utilities/platform_detection.hpp"
 
 namespace hyper
 {
@@ -145,9 +146,9 @@ namespace hyper
 
 		// TODO: Finding better way to iterate every symbol and check after module
 
-#if defined(WIN32) || defined(WIN64)
+#if HYPER_PLATFORM_WINDOWS
 		const std::string slash = "\\";
-#else
+#elif HYPER_PLATFORM_APPLE || HYPER_PLATFORM_LINUX
 		const std::string slash = "/";
 #endif
 

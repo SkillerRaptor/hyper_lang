@@ -7,8 +7,9 @@
 #include "hyper/c/c_compiler.hpp"
 
 #include "hyper/logger.hpp"
+#include "hyper/utilities/platform_detection.hpp"
 
-#if defined(WIN32) || defined(WIN64)
+#if HYPER_PLATFORM_WINDOWS
 #	include "hyper/c/microsoft.hpp"
 #	include "hyper/utilities.hpp"
 
@@ -17,8 +18,11 @@
 
 namespace hyper
 {
-	CCompiler::CCompiler(const std::vector<std::string> &output_files)
+	CCompiler::CCompiler(
+		const std::vector<std::string> &output_files,
+		bool freestanding)
 		: m_output_files(output_files)
+		, m_freestanding(freestanding)
 	{
 	}
 
@@ -30,7 +34,13 @@ namespace hyper
 			files += file + ".c ";
 		}
 
-#if defined(WIN32) || defined(WIN64)
+#if HYPER_PLATFORM_WINDOWS
+		if (m_freestanding)
+		{
+			Logger::error("The freestanding mode is not supported on windows!\n");
+			std::exit(1);
+		}
+
 		MicrosoftCompiler microsoft_compiler = {};
 		microsoft_compiler.find();
 
@@ -89,7 +99,7 @@ namespace hyper
 			Logger::error("Failed to compile c files\n");
 			std::exit(1);
 		}
-#elif defined(__linux__) || defined(__linux)
+#elif HYPER_PLATFORM_LINUX
 		const int check_gcc = system("gcc --version > /dev/null");
 		if (check_gcc)
 		{
@@ -105,6 +115,24 @@ namespace hyper
 
 		std::stringstream command;
 		command << "gcc ";
+
+		if (m_freestanding)
+		{
+			command << "-nostdlib ";
+			command << "-ffreestanding ";
+			command << "-fno-stack-protector ";
+			command << "-fno-asynchronous-unwind-tables ";
+			command << "-fno-pie ";
+			command << "-fno-pic ";
+			command << "-fno-builtin ";
+			command << "-mno-80387 ";
+			command << "-mno-mmx ";
+			command << "-mno-3dnow ";
+			command << "-mno-sse ";
+			command << "-mno-sse2 ";
+			command << "-mno-red-zone ";
+		}
+
 		command << "-c ";
 		command << files;
 		command << "-o ";
