@@ -46,7 +46,11 @@ namespace hyper
 
 	public:
 		DataType() = default;
-		DataType(std::string value, Kind kind, SourceRange source_range);
+		DataType(
+			std::string value,
+			Kind kind,
+			bool pointer,
+			SourceRange source_range);
 
 		size_t line_number() const noexcept;
 		size_t line_column() const noexcept;
@@ -57,11 +61,13 @@ namespace hyper
 
 		std::string value() const;
 		Kind kind() const noexcept;
+		bool pointer() const noexcept;
 		SourceRange source_range() const noexcept;
 
 	private:
 		std::string m_value;
 		Kind m_kind = Kind::Invalid;
+		bool m_pointer = false;
 		SourceRange m_source_range = {};
 	};
 } // namespace hyper

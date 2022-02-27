@@ -28,6 +28,9 @@ namespace hyper
 
 				PostIncrement,
 				PostDecrement,
+
+				AddressOf,
+				Dereference,
 			};
 
 			Kind kind = Kind::Invalid;

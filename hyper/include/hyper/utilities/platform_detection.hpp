@@ -8,9 +8,7 @@
 
 #include <cstdint>
 
-#if defined(__APPLE__)
-#	define HYPER_PLATFORM_APPLE 1
-#elif defined(__linux__) || defined(__linux)
+#if defined(__linux__) || defined(__linux)
 #	define HYPER_PLATFORM_LINUX 1
 #elif defined(WIN32) || defined(WIN64)
 #	define HYPER_PLATFORM_WINDOWS 1
@@ -22,13 +20,10 @@ namespace hyper
 {
 	enum class Platform : uint8_t
 	{
-		Apple,
 		Linux,
 		Windows,
 
-#if HYPER_PLATFORM_APPLE
-		Current = Apple,
-#elif HYPER_PLATFORM_LINUX
+#if HYPER_PLATFORM_LINUX
 		Current = Linux,
 #elif HYPER_PLATFORM_WINDOWS
 		Current = Windows,

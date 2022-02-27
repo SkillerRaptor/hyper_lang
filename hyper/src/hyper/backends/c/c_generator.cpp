@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "hyper/c/c_generator.hpp"
+#include "hyper/backends/c/c_generator.hpp"
 
 #include <algorithm>
 #include <filesystem>

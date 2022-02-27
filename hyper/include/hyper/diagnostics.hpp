@@ -32,7 +32,7 @@ namespace hyper
 
 	public:
 		Diagnostics() = default;
-		Diagnostics(std::string_view file, std::string text);
+		Diagnostics(std::string_view file, std::string_view text);
 
 		template <typename... Args>
 		void info(SourceRange source_range, ErrorCode error_code, Args &&...args)
@@ -135,6 +135,6 @@ namespace hyper
 
 	private:
 		std::string_view m_file;
-		std::string m_text;
+		std::string_view m_text;
 	};
 } // namespace hyper

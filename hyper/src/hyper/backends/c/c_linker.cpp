@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "hyper/c/c_linker.hpp"
+#include "hyper/backends/c/c_linker.hpp"
 
 #include "hyper/logger.hpp"
 #include "hyper/utilities/platform_detection.hpp"
 
 #if HYPER_PLATFORM_WINDOWS
-#	include "hyper/c/microsoft.hpp"
+#	include "hyper/backends/c/microsoft.hpp"
 #	include "hyper/utilities.hpp"
 #endif
 

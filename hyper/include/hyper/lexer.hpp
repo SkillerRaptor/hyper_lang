@@ -18,7 +18,7 @@ namespace hyper
 	class Lexer
 	{
 	public:
-		Lexer(const Diagnostics &diagnostics, std::string text);
+		Lexer(const Diagnostics &diagnostics, std::string_view text);
 
 		std::vector<Token> lex();
 
@@ -47,7 +47,7 @@ namespace hyper
 
 	private:
 		const Diagnostics &m_diagnostics;
-		std::string m_text;
+		std::string_view m_text;
 
 		char m_current_char = '\0';
 

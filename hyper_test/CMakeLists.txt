@@ -12,12 +12,7 @@ set(SOURCES
         src/hyper/formatter.cpp
         src/hyper/tester.cpp)
 
-set(HEADERS
-        include/hyper/formatter.hpp
-        include/hyper/logger.hpp
-        include/hyper/tester.hpp)
-
-add_executable(hyper_test ${SOURCES} ${HEADERS})
+add_executable(hyper_test ${SOURCES})
 add_dependencies(hyper_test hyper)
 target_link_libraries(
         hyper_test

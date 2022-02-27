@@ -8,6 +8,7 @@
 
 #include "hyper/ast/ast.hpp"
 #include "hyper/lexer.hpp"
+#include "hyper/utilities/assertions.hpp"
 #include "hyper/utilities/platform_detection.hpp"
 
 namespace hyper
@@ -33,19 +34,14 @@ namespace hyper
 		{
 		case Token::Type::Extern:
 			return parse_extern_declaration();
-			break;
 		case Token::Type::Function:
 			return parse_function_declaration();
-			break;
 		case Token::Type::Import:
 			return parse_import_declaration();
-			break;
 		case Token::Type::Module:
 			return parse_module_declaration();
-			break;
 		case Token::Type::Public:
 			return parse_public_declaration();
-			break;
 		default:
 			return nullptr;
 		}
@@ -56,7 +52,7 @@ namespace hyper
 		const SourceRange export_range =
 			consume(Token::Type::Public).source_range();
 
-		// TODO: Adding structure export
+		TODO("Adding export for structs");
 
 		if (!match(Token::Type::Function))
 		{
@@ -82,7 +78,7 @@ namespace hyper
 		const SourceRange extern_range =
 			consume(Token::Type::Extern).source_range();
 
-		// TODO: Adding structure extern
+		TODO("Adding extern for structs");
 
 		if (match(Token::Type::RoundLeftBracket))
 		{
@@ -187,11 +183,11 @@ namespace hyper
 			}
 		}
 
-		// TODO: Finding better way to iterate every symbol and check after module
+		TODO("Finding better way to iterate every symbol and check after module");
 
 #if HYPER_PLATFORM_WINDOWS
 		const std::string slash = "\\";
-#elif HYPER_PLATFORM_APPLE || HYPER_PLATFORM_LINUX
+#elif HYPER_PLATFORM_LINUX
 		const std::string slash = "/";
 #endif
 
@@ -420,6 +416,10 @@ namespace hyper
 				return UnaryExpression::Operation::Kind::Not;
 			case Token::Type::BitwiseNot:
 				return UnaryExpression::Operation::Kind::Inverse;
+			case Token::Type::BitwiseAnd:
+				return UnaryExpression::Operation::Kind::AddressOf;
+			case Token::Type::Star:
+				return UnaryExpression::Operation::Kind::Dereference;
 			default:
 				return UnaryExpression::Operation::Kind::Invalid;
 			}
@@ -449,14 +449,20 @@ namespace hyper
 
 	Expression *Parser::parse_postfix_expression()
 	{
-		const Token identifier_token = consume(Token::Type::Identifier);
+		const Identifier identifier = consume_identifier();
 		if (match(Token::Type::RoundLeftBracket))
 		{
-			rewind_token();
+			for (size_t i = 0; i < identifier.count; ++i)
+			{
+				rewind_token();
+			}
 			return parse_call_expression();
 		}
 
-		rewind_token();
+		for (size_t i = 0; i < identifier.count; ++i)
+		{
+			rewind_token();
+		}
 
 		Expression *expression = parse_identifier_expression();
 
@@ -487,7 +493,7 @@ namespace hyper
 		};
 
 		const SourceRange source_range = {
-			.start = identifier_token.start_position(),
+			.start = identifier.source_range.start,
 			.end = expression->end_position(),
 		};
 
@@ -660,7 +666,7 @@ namespace hyper
 
 	Expression *Parser::parse_call_expression()
 	{
-		const Token identifier_token = consume(Token::Type::Identifier);
+		const Identifier identifier = consume_identifier();
 
 		consume(Token::Type::RoundLeftBracket);
 
@@ -679,13 +685,8 @@ namespace hyper
 		const SourceRange round_right_range =
 			consume(Token::Type::RoundRightBracket).source_range();
 
-		const Identifier identifier = {
-			.value = identifier_token.value(),
-			.source_range = identifier_token.source_range(),
-		};
-
 		const SourceRange source_range = {
-			.start = identifier_token.start_position(),
+			.start = identifier.source_range.start,
 			.end = round_right_range.end,
 		};
 
@@ -694,13 +695,7 @@ namespace hyper
 
 	Expression *Parser::parse_identifier_expression()
 	{
-		const Token identifier_token = consume(Token::Type::Identifier);
-
-		const Identifier identifier = {
-			.value = identifier_token.value(),
-			.source_range = identifier_token.source_range(),
-		};
-
+		const Identifier identifier = consume_identifier();
 		return new IdentifierExpression(identifier.source_range, identifier);
 	}
 
@@ -769,7 +764,7 @@ namespace hyper
 			return parse_expression_statement(parse_call_expression());
 		}
 
-		// TODO: Postfix can be changed to binary if binary returns null.
+		TODO("Postfix can be changed to binary if binary returns null.");
 		if (match(Token::Type::Increment) || match(Token::Type::Decrement))
 		{
 			rewind_token();
@@ -1098,39 +1093,130 @@ namespace hyper
 
 	DataType Parser::consume_type()
 	{
-		const Token token = current_token();
-		const DataType data_type = token.data_type();
-		if (data_type.kind() == DataType::Kind::Invalid)
+		std::string value;
+		DataType::Kind kind = DataType::Kind::Invalid;
+		Position start_position = {};
+		Position end_position = {};
+		while (true)
 		{
-			m_diagnostics.error(
-				token.source_range(),
-				Diagnostics::ErrorCode::E0003,
-				"type",
-				token.value());
+			const Token token = current_token();
+			const DataType data_type = token.data_type();
+
+			if (data_type.kind() == DataType::Kind::Invalid)
+			{
+				if (value.empty())
+				{
+					m_diagnostics.error(
+						token.source_range(),
+						Diagnostics::ErrorCode::E0003,
+						"type",
+						token.value());
+				}
+
+				break;
+			}
+
+			value += token.value();
+
+			if (kind == DataType::Kind::Invalid)
+			{
+				kind = data_type.kind();
+			}
+
+			TODO("Improve position finding");
+			if (start_position.line == 0)
+			{
+				start_position = token.start_position();
+			}
+
+			end_position = token.end_position();
+
+			consume();
+
+			if (
+				match(Token::Type::Colon) && peek_token().type() == Token::Type::Colon)
+			{
+				consume();
+				consume();
+				value += "::";
+			}
 		}
 
-		consume();
+		bool pointer = false;
+		if (match(Token::Type::Star))
+		{
+			consume();
+			pointer = true;
+		}
 
-		return data_type;
+		const SourceRange source_range = {
+			.start = start_position,
+			.end = end_position,
+		};
+
+		return DataType(value, kind, pointer, source_range);
 	}
 
 	Identifier Parser::consume_identifier()
 	{
-		const Token token = current_token();
-		if (!match(Token::Type::Identifier))
+		std::string value;
+		Position start_position = {};
+		Position end_position = {};
+		size_t count = 0;
+		while (match(Token::Type::Identifier))
 		{
-			m_diagnostics.error(
-				token.source_range(),
-				Diagnostics::ErrorCode::E0003,
-				"identifier",
-				token.value());
+			const Token token = current_token();
+			const DataType data_type = token.data_type();
+
+			if (data_type.kind() != DataType::Kind::UserDefined)
+			{
+				m_diagnostics.error(
+					token.source_range(),
+					Diagnostics::ErrorCode::E0003,
+					"identifier",
+					token.value());
+			}
+
+			value += token.value();
+
+			TODO("Improve position finding");
+			if (start_position.line == 0)
+			{
+				start_position = token.start_position();
+			}
+
+			end_position = token.end_position();
+
+			consume();
+			++count;
+
+			if (
+				match(Token::Type::Colon) && peek_token().type() == Token::Type::Colon)
+			{
+				consume();
+				consume();
+				count += 2;
+				value += "::";
+			}
 		}
 
-		consume();
+		bool pointer = false;
+		if (match(Token::Type::Star))
+		{
+			consume();
+			++count;
+			pointer = true;
+		}
+
+		const SourceRange source_range = {
+			.start = start_position,
+			.end = end_position,
+		};
 
 		const Identifier identifier = {
-			.value = token.value(),
-			.source_range = token.source_range(),
+			.value = value,
+			.source_range = source_range,
+			.count = count,
 		};
 
 		return identifier;

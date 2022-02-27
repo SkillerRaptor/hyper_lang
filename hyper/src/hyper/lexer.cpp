@@ -11,7 +11,7 @@
 
 namespace hyper
 {
-	Lexer::Lexer(const Diagnostics &diagnostics, std::string text)
+	Lexer::Lexer(const Diagnostics &diagnostics, std::string_view text)
 		: m_diagnostics(diagnostics)
 		, m_text(std::move(text))
 	{

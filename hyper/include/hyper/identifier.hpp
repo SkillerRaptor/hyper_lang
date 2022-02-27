@@ -16,5 +16,8 @@ namespace hyper
 	{
 		std::string value;
 		SourceRange source_range = {};
+
+		// TODO: REMOVE THIS!
+		size_t count = 0;
 	};
 } // namespace hyper

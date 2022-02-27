@@ -49,70 +49,17 @@ set(SOURCES
         src/hyper/ast/statements/return_statement.cpp
         src/hyper/ast/statements/statement.cpp
         src/hyper/ast/statements/while_statement.cpp
-        src/hyper/c/c_compiler.cpp
-        src/hyper/c/c_generator.cpp
-        src/hyper/c/c_linker.cpp
-        src/hyper/c/microsoft.cpp
+        src/hyper/backends/c/c_compiler.cpp
+        src/hyper/backends/c/c_generator.cpp
+        src/hyper/backends/c/c_linker.cpp
+        src/hyper/backends/c/microsoft.cpp
         src/hyper/utilities/args_parser.cpp
+				src/hyper/utilities/assertions.cpp
+				src/hyper/utilities/debugging.cpp
         src/hyper/validators/scope_validator.cpp
         src/hyper/validators/type_validator.cpp)
 
-set(HEADERS
-        include/hyper/compiler.hpp
-        include/hyper/data_type.hpp
-        include/hyper/diagnostics.hpp
-        include/hyper/formatter.hpp
-        include/hyper/lexer.hpp
-        include/hyper/logger.hpp
-        include/hyper/identifier.hpp
-        include/hyper/parser.hpp
-        include/hyper/source_range.hpp
-        include/hyper/symbol.hpp
-        include/hyper/symbol_collector.hpp
-        include/hyper/token.hpp
-        include/hyper/utilities.hpp
-        include/hyper/ast/ast.hpp
-        include/hyper/ast/ast_node.hpp
-        include/hyper/ast/ast_visitor.hpp
-        include/hyper/ast/declarations/declaration.hpp
-        include/hyper/ast/declarations/extern_declaration.hpp
-        include/hyper/ast/declarations/function_declaration.hpp
-        include/hyper/ast/declarations/import_declaration.hpp
-        include/hyper/ast/declarations/module_declaration.hpp
-        include/hyper/ast/declarations/parameter_declaration.hpp
-        include/hyper/ast/declarations/public_declaration.hpp
-        include/hyper/ast/declarations/translation_unit_declaration.hpp
-        include/hyper/ast/declarations/variable_declaration.hpp
-        include/hyper/ast/expressions/binary_expression.hpp
-        include/hyper/ast/expressions/call_expression.hpp
-        include/hyper/ast/expressions/cast_expression.hpp
-        include/hyper/ast/expressions/conditional_expression.hpp
-        include/hyper/ast/expressions/expression.hpp
-        include/hyper/ast/expressions/identifier_expression.hpp
-        include/hyper/ast/expressions/unary_expression.hpp
-        include/hyper/ast/literals/bool_literal.hpp
-        include/hyper/ast/literals/floating_literal.hpp
-        include/hyper/ast/literals/integer_literal.hpp
-        include/hyper/ast/literals/literal.hpp
-        include/hyper/ast/literals/string_literal.hpp
-        include/hyper/ast/statements/assign_statement.hpp
-        include/hyper/ast/statements/compound_assign_statement.hpp
-        include/hyper/ast/statements/compound_statement.hpp
-        include/hyper/ast/statements/expression_statement.hpp
-        include/hyper/ast/statements/if_statement.hpp
-        include/hyper/ast/statements/print_statement.hpp
-        include/hyper/ast/statements/return_statement.hpp
-        include/hyper/ast/statements/statement.hpp
-        include/hyper/ast/statements/while_statement.hpp
-        include/hyper/c/c_compiler.hpp
-        include/hyper/c/c_generator.hpp
-        include/hyper/c/c_linker.hpp
-        include/hyper/c/microsoft.hpp
-        include/hyper/utilities/args_parser.hpp
-        include/hyper/validators/scope_validator.hpp
-        include/hyper/validators/type_validator.hpp)
-
-add_executable(hyper ${SOURCES} ${HEADERS})
+add_executable(hyper ${SOURCES})
 target_link_libraries(
         hyper
         PRIVATE

@@ -21,12 +21,12 @@ int main(int argc, char **argv)
 		freestanding,
 		"Tells the compiler to use the freestanding mode",
 		"freestanding",
-		"");
+		"fs");
 	args_parser.add_option(
 		linker_script,
-		"Tells the compiler to use <file> for the linker",
+		"Tells the compiler to use <file> as linker script",
 		"linker-script",
-		"",
+		"ls",
 		"file");
 	args_parser.add_option(
 		output_file,
@@ -36,16 +36,16 @@ int main(int argc, char **argv)
 		"file");
 	args_parser.add_option(
 		includes,
-		"Add <directory> to the compiler's include paths",
+		"Adds <directory> to the compiler's include paths",
 		"include",
 		"I",
 		"directory");
 	args_parser.add_positional_argument(
-		files, "Tells the compiler to compile <files>", "files");
+		files, "Adds <file> to the compiler's target", "file");
 
 	if (!args_parser.parse(argc, argv))
 	{
-		return EXIT_FAILURE;
+		return EXIT_SUCCESS;
 	}
 
 	if (files.empty())

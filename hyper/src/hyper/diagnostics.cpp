@@ -8,7 +8,7 @@
 
 namespace hyper
 {
-	Diagnostics::Diagnostics(std::string_view file, std::string text)
+	Diagnostics::Diagnostics(std::string_view file, std::string_view text)
 		: m_file(file)
 		, m_text(std::move(text))
 	{

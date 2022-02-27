@@ -10,6 +10,7 @@
 #include "hyper/diagnostics.hpp"
 #include "hyper/symbol.hpp"
 
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -27,21 +28,19 @@ namespace hyper
 			std::vector<std::string_view> files = {};
 		};
 
-	private:
-		struct CompilationUnit
-		{
-			AstNode *ast = nullptr;
-			Diagnostics diagnostics = {};
-			std::string_view file;
-		};
-
 	public:
 		explicit Compiler(const Arguments &arguments);
 
 		int compile() const;
 
 	private:
-		CompilationUnit parse_file(std::string_view file) const;
+		void install_signals() const;
+
+		std::optional<std::string> read_file(std::string_view file) const;
+		AstNode *parse_file(
+			const Diagnostics &diagnostics,
+			std::string_view file,
+			std::string_view text) const;
 
 	private:
 		bool m_freestanding = false;

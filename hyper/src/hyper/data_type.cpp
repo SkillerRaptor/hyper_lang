@@ -11,9 +11,11 @@ namespace hyper
 	DataType::DataType(
 		std::string value,
 		DataType::Kind kind,
+		bool pointer,
 		SourceRange source_range)
 		: m_value(value)
 		, m_kind(kind)
+		, m_pointer(pointer)
 		, m_source_range(source_range)
 	{
 	}
