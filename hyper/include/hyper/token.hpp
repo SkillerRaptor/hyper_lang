@@ -86,7 +86,6 @@ namespace hyper
 			// NOTE: Keywords (Control Flow)
 			Break,
 			Else,
-			For,
 			If,
 			Return,
 			While,
@@ -95,6 +94,7 @@ namespace hyper
 			Module,
 			Extern,
 			Public,
+			Static,
 			Import,
 
 			// NOTE: Keywords (Definitions)
@@ -250,8 +250,6 @@ namespace hyper
 				return "break";
 			case Token::Type::Else:
 				return "else";
-			case Token::Type::For:
-				return "for";
 			case Token::Type::If:
 				return "if";
 			case Token::Type::Return:

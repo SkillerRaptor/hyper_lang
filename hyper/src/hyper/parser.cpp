@@ -42,35 +42,40 @@ namespace hyper
 			return parse_module_declaration();
 		case Token::Type::Public:
 			return parse_public_declaration();
+		case Token::Type::Static:
+			return parse_static_declaration();
+		case Token::Type::Struct:
+			return parse_struct_declaration();
+		case Token::Type::SquareLeftBracket:
+			return parse_attribute_declaration();
 		default:
 			return nullptr;
 		}
 	}
 
-	Declaration *Parser::parse_public_declaration()
+	Declaration *Parser::parse_attribute_declaration()
 	{
-		const SourceRange export_range =
-			consume(Token::Type::Public).source_range();
+		const SourceRange square_left_range =
+			consume(Token::Type::SquareLeftBracket).source_range();
 
-		TODO("Adding export for structs");
+		TODO("Adding attributes array and without value forcing");
 
-		if (!match(Token::Type::Function))
-		{
-			Statement *statement = parse_statement();
-			m_diagnostics.error(
-				statement->source_range(),
-				Diagnostics::ErrorCode::E0007,
-				statement->class_name());
-		}
+		const std::string attribute = consume(Token::Type::Identifier).value();
 
-		Statement *statement = parse_function_declaration();
+		consume(Token::Type::Assign);
+
+		const std::string value = consume(Token::Type::StringLiteral).value();
+
+		const SourceRange square_right_range =
+			consume(Token::Type::SquareRightBracket).source_range();
 
 		const SourceRange source_range = {
-			.start = export_range.start,
-			.end = statement->end_position(),
+			.start = square_left_range.start,
+			.end = square_right_range.end,
 		};
 
-		return new PublicDeclaration(source_range, statement);
+		return new AttributeDeclaration(
+			source_range, attribute, value.substr(1, value.length() - 2));
 	}
 
 	Declaration *Parser::parse_extern_declaration()
@@ -104,6 +109,42 @@ namespace hyper
 		};
 
 		return new ExternDeclaration(source_range, statement);
+	}
+
+	Declaration *Parser::parse_field_declaration()
+	{
+		const Token identifier_token = consume(Token::Type::Identifier);
+
+		consume(Token::Type::Colon);
+
+		TODO("Improve mutable parsing");
+
+		const DataType type = consume_type();
+
+		Expression *expression = [this]() -> Expression *
+		{
+			if (match(Token::Type::Assign))
+			{
+				consume(Token::Type::Assign);
+				return parse_binary_expression(0);
+			}
+
+			return nullptr;
+		}();
+
+		const Identifier identifier = {
+			.value = identifier_token.value(),
+			.source_range = identifier_token.source_range(),
+		};
+
+		const SourceRange source_range = {
+			.start = identifier.source_range.start,
+			.end = expression == nullptr ? type.end_position()
+																	 : expression->end_position(),
+		};
+
+		return new FieldDeclaration(
+			source_range, type, identifier, std::move(expression));
 	}
 
 	Declaration *Parser::parse_function_declaration()
@@ -324,6 +365,130 @@ namespace hyper
 			source_range, identifier, mutable_state, type);
 	}
 
+	Declaration *Parser::parse_public_declaration()
+	{
+		const SourceRange public_range =
+			consume(Token::Type::Public).source_range();
+
+		const bool is_function = match(Token::Type::Function);
+		const bool is_struct = match(Token::Type::Struct);
+		const bool is_static = match(Token::Type::Static);
+		const bool is_field = match(Token::Type::Identifier);
+		if (!is_function && !is_struct && !is_static && !is_field)
+		{
+			Statement *statement = parse_statement();
+			m_diagnostics.error(
+				statement->source_range(),
+				Diagnostics::ErrorCode::E0007,
+				statement->class_name());
+		}
+
+		Statement *statement = nullptr;
+		if (is_function)
+		{
+			statement = parse_function_declaration();
+		}
+		else if (is_struct)
+		{
+			statement = parse_struct_declaration();
+		}
+		else if (is_static)
+		{
+			statement = parse_static_declaration();
+		}
+		else if (is_field)
+		{
+			statement = parse_field_declaration();
+		}
+
+		const SourceRange source_range = {
+			.start = public_range.start,
+			.end = statement->end_position(),
+		};
+
+		return new PublicDeclaration(source_range, statement);
+	}
+
+	Declaration *Parser::parse_static_declaration()
+	{
+		const SourceRange static_range =
+			consume(Token::Type::Static).source_range();
+
+		TODO("Adding static for more expressions");
+
+		if (!match(Token::Type::Identifier))
+		{
+			Statement *statement = parse_statement();
+			m_diagnostics.error(
+				statement->source_range(),
+				Diagnostics::ErrorCode::E0007,
+				statement->class_name());
+		}
+
+		Declaration *declaration = parse_field_declaration();
+
+		const SourceRange source_range = {
+			.start = static_range.start,
+			.end = declaration->end_position(),
+		};
+
+		return new StaticDeclaration(source_range, declaration);
+	}
+
+	Declaration *Parser::parse_struct_declaration()
+	{
+		const SourceRange struct_range =
+			consume(Token::Type::Struct).source_range();
+
+		const Token identifier_token = consume(Token::Type::Identifier);
+
+		consume(Token::Type::CurlyLeftBracket);
+
+		std::vector<Declaration *> declarations = {};
+		while (!match(Token::Type::CurlyRightBracket))
+		{
+			Declaration *declaration = [&]() -> Declaration *
+			{
+				switch (current_token().type())
+				{
+				case Token::Type::Public:
+					return parse_public_declaration();
+				case Token::Type::Static:
+					return parse_static_declaration();
+				case Token::Type::Identifier:
+					return parse_field_declaration();
+				default:
+					return nullptr;
+				}
+			}();
+
+			if (declaration == nullptr)
+			{
+				TODO("Print error message");
+				return nullptr;
+			}
+
+			consume(Token::Type::Semicolon);
+
+			declarations.emplace_back(std::move(declaration));
+		}
+
+		const SourceRange curly_right_range =
+			consume(Token::Type::CurlyRightBracket).source_range();
+
+		const Identifier identifier = {
+			.value = identifier_token.value(),
+			.source_range = identifier_token.source_range(),
+		};
+
+		const SourceRange source_range = {
+			.start = struct_range.start,
+			.end = curly_right_range.end,
+		};
+
+		return new StructDeclaration(source_range, identifier, declarations);
+	}
+
 	Declaration *Parser::parse_translation_unit_declaration()
 	{
 		std::vector<Declaration *> declarations = {};
@@ -396,142 +561,6 @@ namespace hyper
 
 		return new VariableDeclaration(
 			source_range, identifier, mutable_state, type, std::move(expression));
-	}
-
-	Expression *Parser::parse_prefix_expression()
-	{
-		const Token &operation_token = current_token();
-
-		const UnaryExpression::Operation::Kind kind = [&operation_token]()
-		{
-			switch (operation_token.type())
-			{
-			case Token::Type::Minus:
-				return UnaryExpression::Operation::Kind::Negative;
-			case Token::Type::Increment:
-				return UnaryExpression::Operation::Kind::PreIncrement;
-			case Token::Type::Decrement:
-				return UnaryExpression::Operation::Kind::PreDecrement;
-			case Token::Type::LogicalNot:
-				return UnaryExpression::Operation::Kind::Not;
-			case Token::Type::BitwiseNot:
-				return UnaryExpression::Operation::Kind::Inverse;
-			case Token::Type::BitwiseAnd:
-				return UnaryExpression::Operation::Kind::AddressOf;
-			case Token::Type::Star:
-				return UnaryExpression::Operation::Kind::Dereference;
-			default:
-				return UnaryExpression::Operation::Kind::Invalid;
-			}
-		}();
-
-		if (kind == UnaryExpression::Operation::Kind::Invalid)
-		{
-			return parse_primary_expression();
-		}
-
-		consume();
-
-		Expression *expression = parse_primary_expression();
-
-		const UnaryExpression::Operation operation = {
-			.kind = kind,
-			.source_range = operation_token.source_range(),
-		};
-
-		const SourceRange source_range = {
-			.start = operation_token.start_position(),
-			.end = expression->end_position(),
-		};
-
-		return new UnaryExpression(source_range, operation, std::move(expression));
-	}
-
-	Expression *Parser::parse_postfix_expression()
-	{
-		const Identifier identifier = consume_identifier();
-		if (match(Token::Type::RoundLeftBracket))
-		{
-			for (size_t i = 0; i < identifier.count; ++i)
-			{
-				rewind_token();
-			}
-			return parse_call_expression();
-		}
-
-		for (size_t i = 0; i < identifier.count; ++i)
-		{
-			rewind_token();
-		}
-
-		Expression *expression = parse_identifier_expression();
-
-		const Token &operation_token = current_token();
-		const UnaryExpression::Operation::Kind kind = [&operation_token]()
-		{
-			switch (operation_token.type())
-			{
-			case Token::Type::Increment:
-				return UnaryExpression::Operation::Kind::PostIncrement;
-			case Token::Type::Decrement:
-				return UnaryExpression::Operation::Kind::PostDecrement;
-			default:
-				return UnaryExpression::Operation::Kind::Invalid;
-			}
-		}();
-
-		if (kind == UnaryExpression::Operation::Kind::Invalid)
-		{
-			return expression;
-		}
-
-		consume();
-
-		const UnaryExpression::Operation operation = {
-			.kind = kind,
-			.source_range = operation_token.source_range(),
-		};
-
-		const SourceRange source_range = {
-			.start = identifier.source_range.start,
-			.end = expression->end_position(),
-		};
-
-		return new UnaryExpression(source_range, operation, std::move(expression));
-	}
-
-	Expression *Parser::parse_paren_expression()
-	{
-		consume(Token::Type::RoundLeftBracket);
-
-		Expression *expression = parse_binary_expression(0);
-
-		consume(Token::Type::RoundRightBracket);
-
-		return expression;
-	}
-
-	Expression *Parser::parse_primary_expression()
-	{
-		switch (current_token().type())
-		{
-		case Token::Type::Identifier:
-			return parse_postfix_expression();
-		case Token::Type::BoolLiteral:
-			return parse_bool_literal();
-		case Token::Type::FloatingLiteral:
-			return parse_floating_literal();
-		case Token::Type::IntegerLiteral:
-			return parse_integer_literal();
-		case Token::Type::StringLiteral:
-			return parse_string_literal();
-		case Token::Type::RoundLeftBracket:
-			return parse_paren_expression();
-		default:
-			break;
-		}
-
-		return nullptr;
 	}
 
 	Expression *Parser::parse_binary_expression(uint8_t precedence)
@@ -699,6 +728,222 @@ namespace hyper
 		return new IdentifierExpression(identifier.source_range, identifier);
 	}
 
+	Expression *Parser::parse_initializer_list_expression()
+	{
+		TODO("Improve parsing for initializer list expression");
+
+		const SourceRange left_curly_range =
+			consume(Token::Type::CurlyLeftBracket).source_range();
+
+		std::vector<Expression *> expressions = {};
+		while (!match(Token::Type::CurlyRightBracket))
+		{
+			if (!match(Token::Type::Dot))
+			{
+				Expression *expression = parse_binary_expression(0);
+				expressions.push_back(expression);
+			}
+			else
+			{
+				consume();
+				consume(Token::Type::Identifier);
+				consume(Token::Type::Assign);
+
+				Expression *expression = [&]()
+				{
+					if (match(Token::Type::CurlyLeftBracket))
+					{
+						return parse_initializer_list_expression();
+					}
+
+					return parse_binary_expression(0);
+				}();
+
+				expressions.push_back(expression);
+			}
+
+			if (match(Token::Type::Comma))
+			{
+				consume();
+			}
+		}
+
+		const SourceRange right_curly_range =
+			consume(Token::Type::CurlyRightBracket).source_range();
+
+		const SourceRange source_range = {
+			.start = left_curly_range.start,
+			.end = right_curly_range.end,
+		};
+
+		return new InitializerListExpression(source_range, expressions);
+	}
+
+	Expression *Parser::parse_member_expression()
+	{
+		const Identifier struct_identifier = consume_identifier();
+
+		const bool is_arrow = match(Token::Type::Arrow);
+		consume();
+
+		const Identifier member_identifier = consume_identifier();
+
+		const SourceRange source_range = {
+			.start = struct_identifier.source_range.start,
+			.end = member_identifier.source_range.end,
+		};
+
+		return new MemberExpression(
+			source_range, struct_identifier, is_arrow, member_identifier);
+	}
+
+	Expression *Parser::parse_paren_expression()
+	{
+		consume(Token::Type::RoundLeftBracket);
+
+		Expression *expression = parse_binary_expression(0);
+
+		consume(Token::Type::RoundRightBracket);
+
+		return expression;
+	}
+
+	Expression *Parser::parse_postfix_expression()
+	{
+		const Identifier identifier = consume_identifier();
+		if (match(Token::Type::RoundLeftBracket))
+		{
+			for (size_t i = 0; i < identifier.count; ++i)
+			{
+				rewind_token();
+			}
+			return parse_call_expression();
+		}
+
+		if (match(Token::Type::Dot) || match(Token::Type::Arrow))
+		{
+			for (size_t i = 0; i < identifier.count; ++i)
+			{
+				rewind_token();
+			}
+			return parse_member_expression();
+		}
+
+		for (size_t i = 0; i < identifier.count; ++i)
+		{
+			rewind_token();
+		}
+
+		Expression *expression = parse_identifier_expression();
+
+		const Token &operation_token = current_token();
+		const UnaryExpression::Operation::Kind kind = [&operation_token]()
+		{
+			switch (operation_token.type())
+			{
+			case Token::Type::Increment:
+				return UnaryExpression::Operation::Kind::PostIncrement;
+			case Token::Type::Decrement:
+				return UnaryExpression::Operation::Kind::PostDecrement;
+			default:
+				return UnaryExpression::Operation::Kind::Invalid;
+			}
+		}();
+
+		if (kind == UnaryExpression::Operation::Kind::Invalid)
+		{
+			return expression;
+		}
+
+		consume();
+
+		const UnaryExpression::Operation operation = {
+			.kind = kind,
+			.source_range = operation_token.source_range(),
+		};
+
+		const SourceRange source_range = {
+			.start = identifier.source_range.start,
+			.end = expression->end_position(),
+		};
+
+		return new UnaryExpression(source_range, operation, std::move(expression));
+	}
+
+	Expression *Parser::parse_prefix_expression()
+	{
+		const Token &operation_token = current_token();
+
+		const UnaryExpression::Operation::Kind kind = [&operation_token]()
+		{
+			switch (operation_token.type())
+			{
+			case Token::Type::Minus:
+				return UnaryExpression::Operation::Kind::Negative;
+			case Token::Type::Increment:
+				return UnaryExpression::Operation::Kind::PreIncrement;
+			case Token::Type::Decrement:
+				return UnaryExpression::Operation::Kind::PreDecrement;
+			case Token::Type::LogicalNot:
+				return UnaryExpression::Operation::Kind::Not;
+			case Token::Type::BitwiseNot:
+				return UnaryExpression::Operation::Kind::Inverse;
+			case Token::Type::BitwiseAnd:
+				return UnaryExpression::Operation::Kind::AddressOf;
+			case Token::Type::Star:
+				return UnaryExpression::Operation::Kind::Dereference;
+			default:
+				return UnaryExpression::Operation::Kind::Invalid;
+			}
+		}();
+
+		if (kind == UnaryExpression::Operation::Kind::Invalid)
+		{
+			return parse_primary_expression();
+		}
+
+		consume();
+
+		Expression *expression = parse_primary_expression();
+
+		const UnaryExpression::Operation operation = {
+			.kind = kind,
+			.source_range = operation_token.source_range(),
+		};
+
+		const SourceRange source_range = {
+			.start = operation_token.start_position(),
+			.end = expression->end_position(),
+		};
+
+		return new UnaryExpression(source_range, operation, std::move(expression));
+	}
+
+	Expression *Parser::parse_primary_expression()
+	{
+		switch (current_token().type())
+		{
+		case Token::Type::Identifier:
+			return parse_postfix_expression();
+		case Token::Type::BoolLiteral:
+			return parse_bool_literal();
+		case Token::Type::FloatingLiteral:
+			return parse_floating_literal();
+		case Token::Type::IntegerLiteral:
+			return parse_integer_literal();
+		case Token::Type::StringLiteral:
+			return parse_string_literal();
+		case Token::Type::RoundLeftBracket:
+			return parse_paren_expression();
+		case Token::Type::CurlyLeftBracket:
+			return parse_initializer_list_expression();
+		default:
+			break;
+		}
+
+		return nullptr;
+	}
+
 	Literal *Parser::parse_bool_literal()
 	{
 		const Token boolean = consume(Token::Type::BoolLiteral);
@@ -756,18 +1001,23 @@ namespace hyper
 
 	Statement *Parser::parse_assign_statement()
 	{
-		const Token identifier_token = consume(Token::Type::Identifier);
-
+		const Identifier identifier = consume_identifier();
 		if (match(Token::Type::RoundLeftBracket))
 		{
-			rewind_token();
+			for (size_t i = 0; i < identifier.count; ++i)
+			{
+				rewind_token();
+			}
 			return parse_expression_statement(parse_call_expression());
 		}
 
 		TODO("Postfix can be changed to binary if binary returns null.");
 		if (match(Token::Type::Increment) || match(Token::Type::Decrement))
 		{
-			rewind_token();
+			for (size_t i = 0; i < identifier.count; ++i)
+			{
+				rewind_token();
+			}
 			return parse_expression_statement(parse_postfix_expression());
 		}
 
@@ -793,13 +1043,8 @@ namespace hyper
 
 		Expression *expression = parse_binary_expression(0);
 
-		const Identifier identifier = {
-			.value = identifier_token.value(),
-			.source_range = identifier_token.source_range(),
-		};
-
 		const SourceRange source_range = {
-			.start = identifier_token.start_position(),
+			.start = identifier.source_range.start,
 			.end = expression->end_position(),
 		};
 
@@ -826,6 +1071,7 @@ namespace hyper
 			case AstNode::Category::CompoundAssignStatement:
 			case AstNode::Category::ExpressionStatement:
 			case AstNode::Category::ReturnStatement:
+			case AstNode::Category::PrintStatement:
 			case AstNode::Category::VariableDeclaration:
 				consume(Token::Type::Semicolon);
 				break;
@@ -954,7 +1200,6 @@ namespace hyper
 		Expression *expression = parse_binary_expression(0);
 
 		consume(Token::Type::RoundRightBracket);
-		consume(Token::Type::Semicolon);
 
 		const SourceRange source_range = {
 			.start = print_range.start,
@@ -1142,6 +1387,21 @@ namespace hyper
 			}
 		}
 
+		bool array = false;
+		if (match(Token::Type::SquareLeftBracket))
+		{
+			consume();
+			array = true;
+
+			if (match(Token::Type::IntegerLiteral))
+			{
+				consume();
+				TODO("Adding array size to type");
+			}
+
+			consume(Token::Type::SquareRightBracket);
+		}
+
 		bool pointer = false;
 		if (match(Token::Type::Star))
 		{
@@ -1154,7 +1414,7 @@ namespace hyper
 			.end = end_position,
 		};
 
-		return DataType(value, kind, pointer, source_range);
+		return DataType(value, kind, array, pointer, source_range);
 	}
 
 	Identifier Parser::consume_identifier()
@@ -1198,14 +1458,6 @@ namespace hyper
 				count += 2;
 				value += "::";
 			}
-		}
-
-		bool pointer = false;
-		if (match(Token::Type::Star))
-		{
-			consume();
-			++count;
-			pointer = true;
 		}
 
 		const SourceRange source_range = {

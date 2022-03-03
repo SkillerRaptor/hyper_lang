@@ -643,8 +643,6 @@ namespace hyper
 			return Token::Type::Break;
 		case Utilities::hash("else"):
 			return Token::Type::Else;
-		case Utilities::hash("for"):
-			return Token::Type::For;
 		case Utilities::hash("if"):
 			return Token::Type::If;
 		case Utilities::hash("return"):
@@ -657,6 +655,8 @@ namespace hyper
 			return Token::Type::Extern;
 		case Utilities::hash("public"):
 			return Token::Type::Public;
+		case Utilities::hash("static"):
+			return Token::Type::Static;
 		case Utilities::hash("import"):
 			return Token::Type::Import;
 		case Utilities::hash("function"):

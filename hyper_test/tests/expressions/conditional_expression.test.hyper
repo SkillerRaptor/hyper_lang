@@ -6,31 +6,31 @@
 
 function main() -> int32
 {
-	let variable_01: int8 = false ? 0 as int8 : 1 as int8;
-	let variable_02: int8 = true ? 0 as int8 : 1 as int8;
-	let variable_03: int16 = false ? 0 as int16 : 1 as int16;
-  let variable_04: int16 = true ? 0 as int16 : 1 as int16;
-	let variable_05: int32 = false ? 0 as int32 : 1 as int32;
-  let variable_06: int32 = true ? 0 as int32 : 1 as int32;
-	let variable_07: int64 = false ? 0 as int64 : 1 as int64;
-  let variable_08: int64 = true ? 0 as int64 : 1 as int64;
-	let variable_09: float32 = false ? 0.0 as float32 : 1.0 as float32;
-	let variable_10: float32 = false ? 0.0 as float32 : 1.0 as float32;
-  let variable_11: float64 = true ? 0.0 as float64 : 1.0 as float64;
-  let variable_12: float64 = true ? 0.0 as float64 : 1.0 as float64;
+	let variable_01: int8 = false ? (0 as int8) : (1 as int8);
+	let variable_02: int8 = true ? (0 as int8) : (1 as int8);
+	let variable_03: int16 = false ? (0 as int16) : (1 as int16);
+  let variable_04: int16 = true ? (0 as int16) : (1 as int16);
+	let variable_05: int32 = false ? (0 as int32) : (1 as int32);
+  let variable_06: int32 = true ? (0 as int32) : (1 as int32);
+	let variable_07: int64 = false ? (0 as int64) : (1 as int64);
+  let variable_08: int64 = true ? (0 as int64) : (1 as int64);
+	let variable_09: float32 = false ? (0.0 as float32) : (1.0 as float32);
+	let variable_10: float32 = false ? (0.0 as float32) : (1.0 as float32);
+  let variable_11: float64 = true ? (0.0 as float64) : (1.0 as float64);
+  let variable_12: float64 = true ? (0.0 as float64) : (1.0 as float64);
   
-	let variable_13: uint8 = false ? 0 as uint8 : 1 as uint8;
-	let variable_14: uint8 = true ? 0 as uint8 : 1 as uint8;
-	let variable_15: uint16 = false ? 0 as uint16 : 1 as uint16;
-  let variable_16: uint16 = true ? 0 as uint16 : 1 as uint16;
-	let variable_17: uint32 = false ? 0 as uint32 : 1 as uint32;
-  let variable_18: uint32 = true ? 0 as uint32 : 1 as uint32;
-	let variable_19: uint64 = false ? 0 as uint64 : 1 as uint64;
-  let variable_20: uint64 = true ? 0 as uint64 : 1 as uint64;
-	let variable_21: float32 = false ? 0.0 as float32 : 1.0 as float32;
-  let variable_22: float32 = true ? 0.0 as float32 : 1.0 as float32;
-	let variable_23: float64 = false ? 0.0 as float64 : 1.0 as float64;
-  let variable_24: float64 = true ? 0.0 as float64 : 1.0 as float64;
+	let variable_13: uint8 = false ? (0 as uint8) : (1 as uint8);
+	let variable_14: uint8 = true ? (0 as uint8) : (1 as uint8);
+	let variable_15: uint16 = false ? (0 as uint16) : (1 as uint16);
+  let variable_16: uint16 = true ? (0 as uint16) : (1 as uint16);
+	let variable_17: uint32 = false ? (0 as uint32) : (1 as uint32);
+  let variable_18: uint32 = true ? (0 as uint32) : (1 as uint32);
+	let variable_19: uint64 = false ? (0 as uint64) : (1 as uint64);
+  let variable_20: uint64 = true ? (0 as uint64) : (1 as uint64);
+	let variable_21: float32 = false ? (0.0 as float32) : (1.0 as float32);
+  let variable_22: float32 = true ? (0.0 as float32) : (1.0 as float32);
+	let variable_23: float64 = false ? (0.0 as float64) : (1.0 as float64);
+  let variable_24: float64 = true ? (0.0 as float64) : (1.0 as float64);
 
 	return 0;
 }

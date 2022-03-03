@@ -72,7 +72,7 @@ namespace hyper
 	bool TypeValidator::visit_bool_literal(const BoolLiteral *bool_literal)
 	{
 		const DataType data_type(
-			"bool", DataType::Kind::Bool, false, bool_literal->source_range());
+			"bool", DataType::Kind::Bool, false, false, bool_literal->source_range());
 		m_current_data_type = data_type;
 
 		return true;
@@ -85,6 +85,7 @@ namespace hyper
 			"float32",
 			DataType::Kind::Float32,
 			false,
+			false,
 			floating_literal->source_range());
 		m_current_data_type = data_type;
 
@@ -95,7 +96,11 @@ namespace hyper
 		const IntegerLiteral *integer_literal)
 	{
 		const DataType data_type(
-			"int32", DataType::Kind::Int32, false, integer_literal->source_range());
+			"int32",
+			DataType::Kind::Int32,
+			false,
+			false,
+			integer_literal->source_range());
 		m_current_data_type = data_type;
 
 		return true;
@@ -104,7 +109,11 @@ namespace hyper
 	bool TypeValidator::visit_string_literal(const StringLiteral *string_literal)
 	{
 		const DataType data_type(
-			"string", DataType::Kind::String, false, string_literal->source_range());
+			"string",
+			DataType::Kind::String,
+			false,
+			false,
+			string_literal->source_range());
 		m_current_data_type = data_type;
 
 		return true;

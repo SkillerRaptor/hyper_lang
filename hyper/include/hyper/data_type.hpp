@@ -49,6 +49,7 @@ namespace hyper
 		DataType(
 			std::string value,
 			Kind kind,
+			bool array,
 			bool pointer,
 			SourceRange source_range);
 
@@ -61,12 +62,14 @@ namespace hyper
 
 		std::string value() const;
 		Kind kind() const noexcept;
+		bool array() const noexcept;
 		bool pointer() const noexcept;
 		SourceRange source_range() const noexcept;
 
 	private:
 		std::string m_value;
 		Kind m_kind = Kind::Invalid;
+		bool m_array = false;
 		bool m_pointer = false;
 		SourceRange m_source_range = {};
 	};

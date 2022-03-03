@@ -54,9 +54,9 @@ namespace hyper
 
 #if HYPER_PLATFORM_LINUX
 #	if defined(SIGTRAP)
-		raise(SIGTRAP)
+		raise(SIGTRAP);
 #	else
-		raise(SIGABRT)
+		raise(SIGABRT);
 #	endif
 #elif HYPER_PLATFORM_WINDOWS
 		__debugbreak();

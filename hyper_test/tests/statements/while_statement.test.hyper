@@ -6,8 +6,8 @@
 
 function main() -> int32
 {
-	let variable_01: mutable int8 = 0 as int8;
-	while (variable_01 < 10 as int8)
+	let variable_01: mutable int8 = (0 as int8);
+	while (variable_01 < (10 as int8))
 	{
 		++variable_01;
 	}

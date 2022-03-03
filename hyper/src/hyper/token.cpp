@@ -25,40 +25,53 @@ namespace hyper
 		switch (m_type)
 		{
 		case Token::Type::Bool:
-			return DataType("bool", DataType::Kind::Bool, false, m_source_range);
+			return DataType(
+				"bool", DataType::Kind::Bool, false, false, m_source_range);
 		case Token::Type::Int8:
-			return DataType("int8", DataType::Kind::Int8, false, m_source_range);
+			return DataType(
+				"int8", DataType::Kind::Int8, false, false, m_source_range);
 		case Token::Type::Int16:
-			return DataType("int16", DataType::Kind::Int16, false, m_source_range);
+			return DataType(
+				"int16", DataType::Kind::Int16, false, false, m_source_range);
 		case Token::Type::Int32:
-			return DataType("int32", DataType::Kind::Int32, false, m_source_range);
+			return DataType(
+				"int32", DataType::Kind::Int32, false, false, m_source_range);
 		case Token::Type::Int64:
-			return DataType("int64", DataType::Kind::Int64, false, m_source_range);
+			return DataType(
+				"int64", DataType::Kind::Int64, false, false, m_source_range);
 		case Token::Type::Uint8:
-			return DataType("uint8", DataType::Kind::Uint8, false, m_source_range);
+			return DataType(
+				"uint8", DataType::Kind::Uint8, false, false, m_source_range);
 		case Token::Type::Uint16:
-			return DataType("uint16", DataType::Kind::Uint16, false, m_source_range);
+			return DataType(
+				"uint16", DataType::Kind::Uint16, false, false, m_source_range);
 		case Token::Type::Uint32:
-			return DataType("uint32", DataType::Kind::Uint32, false, m_source_range);
+			return DataType(
+				"uint32", DataType::Kind::Uint32, false, false, m_source_range);
 		case Token::Type::Uint64:
-			return DataType("uint64", DataType::Kind::Uint64, false, m_source_range);
+			return DataType(
+				"uint64", DataType::Kind::Uint64, false, false, m_source_range);
 		case Token::Type::ISize:
-			return DataType("isize", DataType::Kind::ISize, false, m_source_range);
+			return DataType(
+				"isize", DataType::Kind::ISize, false, false, m_source_range);
 		case Token::Type::USize:
-			return DataType("usize", DataType::Kind::USize, false, m_source_range);
+			return DataType(
+				"usize", DataType::Kind::USize, false, false, m_source_range);
 		case Token::Type::Float32:
 			return DataType(
-				"float32", DataType::Kind::Float32, false, m_source_range);
+				"float32", DataType::Kind::Float32, false, false, m_source_range);
 		case Token::Type::Float64:
 			return DataType(
-				"float64", DataType::Kind::Float64, false, m_source_range);
+				"float64", DataType::Kind::Float64, false, false, m_source_range);
 		case Token::Type::String:
-			return DataType("string", DataType::Kind::String, false, m_source_range);
+			return DataType(
+				"string", DataType::Kind::String, false, false, m_source_range);
 		case Token::Type::Void:
-			return DataType("void", DataType::Kind::Void, false, m_source_range);
+			return DataType(
+				"void", DataType::Kind::Void, false, false, m_source_range);
 		case Token::Type::Identifier:
 			return DataType(
-				m_value, DataType::Kind::UserDefined, false, m_source_range);
+				m_value, DataType::Kind::UserDefined, false, false, m_source_range);
 		default:
 			return {};
 		}

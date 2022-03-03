@@ -19,13 +19,17 @@ set(SOURCES
         src/hyper/token.cpp
         src/hyper/utilities.cpp
         src/hyper/ast/ast_node.cpp
+        src/hyper/ast/declarations/attribute_declaration.cpp
         src/hyper/ast/declarations/declaration.cpp
         src/hyper/ast/declarations/export_declaration.cpp
         src/hyper/ast/declarations/extern_declaration.cpp
+        src/hyper/ast/declarations/field_declaration.cpp
         src/hyper/ast/declarations/function_declaration.cpp
         src/hyper/ast/declarations/import_declaration.cpp
         src/hyper/ast/declarations/module_declaration.cpp
         src/hyper/ast/declarations/parameter_declaration.cpp
+        src/hyper/ast/declarations/static_declaration.cpp
+        src/hyper/ast/declarations/struct_declaration.cpp
         src/hyper/ast/declarations/translation_unit_declaration.cpp
         src/hyper/ast/declarations/variable_declaration.cpp
         src/hyper/ast/expressions/binary_expression.cpp
@@ -34,6 +38,8 @@ set(SOURCES
         src/hyper/ast/expressions/conditional_expression.cpp
         src/hyper/ast/expressions/expression.cpp
         src/hyper/ast/expressions/identifier_expression.cpp
+        src/hyper/ast/expressions/initializer_list_expression.cpp
+        src/hyper/ast/expressions/member_expression.cpp
         src/hyper/ast/expressions/unary_expression.cpp
         src/hyper/ast/literals/bool_literal.cpp
         src/hyper/ast/literals/floating_literal.cpp

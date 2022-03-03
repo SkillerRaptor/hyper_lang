@@ -20,12 +20,16 @@ namespace hyper
 	public:
 		enum class Category : uint8_t
 		{
+			AttributeDeclaration,
 			ExternDeclaration,
+			FieldDeclaration,
 			FunctionDeclaration,
 			ImportDeclaration,
 			ModuleDeclaration,
 			ParameterDeclaration,
 			PublicDeclaration,
+			StaticDeclaration,
+			StructDeclaration,
 			TranslationUnitDeclaration,
 			VariableDeclaration,
 
@@ -34,6 +38,8 @@ namespace hyper
 			CastExpression,
 			ConditionalExpression,
 			IdentifierExpression,
+			InitializerListExpression,
+			MemberExpression,
 			UnaryExpression,
 
 			BoolLiteral,
