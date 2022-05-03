@@ -1,17 +1,18 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
 
 #include "hyper/backends/c/c_compiler.hpp"
 
-#include "hyper/logger.hpp"
-#include "hyper/utilities/platform_detection.hpp"
+#include "hyper_utilities/profiler.hpp"
+#include "hyper_utilities/logger.hpp"
+#include "hyper_utilities/platform_detection.hpp"
 
 #if HYPER_PLATFORM_WINDOWS
 #	include "hyper/backends/c/microsoft.hpp"
-#	include "hyper/utilities.hpp"
+#	include "hyper_utilities/utilities.hpp"
 
 #	include <filesystem>
 #endif
@@ -28,6 +29,8 @@ namespace hyper
 
 	void CCompiler::compile() const
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::string files;
 		for (const std::string &file : m_output_files)
 		{

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -7,7 +7,7 @@
 #include "hyper/backends/c/microsoft.hpp"
 
 #if defined(WIN32) || defined(WIN64)
-#	include "hyper/utilities.hpp"
+#	include "hyper_utilities/utilities.hpp"
 
 #	include <io.h>
 
@@ -305,7 +305,7 @@ namespace hyper
 			if (!version_data.best_name.empty())
 			{
 				m_sdk_version = 10;
-				m_sdk_root = Utilities::convert_wstring(version_data.best_name);
+				m_sdk_root = utilities::convert_wstring(version_data.best_name).value();
 				return;
 			}
 		}
@@ -322,7 +322,7 @@ namespace hyper
 			if (!version_data.best_name.empty())
 			{
 				m_sdk_version = 8;
-				m_sdk_root = Utilities::convert_wstring(version_data.best_name);
+				m_sdk_root = utilities::convert_wstring(version_data.best_name).value();
 				return;
 			}
 		}
@@ -418,8 +418,9 @@ namespace hyper
 			if (runtime_exists)
 			{
 				m_visual_studio_exe_path =
-					Utilities::convert_wstring(buffer_string) + "VC\\bin\\amd64";
-				m_visual_studio_library_path = Utilities::convert_wstring(lib_path);
+					utilities::convert_wstring(buffer_string).value() + "VC\\bin\\amd64";
+				m_visual_studio_library_path =
+					utilities::convert_wstring(lib_path).value();
 
 				RegCloseKey(vs7_keys);
 
@@ -571,8 +572,10 @@ namespace hyper
 																					 L"\\bin\\Hostx64\\x64";
 				delete[] version;
 
-				m_visual_studio_exe_path = Utilities::convert_wstring(link_exe_path);
-				m_visual_studio_library_path = Utilities::convert_wstring(library_path);
+				m_visual_studio_exe_path =
+					utilities::convert_wstring(link_exe_path).value();
+				m_visual_studio_library_path =
+					utilities::convert_wstring(library_path).value();
 				m_is_vs_2017 = true;
 				found = true;
 				break;

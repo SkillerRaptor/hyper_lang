@@ -1,16 +1,17 @@
 # Roadmap
 
-The following roadmap is always subject to change.
+The following roadmap is a list of things which will be implemented in the future.
 
-## Backends
+## Backend
+
 - [ ] Assembly
 - [ ] Intermediate Representation
 - [ ] Linker
 - [ ] Machine Code
 
 ## Features
-- [ ] Arrays
-- [ ] Attributes
+
+- [x] Attributes
 - [ ] Constructors
 - [ ] Coroutines
 - [ ] Destructors
@@ -22,31 +23,36 @@ The following roadmap is always subject to change.
 - [ ] Inheritance
 - [ ] Macros?
 - [ ] Match
-- [ ] Module Names
-- [ ] Pointers
+- [x] Module Names
+- [x] Pointers
 - [ ] Reflection
 - [ ] Scopes
-- [ ] Static
+- [x] Static
+- [x] Static Arrays
 - [ ] String formatting
-- [ ] Structs
+- [x] Structs
 - [ ] Templates
 - [ ] Unsafe Mode (Globals)
 - [x] Variables
 
 ## Ports
+
 - [ ] OpenGL
 - [ ] Vulkan
 
 ## Standard Library
-- [ ] ArrayList
-- [ ] Filesystem
-- [ ] HashMap
-- [ ] I/O
+
+- [ ] Array List
+- [ ] File System
+- [ ] Hash Map
+- [ ] Input / Output
 - [ ] Memory
+- [ ] Threads
 - [ ] Queue
 
 ## Tooling
+
 - [ ] Build System
-- [ ] Documentation Handler
+- [ ] Documentation Generator
 - [ ] Formatter
-- [ ] Static Analysis
+- [ ] Static Analysis (Extension)

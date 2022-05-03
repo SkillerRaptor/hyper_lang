@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -7,12 +7,16 @@
 #pragma once
 
 #include "hyper/ast/ast.hpp"
-#include "hyper/utilities.hpp"
+#include "hyper_utilities/profiler.hpp"
+#include "hyper_utilities/utilities.hpp"
 
 #include <type_traits>
 
 namespace hyper
 {
+	template <typename From, typename To>
+	concept ConvertibleTo = std::is_convertible_v<From, To>;
+
 	template <typename Derived>
 	class AstVisitor
 	{
@@ -21,6 +25,8 @@ namespace hyper
 
 		void traverse(const AstNode *ast_node)
 		{
+			HYPER_PROFILE_FUNCTION();
+
 			if (
 				ast_node->class_category() !=
 				AstNode::Category::TranslationUnitDeclaration)
@@ -36,6 +42,8 @@ namespace hyper
 	protected:
 		virtual void traverse_declaration(const Declaration *declaration)
 		{
+			HYPER_PROFILE_FUNCTION();
+
 			switch (declaration->class_category())
 			{
 			case AstNode::Category::ExternDeclaration:
@@ -66,6 +74,8 @@ namespace hyper
 
 		virtual void traverse_expression(const Expression *expression)
 		{
+			HYPER_PROFILE_FUNCTION();
+
 			if (expression->class_kind() == AstNode::Kind::Literal)
 			{
 				const Literal *literal = static_cast<const Literal *>(expression);
@@ -100,6 +110,8 @@ namespace hyper
 
 		virtual void traverse_literal(const Literal *literal)
 		{
+			HYPER_PROFILE_FUNCTION();
+
 			switch (literal->class_category())
 			{
 			case AstNode::Category::BoolLiteral:
@@ -121,6 +133,8 @@ namespace hyper
 
 		virtual void traverse_statement(const Statement *statement)
 		{
+			HYPER_PROFILE_FUNCTION();
+
 			if (statement->class_kind() == AstNode::Kind::Declaration)
 			{
 				const Declaration *declaration =

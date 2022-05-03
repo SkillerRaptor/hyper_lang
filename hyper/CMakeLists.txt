@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------------------
-# Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+# Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
 #
 # SPDX-License-Identifier: MIT
 #-------------------------------------------------------------------------------------------
@@ -8,70 +8,66 @@
 # hyper
 #-------------------------------------------------------------------------------------------
 set(SOURCES
-        src/main.cpp
-        src/hyper/compiler.cpp
-        src/hyper/data_type.cpp
-        src/hyper/diagnostics.cpp
-        src/hyper/formatter.cpp
-        src/hyper/lexer.cpp
-        src/hyper/parser.cpp
-        src/hyper/symbol_collector.cpp
-        src/hyper/token.cpp
-        src/hyper/utilities.cpp
-        src/hyper/ast/ast_node.cpp
-        src/hyper/ast/declarations/attribute_declaration.cpp
-        src/hyper/ast/declarations/declaration.cpp
-        src/hyper/ast/declarations/export_declaration.cpp
-        src/hyper/ast/declarations/extern_declaration.cpp
-        src/hyper/ast/declarations/field_declaration.cpp
-        src/hyper/ast/declarations/function_declaration.cpp
-        src/hyper/ast/declarations/import_declaration.cpp
-        src/hyper/ast/declarations/module_declaration.cpp
-        src/hyper/ast/declarations/parameter_declaration.cpp
-        src/hyper/ast/declarations/static_declaration.cpp
-        src/hyper/ast/declarations/struct_declaration.cpp
-        src/hyper/ast/declarations/translation_unit_declaration.cpp
-        src/hyper/ast/declarations/variable_declaration.cpp
-        src/hyper/ast/expressions/binary_expression.cpp
-        src/hyper/ast/expressions/call_expression.cpp
-        src/hyper/ast/expressions/cast_expression.cpp
-        src/hyper/ast/expressions/conditional_expression.cpp
-        src/hyper/ast/expressions/expression.cpp
-        src/hyper/ast/expressions/identifier_expression.cpp
-        src/hyper/ast/expressions/initializer_list_expression.cpp
-        src/hyper/ast/expressions/member_expression.cpp
-        src/hyper/ast/expressions/unary_expression.cpp
-        src/hyper/ast/literals/bool_literal.cpp
-        src/hyper/ast/literals/floating_literal.cpp
-        src/hyper/ast/literals/integer_literal.cpp
-        src/hyper/ast/literals/literal.cpp
-        src/hyper/ast/literals/string_literal.cpp
-        src/hyper/ast/statements/assign_statement.cpp
-        src/hyper/ast/statements/compound_assign_statement.cpp
-        src/hyper/ast/statements/compound_statement.cpp
-        src/hyper/ast/statements/expression_statement.cpp
-        src/hyper/ast/statements/if_statement.cpp
-        src/hyper/ast/statements/print_statement.cpp
-        src/hyper/ast/statements/return_statement.cpp
-        src/hyper/ast/statements/statement.cpp
-        src/hyper/ast/statements/while_statement.cpp
-        src/hyper/backends/c/c_compiler.cpp
-        src/hyper/backends/c/c_generator.cpp
-        src/hyper/backends/c/c_linker.cpp
-        src/hyper/backends/c/microsoft.cpp
-        src/hyper/utilities/args_parser.cpp
-				src/hyper/utilities/assertions.cpp
-				src/hyper/utilities/debugging.cpp
-        src/hyper/validators/scope_validator.cpp
-        src/hyper/validators/type_validator.cpp)
+		src/main.cpp
+		src/hyper/compiler.cpp
+		src/hyper/data_type.cpp
+		src/hyper/diagnostics.cpp
+		src/hyper/lexer.cpp
+		src/hyper/parser.cpp
+		src/hyper/symbol_collector.cpp
+		src/hyper/token.cpp
+		src/hyper/ast/ast_node.cpp
+		src/hyper/ast/declarations/attribute_declaration.cpp
+		src/hyper/ast/declarations/declaration.cpp
+		src/hyper/ast/declarations/export_declaration.cpp
+		src/hyper/ast/declarations/extern_declaration.cpp
+		src/hyper/ast/declarations/field_declaration.cpp
+		src/hyper/ast/declarations/function_declaration.cpp
+		src/hyper/ast/declarations/import_declaration.cpp
+		src/hyper/ast/declarations/module_declaration.cpp
+		src/hyper/ast/declarations/parameter_declaration.cpp
+		src/hyper/ast/declarations/static_declaration.cpp
+		src/hyper/ast/declarations/struct_declaration.cpp
+		src/hyper/ast/declarations/translation_unit_declaration.cpp
+		src/hyper/ast/declarations/variable_declaration.cpp
+		src/hyper/ast/expressions/binary_expression.cpp
+		src/hyper/ast/expressions/call_expression.cpp
+		src/hyper/ast/expressions/cast_expression.cpp
+		src/hyper/ast/expressions/conditional_expression.cpp
+		src/hyper/ast/expressions/expression.cpp
+		src/hyper/ast/expressions/identifier_expression.cpp
+		src/hyper/ast/expressions/initializer_list_expression.cpp
+		src/hyper/ast/expressions/member_expression.cpp
+		src/hyper/ast/expressions/unary_expression.cpp
+		src/hyper/ast/literals/bool_literal.cpp
+		src/hyper/ast/literals/floating_literal.cpp
+		src/hyper/ast/literals/integer_literal.cpp
+		src/hyper/ast/literals/literal.cpp
+		src/hyper/ast/literals/string_literal.cpp
+		src/hyper/ast/statements/assign_statement.cpp
+		src/hyper/ast/statements/compound_assign_statement.cpp
+		src/hyper/ast/statements/compound_statement.cpp
+		src/hyper/ast/statements/expression_statement.cpp
+		src/hyper/ast/statements/if_statement.cpp
+		src/hyper/ast/statements/print_statement.cpp
+		src/hyper/ast/statements/return_statement.cpp
+		src/hyper/ast/statements/statement.cpp
+		src/hyper/ast/statements/while_statement.cpp
+		src/hyper/backends/c/c_compiler.cpp
+		src/hyper/backends/c/c_generator.cpp
+		src/hyper/backends/c/c_linker.cpp
+		src/hyper/backends/c/microsoft.cpp
+		src/hyper/validators/scope_validator.cpp
+		src/hyper/validators/type_validator.cpp)
 
 add_executable(hyper ${SOURCES})
 target_link_libraries(
-        hyper
-        PRIVATE
-        project_options
-        project_warnings)
+		hyper
+		PRIVATE
+		project_options
+		project_warnings
+		hyper_utilities)
 target_include_directories(
-        hyper
-        PUBLIC
-        include)
+		hyper
+		PUBLIC
+		include)

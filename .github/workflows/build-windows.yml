@@ -41,16 +41,11 @@ jobs:
           set CC=${{ matrix.config.cc }}
           set CXX=${{ matrix.config.cxx }}
 
-          cmake . -B build -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+          cmake . -B build -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }} ${{ matrix.config.cmake_configure_options }}
 
       - name: Build
         run: |
           cmake --build build ${{ matrix.config.cmake_build_options }}
-
-      - name: Test
-        run: |
-          cd build\hyper_test\${{ matrix.config.build_type }}
-          .\hyper_test.exe ..\..\hyper\${{ matrix.config.build_type }}\hyper.exe
 
       - name: Prepare upload
         run: |

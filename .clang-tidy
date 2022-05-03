@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------------------
-# Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+# Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
 #
 # SPDX-License-Identifier: MIT
 #-------------------------------------------------------------------------------------------
@@ -17,14 +17,9 @@ Checks: '
   -concurrency-mt-unsafe,
   google-*,
   llvm-*,
-  -google-build-using-namespace,
-  -google-explicit-constructor,
   misc-*,
-  -misc-unused-parameters,
-  -misc-non-private-member-variables-in-classes,
   -misc-no-recursion,
   modernize-*,
-  -modernize-avoid-c-arrays,
   -modernize-use-auto,
   -modernize-use-trailing-return-type,
   performance-*,

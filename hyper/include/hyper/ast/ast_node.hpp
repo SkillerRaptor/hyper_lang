@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -73,9 +73,9 @@ namespace hyper
 
 		SourceRange source_range() const noexcept;
 
-		constexpr virtual Category class_category() const noexcept = 0;
-		constexpr virtual Kind class_kind() const noexcept = 0;
-		constexpr virtual std::string_view class_name() const noexcept = 0;
+		constexpr virtual Category class_category() const = 0;
+		constexpr virtual Kind class_kind() const = 0;
+		constexpr virtual std::string_view class_name() const = 0;
 
 	protected:
 		explicit AstNode(SourceRange source_range);

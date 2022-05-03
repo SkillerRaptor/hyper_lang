@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -8,8 +8,9 @@
 
 #include "hyper/ast/ast.hpp"
 #include "hyper/lexer.hpp"
-#include "hyper/utilities/assertions.hpp"
-#include "hyper/utilities/platform_detection.hpp"
+#include "hyper_utilities/assertions.hpp"
+#include "hyper_utilities/profiler.hpp"
+#include "hyper_utilities/platform_detection.hpp"
 
 namespace hyper
 {
@@ -25,11 +26,15 @@ namespace hyper
 
 	AstNode *Parser::parse()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		return parse_translation_unit_declaration();
 	}
 
 	Declaration *Parser::parse_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		switch (current_token().type())
 		{
 		case Token::Type::Extern:
@@ -55,10 +60,12 @@ namespace hyper
 
 	Declaration *Parser::parse_attribute_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange square_left_range =
 			consume(Token::Type::SquareLeftBracket).source_range();
 
-		TODO("Adding attributes array and without value forcing");
+		// TODO:
 
 		const std::string attribute = consume(Token::Type::Identifier).value();
 
@@ -80,10 +87,12 @@ namespace hyper
 
 	Declaration *Parser::parse_extern_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange extern_range =
 			consume(Token::Type::Extern).source_range();
 
-		TODO("Adding extern for structs");
+		// TODO:
 
 		if (match(Token::Type::RoundLeftBracket))
 		{
@@ -113,11 +122,13 @@ namespace hyper
 
 	Declaration *Parser::parse_field_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Token identifier_token = consume(Token::Type::Identifier);
 
 		consume(Token::Type::Colon);
 
-		TODO("Improve mutable parsing");
+		// TODO:
 
 		const DataType type = consume_type();
 
@@ -149,6 +160,8 @@ namespace hyper
 
 	Declaration *Parser::parse_function_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange function_range =
 			consume(Token::Type::Function).source_range();
 		const Identifier identifier = consume_identifier();
@@ -197,6 +210,8 @@ namespace hyper
 
 	Declaration *Parser::parse_import_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange import_range =
 			consume(Token::Type::Import).source_range();
 
@@ -224,7 +239,7 @@ namespace hyper
 			}
 		}
 
-		TODO("Finding better way to iterate every symbol and check after module");
+		// TODO:
 
 #if HYPER_PLATFORM_WINDOWS
 		const std::string slash = "\\";
@@ -248,7 +263,7 @@ namespace hyper
 		}
 
 		file_name += ".hyper";
-		path = Utilities::replace_string(path, "::", slash);
+		utilities::replace_string(path, "::", slash);
 		const std::string file = path + slash + file_name;
 
 		const Position end_position =
@@ -272,6 +287,8 @@ namespace hyper
 
 	Declaration *Parser::parse_module_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange module_range =
 			consume(Token::Type::Module).source_range();
 
@@ -334,6 +351,8 @@ namespace hyper
 
 	Declaration *Parser::parse_parameter_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Token identifier_token = consume(Token::Type::Identifier);
 
 		consume(Token::Type::Colon);
@@ -367,6 +386,8 @@ namespace hyper
 
 	Declaration *Parser::parse_public_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange public_range =
 			consume(Token::Type::Public).source_range();
 
@@ -411,10 +432,12 @@ namespace hyper
 
 	Declaration *Parser::parse_static_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange static_range =
 			consume(Token::Type::Static).source_range();
 
-		TODO("Adding static for more expressions");
+		// TODO:
 
 		if (!match(Token::Type::Identifier))
 		{
@@ -437,6 +460,8 @@ namespace hyper
 
 	Declaration *Parser::parse_struct_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange struct_range =
 			consume(Token::Type::Struct).source_range();
 
@@ -464,7 +489,7 @@ namespace hyper
 
 			if (declaration == nullptr)
 			{
-				TODO("Print error message");
+				// TODO:
 				return nullptr;
 			}
 
@@ -491,6 +516,8 @@ namespace hyper
 
 	Declaration *Parser::parse_translation_unit_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::vector<Declaration *> declarations = {};
 		while (!match(Token::Type::Eof))
 		{
@@ -518,6 +545,8 @@ namespace hyper
 
 	Declaration *Parser::parse_variable_declaration()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange let_range = consume(Token::Type::Let).source_range();
 
 		const Token identifier_token = consume(Token::Type::Identifier);
@@ -565,6 +594,8 @@ namespace hyper
 
 	Expression *Parser::parse_binary_expression(uint8_t precedence)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		Expression *left = parse_prefix_expression();
 
 		const Token token = [this, &left]()
@@ -695,6 +726,8 @@ namespace hyper
 
 	Expression *Parser::parse_call_expression()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Identifier identifier = consume_identifier();
 
 		consume(Token::Type::RoundLeftBracket);
@@ -724,13 +757,17 @@ namespace hyper
 
 	Expression *Parser::parse_identifier_expression()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Identifier identifier = consume_identifier();
 		return new IdentifierExpression(identifier.source_range, identifier);
 	}
 
 	Expression *Parser::parse_initializer_list_expression()
 	{
-		TODO("Improve parsing for initializer list expression");
+		HYPER_PROFILE_FUNCTION();
+
+		// TODO:
 
 		const SourceRange left_curly_range =
 			consume(Token::Type::CurlyLeftBracket).source_range();
@@ -781,6 +818,8 @@ namespace hyper
 
 	Expression *Parser::parse_member_expression()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Identifier struct_identifier = consume_identifier();
 
 		const bool is_arrow = match(Token::Type::Arrow);
@@ -799,6 +838,8 @@ namespace hyper
 
 	Expression *Parser::parse_paren_expression()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		consume(Token::Type::RoundLeftBracket);
 
 		Expression *expression = parse_binary_expression(0);
@@ -810,6 +851,8 @@ namespace hyper
 
 	Expression *Parser::parse_postfix_expression()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Identifier identifier = consume_identifier();
 		if (match(Token::Type::RoundLeftBracket))
 		{
@@ -872,6 +915,8 @@ namespace hyper
 
 	Expression *Parser::parse_prefix_expression()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Token &operation_token = current_token();
 
 		const UnaryExpression::Operation::Kind kind = [&operation_token]()
@@ -921,6 +966,8 @@ namespace hyper
 
 	Expression *Parser::parse_primary_expression()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		switch (current_token().type())
 		{
 		case Token::Type::Identifier:
@@ -946,30 +993,40 @@ namespace hyper
 
 	Literal *Parser::parse_bool_literal()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Token boolean = consume(Token::Type::BoolLiteral);
 		return new BoolLiteral(boolean.source_range(), boolean.value() == "true");
 	}
 
 	Literal *Parser::parse_floating_literal()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Token floating = consume(Token::Type::FloatingLiteral);
 		return new FloatingLiteral(floating.source_range(), floating.value());
 	}
 
 	Literal *Parser::parse_integer_literal()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Token integer = consume(Token::Type::IntegerLiteral);
 		return new IntegerLiteral(integer.source_range(), integer.value());
 	}
 
 	Literal *Parser::parse_string_literal()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Token string = consume(Token::Type::StringLiteral);
 		return new StringLiteral(string.source_range(), string.value());
 	}
 
 	Statement *Parser::parse_statement()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		switch (current_token().type())
 		{
 		case Token::Type::Increment:
@@ -1001,6 +1058,8 @@ namespace hyper
 
 	Statement *Parser::parse_assign_statement()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Identifier identifier = consume_identifier();
 		if (match(Token::Type::RoundLeftBracket))
 		{
@@ -1011,7 +1070,7 @@ namespace hyper
 			return parse_expression_statement(parse_call_expression());
 		}
 
-		TODO("Postfix can be changed to binary if binary returns null.");
+		// TODO:
 		if (match(Token::Type::Increment) || match(Token::Type::Decrement))
 		{
 			for (size_t i = 0; i < identifier.count; ++i)
@@ -1053,6 +1112,8 @@ namespace hyper
 
 	Statement *Parser::parse_compound_statement()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange curly_left_range =
 			consume(Token::Type::CurlyLeftBracket).source_range();
 
@@ -1095,6 +1156,8 @@ namespace hyper
 
 	Statement *Parser::parse_compound_assign_statement()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Token identifier_token = consume(Token::Type::Identifier);
 
 		const CompoundAssignStatement::Operation operation = [this]()
@@ -1151,12 +1214,16 @@ namespace hyper
 
 	Statement *Parser::parse_expression_statement(Expression *expression)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		return new ExpressionStatement(
 			expression->source_range(), std::move(expression));
 	}
 
 	Statement *Parser::parse_if_statement()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange if_range = consume(Token::Type::If).source_range();
 
 		consume(Token::Type::RoundLeftBracket);
@@ -1193,6 +1260,8 @@ namespace hyper
 
 	Statement *Parser::parse_print_statement()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange print_range = consume(Token::Type::Print).source_range();
 
 		consume(Token::Type::RoundLeftBracket);
@@ -1211,6 +1280,8 @@ namespace hyper
 
 	Statement *Parser::parse_return_statement()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange return_range =
 			consume(Token::Type::Return).source_range();
 
@@ -1231,6 +1302,8 @@ namespace hyper
 
 	Statement *Parser::parse_while_statement()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const SourceRange while_range = consume(Token::Type::While).source_range();
 
 		consume(Token::Type::RoundLeftBracket);
@@ -1297,6 +1370,8 @@ namespace hyper
 
 	Token Parser::consume() noexcept
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		if (m_token_index < m_tokens.size())
 		{
 			++m_token_index;
@@ -1307,6 +1382,8 @@ namespace hyper
 
 	Token Parser::consume(Token::Type token_type) noexcept
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		if (!match(token_type))
 		{
 			const Token &token = current_token();
@@ -1338,6 +1415,8 @@ namespace hyper
 
 	DataType Parser::consume_type()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::string value;
 		DataType::Kind kind = DataType::Kind::Invalid;
 		Position start_position = {};
@@ -1368,7 +1447,7 @@ namespace hyper
 				kind = data_type.kind();
 			}
 
-			TODO("Improve position finding");
+			// TODO:
 			if (start_position.line == 0)
 			{
 				start_position = token.start_position();
@@ -1396,7 +1475,7 @@ namespace hyper
 			if (match(Token::Type::IntegerLiteral))
 			{
 				consume();
-				TODO("Adding array size to type");
+				// TODO:
 			}
 
 			consume(Token::Type::SquareRightBracket);
@@ -1419,6 +1498,8 @@ namespace hyper
 
 	Identifier Parser::consume_identifier()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::string value;
 		Position start_position = {};
 		Position end_position = {};
@@ -1439,7 +1520,7 @@ namespace hyper
 
 			value += token.value();
 
-			TODO("Improve position finding");
+			// TODO:
 			if (start_position.line == 0)
 			{
 				start_position = token.start_position();

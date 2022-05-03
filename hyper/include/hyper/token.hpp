@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -21,7 +21,6 @@ namespace hyper
 		{
 			Invalid = 0,
 
-			// NOTE: Special
 			Eof,
 			Arrow,
 			Colon,
@@ -29,8 +28,8 @@ namespace hyper
 			Dot,
 			Identifier,
 			Semicolon,
+			QuestionMark,
 
-			// NOTE: Operators (Assignment)
 			Assign,
 			PlusEqual,
 			MinusEqual,
@@ -43,11 +42,9 @@ namespace hyper
 			LeftShiftEqual,
 			RightShiftEqual,
 
-			// NOTE: Operators (Increment / Decrement)
 			Increment,
 			Decrement,
 
-			// NOTE: Operators (Arithmetic)
 			Plus,
 			Minus,
 			Star,
@@ -60,12 +57,10 @@ namespace hyper
 			LeftShift,
 			RightShift,
 
-			// NOTE: Operators (Logical)
 			LogicalNot,
 			LogicalAnd,
 			LogicalOr,
 
-			// NOTE: Operators (Comparison)
 			Equal,
 			NotEqual,
 			LessThan,
@@ -73,9 +68,6 @@ namespace hyper
 			LessEqual,
 			GreaterEqual,
 
-			QuestionMark,
-
-			// NOTE: Brackets
 			CurlyLeftBracket,
 			CurlyRightBracket,
 			SquareLeftBracket,
@@ -83,28 +75,24 @@ namespace hyper
 			RoundLeftBracket,
 			RoundRightBracket,
 
-			// NOTE: Keywords (Control Flow)
 			Break,
 			Else,
 			If,
 			Return,
 			While,
 
-			// NOTE: Keywords (Modules)
 			Module,
 			Extern,
 			Public,
 			Static,
 			Import,
 
-			// NOTE: Keywords (Definitions)
 			As,
 			Function,
 			Let,
 			Mutable,
 			Struct,
 
-			// NOTE: Types
 			Bool,
 			Int8,
 			Int16,
@@ -121,13 +109,11 @@ namespace hyper
 			String,
 			Void,
 
-			// NOTE: Literals
 			BoolLiteral,
 			FloatingLiteral,
 			IntegerLiteral,
 			StringLiteral,
 
-			// NOTE: Debug Purpose Only!
 			Print,
 		};
 

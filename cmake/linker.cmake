@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------------------
-# Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+# Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
 #
 # SPDX-License-Identifier: MIT
 #-------------------------------------------------------------------------------------------
@@ -16,21 +16,21 @@ set(USER_LINKER_OPTION_VALUES "lld" "gold" "bfd")
 set_property(CACHE USER_LINKER_OPTION PROPERTY STRINGS ${USER_LINKER_OPTION_VALUES})
 list(FIND USER_LINKER_OPTION_VALUES ${USER_LINKER_OPTION} USER_LINKER_OPTION_INDEX)
 if (${USER_LINKER_OPTION_INDEX} EQUAL -1)
-    message(STATUS "Using custom linker: '${USER_LINKER_OPTION}', explicitly supported entries are ${USER_LINKER_OPTION_VALUES}")
+		message(STATUS "Using custom linker: '${USER_LINKER_OPTION}', explicitly supported entries are ${USER_LINKER_OPTION_VALUES}")
 endif ()
 
 function(configure_linker project_name)
-    if (NOT ENABLE_USER_LINKER)
-        return()
-    endif ()
+		if (NOT ENABLE_USER_LINKER)
+				return()
+		endif ()
 
-    set(LINKER_FLAG "-fuse-ld=${USER_LINKER_OPTION}")
+		set(LINKER_FLAG "-fuse-ld=${USER_LINKER_OPTION}")
 
-    check_cxx_compiler_flag(${LINKER_FLAG} CXX_SUPPORTS_USER_LINKER)
-    if (CXX_SUPPORTS_USER_LINKER)
-        target_compile_options(
-                ${project_name}
-                INTERFACE
-                ${LINKER_FLAG})
-    endif ()
+		check_cxx_compiler_flag(${LINKER_FLAG} CXX_SUPPORTS_USER_LINKER)
+		if (CXX_SUPPORTS_USER_LINKER)
+				target_compile_options(
+						${project_name}
+						INTERFACE
+						${LINKER_FLAG})
+		endif ()
 endfunction()

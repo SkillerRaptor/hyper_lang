@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -15,7 +15,7 @@ namespace hyper
 	public:
 		explicit Statement(SourceRange source_range);
 
-		constexpr std::string_view class_name() const noexcept override
+		constexpr std::string_view class_name() const override
 		{
 			return "Statement";
 		}

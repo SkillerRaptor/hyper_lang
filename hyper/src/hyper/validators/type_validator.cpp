@@ -1,10 +1,12 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
 
 #include "hyper/validators/type_validator.hpp"
+
+#include "hyper_utilities/profiler.hpp"
 
 namespace hyper
 {
@@ -19,6 +21,8 @@ namespace hyper
 	bool TypeValidator::visit_function_declaration(
 		const FunctionDeclaration *function_declaration)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_current_function = find_symbol(function_declaration->identifier());
 
 		return true;
@@ -27,6 +31,8 @@ namespace hyper
 	bool TypeValidator::visit_variable_declaration(
 		const VariableDeclaration *variable_declaration)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		if (!variable_declaration->expression())
 		{
 			return true;
@@ -49,6 +55,8 @@ namespace hyper
 	bool TypeValidator::visit_call_expression(
 		const CallExpression *call_expression)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		for (const Expression *argument : call_expression->arguments())
 		{
 			traverse_expression(argument);
@@ -62,6 +70,8 @@ namespace hyper
 	bool TypeValidator::visit_cast_expression(
 		const CastExpression *cast_expression)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		traverse_expression(cast_expression->expression());
 
 		m_current_data_type = cast_expression->type();
@@ -71,6 +81,8 @@ namespace hyper
 
 	bool TypeValidator::visit_bool_literal(const BoolLiteral *bool_literal)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const DataType data_type(
 			"bool", DataType::Kind::Bool, false, false, bool_literal->source_range());
 		m_current_data_type = data_type;
@@ -81,6 +93,8 @@ namespace hyper
 	bool TypeValidator::visit_floating_literal(
 		const FloatingLiteral *floating_literal)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const DataType data_type(
 			"float32",
 			DataType::Kind::Float32,
@@ -95,6 +109,8 @@ namespace hyper
 	bool TypeValidator::visit_integer_literal(
 		const IntegerLiteral *integer_literal)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const DataType data_type(
 			"int32",
 			DataType::Kind::Int32,
@@ -108,6 +124,8 @@ namespace hyper
 
 	bool TypeValidator::visit_string_literal(const StringLiteral *string_literal)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const DataType data_type(
 			"string",
 			DataType::Kind::String,

@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
 
 #pragma once
 
-#include "hyper/utilities/platform_detection.hpp"
+#include "hyper_utilities/platform_detection.hpp"
 
 #if HYPER_PLATFORM_WINDOWS
 

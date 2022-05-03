@@ -18,17 +18,17 @@ namespace hyper
 
 		const Declaration *declaration() const;
 
-		constexpr Category class_category() const noexcept override
+		constexpr Category class_category() const override
 		{
 			return AstNode::Category::StaticDeclaration;
 		}
 
-		constexpr Kind class_kind() const noexcept override
+		constexpr Kind class_kind() const override
 		{
 			return AstNode::Kind::Declaration;
 		}
 
-		constexpr std::string_view class_name() const noexcept override
+		constexpr std::string_view class_name() const override
 		{
 			return "StaticDeclaration";
 		}

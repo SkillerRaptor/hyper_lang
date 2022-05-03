@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -23,17 +23,17 @@ namespace hyper
 
 		std::span<Statement *const> statements() const;
 
-		constexpr Category class_category() const noexcept override
+		constexpr Category class_category() const override
 		{
 			return AstNode::Category::CompoundStatement;
 		}
 
-		constexpr Kind class_kind() const noexcept override
+		constexpr Kind class_kind() const override
 		{
 			return AstNode::Kind::Statement;
 		}
 
-		constexpr std::string_view class_name() const noexcept override
+		constexpr std::string_view class_name() const override
 		{
 			return "CompoundStatement";
 		}

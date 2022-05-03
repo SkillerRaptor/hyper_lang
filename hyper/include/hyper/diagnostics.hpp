@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
 
 #pragma once
 
-#include "hyper/logger.hpp"
 #include "hyper/source_range.hpp"
-#include "hyper/utilities.hpp"
+#include "hyper_utilities/logger.hpp"
+#include "hyper_utilities/utilities.hpp"
 
 #include <string>
 #include <string_view>
@@ -65,10 +65,10 @@ namespace hyper
 			Position start = source_range.start;
 			Position end = source_range.end;
 
-			const size_t digit_count = Utilities::count_digits(end.line);
+			const size_t digit_count = utilities::count_digits(end.line);
 			const std::string spaces(digit_count, ' ');
 			const std::string extra_spaces(
-				digit_count - Utilities::count_digits(start.line), ' ');
+				digit_count - utilities::count_digits(start.line), ' ');
 
 			Logger::log("{}--> {}:{}:{}\n", spaces, m_file, start.line, start.column);
 			Logger::log("{} |\n", spaces);
@@ -82,7 +82,7 @@ namespace hyper
 					"{}{} | {}\n",
 					extra_spaces,
 					start.line,
-					Utilities::read_line(m_text, start.line));
+					utilities::find_line(m_text, start.line).value());
 				Logger::log("{} | {}^{}\n", spaces, start_spaces, tilde_pointers);
 			}
 			else
@@ -94,10 +94,12 @@ namespace hyper
 					"{}{} |   {}\n",
 					extra_spaces,
 					start.line,
-					Utilities::read_line(m_text, start.line));
+					utilities::find_line(m_text, start.line).value());
 				Logger::log("{} |  {}^\n", spaces, start_underscore);
 				Logger::log(
-					"{} | | {}\n", end.line, Utilities::read_line(m_text, end.line));
+					"{} | | {}\n",
+					end.line,
+					utilities::find_line(m_text, end.line).value());
 				Logger::log("{} | |{}^\n", spaces, end_underscore);
 			}
 

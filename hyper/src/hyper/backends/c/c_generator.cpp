@@ -1,10 +1,12 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
 
 #include "hyper/backends/c/c_generator.hpp"
+
+#include "hyper_utilities/profiler.hpp"
 
 #include <algorithm>
 #include <filesystem>
@@ -20,6 +22,8 @@ namespace hyper
 	bool CGenerator::visit_export_declaration(
 		const PublicDeclaration *export_declaration)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Statement *statement = export_declaration->statement();
 		if (statement->class_category() != AstNode::Category::FunctionDeclaration)
 		{
@@ -39,6 +43,8 @@ namespace hyper
 	bool CGenerator::visit_extern_declaration(
 		const ExternDeclaration *extern_declaration)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Statement *statement = extern_declaration->statement();
 		if (statement->class_category() != AstNode::Category::FunctionDeclaration)
 		{
@@ -57,6 +63,8 @@ namespace hyper
 	bool CGenerator::visit_function_declaration(
 		const FunctionDeclaration *function_declaration)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const std::string type = map_data_type(function_declaration->return_type());
 		m_source << '\n'
 						 << type << " " << function_declaration->identifier().value << '(';
@@ -81,6 +89,8 @@ namespace hyper
 	bool CGenerator::visit_import_declaration(
 		const ImportDeclaration *import_declaration)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_header << "#include <" << import_declaration->file_name() << ".h>\n";
 
 		return true;
@@ -89,6 +99,8 @@ namespace hyper
 	bool CGenerator::visit_parameter_declaration(
 		const ParameterDeclaration *parameter_declaration)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const std::string type = map_data_type(parameter_declaration->type());
 
 		if (
@@ -107,11 +119,13 @@ namespace hyper
 	bool CGenerator::visit_translation_unit_declaration(
 		const TranslationUnitDeclaration *translation_unit_declaration)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const std::filesystem::path path = m_output_file;
 		const std::string file_name = path.filename().string();
 
 		m_source << "/*\n";
-		m_source << " * Copyright (c) 2020-present, SkillerRaptor "
+		m_source << " * Copyright (c) 2022-present, SkillerRaptor "
 								"<skillerraptor@protonmail.com>\n";
 		m_source << " *\n";
 		m_source << " * SPDX-License-Identifier: MIT\n";
@@ -120,7 +134,7 @@ namespace hyper
 		m_source << "#include \"" << file_name << ".h\"\n";
 
 		m_header << "/*\n";
-		m_header << " * Copyright (c) 2020-present, SkillerRaptor "
+		m_header << " * Copyright (c) 2022-present, SkillerRaptor "
 								"<skillerraptor@protonmail.com>\n";
 		m_header << " *\n";
 		m_header << " * SPDX-License-Identifier: MIT\n";
@@ -169,6 +183,8 @@ namespace hyper
 	bool CGenerator::visit_variable_declaration(
 		const VariableDeclaration *variable_declaration)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const std::string type = map_data_type(variable_declaration->type());
 
 		m_source << m_indention;
@@ -198,6 +214,8 @@ namespace hyper
 	bool CGenerator::visit_binary_expression(
 		const BinaryExpression *binary_expression)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		traverse_expression(binary_expression->left());
 
 		m_source << ' ';
@@ -271,6 +289,8 @@ namespace hyper
 
 	bool CGenerator::visit_call_expression(const CallExpression *call_expression)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << call_expression->identifier().value << "(";
 
 		for (const Expression *argument : call_expression->arguments())
@@ -290,6 +310,8 @@ namespace hyper
 
 	bool CGenerator::visit_cast_expression(const CastExpression *cast_expression)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const std::string type = map_data_type(cast_expression->type());
 		m_source << "((" << type << ") (";
 		traverse_expression(cast_expression->expression());
@@ -301,6 +323,8 @@ namespace hyper
 	bool CGenerator::visit_conditional_expression(
 		const ConditionalExpression *conditional_expression)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		traverse_expression(conditional_expression->condition());
 		m_source << " ? ";
 		traverse_expression(conditional_expression->true_expression());
@@ -313,6 +337,8 @@ namespace hyper
 	bool CGenerator::visit_identifier_expression(
 		const IdentifierExpression *identifier_expression)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << identifier_expression->identifier().value;
 		return true;
 	}
@@ -320,6 +346,8 @@ namespace hyper
 	bool CGenerator::visit_unary_expression(
 		const UnaryExpression *unary_expression)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		switch (unary_expression->operation().kind)
 		{
 		case UnaryExpression::Operation::Kind::Invalid:
@@ -362,6 +390,8 @@ namespace hyper
 
 	bool CGenerator::visit_bool_literal(const BoolLiteral *bool_literal)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << (bool_literal->boolean() ? "true" : "false");
 		return true;
 	}
@@ -369,18 +399,24 @@ namespace hyper
 	bool CGenerator::visit_floating_literal(
 		const FloatingLiteral *floating_literal)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << floating_literal->floating();
 		return true;
 	}
 
 	bool CGenerator::visit_integer_literal(const IntegerLiteral *integer_literal)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << integer_literal->integer();
 		return true;
 	}
 
 	bool CGenerator::visit_string_literal(const StringLiteral *string_literal)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << string_literal->string();
 		return true;
 	}
@@ -388,6 +424,8 @@ namespace hyper
 	bool CGenerator::visit_assign_statement(
 		const AssignStatement *assign_statement)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << m_indention << assign_statement->identifier().value << " = ";
 		traverse_expression(assign_statement->expression());
 		m_source << ";\n";
@@ -398,6 +436,8 @@ namespace hyper
 	bool CGenerator::visit_compound_assign_statement(
 		const CompoundAssignStatement *compound_assign_statement)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << m_indention << compound_assign_statement->identifier().value
 						 << " ";
 
@@ -447,6 +487,8 @@ namespace hyper
 	bool CGenerator::visit_expression_statement(
 		const ExpressionStatement *expression_statement)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << m_indention;
 		traverse_expression(expression_statement->expression());
 		m_source << ";\n";
@@ -456,6 +498,8 @@ namespace hyper
 
 	bool CGenerator::visit_if_statement(const IfStatement *if_statement)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << m_indention << "if (";
 		traverse_expression(if_statement->condition());
 		m_source << ")\n";
@@ -478,6 +522,8 @@ namespace hyper
 
 	bool CGenerator::visit_print_statement(const PrintStatement *print_statement)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << m_indention << "printf(\"%llu\\n\", ";
 
 		traverse_expression(print_statement->expression());
@@ -490,6 +536,8 @@ namespace hyper
 	bool CGenerator::visit_return_statement(
 		const ReturnStatement *return_statement)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << m_indention << "return";
 
 		if (return_statement->expression())
@@ -505,6 +553,8 @@ namespace hyper
 
 	bool CGenerator::visit_while_statement(const WhileStatement *while_statement)
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << m_indention << "while (";
 		traverse_expression(while_statement->condition());
 		m_source << ")\n";
@@ -518,12 +568,16 @@ namespace hyper
 
 	void CGenerator::start_scope()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_source << m_indention << "{\n";
 		m_indention += '\t';
 	}
 
 	void CGenerator::end_scope()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		m_indention.pop_back();
 		m_source << m_indention << "}\n";
 	}

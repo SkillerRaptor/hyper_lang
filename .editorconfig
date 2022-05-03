@@ -18,3 +18,8 @@ charset = utf-8
 [*.{c,cpp,h,hpp}]
 indent_style = tabs
 indent_size = 2
+
+# Hyper files
+[*.hyper]
+indent_style = tabs
+indent_size = 2

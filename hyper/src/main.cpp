@@ -1,67 +1,82 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
 
 #include "hyper/compiler.hpp"
-#include "hyper/utilities/args_parser.hpp"
+#include "hyper_utilities/args_parser.hpp"
+#include "hyper_utilities/logger.hpp"
+#include "hyper_utilities/profiler.hpp"
+#include "hyper_utilities/utilities.hpp"
 
 int main(int argc, char **argv)
 {
-	bool freestanding = false;
-	std::string_view linker_script = "";
-	std::string_view output_file = "";
-	std::vector<std::string_view> includes = {};
-	std::vector<std::string_view> files = {};
+	HYPER_PROFILE_BEGIN("profile.json");
+
+	hyper::Compiler::Options options = {};
 
 	hyper::ArgsParser args_parser = {};
 	args_parser.set_version("Hyper version 1.0.0");
+
 	args_parser.add_option(
-		freestanding,
+		options.freestanding,
 		"Tells the compiler to use the freestanding mode",
 		"freestanding",
-		"fs");
+		"");
+
 	args_parser.add_option(
-		linker_script,
+		options.linker_script,
 		"Tells the compiler to use <file> as linker script",
 		"linker-script",
-		"ls",
+		"l",
 		"file");
+
 	args_parser.add_option(
-		output_file,
-		"Tells the compiler to output into <file>",
+		options.output_directory,
+		"Tells the compiler to output the files into <directory>",
+		"output-dir",
+		"d",
+		"directory");
+
+	args_parser.add_option(
+		options.output_executable,
+		"Tells the compiler to output the executable as <file>",
 		"output",
 		"o",
 		"file");
+
 	args_parser.add_option(
-		includes,
+		options.include_directories,
 		"Adds <directory> to the compiler's include paths",
 		"include",
 		"I",
 		"directory");
+
 	args_parser.add_positional_argument(
-		files, "Adds <file> to the compiler's target", "file");
+		options.source_files, "Adds <files> to the compiler's target", "files");
 
 	if (!args_parser.parse(argc, argv))
 	{
 		return EXIT_SUCCESS;
 	}
 
-	if (files.empty())
+	if (options.source_files.empty())
 	{
 		hyper::Logger::error("There was no input files specified\n");
 		return EXIT_FAILURE;
 	}
 
-	const hyper::Compiler::Arguments arguments = {
-		.freestanding = freestanding,
-		.linker_script = linker_script,
-		.output_file = output_file,
-		.includes = includes,
-		.files = files,
-	};
+	const hyper::NonNullUniquePtr<hyper::Compiler> compiler =
+		hyper::make_non_null_unqiue<hyper::Compiler>(options);
+	if (compiler == nullptr)
+	{
+		return EXIT_FAILURE;
+	}
 
-	const hyper::Compiler compiler(arguments);
-	return compiler.compile();
+	const int status = compiler->compile();
+
+	HYPER_PROFILE_END();
+
+	return status;
 }

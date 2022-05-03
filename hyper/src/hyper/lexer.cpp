@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-present, SkillerRaptor <skillerraptor@protonmail.com>
+ * Copyright (c) 2022-present, SkillerRaptor <skillerraptor@protonmail.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -7,26 +7,26 @@
 #include "hyper/lexer.hpp"
 
 #include "hyper/diagnostics.hpp"
-#include "hyper/utilities.hpp"
+#include "hyper_utilities/profiler.hpp"
+#include "hyper_utilities/utilities.hpp"
 
 namespace hyper
 {
 	Lexer::Lexer(const Diagnostics &diagnostics, std::string_view text)
 		: m_diagnostics(diagnostics)
-		, m_text(std::move(text))
+		, m_text(text)
 	{
 	}
 
 	std::vector<Token> Lexer::lex()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::vector<Token> tokens = {};
 		while (!has_reached_end())
 		{
 			const Token token = next_token();
-			if (token.type() != Token::Type::Invalid)
-			{
-				tokens.emplace_back(token);
-			}
+			tokens.emplace_back(token);
 		}
 
 		const SourceRange source_range = {
@@ -47,6 +47,8 @@ namespace hyper
 
 	Token Lexer::next_token()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		advance();
 		skip_whitespace();
 
@@ -443,6 +445,8 @@ namespace hyper
 
 	Token Lexer::lex_block_comment() noexcept
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		const Position start = {
 			.line = m_line,
 			.column = m_column,
@@ -481,6 +485,8 @@ namespace hyper
 
 	std::string Lexer::lex_string()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::string string(1, m_current_char);
 
 		const Position start = {
@@ -512,6 +518,8 @@ namespace hyper
 
 	std::string Lexer::lex_identifier()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::string string(1, m_current_char);
 		while (std::isalpha(peek()) || std::isdigit(peek()) || peek() == '_')
 		{
@@ -524,6 +532,8 @@ namespace hyper
 
 	std::pair<std::string, Token::Type> Lexer::lex_numeric_literal()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		if (m_current_char != '0')
 		{
 			return lex_decimal_literal();
@@ -544,6 +554,8 @@ namespace hyper
 
 	std::pair<std::string, Token::Type> Lexer::lex_decimal_literal()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::string string(1, m_current_char);
 
 		constexpr auto is_decimal = [](char character) noexcept
@@ -576,6 +588,8 @@ namespace hyper
 
 	std::string Lexer::lex_binary_literal()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::string string = "0b";
 		advance();
 
@@ -595,6 +609,8 @@ namespace hyper
 
 	std::string Lexer::lex_oct_literal()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::string string = "0o";
 		advance();
 
@@ -614,6 +630,8 @@ namespace hyper
 
 	std::string Lexer::lex_hex_literal()
 	{
+		HYPER_PROFILE_FUNCTION();
+
 		std::string string = "0x";
 		advance();
 
@@ -635,72 +653,72 @@ namespace hyper
 
 	Token::Type Lexer::fetch_type(std::string_view value) const noexcept
 	{
-		switch (Utilities::hash(value))
+		switch (utilities::hash_string(value))
 		{
-		case Utilities::hash("as"):
+		case utilities::hash_string("as"):
 			return Token::Type::As;
-		case Utilities::hash("break"):
+		case utilities::hash_string("break"):
 			return Token::Type::Break;
-		case Utilities::hash("else"):
+		case utilities::hash_string("else"):
 			return Token::Type::Else;
-		case Utilities::hash("if"):
+		case utilities::hash_string("if"):
 			return Token::Type::If;
-		case Utilities::hash("return"):
+		case utilities::hash_string("return"):
 			return Token::Type::Return;
-		case Utilities::hash("while"):
+		case utilities::hash_string("while"):
 			return Token::Type::While;
-		case Utilities::hash("module"):
+		case utilities::hash_string("module"):
 			return Token::Type::Module;
-		case Utilities::hash("extern"):
+		case utilities::hash_string("extern"):
 			return Token::Type::Extern;
-		case Utilities::hash("public"):
+		case utilities::hash_string("public"):
 			return Token::Type::Public;
-		case Utilities::hash("static"):
+		case utilities::hash_string("static"):
 			return Token::Type::Static;
-		case Utilities::hash("import"):
+		case utilities::hash_string("import"):
 			return Token::Type::Import;
-		case Utilities::hash("function"):
+		case utilities::hash_string("function"):
 			return Token::Type::Function;
-		case Utilities::hash("let"):
+		case utilities::hash_string("let"):
 			return Token::Type::Let;
-		case Utilities::hash("mutable"):
+		case utilities::hash_string("mutable"):
 			return Token::Type::Mutable;
-		case Utilities::hash("struct"):
+		case utilities::hash_string("struct"):
 			return Token::Type::Struct;
-		case Utilities::hash("bool"):
+		case utilities::hash_string("bool"):
 			return Token::Type::Bool;
-		case Utilities::hash("int8"):
+		case utilities::hash_string("int8"):
 			return Token::Type::Int8;
-		case Utilities::hash("int16"):
+		case utilities::hash_string("int16"):
 			return Token::Type::Int16;
-		case Utilities::hash("int32"):
+		case utilities::hash_string("int32"):
 			return Token::Type::Int32;
-		case Utilities::hash("int64"):
+		case utilities::hash_string("int64"):
 			return Token::Type::Int64;
-		case Utilities::hash("uint8"):
+		case utilities::hash_string("uint8"):
 			return Token::Type::Uint8;
-		case Utilities::hash("uint16"):
+		case utilities::hash_string("uint16"):
 			return Token::Type::Uint16;
-		case Utilities::hash("uint32"):
+		case utilities::hash_string("uint32"):
 			return Token::Type::Uint32;
-		case Utilities::hash("uint64"):
+		case utilities::hash_string("uint64"):
 			return Token::Type::Uint64;
-		case Utilities::hash("isize"):
+		case utilities::hash_string("isize"):
 			return Token::Type::ISize;
-		case Utilities::hash("usize"):
+		case utilities::hash_string("usize"):
 			return Token::Type::USize;
-		case Utilities::hash("float32"):
+		case utilities::hash_string("float32"):
 			return Token::Type::Float32;
-		case Utilities::hash("float64"):
+		case utilities::hash_string("float64"):
 			return Token::Type::Float64;
-		case Utilities::hash("string"):
+		case utilities::hash_string("string"):
 			return Token::Type::String;
-		case Utilities::hash("void"):
+		case utilities::hash_string("void"):
 			return Token::Type::Void;
-		case Utilities::hash("true"):
-		case Utilities::hash("false"):
+		case utilities::hash_string("true"):
+		case utilities::hash_string("false"):
 			return Token::Type::BoolLiteral;
-		case Utilities::hash("print"): // NOTE: Remove after debug
+		case utilities::hash_string("print"): // NOTE: Remove after debug
 			return Token::Type::Print;
 		default:
 			return Token::Type::Invalid;
