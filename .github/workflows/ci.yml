@@ -1,0 +1,101 @@
+name: Cargo Build & Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Hyper-Lang
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - stable
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Update System
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update -qq
+
+      - name: Install Rust-Toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          default: true
+          profile: default
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+
+      - name: Install Cargo-Audit
+        uses: baptiste0928/cargo-install@v2
+        with:
+          crate: cargo-audit
+
+      - name: Install Cargo-Nextest
+        uses: baptiste0928/cargo-install@v2
+        with:
+          crate: cargo-nextest
+          locked: true
+
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-targets: true
+          cache-on-failure: true
+          cache-all-crates: true
+
+      - name: Cargo Build Debug
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --verbose --workspace
+
+      - name: Cargo Build Release
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --verbose --workspace --release
+
+      - name: Cargo Build Profiling
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --verbose --workspace --profile profiling
+
+      - name: Cargo Build Production
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --verbose --workspace --profile production
+
+      - name: Cargo Formatter
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+      - name: Cargo Check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --all-targets
+
+      - name: Cargo Audit
+        uses: actions-rs/cargo@v1
+        with:
+          command: audit
+          args: --ignore RUSTSEC-2020-0071 --ignore RUSTSEC-2021-0145
+
+      - name: Cargo Test
+        uses: actions-rs/cargo@v1
+        with:
+          command: nextest
+          args: run
