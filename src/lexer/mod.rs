@@ -9,7 +9,7 @@ pub mod token;
 
 use crate::lexer::token::Token;
 
-use color_eyre::Result;
+use color_eyre::{eyre::bail, Result};
 
 #[derive(Debug)]
 pub struct Lexer<'a> {
@@ -38,7 +38,7 @@ impl<'a> Lexer<'a> {
     pub fn lex(&mut self) -> Result<Vec<Token>> {
         let mut tokens = Vec::new();
 
-        loop {
+        while !self.has_reached_end() {
             let token = self.next_token()?;
             if token == Token::Eof {
                 break;
@@ -214,7 +214,10 @@ impl<'a> Lexer<'a> {
                 }
             }
             '_' | 'a'..='z' | 'A'..='Z' => self.lex_identifier_or_keyword(),
-            _ => Token::Eof,
+            '\0' => Token::Eof,
+            _ => {
+                bail!("unexpected token at {}:{}", self.line, self.column)
+            }
         };
 
         Ok(token)
