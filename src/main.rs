@@ -16,7 +16,6 @@ fn main() -> Result<()> {
     logger::init(3)?;
 
     let test_program = r#"
-
     "#;
 
     let mut lexer = Lexer::new(test_program);
