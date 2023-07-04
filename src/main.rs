@@ -4,17 +4,25 @@
  * SPDX-License-Identifier: MIT
  */
 
+mod lexer;
 mod utils;
 
-use color_eyre::Result;
+use crate::{lexer::Lexer, utils::logger};
 
-use crate::utils::logger;
+use color_eyre::Result;
 
 fn main() -> Result<()> {
     color_eyre::install()?;
     logger::init(3)?;
 
-    log::info!("Hello, world!");
+    let test_program = r#"
+
+    "#;
+
+    let mut lexer = Lexer::new(test_program);
+    let tokens = lexer.lex()?;
+
+    log::info!("Parsed tokens: {:?}", tokens);
 
     Ok(())
 }
