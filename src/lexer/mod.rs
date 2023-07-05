@@ -325,6 +325,45 @@ impl<'a> Lexer<'a> {
             }
         }
 
+        // Lex suffix
+        let mut next_char = self.peek(0);
+        match next_char {
+            'u' | 'U' => {
+                self.advance();
+                integer.push(self.current_character);
+
+                next_char = self.peek(0);
+                if next_char == 'l' || next_char == 'L' {
+                    self.advance();
+                    integer.push(self.current_character);
+
+                    next_char = self.peek(0);
+                    if next_char == 'l' || next_char == 'L' {
+                        self.advance();
+                        integer.push(self.current_character);
+                    }
+                }
+            }
+            'l' | 'L' => {
+                self.advance();
+                integer.push(self.current_character);
+
+                next_char = self.peek(0);
+                if next_char == 'l' || next_char == 'L' {
+                    self.advance();
+                    integer.push(self.current_character);
+
+                    next_char = self.peek(0);
+                }
+
+                if next_char == 'u' || next_char == 'U' {
+                    self.advance();
+                    integer.push(self.current_character);
+                }
+            }
+            _ => {}
+        }
+
         Ok(Token::Number(integer))
     }
 
