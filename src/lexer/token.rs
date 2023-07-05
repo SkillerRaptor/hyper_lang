@@ -177,4 +177,5 @@ pub enum Token {
     DoublePoundSign,
 
     Identifier(String),
+    Number(String),
 }

@@ -1201,3 +1201,776 @@ fn token_punctuators() {
     assert_eq!(tokens[46], Token::PoundSign);
     assert_eq!(tokens[47], Token::DoublePoundSign);
 }
+
+#[test]
+fn test_00() {
+    let text = "00 00";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("00".to_string()));
+    assert_eq!(tokens[1], Token::Number("00".to_string()));
+}
+
+#[test]
+fn test_11() {
+    let text = "11 11";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("11".to_string()));
+    assert_eq!(tokens[1], Token::Number("11".to_string()));
+}
+
+#[test]
+fn test_22() {
+    let text = "22 22";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("22".to_string()));
+    assert_eq!(tokens[1], Token::Number("22".to_string()));
+}
+
+#[test]
+fn test_33() {
+    let text = "33 33";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("33".to_string()));
+    assert_eq!(tokens[1], Token::Number("33".to_string()));
+}
+
+#[test]
+fn test_44() {
+    let text = "44 44";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("44".to_string()));
+    assert_eq!(tokens[1], Token::Number("44".to_string()));
+}
+
+#[test]
+fn test_55() {
+    let text = "55 55";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("55".to_string()));
+    assert_eq!(tokens[1], Token::Number("55".to_string()));
+}
+
+#[test]
+fn test_66() {
+    let text = "66 66";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("66".to_string()));
+    assert_eq!(tokens[1], Token::Number("66".to_string()));
+}
+
+#[test]
+fn test_77() {
+    let text = "77 77";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("77".to_string()));
+    assert_eq!(tokens[1], Token::Number("77".to_string()));
+}
+
+#[test]
+fn test_88() {
+    let text = "88 88";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("88".to_string()));
+    assert_eq!(tokens[1], Token::Number("88".to_string()));
+}
+
+#[test]
+fn test_99() {
+    let text = "99 99";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("99".to_string()));
+    assert_eq!(tokens[1], Token::Number("99".to_string()));
+}
+
+#[test]
+fn test_01() {
+    let text = "01 01";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("01".to_string()));
+    assert_eq!(tokens[1], Token::Number("01".to_string()));
+}
+
+#[test]
+fn test_02() {
+    let text = "02 02";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("02".to_string()));
+    assert_eq!(tokens[1], Token::Number("02".to_string()));
+}
+
+#[test]
+fn test_03() {
+    let text = "03 03";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("03".to_string()));
+    assert_eq!(tokens[1], Token::Number("03".to_string()));
+}
+
+#[test]
+fn test_04() {
+    let text = "04 04";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("04".to_string()));
+    assert_eq!(tokens[1], Token::Number("04".to_string()));
+}
+
+#[test]
+fn test_05() {
+    let text = "05 05";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("05".to_string()));
+    assert_eq!(tokens[1], Token::Number("05".to_string()));
+}
+
+#[test]
+fn test_06() {
+    let text = "06 06";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("06".to_string()));
+    assert_eq!(tokens[1], Token::Number("06".to_string()));
+}
+
+#[test]
+fn test_07() {
+    let text = "07 07";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("07".to_string()));
+    assert_eq!(tokens[1], Token::Number("07".to_string()));
+}
+
+#[test]
+#[should_panic]
+fn test_08() {
+    let text = "08 08";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("08".to_string()));
+    assert_eq!(tokens[1], Token::Number("08".to_string()));
+}
+
+#[test]
+#[should_panic]
+fn test_09() {
+    let text = "09 09";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("09".to_string()));
+    assert_eq!(tokens[1], Token::Number("09".to_string()));
+}
+
+#[test]
+fn test_0x00() {
+    let text = "0x00 0x00";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x00".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x00".to_string()));
+}
+
+#[test]
+fn test_0x11() {
+    let text = "0x11 0x11";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x11".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x11".to_string()));
+}
+
+#[test]
+fn test_0x22() {
+    let text = "0x22 0x22";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x22".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x22".to_string()));
+}
+
+#[test]
+fn test_0x33() {
+    let text = "0x33 0x33";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x33".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x33".to_string()));
+}
+
+#[test]
+fn test_0x44() {
+    let text = "0x44 0x44";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x44".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x44".to_string()));
+}
+
+#[test]
+fn test_0x55() {
+    let text = "0x55 0x55";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x55".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x55".to_string()));
+}
+
+#[test]
+fn test_0x66() {
+    let text = "0x66 0x66";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x66".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x66".to_string()));
+}
+
+#[test]
+fn test_0x77() {
+    let text = "0x77 0x77";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x77".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x77".to_string()));
+}
+
+#[test]
+fn test_0x88() {
+    let text = "0x88 0x88";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x88".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x88".to_string()));
+}
+
+#[test]
+fn test_0x99() {
+    let text = "0x99 0x99";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0x99".to_string()));
+    assert_eq!(tokens[1], Token::Number("0x99".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0xaA() {
+    let text = "0xaA 0xaA";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0xaA".to_string()));
+    assert_eq!(tokens[1], Token::Number("0xaA".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0xbB() {
+    let text = "0xbB 0xbB";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0xbB".to_string()));
+    assert_eq!(tokens[1], Token::Number("0xbB".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0xcC() {
+    let text = "0xcC 0xcC";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0xcC".to_string()));
+    assert_eq!(tokens[1], Token::Number("0xcC".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0xdD() {
+    let text = "0xdD 0xdD";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0xdD".to_string()));
+    assert_eq!(tokens[1], Token::Number("0xdD".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0xeE() {
+    let text = "0xeE 0xeE";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0xeE".to_string()));
+    assert_eq!(tokens[1], Token::Number("0xeE".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0xfF() {
+    let text = "0xfF 0xfF";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0xfF".to_string()));
+    assert_eq!(tokens[1], Token::Number("0xfF".to_string()));
+}
+
+#[test]
+#[should_panic]
+#[allow(non_snake_case)]
+fn test_0xgG() {
+    let text = "0xgG 0xgG";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0xgG".to_string()));
+    assert_eq!(tokens[1], Token::Number("0xgG".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X00() {
+    let text = "0X00 0X00";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X00".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X00".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X11() {
+    let text = "0X11 0X11";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X11".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X11".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X22() {
+    let text = "0X22 0X22";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X22".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X22".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X33() {
+    let text = "0X33 0X33";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X33".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X33".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X44() {
+    let text = "0X44 0X44";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X44".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X44".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X55() {
+    let text = "0X55 0X55";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X55".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X55".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X66() {
+    let text = "0X66 0X66";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X66".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X66".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X77() {
+    let text = "0X77 0X77";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X77".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X77".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X88() {
+    let text = "0X88 0X88";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X88".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X88".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0X99() {
+    let text = "0X99 0X99";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0X99".to_string()));
+    assert_eq!(tokens[1], Token::Number("0X99".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0XaA() {
+    let text = "0XaA 0XaA";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0XaA".to_string()));
+    assert_eq!(tokens[1], Token::Number("0XaA".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0XbB() {
+    let text = "0XbB 0XbB";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0XbB".to_string()));
+    assert_eq!(tokens[1], Token::Number("0XbB".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0XcC() {
+    let text = "0XcC 0XcC";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0XcC".to_string()));
+    assert_eq!(tokens[1], Token::Number("0XcC".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0XdD() {
+    let text = "0XdD 0XdD";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0XdD".to_string()));
+    assert_eq!(tokens[1], Token::Number("0XdD".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0XeE() {
+    let text = "0XeE 0XeE";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0XeE".to_string()));
+    assert_eq!(tokens[1], Token::Number("0XeE".to_string()));
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn test_0XfF() {
+    let text = "0XfF 0XfF";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0XfF".to_string()));
+    assert_eq!(tokens[1], Token::Number("0XfF".to_string()));
+}
+
+#[test]
+#[should_panic]
+#[allow(non_snake_case)]
+fn test_0XgG() {
+    let text = "0XgG 0XgG";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 2);
+    assert_eq!(tokens[0], Token::Number("0XgG".to_string()));
+    assert_eq!(tokens[1], Token::Number("0XgG".to_string()));
+}
+
+#[test]
+fn test_numbers() {
+    let text = "
+    00
+    11
+    22
+    33
+    44
+    55
+    66
+    77
+    88
+    99
+    01
+    02
+    03
+    04
+    05
+    06
+    07
+    0x00
+    0x11
+    0x22
+    0x33
+    0x44
+    0x55
+    0x66
+    0x77
+    0x88
+    0x99
+    0xaA
+    0xbB
+    0xcC
+    0xdD
+    0xeE
+    0xfF
+    0X00
+    0X11
+    0X22
+    0X33
+    0X44
+    0X55
+    0X66
+    0X77
+    0X88
+    0X99
+    0XaA
+    0XbB
+    0XcC
+    0XdD
+    0XeE
+    0XfF
+    ";
+
+    let mut lexer = Lexer::new(text);
+    let tokens = lexer.lex().unwrap();
+
+    assert_eq!(tokens.len(), 49);
+    assert_eq!(tokens[0], Token::Number("00".to_string()));
+    assert_eq!(tokens[1], Token::Number("11".to_string()));
+    assert_eq!(tokens[2], Token::Number("22".to_string()));
+    assert_eq!(tokens[3], Token::Number("33".to_string()));
+    assert_eq!(tokens[4], Token::Number("44".to_string()));
+    assert_eq!(tokens[5], Token::Number("55".to_string()));
+    assert_eq!(tokens[6], Token::Number("66".to_string()));
+    assert_eq!(tokens[7], Token::Number("77".to_string()));
+    assert_eq!(tokens[8], Token::Number("88".to_string()));
+    assert_eq!(tokens[9], Token::Number("99".to_string()));
+    assert_eq!(tokens[10], Token::Number("01".to_string()));
+    assert_eq!(tokens[11], Token::Number("02".to_string()));
+    assert_eq!(tokens[12], Token::Number("03".to_string()));
+    assert_eq!(tokens[13], Token::Number("04".to_string()));
+    assert_eq!(tokens[14], Token::Number("05".to_string()));
+    assert_eq!(tokens[15], Token::Number("06".to_string()));
+    assert_eq!(tokens[16], Token::Number("07".to_string()));
+    assert_eq!(tokens[17], Token::Number("0x00".to_string()));
+    assert_eq!(tokens[18], Token::Number("0x11".to_string()));
+    assert_eq!(tokens[19], Token::Number("0x22".to_string()));
+    assert_eq!(tokens[20], Token::Number("0x33".to_string()));
+    assert_eq!(tokens[21], Token::Number("0x44".to_string()));
+    assert_eq!(tokens[22], Token::Number("0x55".to_string()));
+    assert_eq!(tokens[23], Token::Number("0x66".to_string()));
+    assert_eq!(tokens[24], Token::Number("0x77".to_string()));
+    assert_eq!(tokens[25], Token::Number("0x88".to_string()));
+    assert_eq!(tokens[26], Token::Number("0x99".to_string()));
+    assert_eq!(tokens[27], Token::Number("0xaA".to_string()));
+    assert_eq!(tokens[28], Token::Number("0xbB".to_string()));
+    assert_eq!(tokens[29], Token::Number("0xcC".to_string()));
+    assert_eq!(tokens[30], Token::Number("0xdD".to_string()));
+    assert_eq!(tokens[31], Token::Number("0xeE".to_string()));
+    assert_eq!(tokens[32], Token::Number("0xfF".to_string()));
+    assert_eq!(tokens[33], Token::Number("0X00".to_string()));
+    assert_eq!(tokens[34], Token::Number("0X11".to_string()));
+    assert_eq!(tokens[35], Token::Number("0X22".to_string()));
+    assert_eq!(tokens[36], Token::Number("0X33".to_string()));
+    assert_eq!(tokens[37], Token::Number("0X44".to_string()));
+    assert_eq!(tokens[38], Token::Number("0X55".to_string()));
+    assert_eq!(tokens[39], Token::Number("0X66".to_string()));
+    assert_eq!(tokens[40], Token::Number("0X77".to_string()));
+    assert_eq!(tokens[41], Token::Number("0X88".to_string()));
+    assert_eq!(tokens[42], Token::Number("0X99".to_string()));
+    assert_eq!(tokens[43], Token::Number("0XaA".to_string()));
+    assert_eq!(tokens[44], Token::Number("0XbB".to_string()));
+    assert_eq!(tokens[45], Token::Number("0XcC".to_string()));
+    assert_eq!(tokens[46], Token::Number("0XdD".to_string()));
+    assert_eq!(tokens[47], Token::Number("0XeE".to_string()));
+    assert_eq!(tokens[48], Token::Number("0XfF".to_string()));
+}

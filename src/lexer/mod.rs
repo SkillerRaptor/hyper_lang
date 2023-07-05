@@ -214,8 +214,10 @@ impl<'a> Lexer<'a> {
                 }
             }
             '_' | 'a'..='z' | 'A'..='Z' => self.lex_identifier_or_keyword(),
+            '0'..='9' => self.lex_number_constant()?,
             '\0' => Token::Eof,
             _ => {
+                // TODO: Improve error message
                 bail!("unexpected token at {}:{}", self.line, self.column)
             }
         };
@@ -274,6 +276,56 @@ impl<'a> Lexer<'a> {
             "while" => Token::While,
             _ => Token::Identifier(string),
         }
+    }
+
+    fn lex_number_constant(&mut self) -> Result<Token> {
+        let mut integer = String::new();
+        integer.push(self.current_character);
+
+        if self.current_character == '0' {
+            let next_char = self.peek(0);
+            if next_char == 'x' || next_char == 'X' {
+                self.advance();
+                integer.push(self.current_character);
+
+                let mut next_char = self.peek(0);
+                if next_char.is_ascii_digit()
+                    || ('a'..='f').contains(&next_char)
+                    || ('A'..='F').contains(&next_char)
+                {
+                    while next_char.is_ascii_digit()
+                        || ('a'..='f').contains(&next_char)
+                        || ('A'..='F').contains(&next_char)
+                    {
+                        self.advance();
+                        integer.push(next_char);
+
+                        next_char = self.peek(0);
+                    }
+                } else {
+                    // TODO: Improve error message
+                    bail!("unclosed hexadecimal constant");
+                }
+            } else if next_char.is_ascii_digit() {
+                let mut next_char = self.peek(0);
+                while ('0'..='7').contains(&next_char) {
+                    self.advance();
+                    integer.push(next_char);
+
+                    next_char = self.peek(0);
+                }
+            }
+        } else {
+            let mut next_char = self.peek(0);
+            while next_char.is_ascii_digit() {
+                self.advance();
+                integer.push(next_char);
+
+                next_char = self.peek(0);
+            }
+        }
+
+        Ok(Token::Number(integer))
     }
 
     // Lexer specific
