@@ -186,7 +186,7 @@ fn token_identifier() {
     for i in 1..100 {
         let string = Alphanumeric.sample_string(&mut rand::thread_rng(), i);
 
-        if ('0'..='9').contains(&(string.as_bytes()[0] as char)) {
+        if (string.as_bytes()[0] as char).is_ascii_digit() {
             continue;
         }
 
@@ -200,7 +200,7 @@ fn token_identifier() {
     }
 }
 
-const INTEGER_SUFFIXES: [&'static str; 6] = ["u", "ul", "ull", "l", "lu", "llu"];
+const INTEGER_SUFFIXES: [&str; 6] = ["u", "ul", "ull", "l", "lu", "llu"];
 
 #[test]
 fn test_decimal() {
