@@ -48,7 +48,7 @@ macro_rules! test_keywords {
 
             assert_eq!(tokens.len(), count!($($keyword)*));
 
-            let mut i = -1;
+            let mut i = -1i32;
             $(
                 i += 1;
                 assert_eq!(tokens[i as usize], $token);
@@ -84,7 +84,7 @@ macro_rules! test_punctuators {
 
             assert_eq!(tokens.len(), count!($($punctuator)*));
 
-            let mut i = -1;
+            let mut i = -1i32;
             $(
                 i += 1;
                 assert_eq!(tokens[i as usize], $token);

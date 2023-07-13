@@ -4,23 +4,19 @@
 # SPDX-License-Identifier: MIT
 #-------------------------------------------------------------------------------------------
 
-[package]
-name = "hyper-lang"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-chrono = "0.4"
-color-eyre = "0.6"
-fern = { version = "0.6", features = [ "colored" ] }
-log = "0.4"
-
-[dev-dependencies]
-paste = "1.0"
-rand = "0.8"
+[workspace]
+members = [
+    "compiler/hyperc",
+    "compiler/hyperc_diagnostics",
+    "compiler/hyperc_lexer",
+    "compiler/hyperc_parser"
+]
 
 [profile.dev]
 opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 2
 
 [profile.profiling]
 inherits = "release"

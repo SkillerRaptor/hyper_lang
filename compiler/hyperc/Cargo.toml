@@ -1,0 +1,20 @@
+#-------------------------------------------------------------------------------------------
+# Copyright (c) 2023, SkillerRaptor
+#
+# SPDX-License-Identifier: MIT
+#-------------------------------------------------------------------------------------------
+
+[package]
+name = "hyperc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hyperc_diagnostics = { path = "../hyperc_diagnostics" }
+hyperc_lexer = { path = "../hyperc_lexer" }
+hyperc_parser = { path = "../hyperc_parser" }
+
+chrono = "0.4"
+color-eyre = "0.6"
+fern = { version = "0.6", features = [ "colored" ] }
+log = "0.4"

@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-mod lexer;
 mod utils;
 
-use crate::{lexer::Lexer, utils::logger};
+use crate::utils::logger;
+
+use hyperc_lexer::Lexer;
 
 use color_eyre::Result;
 

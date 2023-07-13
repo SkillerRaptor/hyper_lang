@@ -1,0 +1,17 @@
+#-------------------------------------------------------------------------------------------
+# Copyright (c) 2023, SkillerRaptor
+#
+# SPDX-License-Identifier: MIT
+#-------------------------------------------------------------------------------------------
+
+[package]
+name = "hyperc_lexer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror = "1.0"
+
+[dev-dependencies]
+paste = "1.0"
+rand = "0.8"

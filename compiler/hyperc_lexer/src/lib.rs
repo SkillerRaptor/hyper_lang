@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, SkillerRaptor
+ * Copyright (c) 2023, SkillerRaptor
  *
  * SPDX-License-Identifier: MIT
  */
@@ -7,9 +7,18 @@
 mod tests;
 pub mod token;
 
-use crate::lexer::token::Token;
+use crate::token::Token;
 
-use color_eyre::{eyre::bail, Result};
+use thiserror::Error;
+
+#[derive(Debug, Error)]
+pub enum LexingError {
+    #[error("unexpected token at {line}:{column}")]
+    UnexpectedToken { line: u64, column: u64 },
+
+    #[error("unclosed hexadecimal constant")]
+    UnclosedHexadecimal,
+}
 
 #[derive(Debug)]
 pub struct Lexer<'a> {
@@ -35,7 +44,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    pub fn lex(&mut self) -> Result<Vec<Token>> {
+    pub fn lex(&mut self) -> Result<Vec<Token>, LexingError> {
         let mut tokens = Vec::new();
 
         while !self.has_reached_end() {
@@ -50,7 +59,7 @@ impl<'a> Lexer<'a> {
         Ok(tokens)
     }
 
-    fn next_token(&mut self) -> Result<Token> {
+    fn next_token(&mut self) -> Result<Token, LexingError> {
         self.advance();
         self.skip_whitespace();
 
@@ -218,7 +227,10 @@ impl<'a> Lexer<'a> {
             '\0' => Token::Eof,
             _ => {
                 // TODO: Improve error message
-                bail!("unexpected token at {}:{}", self.line, self.column)
+                return Err(LexingError::UnexpectedToken {
+                    line: self.line,
+                    column: self.column,
+                });
             }
         };
 
@@ -278,7 +290,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn lex_number_constant(&mut self) -> Result<Token> {
+    fn lex_number_constant(&mut self) -> Result<Token, LexingError> {
         let mut integer = String::new();
         integer.push(self.current_character);
 
@@ -304,7 +316,7 @@ impl<'a> Lexer<'a> {
                     }
                 } else {
                     // TODO: Improve error message
-                    bail!("unclosed hexadecimal constant");
+                    return Err(LexingError::UnclosedHexadecimal);
                 }
             } else if next_char.is_ascii_digit() {
                 let mut next_char = self.peek(0);
