@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub enum Token {
+use hyperc_span::Span;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TokenKind {
     Eof,
 
     // Keywords
@@ -176,6 +178,26 @@ pub enum Token {
     /// ##
     DoublePoundSign,
 
-    Identifier(String),
-    Number(String),
+    Identifier,
+    Number,
+}
+
+#[derive(Clone, Debug)]
+pub struct Token {
+    kind: TokenKind,
+    span: Span,
+}
+
+impl Token {
+    pub fn new(kind: TokenKind, span: Span) -> Self {
+        Self { kind, span }
+    }
+
+    pub fn kind(&self) -> &TokenKind {
+        &self.kind
+    }
+
+    pub fn span(&self) -> Span {
+        self.span
+    }
 }

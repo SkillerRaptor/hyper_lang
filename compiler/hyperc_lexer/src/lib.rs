@@ -7,7 +7,9 @@
 mod tests;
 pub mod token;
 
-use crate::token::Token;
+use crate::token::{Token, TokenKind};
+
+use hyperc_span::Span;
 
 use thiserror::Error;
 
@@ -25,7 +27,7 @@ pub struct Lexer<'a> {
     text: &'a str,
 
     current_character: char,
-    index: u64,
+    index: usize,
 
     line: u64,
     column: u64,
@@ -49,7 +51,7 @@ impl<'a> Lexer<'a> {
 
         while !self.has_reached_end() {
             let token = self.next_token()?;
-            if token == Token::Eof {
+            if *token.kind() == TokenKind::Eof {
                 break;
             }
 
@@ -63,90 +65,92 @@ impl<'a> Lexer<'a> {
         self.advance();
         self.skip_whitespace();
 
-        let token = match self.current_character {
-            '[' => Token::BracketLeft,
-            ']' => Token::BracketRight,
-            '(' => Token::ParenthesisLeft,
-            ')' => Token::ParenthesisRight,
-            '{' => Token::BraceLeft,
-            '}' => Token::BraceRight,
+        let start_index = self.index - 1;
+
+        let kind = match self.current_character {
+            '[' => TokenKind::BracketLeft,
+            ']' => TokenKind::BracketRight,
+            '(' => TokenKind::ParenthesisLeft,
+            ')' => TokenKind::ParenthesisRight,
+            '{' => TokenKind::BraceLeft,
+            '}' => TokenKind::BraceRight,
             '.' => {
                 if self.peek(0) == '.' && self.peek(1) == '.' {
                     self.advance();
                     self.advance();
-                    Token::Ellipsis
+                    TokenKind::Ellipsis
                 } else {
-                    Token::Period
+                    TokenKind::Period
                 }
             }
             '&' => match self.peek(0) {
                 '&' => {
                     self.advance();
-                    Token::LogicalAnd
+                    TokenKind::LogicalAnd
                 }
                 '=' => {
                     self.advance();
-                    Token::BitwiseAndAssign
+                    TokenKind::BitwiseAndAssign
                 }
-                _ => Token::Ampersand,
+                _ => TokenKind::Ampersand,
             },
             '*' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    Token::MultiplyAssign
+                    TokenKind::MultiplyAssign
                 } else {
-                    Token::Asterisk
+                    TokenKind::Asterisk
                 }
             }
             '+' => match self.peek(0) {
                 '+' => {
                     self.advance();
-                    Token::Increment
+                    TokenKind::Increment
                 }
                 '=' => {
                     self.advance();
-                    Token::PlusAssign
+                    TokenKind::PlusAssign
                 }
-                _ => Token::Plus,
+                _ => TokenKind::Plus,
             },
             '-' => match self.peek(0) {
                 '-' => {
                     self.advance();
-                    Token::Decrement
+                    TokenKind::Decrement
                 }
                 '=' => {
                     self.advance();
-                    Token::MinusAssign
+                    TokenKind::MinusAssign
                 }
                 '>' => {
                     self.advance();
-                    Token::Arrow
+                    TokenKind::Arrow
                 }
-                _ => Token::Minus,
+                _ => TokenKind::Minus,
             },
-            '~' => Token::Tilde,
+            '~' => TokenKind::Tilde,
             '!' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    Token::NotEqual
+                    TokenKind::NotEqual
                 } else {
-                    Token::ExclamationMark
+                    TokenKind::ExclamationMark
                 }
             }
             '/' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    Token::DivideAssign
+                    TokenKind::DivideAssign
                 } else {
-                    Token::Slash
+                    TokenKind::Slash
                 }
             }
             '%' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    Token::ModuloAssign
+                    TokenKind::ModuloAssign
                 } else {
-                    Token::Percent
+                    TokenKind::Percent
                 }
             }
             '<' => match self.peek(0) {
@@ -154,77 +158,77 @@ impl<'a> Lexer<'a> {
                     if self.peek(1) == '=' {
                         self.advance();
                         self.advance();
-                        Token::LeftShiftAssign
+                        TokenKind::LeftShiftAssign
                     } else {
                         self.advance();
-                        Token::LeftShift
+                        TokenKind::LeftShift
                     }
                 }
                 '=' => {
                     self.advance();
-                    Token::LessThanOrEqual
+                    TokenKind::LessThanOrEqual
                 }
-                _ => Token::LessThan,
+                _ => TokenKind::LessThan,
             },
             '>' => match self.peek(0) {
                 '>' => {
                     if self.peek(1) == '=' {
                         self.advance();
                         self.advance();
-                        Token::RightShiftAssign
+                        TokenKind::RightShiftAssign
                     } else {
                         self.advance();
-                        Token::RightShift
+                        TokenKind::RightShift
                     }
                 }
                 '=' => {
                     self.advance();
-                    Token::GreaterThanOrEqual
+                    TokenKind::GreaterThanOrEqual
                 }
-                _ => Token::GreaterThan,
+                _ => TokenKind::GreaterThan,
             },
             '=' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    Token::Equal
+                    TokenKind::Equal
                 } else {
-                    Token::Assign
+                    TokenKind::Assign
                 }
             }
             '^' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    Token::BitwiseXorAssign
+                    TokenKind::BitwiseXorAssign
                 } else {
-                    Token::Caret
+                    TokenKind::Caret
                 }
             }
             '|' => match self.peek(0) {
                 '|' => {
                     self.advance();
-                    Token::LogicalOr
+                    TokenKind::LogicalOr
                 }
                 '=' => {
                     self.advance();
-                    Token::BitwiseOrAssign
+                    TokenKind::BitwiseOrAssign
                 }
-                _ => Token::Pipe,
+                _ => TokenKind::Pipe,
             },
-            '?' => Token::QuestionMark,
-            ':' => Token::Colon,
-            ';' => Token::Semicolon,
-            ',' => Token::Comma,
+            '?' => TokenKind::QuestionMark,
+            ':' => TokenKind::Colon,
+            ';' => TokenKind::Semicolon,
+            ',' => TokenKind::Comma,
             '#' => {
                 if self.peek(0) == '#' {
                     self.advance();
-                    Token::DoublePoundSign
+                    TokenKind::DoublePoundSign
                 } else {
-                    Token::PoundSign
+                    TokenKind::PoundSign
                 }
             }
             '_' | 'a'..='z' | 'A'..='Z' => self.lex_identifier_or_keyword(),
             '0'..='9' => self.lex_number_constant()?,
-            '\0' => Token::Eof,
+            '\0' => TokenKind::Eof,
             _ => {
                 // TODO: Improve error message
                 return Err(LexingError::UnexpectedToken {
@@ -234,10 +238,16 @@ impl<'a> Lexer<'a> {
             }
         };
 
+        let end_index = self.index;
+
+        let span = Span::new(start_index, end_index);
+
+        let token = Token::new(kind, span);
+
         Ok(token)
     }
 
-    fn lex_identifier_or_keyword(&mut self) -> Token {
+    fn lex_identifier_or_keyword(&mut self) -> TokenKind {
         // TODO: Implement 'Universal character names'
 
         let mut string = String::new();
@@ -252,53 +262,49 @@ impl<'a> Lexer<'a> {
         }
 
         match string.as_str() {
-            "auto" => Token::Auto,
-            "break" => Token::Break,
-            "case" => Token::Case,
-            "char" => Token::Char,
-            "const" => Token::Const,
-            "continue" => Token::Continue,
-            "default" => Token::Default,
-            "do" => Token::Do,
-            "double" => Token::Double,
-            "else" => Token::Else,
-            "enum" => Token::Enum,
-            "extern" => Token::Extern,
-            "float" => Token::Float,
-            "for" => Token::For,
-            "goto" => Token::Goto,
-            "if" => Token::If,
-            "inline" => Token::Inline,
-            "int" => Token::Int,
-            "long" => Token::Long,
-            "register" => Token::Register,
-            "restrict" => Token::Restrict,
-            "return" => Token::Return,
-            "short" => Token::Short,
-            "signed" => Token::Signed,
-            "sizeof" => Token::Sizeof,
-            "static" => Token::Static,
-            "struct" => Token::Struct,
-            "switch" => Token::Switch,
-            "typedef" => Token::Typedef,
-            "union" => Token::Union,
-            "unsigned" => Token::Unsigned,
-            "void" => Token::Void,
-            "volatile" => Token::Volatile,
-            "while" => Token::While,
-            _ => Token::Identifier(string),
+            "auto" => TokenKind::Auto,
+            "break" => TokenKind::Break,
+            "case" => TokenKind::Case,
+            "char" => TokenKind::Char,
+            "const" => TokenKind::Const,
+            "continue" => TokenKind::Continue,
+            "default" => TokenKind::Default,
+            "do" => TokenKind::Do,
+            "double" => TokenKind::Double,
+            "else" => TokenKind::Else,
+            "enum" => TokenKind::Enum,
+            "extern" => TokenKind::Extern,
+            "float" => TokenKind::Float,
+            "for" => TokenKind::For,
+            "goto" => TokenKind::Goto,
+            "if" => TokenKind::If,
+            "inline" => TokenKind::Inline,
+            "int" => TokenKind::Int,
+            "long" => TokenKind::Long,
+            "register" => TokenKind::Register,
+            "restrict" => TokenKind::Restrict,
+            "return" => TokenKind::Return,
+            "short" => TokenKind::Short,
+            "signed" => TokenKind::Signed,
+            "sizeof" => TokenKind::Sizeof,
+            "static" => TokenKind::Static,
+            "struct" => TokenKind::Struct,
+            "switch" => TokenKind::Switch,
+            "typedef" => TokenKind::Typedef,
+            "union" => TokenKind::Union,
+            "unsigned" => TokenKind::Unsigned,
+            "void" => TokenKind::Void,
+            "volatile" => TokenKind::Volatile,
+            "while" => TokenKind::While,
+            _ => TokenKind::Identifier,
         }
     }
 
-    fn lex_number_constant(&mut self) -> Result<Token, LexingError> {
-        let mut integer = String::new();
-        integer.push(self.current_character);
-
+    fn lex_number_constant(&mut self) -> Result<TokenKind, LexingError> {
         if self.current_character == '0' {
             let next_char = self.peek(0);
             if next_char == 'x' || next_char == 'X' {
                 self.advance();
-                integer.push(self.current_character);
 
                 let mut next_char = self.peek(0);
                 if next_char.is_ascii_digit()
@@ -310,8 +316,6 @@ impl<'a> Lexer<'a> {
                         || ('A'..='F').contains(&next_char)
                     {
                         self.advance();
-                        integer.push(next_char);
-
                         next_char = self.peek(0);
                     }
                 } else {
@@ -322,8 +326,6 @@ impl<'a> Lexer<'a> {
                 let mut next_char = self.peek(0);
                 while ('0'..='7').contains(&next_char) {
                     self.advance();
-                    integer.push(next_char);
-
                     next_char = self.peek(0);
                 }
             }
@@ -331,8 +333,6 @@ impl<'a> Lexer<'a> {
             let mut next_char = self.peek(0);
             while next_char.is_ascii_digit() {
                 self.advance();
-                integer.push(next_char);
-
                 next_char = self.peek(0);
             }
         }
@@ -342,41 +342,31 @@ impl<'a> Lexer<'a> {
         match next_char {
             'u' | 'U' => {
                 self.advance();
-                integer.push(self.current_character);
-
                 next_char = self.peek(0);
                 if next_char == 'l' || next_char == 'L' {
                     self.advance();
-                    integer.push(self.current_character);
-
                     next_char = self.peek(0);
                     if next_char == 'l' || next_char == 'L' {
                         self.advance();
-                        integer.push(self.current_character);
                     }
                 }
             }
             'l' | 'L' => {
                 self.advance();
-                integer.push(self.current_character);
-
                 next_char = self.peek(0);
                 if next_char == 'l' || next_char == 'L' {
                     self.advance();
-                    integer.push(self.current_character);
-
                     next_char = self.peek(0);
                 }
 
                 if next_char == 'u' || next_char == 'U' {
                     self.advance();
-                    integer.push(self.current_character);
                 }
             }
             _ => {}
         }
 
-        Ok(Token::Number(integer))
+        Ok(TokenKind::Number)
     }
 
     // Lexer specific
@@ -397,16 +387,16 @@ impl<'a> Lexer<'a> {
 
         self.column += 1;
 
-        self.current_character = self.text.as_bytes()[self.index as usize] as char;
+        self.current_character = self.text.as_bytes()[self.index] as char;
         self.index += 1;
     }
 
     fn peek(&self, extra_offset: usize) -> char {
-        if (self.index as usize + extra_offset) >= self.text.len() {
+        if (self.index + extra_offset) >= self.text.len() {
             return '\0';
         }
 
-        self.text.as_bytes()[self.index as usize + extra_offset] as char
+        self.text.as_bytes()[self.index + extra_offset] as char
     }
 
     fn skip_whitespace(&mut self) {
@@ -420,6 +410,6 @@ impl<'a> Lexer<'a> {
     }
 
     fn has_reached_end(&self) -> bool {
-        self.index as usize >= self.text.len()
+        self.index >= self.text.len()
     }
 }

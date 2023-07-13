@@ -10,4 +10,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+hyperc_diagnostics = { path = "../hyperc_diagnostics" }
+hyperc_span = { path = "../hyperc_span" }
+
 thiserror = "1.0"

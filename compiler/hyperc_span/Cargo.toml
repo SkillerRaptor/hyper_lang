@@ -5,16 +5,8 @@
 #-------------------------------------------------------------------------------------------
 
 [package]
-name = "hyperc_lexer"
+name = "hyperc_span"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-hyperc_diagnostics = { path = "../hyperc_diagnostics" }
-hyperc_span = { path = "../hyperc_span" }
-
-thiserror = "1.0"
-
-[dev-dependencies]
-paste = "1.0"
-rand = "0.8"

@@ -28,8 +28,8 @@ macro_rules! test_keywords {
                     let tokens = lexer.lex().unwrap();
 
                     assert_eq!(tokens.len(), 2);
-                    assert_eq!(tokens[0], $token);
-                    assert_eq!(tokens[1], $token);
+                    assert_eq!(*tokens[0].kind(), $token);
+                    assert_eq!(*tokens[1].kind(), $token);
                 }
             }
         )*
@@ -51,10 +51,47 @@ macro_rules! test_keywords {
             let mut i = -1i32;
             $(
                 i += 1;
-                assert_eq!(tokens[i as usize], $token);
+                assert_eq!(*tokens[i as usize].kind(), $token);
             )*
         }
     };
+}
+
+test_keywords! {
+    (auto, TokenKind::Auto),
+    (break, TokenKind::Break),
+    (case, TokenKind::Case),
+    (char, TokenKind::Char),
+    (const, TokenKind::Const),
+    (continue, TokenKind::Continue),
+    (default, TokenKind::Default),
+    (do, TokenKind::Do),
+    (double, TokenKind::Double),
+    (else, TokenKind::Else),
+    (enum, TokenKind::Enum),
+    (extern, TokenKind::Extern),
+    (float, TokenKind::Float),
+    (for, TokenKind::For),
+    (goto, TokenKind::Goto),
+    (if, TokenKind::If),
+    (inline, TokenKind::Inline),
+    (int, TokenKind::Int),
+    (long, TokenKind::Long),
+    (register, TokenKind::Register),
+    (restrict, TokenKind::Restrict),
+    (return, TokenKind::Return),
+    (short, TokenKind::Short),
+    (signed, TokenKind::Signed),
+    (sizeof, TokenKind::Sizeof),
+    (static, TokenKind::Static),
+    (struct, TokenKind::Struct),
+    (switch, TokenKind::Switch),
+    (typedef, TokenKind::Typedef),
+    (union, TokenKind::Union),
+    (unsigned, TokenKind::Unsigned),
+    (void, TokenKind::Void),
+    (volatile, TokenKind::Volatile),
+    (while, TokenKind::While),
 }
 
 macro_rules! test_punctuators {
@@ -69,8 +106,16 @@ macro_rules! test_punctuators {
                     let tokens = lexer.lex().unwrap();
 
                     assert_eq!(tokens.len(), 2);
-                    assert_eq!(tokens[0], $token);
-                    assert_eq!(tokens[1], $token);
+                    assert_eq!(*tokens[0].kind(), $token);
+                    assert_eq!(
+                        &text[tokens[0].span().start()..tokens[0].span().end()],
+                        $punctuator
+                    );
+                    assert_eq!(*tokens[1].kind(), $token);
+                    assert_eq!(
+                        &text[tokens[1].span().start()..tokens[1].span().end()],
+                        $punctuator
+                    );
                 }
             }
         )*
@@ -87,98 +132,65 @@ macro_rules! test_punctuators {
             let mut i = -1i32;
             $(
                 i += 1;
-                assert_eq!(tokens[i as usize], $token);
+                assert_eq!(*tokens[i as usize].kind(), $token);
+                assert_eq!(
+                    &text[tokens[i as usize].span().start()..tokens[i as usize].span().end()],
+                    $punctuator
+                );
             )*
         }
     };
 }
 
-test_keywords! {
-    (auto, Token::Auto),
-    (break, Token::Break),
-    (case, Token::Case),
-    (char, Token::Char),
-    (const, Token::Const),
-    (continue, Token::Continue),
-    (default, Token::Default),
-    (do, Token::Do),
-    (double, Token::Double),
-    (else, Token::Else),
-    (enum, Token::Enum),
-    (extern, Token::Extern),
-    (float, Token::Float),
-    (for, Token::For),
-    (goto, Token::Goto),
-    (if, Token::If),
-    (inline, Token::Inline),
-    (int, Token::Int),
-    (long, Token::Long),
-    (register, Token::Register),
-    (restrict, Token::Restrict),
-    (return, Token::Return),
-    (short, Token::Short),
-    (signed, Token::Signed),
-    (sizeof, Token::Sizeof),
-    (static, Token::Static),
-    (struct, Token::Struct),
-    (switch, Token::Switch),
-    (typedef, Token::Typedef),
-    (union, Token::Union),
-    (unsigned, Token::Unsigned),
-    (void, Token::Void),
-    (volatile, Token::Volatile),
-    (while, Token::While),
-}
-
 test_punctuators! {
-    (bracket_left, "[", Token::BracketLeft),
-    (bracket_right, "]", Token::BracketRight),
-    (parenthesis_left, "(", Token::ParenthesisLeft),
-    (parenthesis_right, ")", Token::ParenthesisRight),
-    (brace_left, "{", Token::BraceLeft),
-    (brace_right, "}", Token::BraceRight),
-    (period, ".", Token::Period),
-    (arrow, "->", Token::Arrow),
-    (increment, "++", Token::Increment),
-    (decrement, "--", Token::Decrement),
-    (ampersand, "&", Token::Ampersand),
-    (asterisk, "*", Token::Asterisk),
-    (plus, "+", Token::Plus),
-    (minus, "-", Token::Minus),
-    (tilde, "~", Token::Tilde),
-    (exclamation_nark, "!", Token::ExclamationMark),
-    (slash, "/", Token::Slash),
-    (percent, "%", Token::Percent),
-    (left_shift, "<<", Token::LeftShift),
-    (right_shift, ">>", Token::RightShift),
-    (less_than, "<", Token::LessThan),
-    (greater_than, ">", Token::GreaterThan),
-    (less_than_or_equal, "<=", Token::LessThanOrEqual),
-    (greater_than_or_equal, ">=", Token::GreaterThanOrEqual),
-    (equal, "==", Token::Equal),
-    (not_equal, "!=", Token::NotEqual),
-    (caret, "^", Token::Caret),
-    (pipe, "|", Token::Pipe),
-    (logical_and, "&&", Token::LogicalAnd),
-    (logical_or, "||", Token::LogicalOr),
-    (question_mark, "?", Token::QuestionMark),
-    (colon, ":", Token::Colon),
-    (semicolon, ";", Token::Semicolon),
-    (ellipsis, "...", Token::Ellipsis),
-    (assign, "=", Token::Assign),
-    (multiply_assign, "*=", Token::MultiplyAssign),
-    (divide_assign, "/=", Token::DivideAssign),
-    (modulo_assign, "%=", Token::ModuloAssign),
-    (plus_assign, "+=", Token::PlusAssign),
-    (minus_assign, "-=", Token::MinusAssign),
-    (left_shift_assign, "<<=", Token::LeftShiftAssign),
-    (right_shift_assign, ">>=", Token::RightShiftAssign),
-    (bitwise_and_assign, "&=", Token::BitwiseAndAssign),
-    (bitwise_xor_assign, "^=", Token::BitwiseXorAssign),
-    (bitwise_or_assign, "|=", Token::BitwiseOrAssign),
-    (comma, ",", Token::Comma),
-    (pound_sign, "#", Token::PoundSign),
-    (double_pound_sign, "##", Token::DoublePoundSign),
+    (bracket_left, "[", TokenKind::BracketLeft),
+    (bracket_right, "]", TokenKind::BracketRight),
+    (parenthesis_left, "(", TokenKind::ParenthesisLeft),
+    (parenthesis_right, ")", TokenKind::ParenthesisRight),
+    (brace_left, "{", TokenKind::BraceLeft),
+    (brace_right, "}", TokenKind::BraceRight),
+    (period, ".", TokenKind::Period),
+    (arrow, "->", TokenKind::Arrow),
+    (increment, "++", TokenKind::Increment),
+    (decrement, "--", TokenKind::Decrement),
+    (ampersand, "&", TokenKind::Ampersand),
+    (asterisk, "*", TokenKind::Asterisk),
+    (plus, "+", TokenKind::Plus),
+    (minus, "-", TokenKind::Minus),
+    (tilde, "~", TokenKind::Tilde),
+    (exclamation_nark, "!", TokenKind::ExclamationMark),
+    (slash, "/", TokenKind::Slash),
+    (percent, "%", TokenKind::Percent),
+    (left_shift, "<<", TokenKind::LeftShift),
+    (right_shift, ">>", TokenKind::RightShift),
+    (less_than, "<", TokenKind::LessThan),
+    (greater_than, ">", TokenKind::GreaterThan),
+    (less_than_or_equal, "<=", TokenKind::LessThanOrEqual),
+    (greater_than_or_equal, ">=", TokenKind::GreaterThanOrEqual),
+    (equal, "==", TokenKind::Equal),
+    (not_equal, "!=", TokenKind::NotEqual),
+    (caret, "^", TokenKind::Caret),
+    (pipe, "|", TokenKind::Pipe),
+    (logical_and, "&&", TokenKind::LogicalAnd),
+    (logical_or, "||", TokenKind::LogicalOr),
+    (question_mark, "?", TokenKind::QuestionMark),
+    (colon, ":", TokenKind::Colon),
+    (semicolon, ";", TokenKind::Semicolon),
+    (ellipsis, "...", TokenKind::Ellipsis),
+    (assign, "=", TokenKind::Assign),
+    (multiply_assign, "*=", TokenKind::MultiplyAssign),
+    (divide_assign, "/=", TokenKind::DivideAssign),
+    (modulo_assign, "%=", TokenKind::ModuloAssign),
+    (plus_assign, "+=", TokenKind::PlusAssign),
+    (minus_assign, "-=", TokenKind::MinusAssign),
+    (left_shift_assign, "<<=", TokenKind::LeftShiftAssign),
+    (right_shift_assign, ">>=", TokenKind::RightShiftAssign),
+    (bitwise_and_assign, "&=", TokenKind::BitwiseAndAssign),
+    (bitwise_xor_assign, "^=", TokenKind::BitwiseXorAssign),
+    (bitwise_or_assign, "|=", TokenKind::BitwiseOrAssign),
+    (comma, ",", TokenKind::Comma),
+    (pound_sign, "#", TokenKind::PoundSign),
+    (double_pound_sign, "##", TokenKind::DoublePoundSign),
 }
 
 #[test]
@@ -195,8 +207,16 @@ fn token_identifier() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(tokens[0], Token::Identifier(string.clone()));
-        assert_eq!(tokens[1], Token::Identifier(string));
+        assert_eq!(*tokens[0].kind(), TokenKind::Identifier);
+        assert_eq!(
+            &text[tokens[0].span().start()..tokens[0].span().end()],
+            string.as_str()
+        );
+        assert_eq!(*tokens[1].kind(), TokenKind::Identifier);
+        assert_eq!(
+            &text[tokens[1].span().start()..tokens[1].span().end()],
+            string.as_str()
+        );
     }
 }
 
@@ -212,8 +232,16 @@ fn test_decimal() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(tokens[0], Token::Number(number.clone()));
-        assert_eq!(tokens[1], Token::Number(number));
+        assert_eq!(*tokens[0].kind(), TokenKind::Number);
+        assert_eq!(
+            &text[tokens[0].span().start()..tokens[0].span().end()],
+            number.as_str()
+        );
+        assert_eq!(*tokens[1].kind(), TokenKind::Number);
+        assert_eq!(
+            &text[tokens[1].span().start()..tokens[1].span().end()],
+            number.as_str()
+        );
     }
 
     for suffix_lower in INTEGER_SUFFIXES {
@@ -226,8 +254,16 @@ fn test_decimal() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(tokens[0], Token::Number(number.clone()));
-            assert_eq!(tokens[1], Token::Number(number));
+            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[0].span().start()..tokens[0].span().end()],
+                number.as_str()
+            );
+            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[1].span().start()..tokens[1].span().end()],
+                number.as_str()
+            );
         }
     }
 
@@ -241,8 +277,16 @@ fn test_decimal() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(tokens[0], Token::Number(number.clone()));
-            assert_eq!(tokens[1], Token::Number(number));
+            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[0].span().start()..tokens[0].span().end()],
+                number.as_str()
+            );
+            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[1].span().start()..tokens[1].span().end()],
+                number.as_str()
+            );
         }
     }
 }
@@ -257,8 +301,16 @@ fn test_octal() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(tokens[0], Token::Number(number.clone()));
-        assert_eq!(tokens[1], Token::Number(number));
+        assert_eq!(*tokens[0].kind(), TokenKind::Number);
+        assert_eq!(
+            &text[tokens[0].span().start()..tokens[0].span().end()],
+            number.as_str()
+        );
+        assert_eq!(*tokens[1].kind(), TokenKind::Number);
+        assert_eq!(
+            &text[tokens[1].span().start()..tokens[1].span().end()],
+            number.as_str()
+        );
     }
 
     for suffix_lower in INTEGER_SUFFIXES {
@@ -271,8 +323,16 @@ fn test_octal() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(tokens[0], Token::Number(number.clone()));
-            assert_eq!(tokens[1], Token::Number(number));
+            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[0].span().start()..tokens[0].span().end()],
+                number.as_str()
+            );
+            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[1].span().start()..tokens[1].span().end()],
+                number.as_str()
+            );
         }
     }
 
@@ -286,8 +346,16 @@ fn test_octal() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(tokens[0], Token::Number(number.clone()));
-            assert_eq!(tokens[1], Token::Number(number));
+            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[0].span().start()..tokens[0].span().end()],
+                number.as_str()
+            );
+            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[1].span().start()..tokens[1].span().end()],
+                number.as_str()
+            );
         }
     }
 }
@@ -301,8 +369,16 @@ fn test_octal_fail() {
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 2);
-    assert_eq!(tokens[0], Token::Number("08".to_string()));
-    assert_eq!(tokens[1], Token::Number("08".to_string()));
+    assert_eq!(*tokens[0].kind(), TokenKind::Number);
+    assert_eq!(
+        &text[tokens[0].span().start()..tokens[0].span().end()],
+        "08"
+    );
+    assert_eq!(*tokens[1].kind(), TokenKind::Number);
+    assert_eq!(
+        &text[tokens[1].span().start()..tokens[1].span().end()],
+        "08"
+    );
 }
 
 #[test]
@@ -315,8 +391,16 @@ fn test_hexadecimal_lower() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(tokens[0], Token::Number(number.clone()));
-        assert_eq!(tokens[1], Token::Number(number));
+        assert_eq!(*tokens[0].kind(), TokenKind::Number);
+        assert_eq!(
+            &text[tokens[0].span().start()..tokens[0].span().end()],
+            number.as_str()
+        );
+        assert_eq!(*tokens[1].kind(), TokenKind::Number);
+        assert_eq!(
+            &text[tokens[1].span().start()..tokens[1].span().end()],
+            number.as_str()
+        );
     }
 
     for suffix_lower in INTEGER_SUFFIXES {
@@ -329,8 +413,16 @@ fn test_hexadecimal_lower() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(tokens[0], Token::Number(number.clone()));
-            assert_eq!(tokens[1], Token::Number(number));
+            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[0].span().start()..tokens[0].span().end()],
+                number.as_str()
+            );
+            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[1].span().start()..tokens[1].span().end()],
+                number.as_str()
+            );
         }
     }
 
@@ -344,8 +436,16 @@ fn test_hexadecimal_lower() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(tokens[0], Token::Number(number.clone()));
-            assert_eq!(tokens[1], Token::Number(number));
+            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[0].span().start()..tokens[0].span().end()],
+                number.as_str()
+            );
+            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[1].span().start()..tokens[1].span().end()],
+                number.as_str()
+            );
         }
     }
 }
@@ -359,8 +459,16 @@ fn test_hexadecimal_lower_fail() {
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 2);
-    assert_eq!(tokens[0], Token::Number("0xgg".to_string()));
-    assert_eq!(tokens[1], Token::Number("0xgg".to_string()));
+    assert_eq!(*tokens[0].kind(), TokenKind::Number);
+    assert_eq!(
+        &text[tokens[0].span().start()..tokens[0].span().end()],
+        "0xgg"
+    );
+    assert_eq!(*tokens[1].kind(), TokenKind::Number);
+    assert_eq!(
+        &text[tokens[1].span().start()..tokens[1].span().end()],
+        "0xgg"
+    );
 }
 
 #[test]
@@ -373,8 +481,16 @@ fn test_hexadecimal_upper() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(tokens[0], Token::Number(number.clone()));
-        assert_eq!(tokens[1], Token::Number(number));
+        assert_eq!(*tokens[0].kind(), TokenKind::Number);
+        assert_eq!(
+            &text[tokens[0].span().start()..tokens[0].span().end()],
+            number.as_str()
+        );
+        assert_eq!(*tokens[1].kind(), TokenKind::Number);
+        assert_eq!(
+            &text[tokens[1].span().start()..tokens[1].span().end()],
+            number.as_str()
+        );
     }
 
     for suffix_lower in INTEGER_SUFFIXES {
@@ -387,8 +503,16 @@ fn test_hexadecimal_upper() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(tokens[0], Token::Number(number.clone()));
-            assert_eq!(tokens[1], Token::Number(number));
+            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[0].span().start()..tokens[0].span().end()],
+                number.as_str()
+            );
+            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[1].span().start()..tokens[1].span().end()],
+                number.as_str()
+            );
         }
     }
 
@@ -402,8 +526,16 @@ fn test_hexadecimal_upper() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(tokens[0], Token::Number(number.clone()));
-            assert_eq!(tokens[1], Token::Number(number));
+            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[0].span().start()..tokens[0].span().end()],
+                number.as_str()
+            );
+            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(
+                &text[tokens[1].span().start()..tokens[1].span().end()],
+                number.as_str()
+            );
         }
     }
 }
@@ -417,12 +549,20 @@ fn test_hexadecimal_upper_fail() {
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 2);
-    assert_eq!(tokens[0], Token::Number("0xGG".to_string()));
-    assert_eq!(tokens[1], Token::Number("0xGG".to_string()));
+    assert_eq!(*tokens[0].kind(), TokenKind::Number);
+    assert_eq!(
+        &text[tokens[0].span().start()..tokens[0].span().end()],
+        "0xGG"
+    );
+    assert_eq!(*tokens[1].kind(), TokenKind::Number);
+    assert_eq!(
+        &text[tokens[1].span().start()..tokens[1].span().end()],
+        "0xGG"
+    );
 }
 
 #[test]
-fn test_numberss() {
+fn test_numbers() {
     let decimal = {
         let mut decimal = Vec::new();
 
@@ -546,22 +686,38 @@ fn test_numberss() {
 
     let mut i = 0;
     for decimal in decimal {
-        assert_eq!(tokens[i], Token::Number(decimal));
+        assert_eq!(*tokens[i].kind(), TokenKind::Number);
+        assert_eq!(
+            text[tokens[i].span().start()..tokens[i].span().end()],
+            decimal
+        );
         i += 1;
     }
 
     for octal in octal {
-        assert_eq!(tokens[i], Token::Number(octal));
+        assert_eq!(*tokens[i].kind(), TokenKind::Number);
+        assert_eq!(
+            text[tokens[i].span().start()..tokens[i].span().end()],
+            octal
+        );
         i += 1;
     }
 
     for hexadecimal_lower in hexadecimal_lower {
-        assert_eq!(tokens[i], Token::Number(hexadecimal_lower));
+        assert_eq!(*tokens[i].kind(), TokenKind::Number);
+        assert_eq!(
+            text[tokens[i].span().start()..tokens[i].span().end()],
+            hexadecimal_lower
+        );
         i += 1;
     }
 
     for hexadecimal_upper in hexadecimal_upper {
-        assert_eq!(tokens[i], Token::Number(hexadecimal_upper));
+        assert_eq!(*tokens[i].kind(), TokenKind::Number);
+        assert_eq!(
+            text[tokens[i].span().start()..tokens[i].span().end()],
+            hexadecimal_upper
+        );
         i += 1;
     }
 }
