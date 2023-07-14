@@ -4,6 +4,12 @@ All changes to this project will be documented in this file.
 
 ## July 14, 2023
 
+## Diagnostics
+
+- Added diagnostics reports
+
+## Lexer
+
 - Added diagnostics for lexer
 
 ## July 13, 2023
