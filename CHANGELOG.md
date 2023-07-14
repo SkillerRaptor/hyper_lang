@@ -11,6 +11,7 @@ All changes to this project will be documented in this file.
 ## Lexer
 
 - Added diagnostics for lexer
+- Simplified and organized tokens
 
 ## July 13, 2023
 

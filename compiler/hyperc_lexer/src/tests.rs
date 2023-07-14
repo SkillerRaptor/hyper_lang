@@ -60,40 +60,40 @@ macro_rules! test_keywords {
 }
 
 test_keywords! {
-    (auto, TokenKind::Auto),
-    (break, TokenKind::Break),
-    (case, TokenKind::Case),
-    (char, TokenKind::Char),
-    (const, TokenKind::Const),
-    (continue, TokenKind::Continue),
-    (default, TokenKind::Default),
-    (do, TokenKind::Do),
-    (double, TokenKind::Double),
-    (else, TokenKind::Else),
-    (enum, TokenKind::Enum),
-    (extern, TokenKind::Extern),
-    (float, TokenKind::Float),
-    (for, TokenKind::For),
-    (goto, TokenKind::Goto),
-    (if, TokenKind::If),
-    (inline, TokenKind::Inline),
-    (int, TokenKind::Int),
-    (long, TokenKind::Long),
-    (register, TokenKind::Register),
-    (restrict, TokenKind::Restrict),
-    (return, TokenKind::Return),
-    (short, TokenKind::Short),
-    (signed, TokenKind::Signed),
-    (sizeof, TokenKind::Sizeof),
-    (static, TokenKind::Static),
-    (struct, TokenKind::Struct),
-    (switch, TokenKind::Switch),
-    (typedef, TokenKind::Typedef),
-    (union, TokenKind::Union),
-    (unsigned, TokenKind::Unsigned),
-    (void, TokenKind::Void),
-    (volatile, TokenKind::Volatile),
-    (while, TokenKind::While),
+    (auto, TokenKind::Identifier(Keyword::Auto)),
+    (break, TokenKind::Identifier(Keyword::Break)),
+    (case, TokenKind::Identifier(Keyword::Case)),
+    (char, TokenKind::Identifier(Keyword::Char)),
+    (const, TokenKind::Identifier(Keyword::Const)),
+    (continue, TokenKind::Identifier(Keyword::Continue)),
+    (default, TokenKind::Identifier(Keyword::Default)),
+    (do, TokenKind::Identifier(Keyword::Do)),
+    (double, TokenKind::Identifier(Keyword::Double)),
+    (else, TokenKind::Identifier(Keyword::Else)),
+    (enum, TokenKind::Identifier(Keyword::Enum)),
+    (extern, TokenKind::Identifier(Keyword::Extern)),
+    (float, TokenKind::Identifier(Keyword::Float)),
+    (for, TokenKind::Identifier(Keyword::For)),
+    (goto, TokenKind::Identifier(Keyword::Goto)),
+    (if, TokenKind::Identifier(Keyword::If)),
+    (inline, TokenKind::Identifier(Keyword::Inline)),
+    (int, TokenKind::Identifier(Keyword::Int)),
+    (long, TokenKind::Identifier(Keyword::Long)),
+    (register, TokenKind::Identifier(Keyword::Register)),
+    (restrict, TokenKind::Identifier(Keyword::Restrict)),
+    (return, TokenKind::Identifier(Keyword::Return)),
+    (short, TokenKind::Identifier(Keyword::Short)),
+    (signed, TokenKind::Identifier(Keyword::Signed)),
+    (sizeof, TokenKind::Identifier(Keyword::Sizeof)),
+    (static, TokenKind::Identifier(Keyword::Static)),
+    (struct, TokenKind::Identifier(Keyword::Struct)),
+    (switch, TokenKind::Identifier(Keyword::Switch)),
+    (typedef, TokenKind::Identifier(Keyword::Typedef)),
+    (union, TokenKind::Identifier(Keyword::Union)),
+    (unsigned, TokenKind::Identifier(Keyword::Unsigned)),
+    (void, TokenKind::Identifier(Keyword::Void)),
+    (volatile, TokenKind::Identifier(Keyword::Volatile)),
+    (while, TokenKind::Identifier(Keyword::While)),
 }
 
 macro_rules! test_punctuators {
@@ -147,34 +147,47 @@ macro_rules! test_punctuators {
 }
 
 test_punctuators! {
-    (bracket_left, "[", TokenKind::BracketLeft),
-    (bracket_right, "]", TokenKind::BracketRight),
-    (parenthesis_left, "(", TokenKind::ParenthesisLeft),
-    (parenthesis_right, ")", TokenKind::ParenthesisRight),
-    (brace_left, "{", TokenKind::BraceLeft),
-    (brace_right, "}", TokenKind::BraceRight),
+    (bracket_left, "[", TokenKind::OpenDelimiter(Delimiter::Bracket)),
+    (bracket_right, "]", TokenKind::CloseDelimiter(Delimiter::Bracket)),
+    (parenthesis_left, "(", TokenKind::OpenDelimiter(Delimiter::Parenthesis)),
+    (parenthesis_right, ")", TokenKind::CloseDelimiter(Delimiter::Parenthesis)),
+    (brace_left, "{", TokenKind::OpenDelimiter(Delimiter::Brace)),
+    (brace_right, "}", TokenKind::CloseDelimiter(Delimiter::Brace)),
+
+    (plus, "+", TokenKind::BinaryOperation(BinaryOperation::Plus)),
+    (minus, "-", TokenKind::BinaryOperation(BinaryOperation::Minus)),
+    (asterisk, "*", TokenKind::BinaryOperation(BinaryOperation::Star)),
+    (slash, "/", TokenKind::BinaryOperation(BinaryOperation::Slash)),
+    (percent, "%", TokenKind::BinaryOperation(BinaryOperation::Percent)),
+    (caret, "^", TokenKind::BinaryOperation(BinaryOperation::Caret)),
+    (ampersand, "&", TokenKind::BinaryOperation(BinaryOperation::And)),
+    (pipe, "|", TokenKind::BinaryOperation(BinaryOperation::Or)),
+    (left_shift, "<<", TokenKind::BinaryOperation(BinaryOperation::LeftShift)),
+    (right_shift, ">>", TokenKind::BinaryOperation(BinaryOperation::RightShift)),
+
+    (plus_assign, "+=", TokenKind::BinaryOperationEqual(BinaryOperation::Plus)),
+    (minus_assign, "-=", TokenKind::BinaryOperationEqual(BinaryOperation::Minus)),
+    (multiply_assign, "*=", TokenKind::BinaryOperationEqual(BinaryOperation::Star)),
+    (divide_assign, "/=", TokenKind::BinaryOperationEqual(BinaryOperation::Slash)),
+    (modulo_assign, "%=", TokenKind::BinaryOperationEqual(BinaryOperation::Percent)),
+    (bitwise_xor_assign, "^=", TokenKind::BinaryOperationEqual(BinaryOperation::Caret)),
+    (bitwise_and_assign, "&=", TokenKind::BinaryOperationEqual(BinaryOperation::And)),
+    (bitwise_or_assign, "|=", TokenKind::BinaryOperationEqual(BinaryOperation::Or)),
+    (left_shift_assign, "<<=", TokenKind::BinaryOperationEqual(BinaryOperation::LeftShift)),
+    (right_shift_assign, ">>=", TokenKind::BinaryOperationEqual(BinaryOperation::RightShift)),
+
     (period, ".", TokenKind::Period),
     (arrow, "->", TokenKind::Arrow),
     (increment, "++", TokenKind::Increment),
     (decrement, "--", TokenKind::Decrement),
-    (ampersand, "&", TokenKind::Ampersand),
-    (asterisk, "*", TokenKind::Asterisk),
-    (plus, "+", TokenKind::Plus),
-    (minus, "-", TokenKind::Minus),
     (tilde, "~", TokenKind::Tilde),
     (exclamation_nark, "!", TokenKind::ExclamationMark),
-    (slash, "/", TokenKind::Slash),
-    (percent, "%", TokenKind::Percent),
-    (left_shift, "<<", TokenKind::LeftShift),
-    (right_shift, ">>", TokenKind::RightShift),
     (less_than, "<", TokenKind::LessThan),
     (greater_than, ">", TokenKind::GreaterThan),
     (less_than_or_equal, "<=", TokenKind::LessThanOrEqual),
     (greater_than_or_equal, ">=", TokenKind::GreaterThanOrEqual),
     (equal, "==", TokenKind::Equal),
     (not_equal, "!=", TokenKind::NotEqual),
-    (caret, "^", TokenKind::Caret),
-    (pipe, "|", TokenKind::Pipe),
     (logical_and, "&&", TokenKind::LogicalAnd),
     (logical_or, "||", TokenKind::LogicalOr),
     (question_mark, "?", TokenKind::QuestionMark),
@@ -182,16 +195,6 @@ test_punctuators! {
     (semicolon, ";", TokenKind::Semicolon),
     (ellipsis, "...", TokenKind::Ellipsis),
     (assign, "=", TokenKind::Assign),
-    (multiply_assign, "*=", TokenKind::MultiplyAssign),
-    (divide_assign, "/=", TokenKind::DivideAssign),
-    (modulo_assign, "%=", TokenKind::ModuloAssign),
-    (plus_assign, "+=", TokenKind::PlusAssign),
-    (minus_assign, "-=", TokenKind::MinusAssign),
-    (left_shift_assign, "<<=", TokenKind::LeftShiftAssign),
-    (right_shift_assign, ">>=", TokenKind::RightShiftAssign),
-    (bitwise_and_assign, "&=", TokenKind::BitwiseAndAssign),
-    (bitwise_xor_assign, "^=", TokenKind::BitwiseXorAssign),
-    (bitwise_or_assign, "|=", TokenKind::BitwiseOrAssign),
     (comma, ",", TokenKind::Comma),
     (pound_sign, "#", TokenKind::PoundSign),
     (double_pound_sign, "##", TokenKind::DoublePoundSign),
@@ -212,12 +215,12 @@ fn token_identifier() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(*tokens[0].kind(), TokenKind::Identifier);
+        assert_eq!(*tokens[0].kind(), TokenKind::Identifier(Keyword::None));
         assert_eq!(
             &text[tokens[0].span().start()..tokens[0].span().end()],
             string.as_str()
         );
-        assert_eq!(*tokens[1].kind(), TokenKind::Identifier);
+        assert_eq!(*tokens[1].kind(), TokenKind::Identifier(Keyword::None));
         assert_eq!(
             &text[tokens[1].span().start()..tokens[1].span().end()],
             string.as_str()
@@ -238,12 +241,12 @@ fn test_decimal() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(*tokens[0].kind(), TokenKind::Number);
+        assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             &text[tokens[0].span().start()..tokens[0].span().end()],
             number.as_str()
         );
-        assert_eq!(*tokens[1].kind(), TokenKind::Number);
+        assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             &text[tokens[1].span().start()..tokens[1].span().end()],
             number.as_str()
@@ -261,12 +264,12 @@ fn test_decimal() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[0].span().start()..tokens[0].span().end()],
                 number.as_str()
             );
-            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[1].span().start()..tokens[1].span().end()],
                 number.as_str()
@@ -285,12 +288,12 @@ fn test_decimal() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[0].span().start()..tokens[0].span().end()],
                 number.as_str()
             );
-            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[1].span().start()..tokens[1].span().end()],
                 number.as_str()
@@ -310,12 +313,12 @@ fn test_octal() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(*tokens[0].kind(), TokenKind::Number);
+        assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             &text[tokens[0].span().start()..tokens[0].span().end()],
             number.as_str()
         );
-        assert_eq!(*tokens[1].kind(), TokenKind::Number);
+        assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             &text[tokens[1].span().start()..tokens[1].span().end()],
             number.as_str()
@@ -333,12 +336,12 @@ fn test_octal() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[0].span().start()..tokens[0].span().end()],
                 number.as_str()
             );
-            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[1].span().start()..tokens[1].span().end()],
                 number.as_str()
@@ -357,12 +360,12 @@ fn test_octal() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[0].span().start()..tokens[0].span().end()],
                 number.as_str()
             );
-            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[1].span().start()..tokens[1].span().end()],
                 number.as_str()
@@ -381,12 +384,12 @@ fn test_octal_fail() {
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 2);
-    assert_eq!(*tokens[0].kind(), TokenKind::Number);
+    assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
     assert_eq!(
         &text[tokens[0].span().start()..tokens[0].span().end()],
         "08"
     );
-    assert_eq!(*tokens[1].kind(), TokenKind::Number);
+    assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
     assert_eq!(
         &text[tokens[1].span().start()..tokens[1].span().end()],
         "08"
@@ -404,12 +407,12 @@ fn test_hexadecimal_lower() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(*tokens[0].kind(), TokenKind::Number);
+        assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             &text[tokens[0].span().start()..tokens[0].span().end()],
             number.as_str()
         );
-        assert_eq!(*tokens[1].kind(), TokenKind::Number);
+        assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             &text[tokens[1].span().start()..tokens[1].span().end()],
             number.as_str()
@@ -427,12 +430,12 @@ fn test_hexadecimal_lower() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[0].span().start()..tokens[0].span().end()],
                 number.as_str()
             );
-            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[1].span().start()..tokens[1].span().end()],
                 number.as_str()
@@ -451,12 +454,12 @@ fn test_hexadecimal_lower() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[0].span().start()..tokens[0].span().end()],
                 number.as_str()
             );
-            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[1].span().start()..tokens[1].span().end()],
                 number.as_str()
@@ -475,12 +478,12 @@ fn test_hexadecimal_lower_fail() {
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 2);
-    assert_eq!(*tokens[0].kind(), TokenKind::Number);
+    assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
     assert_eq!(
         &text[tokens[0].span().start()..tokens[0].span().end()],
         "0xgg"
     );
-    assert_eq!(*tokens[1].kind(), TokenKind::Number);
+    assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
     assert_eq!(
         &text[tokens[1].span().start()..tokens[1].span().end()],
         "0xgg"
@@ -498,12 +501,12 @@ fn test_hexadecimal_upper() {
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
-        assert_eq!(*tokens[0].kind(), TokenKind::Number);
+        assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             &text[tokens[0].span().start()..tokens[0].span().end()],
             number.as_str()
         );
-        assert_eq!(*tokens[1].kind(), TokenKind::Number);
+        assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             &text[tokens[1].span().start()..tokens[1].span().end()],
             number.as_str()
@@ -521,12 +524,12 @@ fn test_hexadecimal_upper() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[0].span().start()..tokens[0].span().end()],
                 number.as_str()
             );
-            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[1].span().start()..tokens[1].span().end()],
                 number.as_str()
@@ -545,12 +548,12 @@ fn test_hexadecimal_upper() {
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
-            assert_eq!(*tokens[0].kind(), TokenKind::Number);
+            assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[0].span().start()..tokens[0].span().end()],
                 number.as_str()
             );
-            assert_eq!(*tokens[1].kind(), TokenKind::Number);
+            assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
             assert_eq!(
                 &text[tokens[1].span().start()..tokens[1].span().end()],
                 number.as_str()
@@ -569,12 +572,12 @@ fn test_hexadecimal_upper_fail() {
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 2);
-    assert_eq!(*tokens[0].kind(), TokenKind::Number);
+    assert_eq!(*tokens[0].kind(), TokenKind::Literal(LiteralKind::Number));
     assert_eq!(
         &text[tokens[0].span().start()..tokens[0].span().end()],
         "0xGG"
     );
-    assert_eq!(*tokens[1].kind(), TokenKind::Number);
+    assert_eq!(*tokens[1].kind(), TokenKind::Literal(LiteralKind::Number));
     assert_eq!(
         &text[tokens[1].span().start()..tokens[1].span().end()],
         "0xGG"
@@ -707,7 +710,7 @@ fn test_numbers() {
 
     let mut i = 0;
     for decimal in decimal {
-        assert_eq!(*tokens[i].kind(), TokenKind::Number);
+        assert_eq!(*tokens[i].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             text[tokens[i].span().start()..tokens[i].span().end()],
             decimal
@@ -716,7 +719,7 @@ fn test_numbers() {
     }
 
     for octal in octal {
-        assert_eq!(*tokens[i].kind(), TokenKind::Number);
+        assert_eq!(*tokens[i].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             text[tokens[i].span().start()..tokens[i].span().end()],
             octal
@@ -725,7 +728,7 @@ fn test_numbers() {
     }
 
     for hexadecimal_lower in hexadecimal_lower {
-        assert_eq!(*tokens[i].kind(), TokenKind::Number);
+        assert_eq!(*tokens[i].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             text[tokens[i].span().start()..tokens[i].span().end()],
             hexadecimal_lower
@@ -734,7 +737,7 @@ fn test_numbers() {
     }
 
     for hexadecimal_upper in hexadecimal_upper {
-        assert_eq!(*tokens[i].kind(), TokenKind::Number);
+        assert_eq!(*tokens[i].kind(), TokenKind::Literal(LiteralKind::Number));
         assert_eq!(
             text[tokens[i].span().start()..tokens[i].span().end()],
             hexadecimal_upper

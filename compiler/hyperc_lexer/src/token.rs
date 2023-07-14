@@ -7,179 +7,112 @@
 use hyperc_span::Span;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum BinaryOperation {
+    Plus,
+    Minus,
+
+    Star,
+    Slash,
+
+    Percent,
+
+    Caret,
+    And,
+    Or,
+
+    LeftShift,
+    RightShift,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Delimiter {
+    Parenthesis,
+    Bracket,
+    Brace,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum LiteralKind {
+    Number,
+    Character,
+    String,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Keyword {
+    None,
+    Auto,
+    Break,
+    Case,
+    Char,
+    Const,
+    Continue,
+    Default,
+    Do,
+    Double,
+    Else,
+    Enum,
+    Extern,
+    Float,
+    For,
+    Goto,
+    If,
+    Inline,
+    Int,
+    Long,
+    Register,
+    Restrict,
+    Return,
+    Short,
+    Signed,
+    Sizeof,
+    Static,
+    Struct,
+    Switch,
+    Typedef,
+    Union,
+    Unsigned,
+    Void,
+    Volatile,
+    While,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum TokenKind {
     Eof,
 
-    // Keywords
-    /// auto
-    Auto,
-    /// break
-    Break,
-    /// case
-    Case,
-    /// char
-    Char,
-    /// const
-    Const,
-    /// continue
-    Continue,
-    /// default
-    Default,
-    /// do
-    Do,
-    /// double
-    Double,
-    /// else
-    Else,
-    /// enum
-    Enum,
-    /// extern
-    Extern,
-    /// float
-    Float,
-    /// for
-    For,
-    /// goto
-    Goto,
-    /// if
-    If,
-    /// inline
-    Inline,
-    /// int
-    Int,
-    /// long
-    Long,
-    /// register
-    Register,
-    /// restrict
-    Restrict,
-    /// return
-    Return,
-    /// short
-    Short,
-    /// signed
-    Signed,
-    /// sizeof
-    Sizeof,
-    /// static
-    Static,
-    /// struct
-    Struct,
-    /// switch
-    Switch,
-    /// typedef
-    Typedef,
-    /// union
-    Union,
-    /// unsigned
-    Unsigned,
-    /// void
-    Void,
-    /// volatile
-    Volatile,
-    /// while
-    While,
+    OpenDelimiter(Delimiter),
+    CloseDelimiter(Delimiter),
 
-    // Punctuators
-    /// [
-    BracketLeft,
-    /// ]
-    BracketRight,
-    /// (
-    ParenthesisLeft,
-    /// )
-    ParenthesisRight,
-    /// {
-    BraceLeft,
-    /// }
-    BraceRight,
-    /// .
+    BinaryOperation(BinaryOperation),
+    BinaryOperationEqual(BinaryOperation),
+
     Period,
-    /// ->
     Arrow,
-    /// ++
     Increment,
-    /// --
     Decrement,
-    /// &
-    Ampersand,
-    /// *
-    Asterisk,
-    /// +
-    Plus,
-    /// -
-    Minus,
-    /// ~
     Tilde,
-    /// !
     ExclamationMark,
-    /// /
-    Slash,
-    /// %
-    Percent,
-    /// <<
-    LeftShift,
-    /// >>
-    RightShift,
-    /// <
     LessThan,
-    /// >
     GreaterThan,
-    /// <=
     LessThanOrEqual,
-    /// >=
     GreaterThanOrEqual,
-    /// ==
     Equal,
-    /// !=
     NotEqual,
-    /// ^
-    Caret,
-    /// |
-    Pipe,
-    /// &&
-    LogicalAnd,
-    /// ||
-    LogicalOr,
-    /// ?
     QuestionMark,
-    /// :
     Colon,
-    /// ;
     Semicolon,
-    /// ...
     Ellipsis,
-    /// =
     Assign,
-    /// *=
-    MultiplyAssign,
-    /// /=
-    DivideAssign,
-    /// %=
-    ModuloAssign,
-    /// +=
-    PlusAssign,
-    /// -=
-    MinusAssign,
-    /// <<=
-    LeftShiftAssign,
-    /// >>=
-    RightShiftAssign,
-    /// &=
-    BitwiseAndAssign,
-    /// ^=
-    BitwiseXorAssign,
-    /// |=
-    BitwiseOrAssign,
-    /// ,
     Comma,
-    /// #
+    LogicalAnd,
+    LogicalOr,
     PoundSign,
-    /// ##
     DoublePoundSign,
 
-    Identifier,
-    Number,
+    Identifier(Keyword),
+
+    Literal(LiteralKind),
 }
 
 #[derive(Clone, Debug)]

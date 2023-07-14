@@ -11,6 +11,7 @@ use crate::token::{Token, TokenKind};
 
 use hyperc_diagnostics::{annotation::Annotation, errors::ErrorCode, report::Report, Diagnostic};
 use hyperc_span::Span;
+use token::{BinaryOperation, Delimiter, Keyword, LiteralKind};
 
 #[derive(Debug)]
 pub struct Lexer<'a> {
@@ -60,12 +61,12 @@ impl<'a> Lexer<'a> {
         let start_index = self.index - 1;
 
         let kind = match self.current_character {
-            '[' => TokenKind::BracketLeft,
-            ']' => TokenKind::BracketRight,
-            '(' => TokenKind::ParenthesisLeft,
-            ')' => TokenKind::ParenthesisRight,
-            '{' => TokenKind::BraceLeft,
-            '}' => TokenKind::BraceRight,
+            '[' => TokenKind::OpenDelimiter(Delimiter::Bracket),
+            ']' => TokenKind::CloseDelimiter(Delimiter::Bracket),
+            '(' => TokenKind::OpenDelimiter(Delimiter::Parenthesis),
+            ')' => TokenKind::CloseDelimiter(Delimiter::Parenthesis),
+            '{' => TokenKind::OpenDelimiter(Delimiter::Brace),
+            '}' => TokenKind::CloseDelimiter(Delimiter::Brace),
             '.' => {
                 if self.peek(0) == '.' && self.peek(1) == '.' {
                     self.advance();
@@ -82,16 +83,16 @@ impl<'a> Lexer<'a> {
                 }
                 '=' => {
                     self.advance();
-                    TokenKind::BitwiseAndAssign
+                    TokenKind::BinaryOperationEqual(BinaryOperation::And)
                 }
-                _ => TokenKind::Ampersand,
+                _ => TokenKind::BinaryOperation(BinaryOperation::And),
             },
             '*' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    TokenKind::MultiplyAssign
+                    TokenKind::BinaryOperationEqual(BinaryOperation::Star)
                 } else {
-                    TokenKind::Asterisk
+                    TokenKind::BinaryOperation(BinaryOperation::Star)
                 }
             }
             '+' => match self.peek(0) {
@@ -101,9 +102,9 @@ impl<'a> Lexer<'a> {
                 }
                 '=' => {
                     self.advance();
-                    TokenKind::PlusAssign
+                    TokenKind::BinaryOperationEqual(BinaryOperation::Plus)
                 }
-                _ => TokenKind::Plus,
+                _ => TokenKind::BinaryOperation(BinaryOperation::Plus),
             },
             '-' => match self.peek(0) {
                 '-' => {
@@ -112,13 +113,13 @@ impl<'a> Lexer<'a> {
                 }
                 '=' => {
                     self.advance();
-                    TokenKind::MinusAssign
+                    TokenKind::BinaryOperationEqual(BinaryOperation::Minus)
                 }
                 '>' => {
                     self.advance();
                     TokenKind::Arrow
                 }
-                _ => TokenKind::Minus,
+                _ => TokenKind::BinaryOperation(BinaryOperation::Minus),
             },
             '~' => TokenKind::Tilde,
             '!' => {
@@ -132,17 +133,17 @@ impl<'a> Lexer<'a> {
             '/' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    TokenKind::DivideAssign
+                    TokenKind::BinaryOperationEqual(BinaryOperation::Slash)
                 } else {
-                    TokenKind::Slash
+                    TokenKind::BinaryOperation(BinaryOperation::Slash)
                 }
             }
             '%' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    TokenKind::ModuloAssign
+                    TokenKind::BinaryOperationEqual(BinaryOperation::Percent)
                 } else {
-                    TokenKind::Percent
+                    TokenKind::BinaryOperation(BinaryOperation::Percent)
                 }
             }
             '<' => match self.peek(0) {
@@ -150,10 +151,10 @@ impl<'a> Lexer<'a> {
                     if self.peek(1) == '=' {
                         self.advance();
                         self.advance();
-                        TokenKind::LeftShiftAssign
+                        TokenKind::BinaryOperationEqual(BinaryOperation::LeftShift)
                     } else {
                         self.advance();
-                        TokenKind::LeftShift
+                        TokenKind::BinaryOperation(BinaryOperation::LeftShift)
                     }
                 }
                 '=' => {
@@ -167,10 +168,10 @@ impl<'a> Lexer<'a> {
                     if self.peek(1) == '=' {
                         self.advance();
                         self.advance();
-                        TokenKind::RightShiftAssign
+                        TokenKind::BinaryOperationEqual(BinaryOperation::RightShift)
                     } else {
                         self.advance();
-                        TokenKind::RightShift
+                        TokenKind::BinaryOperation(BinaryOperation::RightShift)
                     }
                 }
                 '=' => {
@@ -190,9 +191,9 @@ impl<'a> Lexer<'a> {
             '^' => {
                 if self.peek(0) == '=' {
                     self.advance();
-                    TokenKind::BitwiseXorAssign
+                    TokenKind::BinaryOperationEqual(BinaryOperation::Caret)
                 } else {
-                    TokenKind::Caret
+                    TokenKind::BinaryOperation(BinaryOperation::Caret)
                 }
             }
             '|' => match self.peek(0) {
@@ -202,9 +203,9 @@ impl<'a> Lexer<'a> {
                 }
                 '=' => {
                     self.advance();
-                    TokenKind::BitwiseOrAssign
+                    TokenKind::BinaryOperationEqual(BinaryOperation::Or)
                 }
-                _ => TokenKind::Pipe,
+                _ => TokenKind::BinaryOperation(BinaryOperation::Or),
             },
             '?' => TokenKind::QuestionMark,
             ':' => TokenKind::Colon,
@@ -255,41 +256,41 @@ impl<'a> Lexer<'a> {
         }
 
         match string.as_str() {
-            "auto" => TokenKind::Auto,
-            "break" => TokenKind::Break,
-            "case" => TokenKind::Case,
-            "char" => TokenKind::Char,
-            "const" => TokenKind::Const,
-            "continue" => TokenKind::Continue,
-            "default" => TokenKind::Default,
-            "do" => TokenKind::Do,
-            "double" => TokenKind::Double,
-            "else" => TokenKind::Else,
-            "enum" => TokenKind::Enum,
-            "extern" => TokenKind::Extern,
-            "float" => TokenKind::Float,
-            "for" => TokenKind::For,
-            "goto" => TokenKind::Goto,
-            "if" => TokenKind::If,
-            "inline" => TokenKind::Inline,
-            "int" => TokenKind::Int,
-            "long" => TokenKind::Long,
-            "register" => TokenKind::Register,
-            "restrict" => TokenKind::Restrict,
-            "return" => TokenKind::Return,
-            "short" => TokenKind::Short,
-            "signed" => TokenKind::Signed,
-            "sizeof" => TokenKind::Sizeof,
-            "static" => TokenKind::Static,
-            "struct" => TokenKind::Struct,
-            "switch" => TokenKind::Switch,
-            "typedef" => TokenKind::Typedef,
-            "union" => TokenKind::Union,
-            "unsigned" => TokenKind::Unsigned,
-            "void" => TokenKind::Void,
-            "volatile" => TokenKind::Volatile,
-            "while" => TokenKind::While,
-            _ => TokenKind::Identifier,
+            "auto" => TokenKind::Identifier(Keyword::Auto),
+            "break" => TokenKind::Identifier(Keyword::Break),
+            "case" => TokenKind::Identifier(Keyword::Case),
+            "char" => TokenKind::Identifier(Keyword::Char),
+            "const" => TokenKind::Identifier(Keyword::Const),
+            "continue" => TokenKind::Identifier(Keyword::Continue),
+            "default" => TokenKind::Identifier(Keyword::Default),
+            "do" => TokenKind::Identifier(Keyword::Do),
+            "double" => TokenKind::Identifier(Keyword::Double),
+            "else" => TokenKind::Identifier(Keyword::Else),
+            "enum" => TokenKind::Identifier(Keyword::Enum),
+            "extern" => TokenKind::Identifier(Keyword::Extern),
+            "float" => TokenKind::Identifier(Keyword::Float),
+            "for" => TokenKind::Identifier(Keyword::For),
+            "goto" => TokenKind::Identifier(Keyword::Goto),
+            "if" => TokenKind::Identifier(Keyword::If),
+            "inline" => TokenKind::Identifier(Keyword::Inline),
+            "int" => TokenKind::Identifier(Keyword::Int),
+            "long" => TokenKind::Identifier(Keyword::Long),
+            "register" => TokenKind::Identifier(Keyword::Register),
+            "restrict" => TokenKind::Identifier(Keyword::Restrict),
+            "return" => TokenKind::Identifier(Keyword::Return),
+            "short" => TokenKind::Identifier(Keyword::Short),
+            "signed" => TokenKind::Identifier(Keyword::Signed),
+            "sizeof" => TokenKind::Identifier(Keyword::Sizeof),
+            "static" => TokenKind::Identifier(Keyword::Static),
+            "struct" => TokenKind::Identifier(Keyword::Struct),
+            "switch" => TokenKind::Identifier(Keyword::Switch),
+            "typedef" => TokenKind::Identifier(Keyword::Typedef),
+            "union" => TokenKind::Identifier(Keyword::Union),
+            "unsigned" => TokenKind::Identifier(Keyword::Unsigned),
+            "void" => TokenKind::Identifier(Keyword::Void),
+            "volatile" => TokenKind::Identifier(Keyword::Volatile),
+            "while" => TokenKind::Identifier(Keyword::While),
+            _ => TokenKind::Identifier(Keyword::None),
         }
     }
 
@@ -368,7 +369,7 @@ impl<'a> Lexer<'a> {
             _ => {}
         }
 
-        Some(TokenKind::Number)
+        Some(TokenKind::Literal(LiteralKind::Number))
     }
 
     // Lexer specific
