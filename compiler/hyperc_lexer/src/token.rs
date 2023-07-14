@@ -126,8 +126,8 @@ impl Token {
         Self { kind, span }
     }
 
-    pub fn kind(&self) -> &TokenKind {
-        &self.kind
+    pub fn kind(&self) -> TokenKind {
+        self.kind
     }
 
     pub fn span(&self) -> Span {

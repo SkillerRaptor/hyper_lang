@@ -7,11 +7,10 @@
 mod tests;
 pub mod token;
 
-use crate::token::{Token, TokenKind};
+use crate::token::{BinaryOperation, Delimiter, Keyword, LiteralKind, Token, TokenKind};
 
 use hyperc_diagnostics::{annotation::Annotation, errors::ErrorCode, report::Report, Diagnostic};
 use hyperc_span::Span;
-use token::{BinaryOperation, Delimiter, Keyword, LiteralKind};
 
 #[derive(Debug)]
 pub struct Lexer<'a> {
@@ -44,7 +43,7 @@ impl<'a> Lexer<'a> {
 
         while !self.has_reached_end() {
             let token = self.next_token()?;
-            if *token.kind() == TokenKind::Eof {
+            if token.kind() == TokenKind::Eof {
                 break;
             }
 
