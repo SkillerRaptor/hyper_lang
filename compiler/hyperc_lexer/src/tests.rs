@@ -24,7 +24,8 @@ macro_rules! test_keywords {
                 fn [<token_ $keyword>]() {
                     let text = concat!(stringify!($keyword), " ", stringify!($keyword));
 
-                    let mut lexer = Lexer::new(text);
+                    let diagnostic = Diagnostic::new("test.c", unindent::unindent(text));
+                    let mut lexer = Lexer::new(&diagnostic, text);
                     let tokens = lexer.lex().unwrap();
 
                     assert_eq!(tokens.len(), 2);
@@ -43,7 +44,8 @@ macro_rules! test_keywords {
                 )*
             );
 
-            let mut lexer = Lexer::new(text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text));
+            let mut lexer = Lexer::new(&diagnostic, text);
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), count!($($keyword)*));
@@ -102,7 +104,8 @@ macro_rules! test_punctuators {
                 fn [<token_ $name>]() {
                     let text = concat!($punctuator, " ", $punctuator);
 
-                    let mut lexer = Lexer::new(text);
+                    let diagnostic = Diagnostic::new("test.c", unindent::unindent(text));
+                    let mut lexer = Lexer::new(&diagnostic, text);
                     let tokens = lexer.lex().unwrap();
 
                     assert_eq!(tokens.len(), 2);
@@ -124,7 +127,8 @@ macro_rules! test_punctuators {
         fn token_punctuators() {
             let text = concat!($($punctuator, " ", )*);
 
-            let mut lexer = Lexer::new(text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text));
+            let mut lexer = Lexer::new(&diagnostic, text);
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), count!($($punctuator)*));
@@ -203,7 +207,8 @@ fn token_identifier() {
         }
 
         let text = format!("{0} {0}", string);
-        let mut lexer = Lexer::new(&text);
+        let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+        let mut lexer = Lexer::new(&diagnostic, text.as_str());
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
@@ -228,7 +233,8 @@ fn test_decimal() {
         let number = i.to_string();
 
         let text = format!("{number} {number}");
-        let mut lexer = Lexer::new(&text);
+        let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+        let mut lexer = Lexer::new(&diagnostic, text.as_str());
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
@@ -250,7 +256,8 @@ fn test_decimal() {
             let number = format!("{}{}", i, suffix);
 
             let text = format!("{number} {number}");
-            let mut lexer = Lexer::new(&text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+            let mut lexer = Lexer::new(&diagnostic, text.as_str());
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
@@ -273,7 +280,8 @@ fn test_decimal() {
             let number = format!("{}{}", i, suffix);
 
             let text = format!("{number} {number}");
-            let mut lexer = Lexer::new(&text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+            let mut lexer = Lexer::new(&diagnostic, text.as_str());
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
@@ -297,7 +305,8 @@ fn test_octal() {
         let number = format!("0{}", j);
 
         let text = format!("{number} {number}");
-        let mut lexer = Lexer::new(&text);
+        let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+        let mut lexer = Lexer::new(&diagnostic, text.as_str());
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
@@ -319,7 +328,8 @@ fn test_octal() {
             let number = format!("0{}{}", j, suffix);
 
             let text = format!("{number} {number}");
-            let mut lexer = Lexer::new(&text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+            let mut lexer = Lexer::new(&diagnostic, text.as_str());
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
@@ -342,7 +352,8 @@ fn test_octal() {
             let number = format!("0{}{}", j, suffix);
 
             let text = format!("{number} {number}");
-            let mut lexer = Lexer::new(&text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+            let mut lexer = Lexer::new(&diagnostic, text.as_str());
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
@@ -365,7 +376,8 @@ fn test_octal() {
 fn test_octal_fail() {
     let text = "08 08";
 
-    let mut lexer = Lexer::new(text);
+    let diagnostic = Diagnostic::new("test.c", unindent::unindent(text));
+    let mut lexer = Lexer::new(&diagnostic, text);
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 2);
@@ -387,7 +399,8 @@ fn test_hexadecimal_lower() {
         let number = format!("{:#x}", i);
 
         let text = format!("{number} {number}");
-        let mut lexer = Lexer::new(&text);
+        let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+        let mut lexer = Lexer::new(&diagnostic, text.as_str());
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
@@ -409,7 +422,8 @@ fn test_hexadecimal_lower() {
             let number = format!("{:#x}{}", i, suffix);
 
             let text = format!("{number} {number}");
-            let mut lexer = Lexer::new(&text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+            let mut lexer = Lexer::new(&diagnostic, text.as_str());
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
@@ -432,7 +446,8 @@ fn test_hexadecimal_lower() {
             let number = format!("{:#x}{}", i, suffix);
 
             let text = format!("{number} {number}");
-            let mut lexer = Lexer::new(&text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+            let mut lexer = Lexer::new(&diagnostic, text.as_str());
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
@@ -455,7 +470,8 @@ fn test_hexadecimal_lower() {
 fn test_hexadecimal_lower_fail() {
     let text = "0xgg 0xgg";
 
-    let mut lexer = Lexer::new(text);
+    let diagnostic = Diagnostic::new("test.c", unindent::unindent(text));
+    let mut lexer = Lexer::new(&diagnostic, text);
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 2);
@@ -477,7 +493,8 @@ fn test_hexadecimal_upper() {
         let number = format!("{:#X}", i);
 
         let text = format!("{number} {number}");
-        let mut lexer = Lexer::new(&text);
+        let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+        let mut lexer = Lexer::new(&diagnostic, text.as_str());
         let tokens = lexer.lex().unwrap();
 
         assert_eq!(tokens.len(), 2);
@@ -499,7 +516,8 @@ fn test_hexadecimal_upper() {
             let number = format!("{:#X}{}", i, suffix);
 
             let text = format!("{number} {number}");
-            let mut lexer = Lexer::new(&text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+            let mut lexer = Lexer::new(&diagnostic, text.as_str());
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
@@ -522,7 +540,8 @@ fn test_hexadecimal_upper() {
             let number = format!("{:#X}{}", i, suffix);
 
             let text = format!("{number} {number}");
-            let mut lexer = Lexer::new(&text);
+            let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+            let mut lexer = Lexer::new(&diagnostic, text.as_str());
             let tokens = lexer.lex().unwrap();
 
             assert_eq!(tokens.len(), 2);
@@ -545,7 +564,8 @@ fn test_hexadecimal_upper() {
 fn test_hexadecimal_upper_fail() {
     let text = "0xGG 0xGG";
 
-    let mut lexer = Lexer::new(text);
+    let diagnostic = Diagnostic::new("test.c", unindent::unindent(text));
+    let mut lexer = Lexer::new(&diagnostic, text);
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 2);
@@ -679,7 +699,8 @@ fn test_numbers() {
         hexadecimal_upper.join("\n")
     );
 
-    let mut lexer = Lexer::new(&text);
+    let diagnostic = Diagnostic::new("test.c", unindent::unindent(text.as_str()));
+    let mut lexer = Lexer::new(&diagnostic, text.as_str());
     let tokens = lexer.lex().unwrap();
 
     assert_eq!(tokens.len(), 7917);

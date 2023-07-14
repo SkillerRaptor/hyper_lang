@@ -13,7 +13,7 @@ edition = "2021"
 hyperc_diagnostics = { path = "../hyperc_diagnostics" }
 hyperc_span = { path = "../hyperc_span" }
 
-thiserror = "1.0"
+unindent = "0.2"
 
 [dev-dependencies]
 paste = "1.0"

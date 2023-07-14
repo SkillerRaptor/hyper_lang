@@ -9,21 +9,12 @@ pub mod token;
 
 use crate::token::{Token, TokenKind};
 
+use hyperc_diagnostics::{annotation::Annotation, errors::ErrorCode, report::Report, Diagnostic};
 use hyperc_span::Span;
-
-use thiserror::Error;
-
-#[derive(Debug, Error)]
-pub enum LexingError {
-    #[error("unexpected token at {line}:{column}")]
-    UnexpectedToken { line: u64, column: u64 },
-
-    #[error("unclosed hexadecimal constant")]
-    UnclosedHexadecimal,
-}
 
 #[derive(Debug)]
 pub struct Lexer<'a> {
+    diagnostic: &'a Diagnostic,
     text: &'a str,
 
     current_character: char,
@@ -34,8 +25,9 @@ pub struct Lexer<'a> {
 }
 
 impl<'a> Lexer<'a> {
-    pub fn new(text: &'a str) -> Self {
+    pub fn new(diagnostic: &'a Diagnostic, text: &'a str) -> Self {
         Self {
+            diagnostic,
             text,
 
             current_character: '\0',
@@ -46,7 +38,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    pub fn lex(&mut self) -> Result<Vec<Token>, LexingError> {
+    pub fn lex(&mut self) -> Option<Vec<Token>> {
         let mut tokens = Vec::new();
 
         while !self.has_reached_end() {
@@ -58,10 +50,10 @@ impl<'a> Lexer<'a> {
             tokens.push(token);
         }
 
-        Ok(tokens)
+        Some(tokens)
     }
 
-    fn next_token(&mut self) -> Result<Token, LexingError> {
+    fn next_token(&mut self) -> Option<Token> {
         self.advance();
         self.skip_whitespace();
 
@@ -230,21 +222,22 @@ impl<'a> Lexer<'a> {
             '0'..='9' => self.lex_number_constant()?,
             '\0' => TokenKind::Eof,
             _ => {
-                // TODO: Improve error message
-                return Err(LexingError::UnexpectedToken {
-                    line: self.line,
-                    column: self.column,
-                });
+                let span = Span::new(start_index, self.index);
+
+                let error = "unexpected token";
+                let report = Report::error()
+                    .with_error_code(ErrorCode::E0001(self.current_character.to_string()))
+                    .with_annotations(vec![Annotation::primary(span, error.clone())]);
+                self.diagnostic.report(report);
+
+                return None;
             }
         };
 
-        let end_index = self.index;
-
-        let span = Span::new(start_index, end_index);
-
+        let span = Span::new(start_index, self.index);
         let token = Token::new(kind, span);
 
-        Ok(token)
+        Some(token)
     }
 
     fn lex_identifier_or_keyword(&mut self) -> TokenKind {
@@ -300,7 +293,9 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn lex_number_constant(&mut self) -> Result<TokenKind, LexingError> {
+    fn lex_number_constant(&mut self) -> Option<TokenKind> {
+        let start_index = self.index - 1;
+
         if self.current_character == '0' {
             let next_char = self.peek(0);
             if next_char == 'x' || next_char == 'X' {
@@ -319,8 +314,15 @@ impl<'a> Lexer<'a> {
                         next_char = self.peek(0);
                     }
                 } else {
-                    // TODO: Improve error message
-                    return Err(LexingError::UnclosedHexadecimal);
+                    let span = Span::new(start_index, self.index);
+
+                    let error = "unclosed hexadecimal";
+                    let report = Report::error()
+                        .with_error_code(ErrorCode::E0002)
+                        .with_annotations(vec![Annotation::primary(span, error.clone())]);
+                    self.diagnostic.report(report);
+
+                    return None;
                 }
             } else if next_char.is_ascii_digit() {
                 let mut next_char = self.peek(0);
@@ -366,7 +368,7 @@ impl<'a> Lexer<'a> {
             _ => {}
         }
 
-        Ok(TokenKind::Number)
+        Some(TokenKind::Number)
     }
 
     // Lexer specific

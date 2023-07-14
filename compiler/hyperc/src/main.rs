@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+use hyperc_diagnostics::Diagnostic;
 use hyperc_lexer::Lexer;
 
 use color_eyre::Result;
@@ -11,13 +12,22 @@ use color_eyre::Result;
 fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let test_program = r#"
-    "#;
+    let test_program = unindent::unindent(
+        r#"
+        int main() {
+            return 0;
+        }
+        "#,
+    );
 
-    let mut lexer = Lexer::new(test_program);
-    let tokens = lexer.lex()?;
+    let diagnostic = Diagnostic::new("test.c", &test_program);
 
-    println!("Parsed tokens: {:?}", tokens);
+    let mut lexer = Lexer::new(&diagnostic, &test_program);
+    let Some(tokens) = lexer.lex() else {
+        return Ok(());
+    };
+
+    println!("Parsed tokens: {:#?}", tokens);
 
     Ok(())
 }
