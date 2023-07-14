@@ -13,7 +13,4 @@ edition = "2021"
 hyperc_lexer = { path = "../hyperc_lexer" }
 hyperc_parser = { path = "../hyperc_parser" }
 
-chrono = "0.4"
 color-eyre = "0.6"
-fern = { version = "0.6", features = [ "colored" ] }
-log = "0.4"
