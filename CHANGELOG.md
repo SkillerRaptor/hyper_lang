@@ -2,6 +2,12 @@
 
 All changes to this project will be documented in this file.
 
+## July 13, 2023
+
+## Compiler
+
+- Changed compiler to a modular design
+
 ## July 6, 2023
 
 ### Lexer
