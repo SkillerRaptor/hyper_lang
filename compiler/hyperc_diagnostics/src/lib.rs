@@ -8,28 +8,33 @@ pub mod annotation;
 pub mod errors;
 pub mod report;
 
-use annotate_snippets::{
-    display_list::{DisplayList, FormatOptions},
-    snippet::{self, AnnotationType, Slice, Snippet, SourceAnnotation},
-};
-
 use crate::{
     annotation::Style,
     report::{Report, Severity},
 };
 
+use codespan_reporting::{
+    diagnostic::{self, LabelStyle},
+    files::SimpleFiles,
+    term::{
+        self,
+        termcolor::{ColorChoice, StandardStream},
+        Config,
+    },
+};
+
 #[derive(Debug)]
 pub struct Diagnostic {
-    file: String,
-    source: String,
+    files: SimpleFiles<String, String>,
+    file_id: usize,
 }
 
 impl Diagnostic {
     pub fn new(file: impl ToString, source: impl ToString) -> Self {
-        Self {
-            file: file.to_string(),
-            source: source.to_string(),
-        }
+        let mut files = SimpleFiles::new();
+        let file_id = files.add(file.to_string(), source.to_string());
+
+        Self { files, file_id }
     }
 
     pub fn report(&self, report: Report) {
@@ -40,53 +45,41 @@ impl Diagnostic {
             annotations,
         } = report;
 
-        let annotation_type = match severity {
-            Severity::Info => AnnotationType::Info,
-            Severity::Warning => AnnotationType::Warning,
-            Severity::Error => AnnotationType::Error,
+        let severity = match severity {
+            Severity::Note => diagnostic::Severity::Note,
+            Severity::Warning => diagnostic::Severity::Warning,
+            Severity::Error => diagnostic::Severity::Error,
         };
 
-        let annotations = annotations
-            .iter()
-            .map(|annotation| SourceAnnotation {
-                range: (annotation.span().start(), annotation.span().end()),
-                label: annotation.message(),
-                annotation_type: match annotation.style() {
-                    Style::Primary => AnnotationType::Error,
-                    Style::Secondary => AnnotationType::Info,
-                },
-            })
-            .collect();
+        let mut diagnostic = diagnostic::Diagnostic::new(severity)
+            .with_message(message.unwrap())
+            .with_labels(
+                annotations
+                    .iter()
+                    .map(|annotation| {
+                        let style = match annotation.style() {
+                            Style::Primary => LabelStyle::Primary,
+                            Style::Secondary => LabelStyle::Secondary,
+                        };
+                        diagnostic::Label::new(
+                            style,
+                            self.file_id,
+                            annotation.span().start()..annotation.span().end(),
+                        )
+                        .with_message(annotation.message())
+                    })
+                    .collect(),
+            );
 
-        let message = message.unwrap();
+        if code.is_some() {
+            diagnostic = diagnostic.with_code(code.unwrap());
+        }
 
-        let code = code.unwrap_or(String::new());
-
-        let snippet = Snippet {
-            title: Some(snippet::Annotation {
-                id: if code.is_empty() {
-                    None
-                } else {
-                    Some(code.as_str())
-                },
-                label: Some(message.as_str()),
-                annotation_type,
-            }),
-            footer: vec![],
-            slices: vec![Slice {
-                source: &self.source,
-                line_start: 1,
-                origin: Some(self.file.as_str()),
-                annotations,
-                fold: true,
-            }],
-            opt: FormatOptions {
-                color: true,
-                ..Default::default()
-            },
+        let writer = StandardStream::stderr(ColorChoice::Always);
+        let config = Config {
+            ..Default::default()
         };
 
-        let display_list = DisplayList::from(snippet);
-        println!("{}", display_list);
+        term::emit(&mut writer.lock(), &config, &self.files, &diagnostic).unwrap();
     }
 }

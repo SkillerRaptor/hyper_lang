@@ -130,14 +130,21 @@ impl<'a> Lexer<'a> {
                     TokenKind::ExclamationMark
                 }
             }
-            '/' => {
-                if self.peek(0) == '=' {
+            '/' => match self.peek(0) {
+                '/' => {
+                    self.advance();
+                    while self.peek(0) != '\n' {
+                        self.advance();
+                    }
+
+                    return self.next_token();
+                }
+                '=' => {
                     self.advance();
                     TokenKind::BinaryOperationEqual(BinaryOperation::Slash)
-                } else {
-                    TokenKind::BinaryOperation(BinaryOperation::Slash)
                 }
-            }
+                _ => TokenKind::BinaryOperation(BinaryOperation::Slash),
+            },
             '%' => {
                 if self.peek(0) == '=' {
                     self.advance();
@@ -408,6 +415,7 @@ impl<'a> Lexer<'a> {
             || self.current_character == '\n'
             || self.current_character == '\r'
         {
+            println!("Skip {:?}", self.current_character);
             self.advance();
         }
     }

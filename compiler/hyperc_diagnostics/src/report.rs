@@ -8,7 +8,7 @@ use crate::{annotation::Annotation, errors::ErrorCode};
 
 #[derive(Clone, Copy, Debug)]
 pub enum Severity {
-    Info,
+    Note,
     Warning,
     Error,
 }
@@ -31,8 +31,8 @@ impl Report {
         }
     }
 
-    pub fn info() -> Self {
-        Self::new(Severity::Info)
+    pub fn note() -> Self {
+        Self::new(Severity::Note)
     }
 
     pub fn warning() -> Self {

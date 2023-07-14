@@ -12,4 +12,4 @@ edition = "2021"
 [dependencies]
 hyperc_span = { path = "../hyperc_span" }
 
-annotate-snippets = { version = "0.9", features = [ "color" ] }
+codespan-reporting = "0.11"
