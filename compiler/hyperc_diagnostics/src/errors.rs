@@ -10,6 +10,7 @@ use std::fmt::{self, Display, Formatter};
 pub enum ErrorCode {
     E0001(String),
     E0002,
+    E0003,
 }
 
 impl ErrorCode {
@@ -17,6 +18,7 @@ impl ErrorCode {
         match *self {
             ErrorCode::E0001(_) => "E0001",
             ErrorCode::E0002 => "E0002",
+            ErrorCode::E0003 => "E0003",
         }
     }
 }
@@ -26,6 +28,7 @@ impl Display for ErrorCode {
         match *self {
             ErrorCode::E0001(ref token) => write!(f, "unexpected token, found `{}`", token),
             ErrorCode::E0002 => write!(f, "unclosed hexadecimal number"),
+            ErrorCode::E0003 => write!(f, "unclosed string literal"),
         }
     }
 }

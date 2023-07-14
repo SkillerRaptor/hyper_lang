@@ -226,6 +226,7 @@ impl<'a> Lexer<'a> {
                     TokenKind::PoundSign
                 }
             }
+            '"' => self.lex_string_literal()?,
             '_' | 'a'..='z' | 'A'..='Z' => self.lex_identifier_or_keyword(),
             '0'..='9' => self.lex_number_constant()?,
             '\0' => TokenKind::Eof,
@@ -246,6 +247,32 @@ impl<'a> Lexer<'a> {
         let token = Token::new(kind, span);
 
         Some(token)
+    }
+
+    fn lex_string_literal(&mut self) -> Option<TokenKind> {
+        let start_index = self.index - 1;
+
+        let mut next_char = self.peek(0);
+        while next_char != '"' {
+            if self.has_reached_end() {
+                let span = Span::new(start_index, self.index - 1);
+
+                let error = "unclosed string";
+                let report = Report::error()
+                    .with_error_code(ErrorCode::E0003)
+                    .with_annotations(vec![Annotation::primary(span, error)]);
+                self.diagnostic.report(report);
+
+                return None;
+            }
+
+            self.advance();
+            next_char = self.peek(0);
+        }
+
+        self.advance();
+
+        Some(TokenKind::Literal(LiteralKind::String))
     }
 
     fn lex_identifier_or_keyword(&mut self) -> TokenKind {
@@ -327,7 +354,7 @@ impl<'a> Lexer<'a> {
                     let error = "unclosed hexadecimal";
                     let report = Report::error()
                         .with_error_code(ErrorCode::E0002)
-                        .with_annotations(vec![Annotation::primary(span, error.clone())]);
+                        .with_annotations(vec![Annotation::primary(span, error)]);
                     self.diagnostic.report(report);
 
                     return None;
@@ -415,7 +442,6 @@ impl<'a> Lexer<'a> {
             || self.current_character == '\n'
             || self.current_character == '\r'
         {
-            println!("Skip {:?}", self.current_character);
             self.advance();
         }
     }

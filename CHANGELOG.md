@@ -11,6 +11,7 @@ All changes to this project will be documented in this file.
 ## Lexer
 
 - Added diagnostics for lexer
+- Added lexing for string literals
 - Simplified and organized tokens
 
 ## July 13, 2023
@@ -29,10 +30,10 @@ All changes to this project will be documented in this file.
 
 ### Lexer
 
-- Added lexing for decimal constants
-- Added lexing for octal constants
-- Added lexing for hexadecimal constants
-- Added lexing for integer suffix for decimal, octal and hexadecimal constants
+- Added lexing for decimal literals
+- Added lexing for octal literals
+- Added lexing for hexadecimal literals
+- Added lexing for integer suffix for decimal, octal and hexadecimal literals
 
 ## July 4, 2023
 
